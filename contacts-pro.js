@@ -8182,21 +8182,21 @@ function hmVisibleAt(ds){
 }
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
-  function kpi(lab, val, sub){ return '<div class="hm-kpi"><div class="lab">' + lab + '</div><div class="num">' + val + '</div><div class="sub">' + sub + '</div></div>'; }
-  var left = '<div class="hm-rail">' +
+  function kpi(lab, val, sub){ return '<div class="gm-kpi"><div class="lab">' + lab + '</div><div class="num">' + val + '</div><div class="sub">' + sub + '</div></div>'; }
+  var left = '<div class="gm-rail">' +
     kpi('People in directory', o.N, (o.addedNames.length ? '<b>+' + o.addedNames.length + '</b> today (' + esc(o.addedNames[0]) + ') · ' : '') + 'every count foots to ' + o.N) +
     kpi('In touch lately', o.inTouch + ' <small>/ ' + o.N + '</small>', 'Talked to in <b>' + (o.cy - 1) + ' or ' + o.cy + '</b> · <b>' + o.older + '</b> last in touch ' + (o.cy - 2) + ' or earlier') +
     kpi('Full picture', T.full + ' <small>/ ' + o.N + '</small>', '<b>' + T.solid + '</b> solid · <b>' + T.light + '</b> light · <b>' + T.name + '</b> name only') +
     kpi('Information current', o.curFair + ' <small>/ ' + o.N + '</small>', '<b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current · <b>' + B.outdated + '</b> outdated') +
-    '<div class="hm-mini"><h3>How filled-out are the records?</h3>' +
+    '<div class="gm-mini"><h3>How filled-out are the records?</h3>' +
     v4MRow('Full picture', '', 'blue', o.pct(T.full), T.full) + v4MRow('Solid', '', 'blue', o.pct(T.solid), T.solid) +
     v4MRow('Light', '', 'amber', o.pct(T.light), T.light) + v4MRow('Name only', '', 'dim', o.pct(T.name), T.name) +
     '<div class="pv-foot"><a class="lnk" href="#/audit">See who is missing what in Audit →</a></div></div>' +
-    '<div class="hm-mini"><h3>How current is the information?</h3>' +
+    '<div class="gm-mini"><h3>How current is the information?</h3>' +
     v4MRow('Current', '', 'green', o.pct(B.current), B.current) + v4MRow('Fairly current', '', 'blue', o.pct(B.fairly), B.fairly) +
     v4MRow('Getting thin or old', '', 'amber', o.pct(B.thin), B.thin) + v4MRow('Outdated', '', 'red', o.pct(B.outdated), B.outdated) +
     '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so their recency scores 0 for lack of evidence, not because the information is proven stale.</div></div>' +
-    '<div class="hm-mini"><h3>Last contact — how stale?</h3>' +
+    '<div class="gm-mini"><h3>Last contact — how stale?</h3>' +
     v4MRow(String(o.cy), '', 'gold', o.pct(M.lc.y0), M.lc.y0) + v4MRow(String(o.cy - 1), '', 'gold', o.pct(M.lc.y1), M.lc.y1) +
     v4MRow((o.cy - 3) + ' – ' + (o.cy - 2), '', 'dim', o.pct(M.lc.y2324), M.lc.y2324) +
     v4MRow((o.cy - 5) + ' – ' + (o.cy - 4), '', 'dim', o.pct(M.lc.y2122), M.lc.y2122) +
@@ -8204,37 +8204,37 @@ function hmBandHTML(o){
     v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
     '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div></div>' +
     '</div>';
-  var center = '<div class="hm-mapcard">' +
-    '<div class="hm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day.</p></div>' +
-    '<div class="hm-mtools"><button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false">Density</button>' +
+  var center = '<div class="gm-mapcard">' +
+    '<div class="gm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day.</p></div>' +
+    '<div class="gm-mtools"><button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false">Density</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button></div></div>' +
-    '<div id="hmMap" class="hm-map" role="application" aria-label="Map of contacts by place over time"></div>' +
-    '<div class="hm-scrub"><div class="hm-srow">' +
+    '<div id="hmMap" class="gm-map" role="application" aria-label="Map of contacts by place over time"></div>' +
+    '<div class="gm-scrub"><div class="gm-srow">' +
     '<button type="button" class="btn primary sm" data-act="hmplay" id="hmPlayBtn">Play</button>' +
-    '<div class="hm-speed" role="group" aria-label="Play speed">' +
+    '<div class="gm-speed" role="group" aria-label="Play speed">' +
     '<button type="button" data-act="hmspeed" data-s="1" class="on">1×</button><button type="button" data-act="hmspeed" data-s="2">2×</button><button type="button" data-act="hmspeed" data-s="4">4×</button></div>' +
-    '<div class="hm-date" id="hmDateLab">—</div></div>' +
+    '<div class="gm-date" id="hmDateLab">—</div></div>' +
     '<input type="range" id="hmRange" min="0" max="100" value="100" step="1" aria-label="Scrub through time">' +
-    '<div class="hm-ticks"><span id="hmTickA">—</span><span>Drag to scrub · Play animates the years</span><span>Today</span></div></div>' +
+    '<div class="gm-ticks"><span id="hmTickA">—</span><span>Drag to scrub · Play animates the years</span><span>Today</span></div></div>' +
     '</div>';
-  var right = '<div class="hm-rail">' +
-    '<div class="hm-mini"><h3>As of <span id="hmAsOf">—</span></h3><div class="hm-counts" id="hmCounts">—</div><div class="hm-gaps" id="hmGaps"></div></div>' +
-    '<div class="hm-mini"><h3>How to read it</h3><div class="hm-legend">' +
-    '<div><span class="hm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
-    '<div><span class="hm-sw c-year"></span>Contact within the last year</div>' +
-    '<div><span class="hm-sw c-old"></span>Last contact over a year ago</div>' +
-    '<div><span class="hm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
-    '<div><span class="hm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
-    '<div class="hm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list here instead.</div>' +
+  var right = '<div class="gm-rail">' +
+    '<div class="gm-mini"><h3>As of <span id="hmAsOf">—</span></h3><div class="gm-counts" id="hmCounts">—</div><div class="gm-gaps" id="hmGaps"></div></div>' +
+    '<div class="gm-mini"><h3>How to read it</h3><div class="gm-legend">' +
+    '<div><span class="gm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
+    '<div><span class="gm-sw c-year"></span>Contact within the last year</div>' +
+    '<div><span class="gm-sw c-old"></span>Last contact over a year ago</div>' +
+    '<div><span class="gm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
+    '<div><span class="gm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
+    '<div class="gm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list here instead.</div>' +
     '</div></div>' +
-    '<div class="hm-mini hm-detail" id="hmDetail"></div>' +
-    '<div class="hm-mini"><h3>Known since</h3>' +
+    '<div class="gm-mini hm-detail" id="hmDetail"></div>' +
+    '<div class="gm-mini"><h3>Known since</h3>' +
     v4MRow('20+ years', '', 'gold', o.pct(M.ks.p20), M.ks.p20) + v4MRow('10 – 19 years', '', 'gold', o.pct(M.ks.y1019), M.ks.y1019) +
     v4MRow('5 – 9 years', '', 'gold', o.pct(M.ks.y59), M.ks.y59) + v4MRow('2 – 4 years', '', 'gold', o.pct(M.ks.y24), M.ks.y24) +
     v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
     '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
     '</div>';
-  return '<section class="hm-band">' + left + center + right + '</section>';
+  return '<section class="gm-band">' + left + center + right + '</section>';
 }
 function hmGapsHTML(){
   var M = hmModel(), parts = [];
@@ -8251,25 +8251,36 @@ function hmDetailDefault(ds){
     return { pk:pk, n:vis.byPlace[pk].length, label:M.places[pk].label };
   }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); }).slice(0, 6);
   return '<h3>Biggest places</h3>' + (rows.length ? rows.map(function(r){
-    return '<button type="button" class="hm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
-  }).join('') : '<p class="hm-dim">Nobody is placed yet at this date.</p>') +
-  '<p class="hm-dim">Click any place on the map to see who is there.</p>';
+    return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
+  }).join('') : '<p class="gm-dim">Nobody is placed yet at this date.</p>') +
+  '<p class="gm-dim">Click any place on the map to see who is there.</p>';
 }
 function hmPaintDetail(ds){
   var box = document.getElementById('hmDetail'); if(!box) return;
   var M = hmModel();
   if(!HM.sel){ box.innerHTML = hmDetailDefault(ds); return; }
+  if(HM.sel.type === 'cluster'){
+    var visC = hmVisibleAt(ds);
+    var crows = HM.sel.keys.map(function(pk){
+      return { pk:pk, n:(visC.byPlace[pk] || []).length, label:M.places[pk] ? M.places[pk].label : pk };
+    }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); });
+    box.innerHTML = '<h3>Places close together</h3><div class="gm-dsub">Too close to separate at this zoom — pick one:</div>' +
+      (crows.length ? crows.map(function(r){
+        return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
+      }).join('') : '<p class="gm-dim">Nobody at these places at this date.</p>');
+    return;
+  }
   if(HM.sel.type === 'place'){
     var pl = M.places[HM.sel.key];
     if(!pl){ box.innerHTML = hmDetailDefault(ds); return; }
     var vis = hmVisibleAt(ds), rows = (vis.byPlace[HM.sel.key] || []).slice().sort(function(a, b){
       return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
     });
-    box.innerHTML = '<h3>' + esc(pl.label) + '</h3><div class="hm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
-      (rows.length ? '<div class="hm-plist">' + rows.map(function(r){
+    box.innerHTML = '<h3>' + esc(pl.label) + '</h3><div class="gm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
+      (rows.length ? '<div class="gm-plist">' + rows.map(function(r){
         var e = D.directory[r.di];
-        return '<a class="hm-prow" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + r.di + '"><span class="hm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="hm-pn">' + esc(dispName(e)) + '</span></a>';
-      }).join('') + '</div>' : '<p class="hm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
+        return '<a class="gm-prow" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span></a>';
+      }).join('') + '</div>' : '<p class="gm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
     return;
   }
   var di = HM.sel.di, e = D.directory[di];
@@ -8282,9 +8293,9 @@ function hmPaintDetail(ds){
     return ev && ev.venue && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') && ev.date <= ds;
   }).slice(-4).reverse();
   box.innerHTML = '<h3>' + esc(dispName(e)) + '</h3>' +
-    '<div class="hm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date' + (p && p.appear ? ' — first placed ' + hmFmtDate(p.appear) : '')) + '</div>' +
-    (rec ? '<div class="hm-dline"><span class="hm-dot c-' + rec.cls + '"></span>' + ({ fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' })[rec.cls] + '</div>' : '') +
-    (evs.length ? '<div class="hm-dline hm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
+    '<div class="gm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date' + (p && p.appear ? ' — first placed ' + hmFmtDate(p.appear) : '')) + '</div>' +
+    (rec ? '<div class="gm-dline"><span class="gm-dot c-' + rec.cls + '"></span>' + ({ fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' })[rec.cls] + '</div>' : '') +
+    (evs.length ? '<div class="gm-dline gm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
     '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>';
 }
 function hmPaintReadout(ds){
@@ -8341,7 +8352,7 @@ function hmSpiderfy(pk, rows){
     var ll = map.containerPointToLatLng(pt);
     L.polyline([[pl.lat, pl.lng], ll], { color:'#8b94a1', weight:1, opacity:.55 }).addTo(HM.spider);
     var e = D.directory[r.di];
-    var mk = L.marker(ll, { icon:L.divIcon({ className:'hm-di', html:'<span class="hm-pdot c-' + r.cls + (r.undated ? ' und' : '') + '" title="' + esc(dispName(e)) + '">' + esc(hmInitials(e)) + '</span>', iconSize:[26, 26], iconAnchor:[13, 13] }) }).addTo(HM.spider);
+    var mk = L.marker(ll, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-pdot c-' + r.cls + (r.undated ? ' und' : '') + '" title="' + esc(dispName(e)) + '">' + esc(hmInitials(e)) + '</span>', iconSize:[26, 26], iconAnchor:[13, 13] }) }).addTo(HM.spider);
     mk.on('click', function(){ HM.sel = { type:'person', di:r.di }; hmPaintDetail(hmDateAt(HM.dateIdx)); });
   });
 }
@@ -8372,16 +8383,26 @@ function hmPaint(){
     g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
     var lat = wlat / totN, lng = wlng / totN;
     if(g.length > 1){
-      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'hm-di', html:'<span class="hm-cluster">' + totN + '<small>' + g.length + ' places</small></span>', iconSize:[46, 46], iconAnchor:[23, 23] }) }).addTo(HM.layer);
+      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-cluster">' + totN + '<small>' + g.length + ' places</small></span>', iconSize:[46, 46], iconAnchor:[23, 23] }) }).addTo(HM.layer);
       cm.on('click', function(){
-        var b = L.latLngBounds(g.map(function(a){ return [a.pl.lat, a.pl.lng]; }));
-        HM.map.flyToBounds(b.pad(0.6), { maxZoom:11, duration:.5 });
+        /* Each click steps two zoom levels toward the cluster,
+           so places always separate eventually (a bounds-fit can
+           land on the same zoom and stall). At zoom 14 anything
+           still clustered — places under ~1km apart, like Potsdam
+           town and the Clarkson campus — opens as a place list in
+           the rail instead of zooming forever. */
+        if(HM.map.getZoom() >= 14){
+          HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) };
+          hmPaintDetail(hmDateAt(HM.dateIdx));
+          return;
+        }
+        HM.map.flyTo([lat, lng], Math.min(14, HM.map.getZoom() + 2), { duration:.5 });
       });
     } else {
       var a0 = g[0], rows = vis.byPlace[a0.pk], fresh = hmFreshest(rows);
       var short = a0.pl.label.replace(/, [A-Z]{2}$/, '');
-      var pm = L.marker([a0.pl.lat, a0.pl.lng], { icon:L.divIcon({ className:'hm-di',
-        html:'<span class="hm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + '">' + a0.n + '</span><span class="hm-blab">' + esc(short) + '</span>',
+      var pm = L.marker([a0.pl.lat, a0.pl.lng], { icon:L.divIcon({ className:'gm-di',
+        html:'<span class="gm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + '">' + a0.n + '</span><span class="gm-blab">' + esc(short) + '</span>',
         iconSize:[34, 44], iconAnchor:[17, 17] }) }).addTo(HM.layer);
       pm.on('click', function(){ hmSelectPlace(a0.pk, true); });
     }
@@ -8398,11 +8419,16 @@ function hmSelectPlace(pk, allowSpider){
 }
 function hmFitDefault(){
   if(!HM.map) return;
-  var M = hmModel(), vis = hmVisibleAt(M.maxD), pts = [];
+  var M = hmModel(), vis = hmVisibleAt(M.maxD), core = [], all = [];
   Object.keys(vis.byPlace).forEach(function(pk){
     var pl = M.places[pk];
-    if(pl.lat >= 24 && pl.lat <= 50 && pl.lng >= -125 && pl.lng <= -66) pts.push([pl.lat, pl.lng]);
+    all.push([pl.lat, pl.lng]);
+    /* the home box: the North Country and its near neighbours —
+       most of the directory lives here; the rest of the map is
+       one zoom-out away. */
+    if(pl.lat >= 42.4 && pl.lat <= 46.1 && pl.lng >= -77.6 && pl.lng <= -71.4) core.push([pl.lat, pl.lng]);
   });
+  var pts = core.length >= 3 ? core : all;
   if(pts.length) HM.map.fitBounds(L.latLngBounds(pts).pad(0.12), { maxZoom:9 });
   else HM.map.setView([44.67, -74.98], 8);
 }
@@ -8433,7 +8459,7 @@ function hmMount(){
   var tickA = document.getElementById('hmTickA'); if(tickA) tickA.textContent = M.minD.slice(0, 4);
   var hb = document.getElementById('hmHeatBtn');
   if(hb){ hb.classList.toggle('on', HM.heat); hb.setAttribute('aria-pressed', String(HM.heat)); }
-  $$('.hm-speed button').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-s') === HM.speed); });
+  $$('.gm-speed button').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-s') === HM.speed); });
   hmPaint();
   hmLoadLeaflet(function(ok){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
@@ -8453,7 +8479,7 @@ function hmMount(){
 }
 function hmNoMap(){
   var el = document.getElementById('hmMap');
-  if(el && !el.querySelector('.hm-nomap')) el.innerHTML = '<div class="hm-nomap">The map library could not load — the connection or the map CDN is unavailable. The statistics on both sides and the counts above still work; reload to try the map again.</div>';
+  if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map CDN is unavailable. The statistics on both sides and the counts above still work; reload to try the map again.</div>';
 }
 function hmLoadLeaflet(cb){
   if(window.L){ cb(true); return; }
@@ -10257,9 +10283,9 @@ function viewCalendar(v){
     '<p class="pv-hsub">Contact, online, and proximity entries.</p></div>' +
     '<div class="side"><a class="lnk" data-act="pvproxjump" style="cursor:pointer">Log proximity ↓</a> · <a class="lnk" href="#/people">Open People →</a></div></div>' +
     ctlBarHTML() +
-    '<div class="ct-layout"><div class="pv-cal ct-main">' + ctlMonthHTML() +
+    '<div class="gm-ctlayout"><div class="pv-cal ct-main">' + ctlMonthHTML() +
     '<div class="pv-legend"><span class="li"><span class="pv-sw" style="background:var(--pv-gold)"></span>Contact, in person</span><span class="li"><span class="pv-sw" style="background:var(--pv-blue)"></span>Contact, online</span><span class="li"><span class="pv-sw prox"></span>Proximity — crossed paths; it never counts as contact</span></div></div>' +
-    '<aside class="ct-side"><div class="ct-side-h">Day entries</div><div id="ctDaySide">' + ctlDayHTML() + '</div></aside></div>' +
+    '<aside class="gm-ctside"><div class="gm-ctside-h">Day entries</div><div id="ctDaySide">' + ctlDayHTML() + '</div></aside></div>' +
     calFoldHTML('prox', 'Proximity — bulk log', mgProxHTML()) +
     calFoldHTML('seen', 'Seen in person', ctSeenHTML()) +
     calFoldHTML('stamps', 'Contact stamps', mgStampsHTML()) +
@@ -16135,9 +16161,9 @@ function onClick(ev){
        txn + queuePatch of the events JSON — the same path as the
        profile Timeline editor and Quick Add. */
     case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
-    case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.ct-side'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
+    case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.gm-ctside'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
     case 'hmplay': { if(HM.playing){ hmStopPlay(); } else { if(HM.dateIdx >= hmTotalDays()) HM.dateIdx = 0; HM.playing = true; el.textContent = 'Pause'; if(HM.timer) clearInterval(HM.timer); HM.timer = setInterval(hmTick, 100); hmTick(); } break; }
-    case 'hmspeed': { HM.speed = +el.getAttribute('data-s') || 1; $$('.hm-speed button').forEach(function(b6){ b6.classList.toggle('on', b6 === el); }); break; }
+    case 'hmspeed': { HM.speed = +el.getAttribute('data-s') || 1; $$('.gm-speed button').forEach(function(b6){ b6.classList.toggle('on', b6 === el); }); break; }
     case 'hmheat': { HM.heat = !HM.heat; el.classList.toggle('on', HM.heat); el.setAttribute('aria-pressed', String(HM.heat)); hmClearSpider(); hmPaint(); break; }
     case 'hmreset': { hmFitDefault(); break; }
     case 'hmplace': { hmSelectPlace(el.getAttribute('data-k'), true); break; }
