@@ -7225,7 +7225,7 @@ a.af-src-chip:hover{text-decoration:underline}
    year), slate #8b94a1 (over a year), violet #a58fd4 (seen,
    no contact yet). Undated pins render at half opacity.
    ============================================================ */
-.gm-band{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:16px;margin-bottom:16px;align-items:start}
+.gm-band{display:block;margin-bottom:16px}
 .gm-rail{display:flex;flex-direction:column;gap:16px;min-width:0}
 .gm-kpi,.gm-mini{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:12px}
 .gm-kpi .lab{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-mut);font-weight:700}
@@ -7240,7 +7240,7 @@ a.af-src-chip:hover{text-decoration:underline}
 .gm-mhead p{margin:3px 0 0;font-size:12px;color:var(--pv-dim);max-width:56ch;line-height:1.45}
 .gm-mtools{display:flex;gap:8px}
 .gm-mtools .btn.on{border-color:var(--pv-gold);color:var(--pv-gold)}
-.gm-map{height:472px;border-radius:10px;border:1px solid var(--pv-line);overflow:hidden;background:#0d1117;isolation:isolate;z-index:0}
+.gm-map{height:560px;border-radius:10px;border:1px solid var(--pv-line);overflow:hidden;background:#0d1117;isolation:isolate;z-index:0}
 html[data-mode="light"] .gm-map{background:#e8edf3}
 .gm-map .leaflet-container{font:inherit;background:transparent}
 .gm-nomap{padding:22px;font-size:13px;line-height:1.55;color:var(--pv-mut)}
@@ -7411,14 +7411,54 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .gm-dsub2{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--pv-mut);font-weight:700;margin:12px 0 4px}
 .gm-afind{font-size:14.5px;line-height:1.55;color:var(--pv-text);background:var(--pv-panel2);border:1px solid var(--pv-line);border-left:3px solid #d9a441;border-radius:9px;padding:11px 13px;margin-bottom:6px}
 .gm-aplist{max-height:220px}
+/* V4.17.0 — appearances only (JD 2026-11-14): the map takes the
+   full width of the band; the former sidebar blocks live in a
+   footer band below it; the selection hero docks ON the map;
+   the event stepper (one stop per dated appearance) is docked
+   to the map card under the map. Badges are a count disc with
+   the place name riding under it. */
+.gm-mapwrap{position:relative}
+.gm-herodock{position:absolute;top:12px;right:12px;width:min(360px,calc(100% - 48px));max-height:calc(100% - 24px);overflow-y:auto;z-index:1100;box-shadow:0 10px 32px rgba(0,0,0,.5)}
+.gm-herodock[hidden]{display:none}
+.gm-mapnote{position:absolute;top:12px;left:12px;z-index:1100;max-width:min(420px,calc(100% - 24px));background:var(--pv-panel);border:1px solid var(--pv-gold);color:var(--pv-text);font-size:12px;line-height:1.45;padding:8px 12px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.gm-mapnote[hidden]{display:none}
+.gm-foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:16px;align-items:start}
+.gm-step{margin-top:12px;border-top:1px solid var(--pv-line);padding-top:10px}
+.gm-stepbtn{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--pv-line2);background:var(--pv-panel2);color:var(--pv-text);font-size:19px;line-height:1;cursor:pointer;padding:0}
+.gm-stepbtn:hover{border-color:var(--pv-gold);color:var(--pv-gold)}
+.gm-evread{flex:1;min-width:220px;font-size:13.5px;color:var(--pv-text);line-height:1.45}
+.gm-evmarks{display:flex;gap:2px;margin-top:7px}
+.gm-evmarks span{flex:1;height:5px;border-radius:3px;background:var(--pv-line2)}
+.gm-evmarks span.on{background:#d9a441}
+.gm-edot{display:block;width:12px;height:12px;border-radius:50%;background:#8b94a1;border:1.5px solid rgba(255,255,255,.55);box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:pointer}
+.gm-edot.a-hot{background:#d9a441}
+.gm-edot.a-mid{background:#6ea8d8}
+.gm-edot.a-old{background:#8b94a1}
+.gm-apin.cur{outline:2.5px solid var(--pv-text);outline-offset:1px}
+.gm-badge{flex-direction:column;gap:3px;width:52px;height:auto;background:transparent;border:0;border-radius:0;box-shadow:none}
+.gm-badge b{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--pv-panel2);border:2.5px solid #8b94a1;box-shadow:0 1px 5px rgba(0,0,0,.45);font-weight:700;font-size:12px;line-height:1}
+.gm-badge i{font-style:normal;font-weight:600;font-size:10px;line-height:1.5;color:var(--pv-text);background:color-mix(in srgb,var(--pv-panel) 78%,transparent);padding:0 5px;border-radius:5px;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.gm-badge.b-md b{width:38px;height:38px;font-size:13.5px}
+.gm-badge.b-lg b{width:46px;height:46px;font-size:15px}
+.gm-badge.ring-fresh b{border-color:#d9a441}
+.gm-badge.ring-year b{border-color:#6ea8d8}
+.gm-badge.ring-old b{border-color:#8b94a1}
+.gm-badge.und b{opacity:.55;border-style:dashed}
+.gm-badge.dund b{border-style:dashed}
+.gm-badge.gm-cluster b{box-shadow:4px 4px 0 -2px var(--pv-panel2),4px 4px 0 0 var(--pv-line2),0 1px 6px rgba(0,0,0,.45)}
+.gm-sw.a-hot{background:#d9a441}
+.gm-sw.a-mid{background:#6ea8d8}
+.gm-sw.a-old{background:#8b94a1}
+.gm-sw.a-und{background:transparent;border:2px dashed #7d8595;box-sizing:border-box}
+.gm-full .gm-mapwrap{flex:1;min-height:0;display:flex;flex-direction:column}
+.gm-fspanel.gm-fspanel-leg{top:84px;left:12px;right:auto}
 @media(max-width:1240px){
-  .gm-band{grid-template-columns:1fr}
-  .gm-mapcard{order:-1}
+  .gm-foot{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 }
 @media(max-width:760px){
-  .gm-band{grid-template-columns:1fr}
-  .gm-map{height:330px}
-  .gm-date{font-size:16px}
+  .gm-map{height:380px}
+  .gm-herodock{width:calc(100% - 24px);left:12px;right:12px}
+  .gm-evread{min-width:0}
 }
 /* Calendar: compressed grid + day detail in a right sidebar
    (plain grid, no sticky rail — the V4.3.0 sticky rail scrolled
