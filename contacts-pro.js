@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.14.0';
+var APP_VERSION = '4.15.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7924,7 +7924,7 @@ function viewHome(v){
     '<div class="pv-strip"><h3>Council \u2014 latest pass</h3><div class="pv-council-line">' + cnHTML + '</div></div>' +
     '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
     '</section>' +
-    '<p class="pv-note">Home\u2019s statistics ride in the rails beside the map. What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section’s private stats.</p>' +
+    '<p class="pv-note">Home\u2019s statistics ride in the sidebar beside the map. What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section’s private stats.</p>' +
     '</div>';
   hmMount();
 }
@@ -8083,7 +8083,7 @@ var HM_VENUES = {
   "maple run 5k, canton, ny": { key: "canton, ny", label: "Canton, NY", lat: 44.5956, lng: -75.1691 },
 };
 var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
-           sel:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false };
+           sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8180,29 +8180,40 @@ function hmVisibleAt(ds){
   });
   return { list:out, byPlace:byPlace };
 }
+function hmHeroDefaultHTML(){
+  return '<div class="gm-hero-def"><h3>As of <span id="hmAsOf">—</span></h3>' +
+    '<div class="gm-counts" id="hmCounts">—</div><div class="gm-gaps" id="hmGaps"></div>' +
+    '<p class="gm-dim gm-hero-hint">Click a place on the map, or a person in a place, and their card opens here, at the top.</p></div>';
+}
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
-  function kpi(lab, val, sub){ return '<div class="gm-kpi"><div class="lab">' + lab + '</div><div class="num">' + val + '</div><div class="sub">' + sub + '</div></div>'; }
-  var left = '<div class="gm-rail">' +
-    kpi('People in directory', o.N, (o.addedNames.length ? '<b>+' + o.addedNames.length + '</b> today (' + esc(o.addedNames[0]) + ') · ' : '') + 'every count foots to ' + o.N) +
-    kpi('In touch lately', o.inTouch + ' <small>/ ' + o.N + '</small>', 'Talked to in <b>' + (o.cy - 1) + ' or ' + o.cy + '</b> · <b>' + o.older + '</b> last in touch ' + (o.cy - 2) + ' or earlier') +
-    kpi('Full picture', T.full + ' <small>/ ' + o.N + '</small>', '<b>' + T.solid + '</b> solid · <b>' + T.light + '</b> light · <b>' + T.name + '</b> name only') +
-    kpi('Information current', o.curFair + ' <small>/ ' + o.N + '</small>', '<b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current · <b>' + B.outdated + '</b> outdated') +
-    '<div class="gm-mini"><h3>How filled-out are the records?</h3>' +
+  function skpi(lab, val, sub){
+    return '<div class="gm-skpi"><div class="gm-sk-top"><span class="lab">' + lab + '</span><span class="num">' + val + '</span></div><div class="sub">' + sub + '</div></div>';
+  }
+  /* V4.15.0: ONE sidebar, on the right. Everything the retired left
+     rail carried is compacted into the "Directory at a glance" block
+     below the hero slot: the four headline counts as compact rows,
+     then the filled-out, currency, and last-contact bar groups. */
+  var stats = '<div class="gm-mini gm-stats"><h3>Directory at a glance</h3>' +
+    skpi('People in directory', o.N, (o.addedNames.length ? '<b>+' + o.addedNames.length + '</b> today (' + esc(o.addedNames[0]) + ') · ' : '') + 'every count foots to ' + o.N) +
+    skpi('In touch lately', o.inTouch + ' <small>/ ' + o.N + '</small>', 'Talked to in <b>' + (o.cy - 1) + ' or ' + o.cy + '</b> · <b>' + o.older + '</b> last in touch ' + (o.cy - 2) + ' or earlier') +
+    skpi('Full picture', T.full + ' <small>/ ' + o.N + '</small>', '<b>' + T.solid + '</b> solid · <b>' + T.light + '</b> light · <b>' + T.name + '</b> name only') +
+    skpi('Information current', o.curFair + ' <small>/ ' + o.N + '</small>', '<b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current · <b>' + B.outdated + '</b> outdated') +
+    '<h3 class="gm-subh">How filled-out are the records?</h3>' +
     v4MRow('Full picture', '', 'blue', o.pct(T.full), T.full) + v4MRow('Solid', '', 'blue', o.pct(T.solid), T.solid) +
     v4MRow('Light', '', 'amber', o.pct(T.light), T.light) + v4MRow('Name only', '', 'dim', o.pct(T.name), T.name) +
-    '<div class="pv-foot"><a class="lnk" href="#/audit">See who is missing what in Audit →</a></div></div>' +
-    '<div class="gm-mini"><h3>How current is the information?</h3>' +
+    '<div class="pv-foot"><a class="lnk" href="#/audit">See who is missing what in Audit →</a></div>' +
+    '<h3 class="gm-subh">How current is the information?</h3>' +
     v4MRow('Current', '', 'green', o.pct(B.current), B.current) + v4MRow('Fairly current', '', 'blue', o.pct(B.fairly), B.fairly) +
     v4MRow('Getting thin or old', '', 'amber', o.pct(B.thin), B.thin) + v4MRow('Outdated', '', 'red', o.pct(B.outdated), B.outdated) +
-    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so their recency scores 0 for lack of evidence, not because the information is proven stale.</div></div>' +
-    '<div class="gm-mini"><h3>Last contact — how stale?</h3>' +
+    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so their recency scores 0 for lack of evidence, not because the information is proven stale.</div>' +
+    '<h3 class="gm-subh">Last contact — how stale?</h3>' +
     v4MRow(String(o.cy), '', 'gold', o.pct(M.lc.y0), M.lc.y0) + v4MRow(String(o.cy - 1), '', 'gold', o.pct(M.lc.y1), M.lc.y1) +
     v4MRow((o.cy - 3) + ' – ' + (o.cy - 2), '', 'dim', o.pct(M.lc.y2324), M.lc.y2324) +
     v4MRow((o.cy - 5) + ' – ' + (o.cy - 4), '', 'dim', o.pct(M.lc.y2122), M.lc.y2122) +
     v4MRow((o.cy - 6) + ' or earlier', '', 'dim', o.pct(M.lc.yOld), M.lc.yOld) +
     v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
-    '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div></div>' +
+    '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div>' +
     '</div>';
   var center = '<div class="gm-mapcard">' +
     '<div class="gm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day.</p></div>' +
@@ -8217,24 +8228,25 @@ function hmBandHTML(o){
     '<input type="range" id="hmRange" min="0" max="100" value="100" step="1" aria-label="Scrub through time">' +
     '<div class="gm-ticks"><span id="hmTickA">—</span><span>Drag to scrub · Play animates the years</span><span>Today</span></div></div>' +
     '</div>';
-  var right = '<div class="gm-rail">' +
-    '<div class="gm-mini"><h3>As of <span id="hmAsOf">—</span></h3><div class="gm-counts" id="hmCounts">—</div><div class="gm-gaps" id="hmGaps"></div></div>' +
+  var right = '<div class="gm-rail gm-rail-r">' +
+    '<div class="gm-hero" id="hmHero">' + hmHeroDefaultHTML() + '</div>' +
     '<div class="gm-mini"><h3>How to read it</h3><div class="gm-legend">' +
     '<div><span class="gm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
     '<div><span class="gm-sw c-year"></span>Contact within the last year</div>' +
     '<div><span class="gm-sw c-old"></span>Last contact over a year ago</div>' +
     '<div><span class="gm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
     '<div><span class="gm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
-    '<div class="gm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list here instead.</div>' +
+    '<div class="gm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list in the card at the top of this sidebar instead.</div>' +
     '</div></div>' +
     '<div class="gm-mini hm-detail" id="hmDetail"></div>' +
+    stats +
     '<div class="gm-mini"><h3>Known since</h3>' +
     v4MRow('20+ years', '', 'gold', o.pct(M.ks.p20), M.ks.p20) + v4MRow('10 – 19 years', '', 'gold', o.pct(M.ks.y1019), M.ks.y1019) +
     v4MRow('5 – 9 years', '', 'gold', o.pct(M.ks.y59), M.ks.y59) + v4MRow('2 – 4 years', '', 'gold', o.pct(M.ks.y24), M.ks.y24) +
     v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
     '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
     '</div>';
-  return '<section class="gm-band">' + left + center + right + '</section>';
+  return '<section class="gm-band">' + center + right + '</section>';
 }
 function hmGapsHTML(){
   var M = hmModel(), parts = [];
@@ -8255,16 +8267,31 @@ function hmDetailDefault(ds){
   }).join('') : '<p class="gm-dim">Nobody is placed yet at this date.</p>') +
   '<p class="gm-dim">Click any place on the map to see who is there.</p>';
 }
+var HM_STATUS_TXT = { fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' };
+function hmHeroHead(kick){
+  return '<div class="gm-hero-top"><span class="gm-hero-kick">' + kick + '</span><span class="gm-hero-btns">' +
+    (HM.selBack ? '<button type="button" class="gm-hero-x" data-act="hmback">Back</button>' : '') +
+    '<button type="button" class="gm-hero-x" data-act="hmclose">Close</button></span></div>';
+}
+/* V4.15.0: the click detail is a HERO CARD pinned at the top of the
+   right sidebar (#hmHero) — person, place, and cluster selections
+   all render there, large, without scrolling. #hmDetail below it
+   keeps the default Biggest-places list. Nothing selected: the hero
+   slot carries the As-of readout, as before. Repaints touch only
+   the sidebar; the page never scrolls. */
 function hmPaintDetail(ds){
-  var box = document.getElementById('hmDetail'); if(!box) return;
+  var det = document.getElementById('hmDetail'); if(det) det.innerHTML = hmDetailDefault(ds);
+  var hero = document.getElementById('hmHero'); if(!hero) return;
   var M = hmModel();
-  if(!HM.sel){ box.innerHTML = hmDetailDefault(ds); return; }
+  if(!HM.sel){ hero.innerHTML = hmHeroDefaultHTML(); hmPaintReadout(ds); return; }
   if(HM.sel.type === 'cluster'){
     var visC = hmVisibleAt(ds);
     var crows = HM.sel.keys.map(function(pk){
       return { pk:pk, n:(visC.byPlace[pk] || []).length, label:M.places[pk] ? M.places[pk].label : pk };
     }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); });
-    box.innerHTML = '<h3>Places close together</h3><div class="gm-dsub">Too close to separate at this zoom — pick one:</div>' +
+    hero.innerHTML = hmHeroHead('Places close together') +
+      '<h3 class="gm-hero-name">Places close together</h3>' +
+      '<div class="gm-dsub">Too close to separate at this zoom — pick one:</div>' +
       (crows.length ? crows.map(function(r){
         return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
       }).join('') : '<p class="gm-dim">Nobody at these places at this date.</p>');
@@ -8272,31 +8299,45 @@ function hmPaintDetail(ds){
   }
   if(HM.sel.type === 'place'){
     var pl = M.places[HM.sel.key];
-    if(!pl){ box.innerHTML = hmDetailDefault(ds); return; }
+    if(!pl){ HM.sel = null; hmPaintDetail(ds); return; }
     var vis = hmVisibleAt(ds), rows = (vis.byPlace[HM.sel.key] || []).slice().sort(function(a, b){
       return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
     });
-    box.innerHTML = '<h3>' + esc(pl.label) + '</h3><div class="gm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
+    var fresh = rows.length ? hmFreshest(rows) : null;
+    hero.innerHTML = hmHeroHead('Place') +
+      '<h3 class="gm-hero-name">' + esc(pl.label) + '</h3>' +
+      '<div class="gm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
+      (fresh ? '<div class="gm-dline"><span class="gm-dot c-' + fresh + '"></span>Freshest here: ' + HM_STATUS_TXT[fresh] + '</div>' : '') +
       (rows.length ? '<div class="gm-plist">' + rows.map(function(r){
         var e = D.directory[r.di];
-        return '<a class="gm-prow" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span></a>';
+        return '<button type="button" class="gm-prow" data-act="hmperson" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span></button>';
       }).join('') + '</div>' : '<p class="gm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
     return;
   }
   var di = HM.sel.di, e = D.directory[di];
-  if(!e){ box.innerHTML = hmDetailDefault(ds); return; }
+  if(!e){ HM.sel = null; hmPaintDetail(ds); return; }
   var rec = null, vis2 = hmVisibleAt(ds);
   vis2.list.forEach(function(r){ if(r.di === di) rec = r; });
-  var p = null; hmModel().people.forEach(function(x){ if(x.di === di) p = x; });
+  var p = null; M.people.forEach(function(x){ if(x.di === di) p = x; });
   var here = rec ? M.places[rec.pk] : null;
+  var lastC = '';
+  if(p) for(var ci = p.contacts.length - 1; ci >= 0; ci--){ if(p.contacts[ci] <= ds){ lastC = p.contacts[ci]; break; } }
+  var fc = hmDateNorm(gv(e, 'first_contact'));
   var evs = (e.events || []).filter(function(ev){
     return ev && ev.venue && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') && ev.date <= ds;
   }).slice(-4).reverse();
-  box.innerHTML = '<h3>' + esc(dispName(e)) + '</h3>' +
-    '<div class="gm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date' + (p && p.appear ? ' — first placed ' + hmFmtDate(p.appear) : '')) + '</div>' +
-    (rec ? '<div class="gm-dline"><span class="gm-dot c-' + rec.cls + '"></span>' + ({ fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' })[rec.cls] + '</div>' : '') +
+  hero.innerHTML = hmHeroHead('Person') +
+    '<div class="gm-hero-id"><span class="gm-hero-av">' + afAvatarHTML(e, di, 'lg') + '</span>' +
+    '<div class="gm-hero-nm"><h3 class="gm-hero-name">' + esc(dispName(e)) + '</h3>' +
+    '<div class="gm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date') + '</div></div></div>' +
+    (rec ? '<div class="gm-dline"><span class="gm-dot c-' + rec.cls + '"></span>' + HM_STATUS_TXT[rec.cls] + '</div>'
+         : (p && p.appear ? '<div class="gm-dline gm-dim">First placed ' + hmFmtDate(p.appear) + '</div>' : '')) +
+    '<div class="gm-hero-meta">' +
+    '<div><span>Last contact</span><b>' + (lastC ? hmFmtDate(lastC) : 'None by this date') + '</b></div>' +
+    '<div><span>First known</span><b>' + (fc ? hmFmtDate(fc) : (p && p.appear ? hmFmtDate(p.appear) : '—')) + '</b></div>' +
+    '</div>' +
     (evs.length ? '<div class="gm-dline gm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
-    '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>';
+    '<div class="gm-hero-acts"><a class="btn primary sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a></div>';
 }
 function hmPaintReadout(ds){
   var M = hmModel(), vis = hmVisibleAt(ds);
@@ -8353,7 +8394,7 @@ function hmSpiderfy(pk, rows){
     L.polyline([[pl.lat, pl.lng], ll], { color:'#8b94a1', weight:1, opacity:.55 }).addTo(HM.spider);
     var e = D.directory[r.di];
     var mk = L.marker(ll, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-pdot c-' + r.cls + (r.undated ? ' und' : '') + '" title="' + esc(dispName(e)) + '">' + esc(hmInitials(e)) + '</span>', iconSize:[26, 26], iconAnchor:[13, 13] }) }).addTo(HM.spider);
-    mk.on('click', function(){ HM.sel = { type:'person', di:r.di }; hmPaintDetail(hmDateAt(HM.dateIdx)); });
+    mk.on('click', function(){ HM.selBack = { type:'place', key:pk }; HM.sel = { type:'person', di:r.di }; hmPaintDetail(hmDateAt(HM.dateIdx)); });
   });
 }
 function hmInitials(e){
@@ -8392,7 +8433,7 @@ function hmPaint(){
            town and the Clarkson campus — opens as a place list in
            the rail instead of zooming forever. */
         if(HM.map.getZoom() >= 14){
-          HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) };
+          HM.selBack = null; HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) };
           hmPaintDetail(hmDateAt(HM.dateIdx));
           return;
         }
@@ -8410,6 +8451,7 @@ function hmPaint(){
 }
 function hmSelectPlace(pk, allowSpider){
   var ds = hmDateAt(HM.dateIdx), vis = hmVisibleAt(ds), rows = vis.byPlace[pk] || [];
+  HM.selBack = (HM.sel && HM.sel.type === 'cluster') ? HM.sel : null;
   HM.sel = { type:'place', key:pk };
   hmPaintDetail(ds);
   if(!HM.map) return;
@@ -8419,18 +8461,12 @@ function hmSelectPlace(pk, allowSpider){
 }
 function hmFitDefault(){
   if(!HM.map) return;
-  var M = hmModel(), vis = hmVisibleAt(M.maxD), core = [], all = [];
-  Object.keys(vis.byPlace).forEach(function(pk){
-    var pl = M.places[pk];
-    all.push([pl.lat, pl.lng]);
-    /* the home box: the North Country and its near neighbours —
-       most of the directory lives here; the rest of the map is
-       one zoom-out away. */
-    if(pl.lat >= 42.4 && pl.lat <= 46.1 && pl.lng >= -77.6 && pl.lng <= -71.4) core.push([pl.lat, pl.lng]);
-  });
-  var pts = core.length >= 3 ? core : all;
-  if(pts.length) HM.map.fitBounds(L.latLngBounds(pts).pad(0.12), { maxZoom:9 });
-  else HM.map.setView([44.67, -74.98], 8);
+  /* Default view (JD 2026-11-13): centred on the North Country —
+     Potsdam — at a zoom where the local places (Potsdam, Canton,
+     Massena, Ogdensburg, Watertown) read as separate badges. Not a
+     fit over every place in the directory, and not wherever a
+     selection last flew the map. Reset view returns here. */
+  HM.map.setView([44.6698, -74.9818], 9);
 }
 function hmStopPlay(){
   HM.playing = false;
@@ -8466,10 +8502,16 @@ function hmMount(){
     if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; }
     var mode = document.documentElement.getAttribute('data-mode');
     HM.map = L.map('hmMap', { scrollWheelZoom:true, attributionControl:true });
+    /* Basemap tiles: Esri's public ArcGIS basemaps — Dark Gray
+       Canvas in dark/medium mode, World Street Map in light mode —
+       key-free with attribution. The CARTO CDN basemaps used in
+       V4.14.0 now serve "API KEY REQUIRED" watermarked tiles to
+       anonymous requests (JD's screenshot, 2026-11-13), so they
+       are gone. (Esri tile order is {z}/{y}/{x}.) */
     L.tileLayer(mode === 'light'
-      ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      { maxZoom:18, attribution:'&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(HM.map);
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas_Dark_Gray/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom:18, maxNativeZoom:16, attribution:'&copy; Esri \u2014 Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community' }).addTo(HM.map);
     HM.map.on('moveend zoomend', function(){ if(!HM.heat) hmPaint(); });
     HM.map.on('movestart', function(){ hmClearSpider(); });
     hmFitDefault();
@@ -8479,7 +8521,7 @@ function hmMount(){
 }
 function hmNoMap(){
   var el = document.getElementById('hmMap');
-  if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map CDN is unavailable. The statistics on both sides and the counts above still work; reload to try the map again.</div>';
+  if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map service is unavailable. The readout and the statistics in the sidebar still work; reload to try the map again.</div>';
 }
 function hmLoadLeaflet(cb){
   if(window.L){ cb(true); return; }
@@ -16167,6 +16209,9 @@ function onClick(ev){
     case 'hmheat': { HM.heat = !HM.heat; el.classList.toggle('on', HM.heat); el.setAttribute('aria-pressed', String(HM.heat)); hmClearSpider(); hmPaint(); break; }
     case 'hmreset': { hmFitDefault(); break; }
     case 'hmplace': { hmSelectPlace(el.getAttribute('data-k'), true); break; }
+    case 'hmperson': { HM.selBack = HM.sel; HM.sel = { type:'person', di:+el.getAttribute('data-di') }; hmPaintDetail(hmDateAt(HM.dateIdx)); break; }
+    case 'hmback': { var hbk = HM.selBack; HM.selBack = null; if(hbk && hbk.type === 'place'){ hmSelectPlace(hbk.key, true); } else { HM.sel = hbk; hmClearSpider(); hmPaint(); } break; }
+    case 'hmclose': { HM.sel = null; HM.selBack = null; hmClearSpider(); hmPaint(); break; }
     case 'ctnav': {
       var cnd = el.getAttribute('data-d');
       if(cnd === '0'){ var ct0 = todayStr(); CTL.ym = ct0.slice(0, 7); CTL.day = ct0; }
