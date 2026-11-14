@@ -4,8 +4,8 @@
   "total": 1398,
   "dated": 28,
   "undated": 1370,
-  "placed": 1276,
-  "unplaced": 122,
+  "placed": 1260,
+  "unplaced": 138,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 10,
@@ -21,9 +21,9 @@
    "url": "https://www.northcountrypublicradio.org/news/story/54185/20261104/mark-walczyk-wins-reelection-in-the-49th-state-senate",
    "published": "2026-11-04",
    "fresh": true,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
   },
   {
    "di": 58,
@@ -429,8 +429,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -537,8 +537,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.7497,-75.1282",
+   "place": "Madrid",
    "place_src": "text"
   },
   {
@@ -801,8 +801,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -813,8 +813,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -1089,8 +1089,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -1497,8 +1497,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -1557,9 +1557,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 434,
@@ -1653,8 +1653,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -2109,9 +2109,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.4553,-76.5105",
+   "place": "Oswego, NY",
+   "place_src": "profile"
   },
   {
    "di": 445,
@@ -2241,8 +2241,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6995,-73.4529",
+   "place": "Plattsburgh",
    "place_src": "text"
   },
   {
@@ -2301,8 +2301,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -2337,9 +2337,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 446,
@@ -2397,8 +2397,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "St. Lawrence University",
    "place_src": "text"
   },
   {
@@ -2853,8 +2853,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -3573,9 +3573,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "26.9597,-80.1164",
+   "place": "Tequesta, FL",
+   "place_src": "profile"
   },
   {
    "di": 463,
@@ -3681,9 +3681,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 465,
@@ -3801,9 +3801,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
   },
   {
    "di": 467,
@@ -3837,9 +3837,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
   },
   {
    "di": 467,
@@ -4221,8 +4221,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "43.4553,-76.5105",
+   "place": "Oswego",
    "place_src": "text"
   },
   {
@@ -4593,8 +4593,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -4953,8 +4953,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
    "place_src": "text"
   },
   {
@@ -5001,8 +5001,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown",
    "place_src": "text"
   },
   {
@@ -6033,9 +6033,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 123,
@@ -6453,9 +6453,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.7194,-74.8553",
+   "place": "Winthrop, NY",
+   "place_src": "profile"
   },
   {
    "di": 702,
@@ -6477,9 +6477,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.7194,-74.8553",
+   "place": "Winthrop, NY",
+   "place_src": "profile"
   },
   {
    "di": 702,
@@ -6801,9 +6801,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.4372,-73.0685",
+   "place": "Williston, VT",
+   "place_src": "profile"
   },
   {
    "di": 512,
@@ -6897,9 +6897,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.7865,-75.4919",
+   "place": "Lowville, NY",
+   "place_src": "profile"
   },
   {
    "di": 661,
@@ -6957,8 +6957,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "43.4553,-76.5105",
+   "place": "Oswego",
    "place_src": "text"
   },
   {
@@ -7077,8 +7077,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -7341,9 +7341,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.0408,-71.9547",
+   "place": "Pike, NH",
+   "place_src": "profile"
   },
   {
    "di": 516,
@@ -7677,8 +7677,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -7857,8 +7857,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -7869,8 +7869,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -8001,8 +8001,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -8409,8 +8409,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -8493,9 +8493,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 673,
@@ -8673,8 +8673,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -8961,9 +8961,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "36.2168,-81.6746",
+   "place": "Boone, NC",
+   "place_src": "profile"
   },
   {
    "di": 538,
@@ -9141,9 +9141,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 540,
@@ -9501,8 +9501,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
    "place_src": "text"
   },
   {
@@ -9837,8 +9837,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -10797,8 +10797,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -10833,9 +10833,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 655,
@@ -10845,9 +10845,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 655,
@@ -10977,9 +10977,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 563,
@@ -11229,8 +11229,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -11277,8 +11277,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -11325,9 +11325,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 569,
@@ -12285,9 +12285,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 259,
@@ -12645,8 +12645,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -12945,8 +12945,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -13065,8 +13065,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "42.6526,-73.7562",
+   "place": "Albany",
    "place_src": "text"
   },
   {
@@ -13281,9 +13281,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "42.0987,-75.9180",
+   "place": "Binghamton, NY",
+   "place_src": "profile"
   },
   {
    "di": 600,
@@ -13713,9 +13713,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 658,
@@ -13737,9 +13737,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 675,
@@ -13761,9 +13761,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse, NY",
+   "place_src": "profile"
   },
   {
    "di": 675,
@@ -13893,8 +13893,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -14013,8 +14013,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -14037,8 +14037,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "St. Lawrence University",
    "place_src": "text"
   },
   {
@@ -14109,8 +14109,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
@@ -14313,9 +14313,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.1064,-76.2177",
+   "place": "Liverpool, NY",
+   "place_src": "profile"
   },
   {
    "di": 653,
@@ -14337,9 +14337,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.1064,-76.2177",
+   "place": "Liverpool, NY",
+   "place_src": "profile"
   },
   {
    "di": 653,
@@ -14481,9 +14481,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.0411,-78.8773",
+   "place": "North Tonawanda, NY",
+   "place_src": "profile"
   },
   {
    "di": 656,
@@ -14493,9 +14493,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.0411,-78.8773",
+   "place": "North Tonawanda, NY",
+   "place_src": "profile"
   },
   {
    "di": 656,
@@ -14529,8 +14529,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "43.0411,-78.8773",
+   "place": "North Tonawanda",
    "place_src": "text"
   },
   {
@@ -14541,9 +14541,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "43.0411,-78.8773",
+   "place": "North Tonawanda, NY",
+   "place_src": "profile"
   },
   {
    "di": 616,
@@ -14685,8 +14685,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -15105,9 +15105,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 682,
@@ -15249,8 +15249,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.8487,-74.3250",
+   "place": "Malone",
    "place_src": "text"
   },
   {
@@ -15261,9 +15261,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.8487,-74.3250",
+   "place": "Malone, NY",
+   "place_src": "profile"
   },
   {
    "di": 625,
@@ -15273,9 +15273,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.8487,-74.3250",
+   "place": "Malone, NY",
+   "place_src": "profile"
   },
   {
    "di": 625,
@@ -15309,9 +15309,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.8487,-74.3250",
+   "place": "Malone, NY",
+   "place_src": "profile"
   },
   {
    "di": 625,
@@ -15333,9 +15333,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "44.8487,-74.3250",
+   "place": "Malone, NY",
+   "place_src": "profile"
   },
   {
    "di": 626,
@@ -15453,8 +15453,8 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -16569,9 +16569,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 716,
@@ -16605,9 +16605,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 660,
@@ -16617,9 +16617,9 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "40.7128,-74.0060",
-   "place": "New York",
-   "place_src": "text"
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 650,
