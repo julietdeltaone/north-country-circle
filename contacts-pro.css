@@ -7336,7 +7336,7 @@ html[data-mode="light"] .gm-badge{box-shadow:0 1px 3px rgba(16,24,40,.18),0 0 0 
 .gm-trow:hover b{color:#d9a441}
 .gm-chev{color:var(--pv-dim);font-size:14px;margin-left:8px;flex:none}
 .gm-hero{padding:16px 16px 18px}
-.gm-hero .gm-plist{max-height:297px}
+.gm-hero .gm-plist{max-height:270px}
 .gm-pn{flex:1}
 .gm-pdate{margin-left:auto;font-size:11px;color:var(--pv-mut);flex:none}
 .gm-pfoot{font-size:11px;color:var(--pv-dim);margin-top:8px}
