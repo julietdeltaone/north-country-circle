@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.13.0';
+var APP_VERSION = '4.14.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7913,48 +7913,7 @@ function viewHome(v){
   v.innerHTML = '<div class="v4p pv-view">' +
     '<div class="pv-hero"><div><h1>Home</h1><p class="hsub">' + dateLine + ' \u00b7 Where things stand \u2014 your five questions, one screen, nothing else.</p></div>' +
     '<div class="pulse"><b>Needs you:</b> <a class="lnk" href="#/daily/decide">' + rcN + ' to decide</a> \u00b7 <a class="lnk" href="#/photos">' + phN + ' photos to check</a> \u00b7 ' + (pfN ? pfN + ' prefill waiting' : 'Prefill clear') + '<br>' + lastCheck + ' &nbsp;<a class="lnk" href="#/daily">Open Live Records \u2192</a></div></div>' +
-    '<section class="pv-kpis">' +
-    '<div class="pv-kpi"><div class="lab">People in directory</div><div class="num">' + N + '</div><div class="sub">' + (addedNames.length ? '<b>+' + addedNames.length + '</b> today (' + esc(addedNames[0]) + ') \u00b7 ' : '') + 'every count below foots to ' + N + '</div></div>' +
-    '<div class="pv-kpi"><div class="lab">' + v4ChipConn() + ' In touch lately</div><div class="num">' + inTouch + ' <small>/ ' + N + '</small></div><div class="sub">Talked to in <b>' + (cy - 1) + ' or ' + cy + '</b> \u00b7 <b>' + older + '</b> last in touch ' + (cy - 2) + ' or earlier</div></div>' +
-    '<div class="pv-kpi"><div class="lab">' + v4ChipAbout() + ' Full picture</div><div class="num">' + T.full + ' <small>/ ' + N + '</small></div><div class="sub"><b>' + T.solid + '</b> solid \u00b7 <b>' + T.light + '</b> light \u00b7 <b>' + T.name + '</b> name only</div></div>' +
-    '<div class="pv-kpi"><div class="lab">' + v4ChipAbout() + ' Information current</div><div class="num">' + curFair + ' <small>/ ' + N + '</small></div><div class="sub"><b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current \u00b7 <b>' + B.outdated + '</b> outdated</div></div>' +
-    '</section>' +
-    '<section class="pv-panels">' +
-    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' How filled-out are the records?<span class="r">Same tiers in Audit, opened up</span></h2>' +
-    '<div class="scale">Core facts = place, role or skill, workplace, school, groups, phone, highlights (7). Email not counted \u2014 most people don\u2019t have one on file.</div>' +
-    v4MRow('Full picture', 'Long summary, 3+ public-record facts, 5+ core facts, a source link', 'blue', pct(T.full), T.full) +
-    v4MRow('Solid', '2+ public-record facts and 3+ core facts', 'blue', pct(T.solid), T.solid) +
-    v4MRow('Light', '1 public-record fact, or 2 core facts', 'amber', pct(T.light), T.light) +
-    v4MRow('Name only', 'No public-record facts, fewer than 2 core facts', 'dim', pct(T.name), T.name) +
-    '<div class="pv-foot">The ' + T.name + ' name-only records are the Danger Zone\u2019s home turf. <a class="lnk" href="#/audit">See who is missing what in Audit \u2192</a></div></div>' +
-    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' How current is the information?<span class="r">Quality \u00d7 recency, parts shown</span></h2>' +
-    '<div class="scale">One score out of 100, built from two parts you can see \u2014 never one opaque number:</div>' +
-    '<div class="pv-formula"><i class="fh" style="width:55%"></i><i class="fr" style="width:45%"></i></div>' +
-    '<div class="pv-formula-leg"><span><b style="color:var(--pv-blue)">What we have</b> \u2014 up to 55 points</span><span><b style="color:var(--pv-gold)">How recent</b> \u2014 up to 45 points</span></div>' +
-    '<div style="font-size:11px;color:var(--pv-dim);margin-bottom:6px">\u201cWhat we have\u201d counts facts on file, core facts, and source links. \u201cHow recent\u201d scores the newest dated item on the record.</div>' +
-    v4MRow('Current', 'Score 80\u2013100', 'green', pct(B.current), B.current) +
-    v4MRow('Fairly current', 'Score 60\u201379', 'blue', pct(B.fairly), B.fairly) +
-    v4MRow('Getting thin or old', 'Score 40\u201359', 'amber', pct(B.thin), B.thin) +
-    v4MRow('Outdated', 'Score under 40', 'red', pct(B.outdated), B.outdated) +
-    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so we can\u2019t tell how current they are \u2014 their \u201chow recent\u201d part scores 0 for lack of evidence, not because the information is proven stale. ' + M.undatedFull + ' of the ' + T.full + ' full-picture people are in that group.</div></div>' +
-    '<div class="pv-panel"><h2>' + v4ChipConn() + ' Last contact \u2014 how stale are the relationships?<span class="r">By year, on purpose</span></h2>' +
-    '<div class="scale">Only ' + M.lcExact + ' of ' + N + ' last-contact entries are exact dates; the rest are a year or a year and month. Buckets are by year so nothing pretends to be more exact than it is. Proximity never counts as contact.</div>' +
-    v4MRow(String(cy), '', 'gold', pct(M.lc.y0), M.lc.y0) +
-    v4MRow(String(cy - 1), '', 'gold', pct(M.lc.y1), M.lc.y1) +
-    v4MRow((cy - 3) + ' \u2013 ' + (cy - 2), '', 'dim', pct(M.lc.y2324), M.lc.y2324) +
-    v4MRow((cy - 5) + ' \u2013 ' + (cy - 4), '', 'dim', pct(M.lc.y2122), M.lc.y2122) +
-    v4MRow((cy - 6) + ' or earlier', '', 'dim', pct(M.lc.yOld), M.lc.yOld) +
-    v4MRow('No date on file', '', 'dim', pct(M.lc.none), M.lc.none) +
-    '<div class="pv-foot">' + (proxN ? 'Crossed paths this week without contact counting: ' + proxN + ' people' + (proxVenue ? ', most recently at ' + esc(proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar \u2192</a></div></div>' +
-    '<div class="pv-panel"><h2>' + v4ChipConn() + ' Known since<span class="r">Median year met: ' + (M.ksMedian || '\u2014') + '</span></h2>' +
-    '<div class="scale">Spread of the year you met each person, 2000 to today.</div>' +
-    v4MRow('20+ years', '', 'gold', pct(M.ks.p20), M.ks.p20) +
-    v4MRow('10 \u2013 19 years', '', 'gold', pct(M.ks.y1019), M.ks.y1019) +
-    v4MRow('5 \u2013 9 years', '', 'gold', pct(M.ks.y59), M.ks.y59) +
-    v4MRow('2 \u2013 4 years', '', 'gold', pct(M.ks.y24), M.ks.y24) +
-    v4MRow('Under a year', '', 'gold', pct(M.ks.u1), M.ks.u1) +
-    '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '\u2014') + '</b> \u2014 your family.' + (addedNames.length ? ' Newest: <b>' + esc(addedNames[0]) + '</b> was added today.' : '') + '</div></div>' +
-    '</section>' +
+    hmBandHTML({ N:N, T:T, B:B, cy:cy, inTouch:inTouch, older:older, curFair:curFair, pct:pct, proxN:proxN, proxVenue:proxVenue, addedNames:addedNames, M:M }) +
     '<section class="pv-bottom">' +
     '<div class="pv-strip"><h3>Needs you today \u2014 counts are doors, not copies</h3><div class="pv-known">' +
     '<div><b>' + rcN + '</b><span><a class="lnk" href="#/daily/decide">Items to decide</a>' + (rcPeople ? ' \u00b7 ' + rcPeople + ' people' : '') + '</span></div>' +
@@ -7965,8 +7924,549 @@ function viewHome(v){
     '<div class="pv-strip"><h3>Council \u2014 latest pass</h3><div class="pv-council-line">' + cnHTML + '</div></div>' +
     '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
     '</section>' +
-    '<p class="pv-note">What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section\u2019s private stats. Home answers five questions and points at the rest.</p>' +
+    '<p class="pv-note">Home\u2019s statistics ride in the rails beside the map. What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section’s private stats.</p>' +
     '</div>';
+  hmMount();
+}
+
+
+/* ============================================================
+   HOME MAP (V4.14.0, JD 2026-11-13): the Home hero is a map of
+   where everyone is, over time. A person appears at their place
+   on file from their first dated record (first contact event,
+   first dated place event, or First Contact on file). A dated
+   place event (a proximity entry, or a contact carrying a
+   place) puts them at that place FOR THAT DAY; the next day
+   they are back at their place on file. People with a place on
+   file but no dated record appear only at Today, in a muted
+   style, and are counted in the readout. Places resolve through
+   the baked gazetteer below (town centres for the place strings
+   already in the data); anything unmatched is skipped and
+   counted in the readout — coordinates are never invented.
+   Same-area display is a three-tier hybrid: people sharing a
+   place aggregate into one count badge; at low zoom, place
+   badges within 64px grid-cluster into a combined badge that
+   zooms on click; a single place with up to 28 people fans out
+   petal-style on click (circle to 8, golden-angle spiral
+   above), and a denser place opens its people list in the
+   right rail instead — a spiral of 90+ is illegible. A density
+   view (graduated circles) is one toggle away.
+   Colour = how recent the last contact was at the scrub date:
+   gold within 45 days, steel blue within a year, slate over a
+   year, violet when there has been no contact yet (proximity
+   only). A place badge's ring takes its freshest person's
+   colour. Leaflet loads from CDN; if it fails, the rails and
+   the readout still work and the map area says so.
+   ============================================================ */
+var HM_GEO = {
+  "albany, ny": [42.6526, -73.7562],
+  "anderson, sc": [34.5034, -82.6501],
+  "ann arbor, mi": [42.2808, -83.743],
+  "auburn, ny": [42.9317, -76.5661],
+  "aurora, il": [41.7606, -88.3201],
+  "binghamton, ny": [42.0987, -75.918],
+  "boise, id": [43.615, -116.2023],
+  "bonita springs, fl": [26.3398, -81.7787],
+  "boone, nc": [36.2168, -81.6746],
+  "brasher falls, ny": [44.8097, -74.7758],
+  "busan, south korea": [35.1796, 129.0756],
+  "campville, ny": [42.1194, -76.1086],
+  "canton, ny": [44.5956, -75.1691],
+  "cape vincent, ny": [44.1269, -76.3308],
+  "carthage, ny": [43.9814, -75.6086],
+  "cary, nc": [35.7915, -78.7811],
+  "charleston, sc": [32.7765, -79.9311],
+  "chase mills, ny": [44.7169, -75.0653],
+  "cleveland, tn": [35.1595, -84.8766],
+  "clevland, tn": [35.1595, -84.8766],
+  "colton, ny": [44.5531, -74.9394],
+  "constable, ny": [44.9728, -74.2778],
+  "conway, nh": [43.9795, -71.1217],
+  "croghan, ny": [43.8936, -75.3914],
+  "cumberland, ri": [41.9665, -71.3934],
+  "dauphin, pa": [40.3695, -76.9303],
+  "de kalb junction, ny": [44.5119, -75.2769],
+  "denver, co": [39.7392, -104.9903],
+  "eaton, ny": [42.8519, -75.6131],
+  "edwards, ny": [44.2797, -75.2533],
+  "fairport, ny": [43.0994, -77.4422],
+  "farmingville, ny": [40.8398, -73.0437],
+  "gouverneur, ny": [44.3369, -75.4658],
+  "grand junction, co": [39.0639, -108.5506],
+  "greensboro, nc": [36.0726, -79.792],
+  "greenville, ny": [42.4156, -74.0208],
+  "greybull, wy": [44.4893, -108.0559],
+  "hammond, ny": [44.4483, -75.6931],
+  "hogansburg, ny": [44.9769, -74.6647],
+  "hopkinton, ny": [44.6919, -74.6583],
+  "houston, tx": [29.7604, -95.3698],
+  "kansas city, mo": [39.0997, -94.5786],
+  "kissimmee, fl": [28.292, -81.4076],
+  "kyiv, ukraine": [50.4501, 30.5234],
+  "la fargeville, ny": [44.1936, -75.9608],
+  "lake placid, ny": [44.2795, -73.9799],
+  "lisbon, ny": [44.7247, -75.3183],
+  "liverpool, england": [53.4084, -2.9916],
+  "liverpool, ny": [43.1064, -76.2177],
+  "los alamos, nm": [35.88, -106.3039],
+  "los angeles, ca": [34.0522, -118.2437],
+  "lowville, ny": [43.7865, -75.4919],
+  "lynchburg, va": [37.4138, -79.1422],
+  "lyons falls, ny": [43.6169, -75.3608],
+  "madison, ny": [42.7758, -75.5169],
+  "madrid, ny": [44.7497, -75.1282],
+  "mahopac, ny": [41.3693, -73.7415],
+  "malone, ny": [44.8487, -74.325],
+  "manhattan, ny": [40.7831, -73.9712],
+  "marondera": [-18.185, 31.548],
+  "marysville, wa": [48.0518, -122.1771],
+  "massapequa, ny": [40.6807, -73.4741],
+  "massena, ny": [44.9281, -74.8919],
+  "moira, ny": [44.8131, -74.5419],
+  "moriah, ny": [44.0464, -73.5047],
+  "nashville, tn": [36.1627, -86.7816],
+  "new gloucester, me": [43.9627, -70.2822],
+  "new york, ny": [40.7128, -74.006],
+  "norfolk, ny": [44.8014, -74.9897],
+  "north bangor, ny": [44.8419, -74.5553],
+  "north lawrence, ny": [44.8269, -74.6583],
+  "north tonawanda, ny": [43.0411, -78.8773],
+  "norwood, ny": [44.7472, -74.99],
+  "ogdensburg, ny": [44.6942, -75.4863],
+  "oswego, ny": [43.4553, -76.5105],
+  "parishville, ny": [44.6297, -74.8147],
+  "philadelphia, pa": [39.9526, -75.1652],
+  "pike, nh": [44.0408, -71.9547],
+  "pittsburgh, pa": [40.4406, -79.9959],
+  "plattsburgh, ny": [44.6995, -73.4529],
+  "portland, or": [45.5152, -122.6784],
+  "potsdam, ny": [44.6698, -74.9818],
+  "queens, ny": [40.7282, -73.7949],
+  "rensselaer falls, ny": [44.5936, -75.3186],
+  "richville, ny": [44.4147, -75.3939],
+  "rochester, ny": [43.1566, -77.6088],
+  "russell, ny": [44.4281, -75.1547],
+  "salem, ma": [42.5195, -70.8967],
+  "saranac lake, ny": [44.329, -74.1313],
+  "saratoga springs, ny": [43.0831, -73.7846],
+  "sauquoit, ny": [43.0019, -75.2731],
+  "seattle, wa": [47.6062, -122.3321],
+  "shiraz, iran": [29.5918, 52.5837],
+  "smithfield, ri": [41.8685, -71.5208],
+  "somerville, ma": [42.3876, -71.0995],
+  "south colton, ny": [44.5081, -74.8786],
+  "southington, ct": [41.5965, -72.8876],
+  "stockholm center, ny": [44.7597, -74.8519],
+  "syracuse, ny": [43.0481, -76.1474],
+  "tallahassee, fl": [30.4383, -84.2807],
+  "taylorsville, ky": [38.0345, -85.3438],
+  "tequesta, fl": [26.9597, -80.1164],
+  "tupper lake, ny": [44.2237, -74.4642],
+  "union, wa": [47.3568, -123.0987],
+  "utrecht": [52.0907, 5.1214],
+  "waddington, ny": [44.8639, -75.2043],
+  "washington, dc": [38.9072, -77.0369],
+  "watertown, ny": [43.9747, -75.9107],
+  "webster, ny": [43.212, -77.4298],
+  "west henrietta, ny": [43.0569, -77.645],
+  "west stockholm, ny": [44.7197, -74.9808],
+  "whitestone, ny": [40.7995, -73.8093],
+  "whittier, ca": [33.9792, -118.0328],
+  "williston, vt": [44.4372, -73.0685],
+  "wilmington, nc": [34.2104, -77.8868],
+  "winthrop, ny": [44.7194, -74.8553],
+  "woburn, ma": [42.4793, -71.1523],
+};
+var HM_VENUES = {
+  "hhc armory syracuse, ny": { key: "syracuse-armory", label: "Syracuse, NY \u2014 HHC Armory", lat: 43.0833, lng: -76.1167 },
+  "lewis school, clarkson hall": { key: "clarkson", label: "Clarkson University \u2014 Lewis School", lat: 44.6633, lng: -74.9997 },
+  "maple run 5k, canton, ny": { key: "canton, ny", label: "Canton, NY", lat: 44.5956, lng: -75.1691 },
+};
+var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
+           sel:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false };
+var HM_SPIDER_MAX = 28;
+function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
+function hmDateNorm(s){
+  var m = String(s || '').trim().match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);
+  return m ? (m[1] + '-' + (m[2] || '01') + '-' + (m[3] || '01')) : '';
+}
+function hmPlaceOf(e){
+  var cands = [gv(e, 'location_on_file'), e.city, e.hometown];
+  for(var i = 0; i < cands.length; i++){ var s = String(cands[i] || '').trim(); if(s) return s; }
+  return '';
+}
+function hmModel(){
+  if(HM.model && HM.ver === VER) return HM.model;
+  var places = {}, peopleList = [], unplacedNames = {}, unplacedVenues = {};
+  function placeFor(key, label, lat, lng){
+    var ck = lat.toFixed(4) + ',' + lng.toFixed(4);
+    if(!places[ck]) places[ck] = { key:ck, label:label, lat:lat, lng:lng };
+    return places[ck];
+  }
+  people().forEach(function(di){
+    var e = D.directory[di];
+    var pstr = hmPlaceOf(e), home = null;
+    if(pstr){
+      var g = HM_GEO[hmNormPlace(pstr)];
+      if(g) home = placeFor('t:' + hmNormPlace(pstr), pstr, g[0], g[1]);
+      else unplacedNames[pstr] = (unplacedNames[pstr] || 0) + 1;
+    }
+    var contacts = [], visits = [];
+    (e.events || []).forEach(function(ev){
+      if(!ev || !/^\d{4}-\d{2}-\d{2}$/.test(ev.date || '')) return;
+      if(ev.kind === 'contact') contacts.push(ev.date);
+      var vn = hmNormPlace(ev.venue);
+      if(vn){
+        var vp = null;
+        if(HM_VENUES[vn]){ var vv = HM_VENUES[vn]; vp = placeFor('v:' + vv.key, vv.label, vv.lat, vv.lng); }
+        else if(HM_GEO[vn]) vp = placeFor('t:' + vn, String(ev.venue).trim(), HM_GEO[vn][0], HM_GEO[vn][1]);
+        if(vp) visits.push({ d:ev.date, pk:vp.key });
+        else unplacedVenues[String(ev.venue).trim()] = (unplacedVenues[String(ev.venue).trim()] || 0) + 1;
+      }
+    });
+    contacts.sort(); visits.sort(function(a, b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+    var firsts = [];
+    if(contacts.length) firsts.push(contacts[0]);
+    if(visits.length) firsts.push(visits[0].d);
+    var fc = hmDateNorm(gv(e, 'first_contact')); if(fc) firsts.push(fc);
+    firsts.sort();
+    var appear = firsts.length ? firsts[0] : '';
+    peopleList.push({ di:di, home:home ? home.key : null, appear:appear, contacts:contacts,
+                      visits:visits, undated:(!appear && !!home) });
+  });
+  var minD = '', placedN = 0, undatedN = 0;
+  peopleList.forEach(function(p){
+    if(p.appear){ placedN++; if(!minD || p.appear < minD) minD = p.appear; }
+    else if(p.undated) undatedN++;
+    p.visits.forEach(function(vis){ if(!minD || vis.d < minD) minD = vis.d; });
+  });
+  if(!minD) minD = todayStr();
+  HM.model = { places:places, people:peopleList, minD:minD, maxD:todayStr(), placedN:placedN,
+               undatedN:undatedN, unplacedNames:unplacedNames, unplacedVenues:unplacedVenues };
+  HM.ver = VER;
+  return HM.model;
+}
+function hmDayMs(ds){ var p = ds.split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2]); }
+function hmTotalDays(){ var M = hmModel(); return Math.max(0, Math.round((hmDayMs(M.maxD) - hmDayMs(M.minD)) / 864e5)); }
+function hmDateAt(idx){
+  var M = hmModel();
+  var t = new Date(hmDayMs(M.minD) + idx * 864e5);
+  function p2(n){ return (n < 10 ? '0' : '') + n; }
+  return t.getUTCFullYear() + '-' + p2(t.getUTCMonth() + 1) + '-' + p2(t.getUTCDate());
+}
+function hmFmtDate(ds){
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var p = ds.split('-').map(Number);
+  return MN[p[1] - 1] + ' ' + p[2] + ', ' + p[0];
+}
+function hmClsAt(p, ds){
+  var last = '';
+  for(var i = 0; i < p.contacts.length; i++){ if(p.contacts[i] <= ds) last = p.contacts[i]; else break; }
+  if(!last) return 'prox';
+  var days = Math.round((hmDayMs(ds) - hmDayMs(last)) / 864e5);
+  return days <= 45 ? 'fresh' : (days <= 365 ? 'year' : 'old');
+}
+function hmVisibleAt(ds){
+  var M = hmModel(), out = [], byPlace = {};
+  M.people.forEach(function(p){
+    var pk = null;
+    for(var i = 0; i < p.visits.length; i++) if(p.visits[i].d === ds) pk = p.visits[i].pk;
+    if(!pk && p.home && p.appear && p.appear <= ds) pk = p.home;
+    if(!pk && p.home && p.undated && ds === M.maxD) pk = p.home;
+    if(!pk) return;
+    var rec = { di:p.di, pk:pk, cls:hmClsAt(p, ds), undated:p.undated && ds === M.maxD && !(p.appear && p.appear <= ds) };
+    out.push(rec);
+    (byPlace[pk] = byPlace[pk] || []).push(rec);
+  });
+  return { list:out, byPlace:byPlace };
+}
+function hmBandHTML(o){
+  var M = o.M, T = o.T, B = o.B;
+  function kpi(lab, val, sub){ return '<div class="hm-kpi"><div class="lab">' + lab + '</div><div class="num">' + val + '</div><div class="sub">' + sub + '</div></div>'; }
+  var left = '<div class="hm-rail">' +
+    kpi('People in directory', o.N, (o.addedNames.length ? '<b>+' + o.addedNames.length + '</b> today (' + esc(o.addedNames[0]) + ') · ' : '') + 'every count foots to ' + o.N) +
+    kpi('In touch lately', o.inTouch + ' <small>/ ' + o.N + '</small>', 'Talked to in <b>' + (o.cy - 1) + ' or ' + o.cy + '</b> · <b>' + o.older + '</b> last in touch ' + (o.cy - 2) + ' or earlier') +
+    kpi('Full picture', T.full + ' <small>/ ' + o.N + '</small>', '<b>' + T.solid + '</b> solid · <b>' + T.light + '</b> light · <b>' + T.name + '</b> name only') +
+    kpi('Information current', o.curFair + ' <small>/ ' + o.N + '</small>', '<b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current · <b>' + B.outdated + '</b> outdated') +
+    '<div class="hm-mini"><h3>How filled-out are the records?</h3>' +
+    v4MRow('Full picture', '', 'blue', o.pct(T.full), T.full) + v4MRow('Solid', '', 'blue', o.pct(T.solid), T.solid) +
+    v4MRow('Light', '', 'amber', o.pct(T.light), T.light) + v4MRow('Name only', '', 'dim', o.pct(T.name), T.name) +
+    '<div class="pv-foot"><a class="lnk" href="#/audit">See who is missing what in Audit →</a></div></div>' +
+    '<div class="hm-mini"><h3>How current is the information?</h3>' +
+    v4MRow('Current', '', 'green', o.pct(B.current), B.current) + v4MRow('Fairly current', '', 'blue', o.pct(B.fairly), B.fairly) +
+    v4MRow('Getting thin or old', '', 'amber', o.pct(B.thin), B.thin) + v4MRow('Outdated', '', 'red', o.pct(B.outdated), B.outdated) +
+    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so their recency scores 0 for lack of evidence, not because the information is proven stale.</div></div>' +
+    '<div class="hm-mini"><h3>Last contact — how stale?</h3>' +
+    v4MRow(String(o.cy), '', 'gold', o.pct(M.lc.y0), M.lc.y0) + v4MRow(String(o.cy - 1), '', 'gold', o.pct(M.lc.y1), M.lc.y1) +
+    v4MRow((o.cy - 3) + ' – ' + (o.cy - 2), '', 'dim', o.pct(M.lc.y2324), M.lc.y2324) +
+    v4MRow((o.cy - 5) + ' – ' + (o.cy - 4), '', 'dim', o.pct(M.lc.y2122), M.lc.y2122) +
+    v4MRow((o.cy - 6) + ' or earlier', '', 'dim', o.pct(M.lc.yOld), M.lc.yOld) +
+    v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
+    '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div></div>' +
+    '</div>';
+  var center = '<div class="hm-mapcard">' +
+    '<div class="hm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day.</p></div>' +
+    '<div class="hm-mtools"><button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false">Density</button>' +
+    '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button></div></div>' +
+    '<div id="hmMap" class="hm-map" role="application" aria-label="Map of contacts by place over time"></div>' +
+    '<div class="hm-scrub"><div class="hm-srow">' +
+    '<button type="button" class="btn primary sm" data-act="hmplay" id="hmPlayBtn">Play</button>' +
+    '<div class="hm-speed" role="group" aria-label="Play speed">' +
+    '<button type="button" data-act="hmspeed" data-s="1" class="on">1×</button><button type="button" data-act="hmspeed" data-s="2">2×</button><button type="button" data-act="hmspeed" data-s="4">4×</button></div>' +
+    '<div class="hm-date" id="hmDateLab">—</div></div>' +
+    '<input type="range" id="hmRange" min="0" max="100" value="100" step="1" aria-label="Scrub through time">' +
+    '<div class="hm-ticks"><span id="hmTickA">—</span><span>Drag to scrub · Play animates the years</span><span>Today</span></div></div>' +
+    '</div>';
+  var right = '<div class="hm-rail">' +
+    '<div class="hm-mini"><h3>As of <span id="hmAsOf">—</span></h3><div class="hm-counts" id="hmCounts">—</div><div class="hm-gaps" id="hmGaps"></div></div>' +
+    '<div class="hm-mini"><h3>How to read it</h3><div class="hm-legend">' +
+    '<div><span class="hm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
+    '<div><span class="hm-sw c-year"></span>Contact within the last year</div>' +
+    '<div><span class="hm-sw c-old"></span>Last contact over a year ago</div>' +
+    '<div><span class="hm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
+    '<div><span class="hm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
+    '<div class="hm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list here instead.</div>' +
+    '</div></div>' +
+    '<div class="hm-mini hm-detail" id="hmDetail"></div>' +
+    '<div class="hm-mini"><h3>Known since</h3>' +
+    v4MRow('20+ years', '', 'gold', o.pct(M.ks.p20), M.ks.p20) + v4MRow('10 – 19 years', '', 'gold', o.pct(M.ks.y1019), M.ks.y1019) +
+    v4MRow('5 – 9 years', '', 'gold', o.pct(M.ks.y59), M.ks.y59) + v4MRow('2 – 4 years', '', 'gold', o.pct(M.ks.y24), M.ks.y24) +
+    v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
+    '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
+    '</div>';
+  return '<section class="hm-band">' + left + center + right + '</section>';
+}
+function hmGapsHTML(){
+  var M = hmModel(), parts = [];
+  if(M.undatedN) parts.push(M.undatedN + ' people have a place on file but no dated record — they appear only at Today, in the muted style.');
+  var un = Object.keys(M.unplacedNames);
+  if(un.length) parts.push('Not placed: ' + un.map(function(s){ return esc(s) + ' (' + M.unplacedNames[s] + ')'; }).join(', ') + ' — no match in the place list.');
+  var uv = Object.keys(M.unplacedVenues);
+  if(uv.length) parts.push('Place entries not placed: ' + uv.map(function(s){ return esc(s) + ' (' + M.unplacedVenues[s] + ')'; }).join(', ') + '.');
+  return parts.join('<br>');
+}
+function hmDetailDefault(ds){
+  var M = hmModel(), vis = hmVisibleAt(ds);
+  var rows = Object.keys(vis.byPlace).map(function(pk){
+    return { pk:pk, n:vis.byPlace[pk].length, label:M.places[pk].label };
+  }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); }).slice(0, 6);
+  return '<h3>Biggest places</h3>' + (rows.length ? rows.map(function(r){
+    return '<button type="button" class="hm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
+  }).join('') : '<p class="hm-dim">Nobody is placed yet at this date.</p>') +
+  '<p class="hm-dim">Click any place on the map to see who is there.</p>';
+}
+function hmPaintDetail(ds){
+  var box = document.getElementById('hmDetail'); if(!box) return;
+  var M = hmModel();
+  if(!HM.sel){ box.innerHTML = hmDetailDefault(ds); return; }
+  if(HM.sel.type === 'place'){
+    var pl = M.places[HM.sel.key];
+    if(!pl){ box.innerHTML = hmDetailDefault(ds); return; }
+    var vis = hmVisibleAt(ds), rows = (vis.byPlace[HM.sel.key] || []).slice().sort(function(a, b){
+      return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
+    });
+    box.innerHTML = '<h3>' + esc(pl.label) + '</h3><div class="hm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
+      (rows.length ? '<div class="hm-plist">' + rows.map(function(r){
+        var e = D.directory[r.di];
+        return '<a class="hm-prow" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + r.di + '"><span class="hm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="hm-pn">' + esc(dispName(e)) + '</span></a>';
+      }).join('') + '</div>' : '<p class="hm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
+    return;
+  }
+  var di = HM.sel.di, e = D.directory[di];
+  if(!e){ box.innerHTML = hmDetailDefault(ds); return; }
+  var rec = null, vis2 = hmVisibleAt(ds);
+  vis2.list.forEach(function(r){ if(r.di === di) rec = r; });
+  var p = null; hmModel().people.forEach(function(x){ if(x.di === di) p = x; });
+  var here = rec ? M.places[rec.pk] : null;
+  var evs = (e.events || []).filter(function(ev){
+    return ev && ev.venue && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') && ev.date <= ds;
+  }).slice(-4).reverse();
+  box.innerHTML = '<h3>' + esc(dispName(e)) + '</h3>' +
+    '<div class="hm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date' + (p && p.appear ? ' — first placed ' + hmFmtDate(p.appear) : '')) + '</div>' +
+    (rec ? '<div class="hm-dline"><span class="hm-dot c-' + rec.cls + '"></span>' + ({ fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' })[rec.cls] + '</div>' : '') +
+    (evs.length ? '<div class="hm-dline hm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
+    '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>';
+}
+function hmPaintReadout(ds){
+  var M = hmModel(), vis = hmVisibleAt(ds);
+  var asOf = document.getElementById('hmAsOf'), counts = document.getElementById('hmCounts'),
+      gaps = document.getElementById('hmGaps'), lab = document.getElementById('hmDateLab');
+  if(lab) lab.textContent = ds === M.maxD ? hmFmtDate(ds) + ' · Today' : hmFmtDate(ds);
+  if(asOf) asOf.textContent = hmFmtDate(ds);
+  if(counts){
+    var notYet = 0;
+    M.people.forEach(function(p){ if(p.appear && p.appear > ds) notYet++; });
+    counts.innerHTML = '<b>' + vis.list.length + '</b> people placed · <b>' + Object.keys(vis.byPlace).length + '</b> places' +
+      (notYet ? '<br>' + notYet + ' more appear later in the timeline.' : '');
+  }
+  if(gaps) gaps.innerHTML = hmGapsHTML();
+}
+function hmCluster(vis){
+  /* screen-space grid clustering of place badges (64px cells of
+     influence, greedy by size) — recomputed per zoom/date. */
+  var M = hmModel(), pts = Object.keys(vis.byPlace).map(function(pk){
+    var pl = M.places[pk];
+    return { pk:pk, pl:pl, n:vis.byPlace[pk].length, pt:HM.map.latLngToContainerPoint([pl.lat, pl.lng]) };
+  }).sort(function(a, b){ return b.n - a.n; });
+  var used = {}, groups = [];
+  pts.forEach(function(a){
+    if(used[a.pk]) return;
+    var g = [a]; used[a.pk] = 1;
+    pts.forEach(function(b){
+      if(used[b.pk]) return;
+      var dx = a.pt.x - b.pt.x, dy = a.pt.y - b.pt.y;
+      if(dx * dx + dy * dy <= 64 * 64){ g.push(b); used[b.pk] = 1; }
+    });
+    groups.push(g);
+  });
+  return groups;
+}
+function hmFreshest(rows){
+  var rank = { fresh:0, year:1, prox:2, old:3 };
+  var best = 'old';
+  rows.forEach(function(r){ if(rank[r.cls] < rank[best]) best = r.cls; });
+  return best;
+}
+function hmClearSpider(){ if(HM.spider){ HM.spider.clearLayers(); HM.spider = null; } }
+function hmSpiderfy(pk, rows){
+  hmClearSpider();
+  var M = hmModel(), pl = M.places[pk], map = HM.map;
+  HM.spider = L.layerGroup().addTo(map);
+  var cpt = map.latLngToContainerPoint([pl.lat, pl.lng]);
+  rows.forEach(function(r, i){
+    var ang, rad;
+    if(rows.length <= 8){ ang = (i / rows.length) * Math.PI * 2 - Math.PI / 2; rad = 40; }
+    else { ang = i * 2.399963; rad = 18 + 8.5 * Math.sqrt(i + 1); }
+    var pt = L.point(cpt.x + Math.cos(ang) * rad, cpt.y + Math.sin(ang) * rad);
+    var ll = map.containerPointToLatLng(pt);
+    L.polyline([[pl.lat, pl.lng], ll], { color:'#8b94a1', weight:1, opacity:.55 }).addTo(HM.spider);
+    var e = D.directory[r.di];
+    var mk = L.marker(ll, { icon:L.divIcon({ className:'hm-di', html:'<span class="hm-pdot c-' + r.cls + (r.undated ? ' und' : '') + '" title="' + esc(dispName(e)) + '">' + esc(hmInitials(e)) + '</span>', iconSize:[26, 26], iconAnchor:[13, 13] }) }).addTo(HM.spider);
+    mk.on('click', function(){ HM.sel = { type:'person', di:r.di }; hmPaintDetail(hmDateAt(HM.dateIdx)); });
+  });
+}
+function hmInitials(e){
+  var n = dispName(e).trim().split(/\s+/);
+  return ((n[0] || '')[0] || '') + ((n.length > 1 ? n[n.length - 1][0] : '') || '');
+}
+function hmPaint(){
+  var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
+  var ds = hmDateAt(HM.dateIdx);
+  hmPaintReadout(ds); hmPaintDetail(ds);
+  if(!HM.map || !window.L) return;
+  hmClearSpider();
+  if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
+  HM.layer.clearLayers();
+  var M = hmModel(), vis = hmVisibleAt(ds);
+  if(HM.heat){
+    Object.keys(vis.byPlace).forEach(function(pk){
+      var pl = M.places[pk], n = vis.byPlace[pk].length;
+      L.circleMarker([pl.lat, pl.lng], { radius:10 + Math.sqrt(n) * 3.6, weight:0,
+        fillColor:'#6ea8d8', fillOpacity:.30 + .45 * Math.min(1, n / 40) }).addTo(HM.layer)
+        .on('click', function(){ hmSelectPlace(pk, false); });
+    });
+    return;
+  }
+  hmCluster(vis).forEach(function(g){
+    var totN = 0, wlat = 0, wlng = 0;
+    g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
+    var lat = wlat / totN, lng = wlng / totN;
+    if(g.length > 1){
+      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'hm-di', html:'<span class="hm-cluster">' + totN + '<small>' + g.length + ' places</small></span>', iconSize:[46, 46], iconAnchor:[23, 23] }) }).addTo(HM.layer);
+      cm.on('click', function(){
+        var b = L.latLngBounds(g.map(function(a){ return [a.pl.lat, a.pl.lng]; }));
+        HM.map.flyToBounds(b.pad(0.6), { maxZoom:11, duration:.5 });
+      });
+    } else {
+      var a0 = g[0], rows = vis.byPlace[a0.pk], fresh = hmFreshest(rows);
+      var short = a0.pl.label.replace(/, [A-Z]{2}$/, '');
+      var pm = L.marker([a0.pl.lat, a0.pl.lng], { icon:L.divIcon({ className:'hm-di',
+        html:'<span class="hm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + '">' + a0.n + '</span><span class="hm-blab">' + esc(short) + '</span>',
+        iconSize:[34, 44], iconAnchor:[17, 17] }) }).addTo(HM.layer);
+      pm.on('click', function(){ hmSelectPlace(a0.pk, true); });
+    }
+  });
+}
+function hmSelectPlace(pk, allowSpider){
+  var ds = hmDateAt(HM.dateIdx), vis = hmVisibleAt(ds), rows = vis.byPlace[pk] || [];
+  HM.sel = { type:'place', key:pk };
+  hmPaintDetail(ds);
+  if(!HM.map) return;
+  var pl = hmModel().places[pk]; if(!pl) return;
+  if(allowSpider && rows.length && rows.length <= HM_SPIDER_MAX) hmSpiderfy(pk, rows);
+  else if(rows.length > HM_SPIDER_MAX) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.5 });
+}
+function hmFitDefault(){
+  if(!HM.map) return;
+  var M = hmModel(), vis = hmVisibleAt(M.maxD), pts = [];
+  Object.keys(vis.byPlace).forEach(function(pk){
+    var pl = M.places[pk];
+    if(pl.lat >= 24 && pl.lat <= 50 && pl.lng >= -125 && pl.lng <= -66) pts.push([pl.lat, pl.lng]);
+  });
+  if(pts.length) HM.map.fitBounds(L.latLngBounds(pts).pad(0.12), { maxZoom:9 });
+  else HM.map.setView([44.67, -74.98], 8);
+}
+function hmStopPlay(){
+  HM.playing = false;
+  if(HM.timer){ clearInterval(HM.timer); HM.timer = null; }
+  var b = document.getElementById('hmPlayBtn'); if(b) b.textContent = 'Play';
+}
+function hmTick(){
+  if(!document.getElementById('hmMap')){ hmStopPlay(); return; }
+  var step = HM.speed === 1 ? 14 : (HM.speed === 2 ? 35 : 80);
+  var total = hmTotalDays();
+  HM.dateIdx = Math.min(total, HM.dateIdx + step);
+  var r = document.getElementById('hmRange'); if(r) r.value = String(HM.dateIdx);
+  hmPaint();
+  if(HM.dateIdx >= total) hmStopPlay();
+}
+function hmMount(){
+  var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
+  var M = hmModel(), total = hmTotalDays();
+  if(HM.dateIdx < 0) HM.dateIdx = total;
+  HM.dateIdx = Math.min(HM.dateIdx, total);
+  var range = document.getElementById('hmRange');
+  if(range){
+    range.max = String(total); range.value = String(HM.dateIdx);
+    range.oninput = function(){ hmStopPlay(); HM.dateIdx = +range.value; hmPaint(); };
+  }
+  var tickA = document.getElementById('hmTickA'); if(tickA) tickA.textContent = M.minD.slice(0, 4);
+  var hb = document.getElementById('hmHeatBtn');
+  if(hb){ hb.classList.toggle('on', HM.heat); hb.setAttribute('aria-pressed', String(HM.heat)); }
+  $$('.hm-speed button').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-s') === HM.speed); });
+  hmPaint();
+  hmLoadLeaflet(function(ok){
+    if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
+    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; }
+    var mode = document.documentElement.getAttribute('data-mode');
+    HM.map = L.map('hmMap', { scrollWheelZoom:true, attributionControl:true });
+    L.tileLayer(mode === 'light'
+      ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      { maxZoom:18, attribution:'&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(HM.map);
+    HM.map.on('moveend zoomend', function(){ if(!HM.heat) hmPaint(); });
+    HM.map.on('movestart', function(){ hmClearSpider(); });
+    hmFitDefault();
+    hmPaint();
+    setTimeout(function(){ if(HM.map) HM.map.invalidateSize(); }, 60);
+  });
+}
+function hmNoMap(){
+  var el = document.getElementById('hmMap');
+  if(el && !el.querySelector('.hm-nomap')) el.innerHTML = '<div class="hm-nomap">The map library could not load — the connection or the map CDN is unavailable. The statistics on both sides and the counts above still work; reload to try the map again.</div>';
+}
+function hmLoadLeaflet(cb){
+  if(window.L){ cb(true); return; }
+  if(HM.loading){ (HM.cbs = HM.cbs || []).push(cb); return; }
+  HM.loading = true; HM.cbs = [cb];
+  var link = document.createElement('link');
+  link.rel = 'stylesheet'; link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(link);
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload = function(){ var c = HM.cbs || []; HM.cbs = null; c.forEach(function(f){ f(true); }); };
+  s.onerror = function(){ var c = HM.cbs || []; HM.cbs = null; c.forEach(function(f){ f(false); }); };
+  document.head.appendChild(s);
 }
 
 /* ============================================================
@@ -9747,15 +10247,19 @@ function viewCalendar(v){
   /* V4.3.0 (JD 2026-11-04): the month grid stands alone at full
      width; everything below it is a collapsible section. The old
      two-column layout's sticky side rail scrolled over the
-     proximity card — that layout is gone. */
+     proximity card — that layout is gone.
+     V4.14.0 (JD 2026-11-13): the grid compresses and the day
+     detail moves into a plain right sidebar (no sticky, no
+     overlap); clicking a day repaints only the sidebar. The
+     other sections stay as folds below. */
   v.innerHTML = head +
     '<div class="pv-vhead"><div><h1>Calendar</h1>' +
     '<p class="pv-hsub">Contact, online, and proximity entries.</p></div>' +
     '<div class="side"><a class="lnk" data-act="pvproxjump" style="cursor:pointer">Log proximity ↓</a> · <a class="lnk" href="#/people">Open People →</a></div></div>' +
     ctlBarHTML() +
-    '<div class="pv-cal">' + ctlMonthHTML() +
+    '<div class="ct-layout"><div class="pv-cal ct-main">' + ctlMonthHTML() +
     '<div class="pv-legend"><span class="li"><span class="pv-sw" style="background:var(--pv-gold)"></span>Contact, in person</span><span class="li"><span class="pv-sw" style="background:var(--pv-blue)"></span>Contact, online</span><span class="li"><span class="pv-sw prox"></span>Proximity — crossed paths; it never counts as contact</span></div></div>' +
-    calFoldHTML('day', 'Day entries', ctlDayHTML()) +
+    '<aside class="ct-side"><div class="ct-side-h">Day entries</div><div id="ctDaySide">' + ctlDayHTML() + '</div></aside></div>' +
     calFoldHTML('prox', 'Proximity — bulk log', mgProxHTML()) +
     calFoldHTML('seen', 'Seen in person', ctSeenHTML()) +
     calFoldHTML('stamps', 'Contact stamps', mgStampsHTML()) +
@@ -15631,7 +16135,12 @@ function onClick(ev){
        txn + queuePatch of the events JSON — the same path as the
        profile Timeline editor and Quick Add. */
     case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
-    case 'ctday': { CTL.day = el.getAttribute('data-d'); render(); break; }
+    case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.ct-side'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
+    case 'hmplay': { if(HM.playing){ hmStopPlay(); } else { if(HM.dateIdx >= hmTotalDays()) HM.dateIdx = 0; HM.playing = true; el.textContent = 'Pause'; if(HM.timer) clearInterval(HM.timer); HM.timer = setInterval(hmTick, 100); hmTick(); } break; }
+    case 'hmspeed': { HM.speed = +el.getAttribute('data-s') || 1; $$('.hm-speed button').forEach(function(b6){ b6.classList.toggle('on', b6 === el); }); break; }
+    case 'hmheat': { HM.heat = !HM.heat; el.classList.toggle('on', HM.heat); el.setAttribute('aria-pressed', String(HM.heat)); hmClearSpider(); hmPaint(); break; }
+    case 'hmreset': { hmFitDefault(); break; }
+    case 'hmplace': { hmSelectPlace(el.getAttribute('data-k'), true); break; }
     case 'ctnav': {
       var cnd = el.getAttribute('data-d');
       if(cnd === '0'){ var ct0 = todayStr(); CTL.ym = ct0.slice(0, 7); CTL.day = ct0; }
