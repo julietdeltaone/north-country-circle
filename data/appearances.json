@@ -1,11 +1,11 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1418,
+  "total": 1419,
   "dated": 35,
-  "undated": 1383,
+  "undated": 1384,
   "placed": 1273,
-  "unplaced": 145,
+  "unplaced": 146,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 17,
@@ -5064,6 +5064,18 @@
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
    "place_src": "text"
+  },
+  {
+   "di": 705,
+   "display": "Donovan Patraw",
+   "text": "Engaged to Cheyenne Myers, as of Nov 2021 (Hammill Funeral Home)",
+   "source": "Hammill Funeral Home",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 705,
