@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:brian patraw",
-   "display": "Brian Patraw",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-ca9197f5e8"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
