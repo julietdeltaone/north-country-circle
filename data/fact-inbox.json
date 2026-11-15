@@ -5500,6 +5500,32 @@
    "pattern": "correction",
    "source": "Massena Central School District",
    "url": "https://4.files.edl.io/9751/09/03/26/194247-dd24acc4-3053-4b0a-8725-2e47d162bb3d.pdf"
+  },
+  {
+   "anchor": "Clarkson University OT \u00b7 Potsdam",
+   "batch": "PM run \u2014 Nov 14, 2026",
+   "display": "Karen Hoover",
+   "fact": "Co-authored the Project Write to Learn (PWTL) Resource Manual, published by Seton Hall University's School of Health and Medical Sciences, 2024",
+   "id": "fi-20261114-sf-karen-hoover-co-authored-the-project-write",
+   "key": "sf:karen-hoover",
+   "learned": "2026-11-14",
+   "name": "sf:karen-hoover",
+   "pattern": "milestone",
+   "source": "Seton Hall University",
+   "url": "http://blogs.shu.edu/projectwritetolearn/files/2024/11/PWTL-2024-November-Resource-Manual.pdf"
+  },
+  {
+   "anchor": "Precise Biometrics \u00b7 Potsdam",
+   "batch": "PM run + compounding lane \u2014 Nov 14, 2026",
+   "display": "Mark Cornett",
+   "fact": "Represented Precise Biometrics at CES in Las Vegas, Jan 2024, demonstrating automotive fingerprint identification with Infineon; the company's release lists his title as U.S. sales manager",
+   "id": "fi-20261114-sf-mark-cornett-represented-precise-biometrics",
+   "key": "sf:mark-cornett",
+   "learned": "2026-11-14",
+   "name": "sf:mark-cornett",
+   "pattern": "milestone",
+   "source": "Precise Biometrics",
+   "url": "https://view.news.eu.nasdaq.com/view?id=b77b275d0bc5c01eb2a7d9196e3fe9419&lang=en&src=listed"
   }
  ],
  "patterns": {
