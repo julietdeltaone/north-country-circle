@@ -16478,6 +16478,33 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261114-ct-brian-patraw-suny-potsdam-s-law-enforcement-train",
+   "name": "ct:brian patraw",
+   "display": "Brian Patraw",
+   "run_date": "2026-11-14",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "SUNY Potsdam's article about its Law Enforcement Training Institute instructor course lists Donovan Patraw as a SUNY Potsdam University Police officer who earned the state instructor certification. Brian's record lists SUNY Potsdam University Police as his employer.",
+   "file_text": "SUNY Potsdam's Law Enforcement Training Institute article names Donovan Patraw as the SUNY Potsdam University Police officer who earned the DCJS State Instructor Certification",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/LawEnforcementGraduatesPolice",
+   "anchors": [
+    "SUNY Potsdam University Police, the employer on Brian's record",
+    "Donovan Patraw, Brian's brother"
+   ],
+   "quote": "- Donovan Patraw \u2014 SUNY Potsdam University Police",
+   "missing_gate": "Brian's record lists SUNY Potsdam University Police as his job, but the college names his brother Donovan in that role.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
