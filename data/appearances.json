@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1426,
+  "total": 1427,
   "dated": 41,
-  "undated": 1385,
-  "placed": 1279,
+  "undated": 1386,
+  "placed": 1280,
   "unplaced": 147,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -11543,6 +11543,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 568,
+   "display": "Liz Wangerin",
+   "text": "She was baptized on November 15, 2026, at Calvary Baptist Church in Canton.",
+   "source": "",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
