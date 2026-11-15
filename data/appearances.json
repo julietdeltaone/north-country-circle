@@ -1,14 +1,14 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1412,
-  "dated": 31,
-  "undated": 1381,
-  "placed": 1267,
+  "total": 1418,
+  "dated": 35,
+  "undated": 1383,
+  "placed": 1273,
   "unplaced": 145,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 13,
+  "brief_attached": 17,
   "brief_standalone": 18,
   "brief_unresolved": 0
  },
@@ -254,6 +254,18 @@
    "place_src": ""
   },
   {
+   "di": 553,
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's Dean's List for Fall 2024 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo",
+   "published": "2025-01-08",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 92,
    "display": "Daniel Paladin",
    "text": "Travelled to Ukraine with a Network of Related Pastors ministry team that held 33 meetings in eight days in the Kharkiv and Chernivtsi area, Aug 2024",
@@ -264,6 +276,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 553,
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2024/honors-spring24.php",
+   "published": "2024-06-17",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
   },
   {
    "di": 230,
@@ -287,6 +311,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 553,
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's President's List for Fall 2025 as a Health Care Management student (listed as Kayleigh Peets), Jan 2026 (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2024/honors-fall23.php",
+   "published": "2024-01-12",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
@@ -324,6 +360,18 @@
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
    "place_src": "text"
+  },
+  {
+   "di": 618,
+   "display": "Sara Badeau",
+   "text": "Tied for ninth in the high jump with a 1.40m clearance and ran on Alfred University's 4x100m relay team that finished seventh in 55.63 at SUNY Geneseo, Apr 2022 (Alfred University Athletics)",
+   "source": "Alfred University Athletics",
+   "url": "https://gosaxons.com/story.aspx?filename=womens-track-field-saxons-raise-multiple-prs-in-first-large-outdoor-meet-of-2022-at-geneseo&file_date=4-2-2022",
+   "published": "2022-04-03",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 127,
@@ -9892,6 +9940,18 @@
   {
    "di": 548,
    "display": "Karen Hoover",
+   "text": "Co-authored the Project Write to Learn (PWTL) Resource Manual, published by Seton Hall University's School of Health and Medical Sciences, 2024 (Seton Hall University)",
+   "source": "Seton Hall University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 548,
+   "display": "Karen Hoover",
    "text": "Co-owner and senior occupational therapist of The Therapy Garage, a private pediatric clinic in Westfield, New Jersey, providing OT, SLP, PT, and ABA services (2015–2023 per her CV; the original clinic opened in 2016, and a Therapy Garage North was later started to serve St. Lawrence County) (The Therapy Garage)",
    "source": "The Therapy Garage",
    "url": "",
@@ -10408,7 +10468,7 @@
   {
    "di": 553,
    "display": "Kayleigh Clary",
-   "text": "Named to SUNY Canton's President's List for Fall 2025 as a Health Care Management student (listed as Kayleigh Peets), Jan 2026 (SUNY Canton)",
+   "text": "Named to SUNY Canton's President's List for Fall 2023 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
    "published": "",
@@ -10420,7 +10480,7 @@
   {
    "di": 553,
    "display": "Kayleigh Clary",
-   "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
+   "text": "Named to SUNY Canton's President's List for Spring 2024 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
    "published": "",
@@ -12024,6 +12084,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam",
    "place_src": "text"
+  },
+  {
+   "di": 685,
+   "display": "Mark Cornett",
+   "text": "Represented Precise Biometrics at CES in Las Vegas, Jan 2024, demonstrating automotive fingerprint identification with Infineon; the company's release lists his title as U.S. sales manager (Precise Biometrics)",
+   "source": "Precise Biometrics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 685,
