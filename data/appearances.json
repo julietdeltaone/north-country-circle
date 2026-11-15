@@ -1,18 +1,42 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1419,
-  "dated": 35,
-  "undated": 1384,
-  "placed": 1273,
-  "unplaced": 146,
+  "total": 1426,
+  "dated": 41,
+  "undated": 1385,
+  "placed": 1279,
+  "unplaced": 147,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 17,
-  "brief_standalone": 18,
+  "brief_attached": 22,
+  "brief_standalone": 19,
   "brief_unresolved": 0
  },
  "items": [
+  {
+   "di": 718,
+   "display": "Janelle Evans",
+   "text": "Scored a goal in Clarkson's 5-3 win over Brown, Nov 14, 2026 (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/news/2026/11/14/womens-hockey-pair-of-power-play-goals-lead-knights-past-brown-5-3.aspx",
+   "published": "2026-11-14",
+   "fresh": true,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 721,
+   "display": "Isa Goettl",
+   "text": "Scored a goal and recorded an assist in Clarkson's 5-3 win over Brown, Nov 14, 2026 (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/news/2026/11/14/womens-hockey-pair-of-power-play-goals-lead-knights-past-brown-5-3.aspx",
+   "published": "2026-11-14",
+   "fresh": true,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
   {
    "di": 720,
    "display": "Raedyn Spademan",
@@ -230,6 +254,18 @@
    "place_src": ""
   },
   {
+   "di": 467,
+   "display": "Cody Benham",
+   "text": "Finished 3rd in the General division at the PBC Disc Golf Mini Glow Night in Watertown, New York, Mar 18, 2026, shooting even par (UDisc)",
+   "source": "UDisc",
+   "url": "https://udisc.com/events/glow-night-ZiVK9M/leaderboard?round=1",
+   "published": "2026-03-18",
+   "fresh": false,
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, New York",
+   "place_src": "text"
+  },
+  {
    "di": 168,
    "display": "Jocelyn Daniels",
    "text": "Named to SUNY Canton's President's List for the Fall 2025 semester as an Individual Studies student, Jan 2026",
@@ -254,6 +290,30 @@
    "place_src": ""
   },
   {
+   "di": 563,
+   "display": "Lennart Johns",
+   "text": "Co-authored a Frontiers in Education paper on Clarkson's secondary school-university STEMM partnerships fostering rural students' interest and self-agency, Jun 2025 (Frontiers in Education)",
+   "source": "Frontiers in Education",
+   "url": "https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1578370/full",
+   "published": "2025-06-17",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 583,
+   "display": "Megan Eddy",
+   "text": "Named to SUNY Canton's Dean's List for Fall 2024 as a Bachelor of Science in Nursing student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo",
+   "published": "2025-01-08",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 553,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's Dean's List for Fall 2024 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
@@ -276,6 +336,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 383,
+   "display": "Savannah Adams",
+   "text": "Approved as a substitute aide, teacher assistant and teacher at St. Lawrence Central School in Brasher Falls for the 2024-2025 school year, Jun 2024",
+   "source": "Brasher Falls Central School District",
+   "url": "https://5il.co/2qvol",
+   "published": "2024-06-17",
+   "fresh": false,
+   "pid": "44.8097,-74.7758",
+   "place": "Brasher Falls",
+   "place_src": "text"
   },
   {
    "di": 553,
@@ -3900,6 +3972,18 @@
    "pid": "43.9747,-75.9107",
    "place": "Watertown, New York",
    "place_src": "text"
+  },
+  {
+   "di": 467,
+   "display": "Cody Benham",
+   "text": "Tied for 12th in MA2 at Discraft's Green Mountain Championship (Amateur) at Smugglers' Notch, Vermont, in 2025, shooting +23 (PDGA)",
+   "source": "PDGA",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
   },
   {
    "di": 467,
