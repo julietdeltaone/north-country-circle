@@ -4,7 +4,55 @@
  "items": [
   {
    "date": "2026-11-14",
-   "kind": "hot",
+   "kind": "filed",
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's President's List for Fall 2023 as a Health Care Management student, listed as Kayleigh Peets",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2024/honors-fall23.php"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's President's List for Spring 2024 as a Health Care Management student, listed as Kayleigh Peets",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2024/honors-spring24.php"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
+   "display": "Kayleigh Clary",
+   "text": "Named to SUNY Canton's Dean's List for Fall 2024 as a Health Care Management student, listed as Kayleigh Peets",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
+   "display": "Sara Badeau",
+   "text": "Tied for ninth in the high jump with a 1.40m clearance and ran on Alfred University's 4x100m relay team that finished seventh in 55.63 at SUNY Geneseo, Apr 2022",
+   "source": "Alfred University Athletics",
+   "url": "https://gosaxons.com/story.aspx?filename=womens-track-field-saxons-raise-multiple-prs-in-first-large-outdoor-meet-of-2022-at-geneseo&file_date=4-2-2022"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
+   "display": "Karen Hoover",
+   "text": "Co-authored the Project Write to Learn (PWTL) Resource Manual, published by Seton Hall University's School of Health and Medical Sciences, 2024",
+   "source": "Seton Hall University",
+   "url": "http://blogs.shu.edu/projectwritetolearn/files/2024/11/PWTL-2024-November-Resource-Manual.pdf"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
+   "display": "Mark Cornett",
+   "text": "Represented Precise Biometrics at CES in Las Vegas, Jan 2024, demonstrating automotive fingerprint identification with Infineon; the company's release lists his title as U.S. sales manager",
+   "source": "Precise Biometrics",
+   "url": "https://view.news.eu.nasdaq.com/view?id=b77b275d0bc5c01eb2a7d9196e3fe9419&lang=en&src=listed"
+  },
+  {
+   "date": "2026-11-14",
+   "kind": "filed",
    "display": "Janelle Evans",
    "text": "Won the faceoff that set up Kennedy Sisson's game-winning goal in Clarkson's 2-1 win over Yale, Nov 13, 2026",
    "source": "Clarkson University Athletics",
@@ -12,7 +60,7 @@
   },
   {
    "date": "2026-11-14",
-   "kind": "hot",
+   "kind": "filed",
    "display": "Raedyn Spademan",
    "text": "Scored on a redirect of Ciara Lang's shot to tie the game in Clarkson's 2-1 win over Yale, Nov 13, 2026",
    "source": "Clarkson University Athletics",
@@ -185,6 +233,14 @@
    "text": "Online contact (2026-11-13, Instagram): exchanged messages",
    "source": "Instagram Messages",
    "url": ""
+  },
+  {
+   "date": "2026-11-13",
+   "kind": "filed",
+   "display": "Charlie-Sharon Sweet",
+   "text": "Guest minister at Pac Bible Church on November 11, 2026.",
+   "source": "Facebook post by PacBibleChurch",
+   "url": "https://www.facebook.com/pacbiblechurch/posts/pfbid023Q88p2wURnMP7XxjooxbZEom9hvE8WWoDZp4gvfCbyY9UmM1eQXC9ByFX54nQYYNl"
   },
   {
    "date": "2026-11-13",
@@ -2345,62 +2401,6 @@
    "text": "Ben Levendusky lives in Lisbon with his wife Keila and their seven children, Elena, Adriana, Ben Jr., Giselle, Leo, Victoria, and Sebastian",
    "source": "Christian Fellowship Center",
    "url": "https://www.cfconline.org/madrid/"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Ben Levendusky",
-   "text": "Responded to Religion News Service in Aug 2022 about a spring 2015 meeting at Christian Fellowship Center in Madrid, saying he never tries to keep someone in a situation against their will and tries to support people who feel unsafe",
-   "source": "Religion News Service",
-   "url": "https://religionnews.com/2022/08/25/an-insular-quiverfull-church-in-new-yorks-north-country-faces-a-reckoning/"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Caelin Ramsay",
-   "text": "Submitted eBird checklists as an observer at SUNY Potsdam in Potsdam, New York",
-   "source": "eBird",
-   "url": ""
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Cashlynn Colbert",
-   "text": "Both of her parents are teachers from the Potsdam and Massena area",
-   "source": "SUNY Potsdam",
-   "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Charlie Garrelts",
-   "text": "Reported Ogdensburg International Airport had grown to 35 employees amid passenger-traffic growth, Sep 2026",
-   "source": "North Country Now",
-   "url": "https://muckrack.com/jimmy-lawton/articles"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Cody Benham",
-   "text": "Tied for 1st in the Advanced division at the PBC Disc Golf Mini in Watertown, New York on May 8, 2025, shooting even par",
-   "source": "UDisc",
-   "url": "https://udisc.com/events/pbc-disc-golf-league-pbc-weekly-disc-golf-league-41Wu6s/leaderboard?round=1"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Cody Benham",
-   "text": "Won the Advanced division at the PBC Disc Golf Mini in Watertown, New York on May 29, 2025, shooting -2",
-   "source": "UDisc",
-   "url": "https://udisc.com/events/pbc-disc-golf-league-pbc-weekly-disc-golf-league-41Wu6s/leaderboard?round=1"
-  },
-  {
-   "date": "2026-11-09",
-   "kind": "filed",
-   "display": "Corey Delisa",
-   "text": "Corey DeLisa swam for Amsterdam as a freshman at the February 2019 Section II Division 2 championships, on the 200-yard medley relay team and in the 100-yard butterfly preliminaries",
-   "source": "Adirondack Swimming",
-   "url": "http://adirondackswimming.org/Meets%202018-2019/results20190214adob%20boys%20section%202%20division%202%20champs.pdf"
   }
  ]
 }
