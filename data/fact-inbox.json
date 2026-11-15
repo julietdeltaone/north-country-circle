@@ -5526,6 +5526,32 @@
    "pattern": "milestone",
    "source": "Precise Biometrics",
    "url": "https://view.news.eu.nasdaq.com/view?id=b77b275d0bc5c01eb2a7d9196e3fe9419&lang=en&src=listed"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Nursing",
+   "batch": "AM run \u2014 Nov 15, 2026",
+   "display": "Megan Eddy",
+   "fact": "Named to SUNY Canton's Dean's List for Fall 2024 as a Bachelor of Science in Nursing student",
+   "id": "fi-20261115-sf-megan-eddy-named-to-suny-canton-s-dean-s",
+   "key": "sf:megan-eddy",
+   "learned": "2026-11-15",
+   "name": "sf:megan-eddy",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo"
+  },
+  {
+   "anchor": "St. Lawrence Central School \u00b7 Brasher Falls",
+   "batch": "AM run \u2014 Nov 15, 2026",
+   "display": "Savannah Adams",
+   "fact": "Approved as a substitute aide, teacher assistant and teacher at St. Lawrence Central School in Brasher Falls for the 2024-2025 school year, Jun 2024",
+   "id": "fi-20261115-ct-savannah-adams-approved-as-a-substitute-aide",
+   "key": "ct:savannah adams",
+   "learned": "2026-11-15",
+   "name": "ct:savannah adams",
+   "pattern": "milestone",
+   "source": "Brasher Falls Central School District",
+   "url": "https://5il.co/2qvol"
   }
  ],
  "patterns": {
