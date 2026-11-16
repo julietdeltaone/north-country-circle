@@ -1,5 +1,5 @@
 {
- "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
+ "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed; Nov 15 full-directory social-graph sweep (FB/IG connectors): 216 searched, 99 filed (73 likely, 26 possible)",
  "people": [
   {
    "added": "2026-10-29",
@@ -39,13 +39,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Madrid, New York as the hometown.",
    "name": "Acacia White",
    "photo_url": "photos/acacia-white.jpg",
    "source_page": "https://facebook.com/acacia.wells",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -144,16 +144,26 @@
    "type": "Yearbook senior portrait"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Tallahassee, Florida as the current city.",
    "name": "Alex Koberda",
    "photo_url": "photos/alex-koberda.jpg",
    "source_page": "https://facebook.com/alex.koberda",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Alexandra Colbert in a black-and-white solo portrait; the account is the @alex_conn504 handle on file for the directory entry and the profile name is Alexandra Conn.",
+     "photo_url": "photos/alexandra-colbert-ig.jpg",
+     "source_page": "https://www.instagram.com/alex_conn504/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @alex_conn504 (display name \"Alexandra Conn\"); bio: \"Eat, Drink and Be Glad. ~Ecc 8:15\".",
    "name": "Alexandra Colbert",
    "photo_url": "photos/alexandra-colbert.jpg",
@@ -250,13 +260,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "name": "Ally Dubbioso",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Mahopac as the current city.",
-   "photo_url": "photos/ally-dubbioso-fb.jpg",
-   "source_page": "https://facebook.com/ally.dubbioso",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-02",
@@ -266,7 +270,13 @@
      "status": "possible",
      "type": "Instagram profile picture"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Mahopac as the current city.",
+   "name": "Ally Dubbioso",
+   "photo_url": "photos/ally-dubbioso-fb.jpg",
+   "source_page": "https://facebook.com/ally.dubbioso",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -278,13 +288,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Alycia Miller-Lynch with her family at Epcot; the profile name matches the directory entry and the profile lists Madison, New York as the current city.",
+     "photo_url": "photos/alycia-miller-lynch-fb.jpg",
+     "source_page": "https://facebook.com/amillerlynch",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Madison, New York as the current city.",
    "name": "Alycia Miller-Lynch",
    "photo_url": "photos/alycia-miller-lynch.jpg",
    "source_page": "https://facebook.com/amillerlynch",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -296,13 +316,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton-Potsdam Hospital.",
    "name": "Amber Erwin",
    "photo_url": "photos/amber-erwin.jpg",
    "source_page": "https://facebook.com/amber.erwin.39",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -375,13 +395,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Vuteq USA Inc.",
    "name": "Andrew Wiseman",
    "photo_url": "photos/andrew-wiseman.jpg",
    "source_page": "https://facebook.com/andrew.wiseman2",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -419,22 +439,22 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Sauquoit, New York as the hometown.",
    "name": "Ann Parow Mackey",
    "photo_url": "photos/ann-parow-mackey.jpg",
    "source_page": "https://facebook.com/ann.parow",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Seattle, Washington as the current city.",
    "name": "Anna Molinero",
    "photo_url": "photos/anna-molinero.jpg",
    "source_page": "https://facebook.com/anna.tulloch.1",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -463,13 +483,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Anne Shaver in wedding attire with her husband; the profile name matches the directory entry and the profile lists Brasher Falls, New York as the current city, Liberty University, and Brasher Falls Elementary School.",
+     "photo_url": "photos/anne-shaver-fb.jpg",
+     "source_page": "https://facebook.com/anne.krebsadams",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Anne Shaver with others; the profile name matches the directory entry and the profile lists Brasher Falls, New York as the current city.",
    "name": "Anne Shaver",
    "photo_url": "photos/anne-shaver.jpg",
    "source_page": "https://facebook.com/anne.krebsadams",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -500,6 +530,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Arianna Rider in a solo mirror selfie; the account is the @ariannarider handle on file for the directory entry, matching her full name.",
+     "photo_url": "photos/arianna-rider-ig.jpg",
+     "source_page": "https://www.instagram.com/ariannarider/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @ariannarider (display name \"ariannarider\"); bio: \"777 Jack<3\".",
    "name": "Arianna Rider",
    "photo_url": "photos/arianna-rider.jpg",
@@ -508,13 +548,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Norwood, New York as the current city.",
    "name": "Asher Cragg",
    "photo_url": "photos/asher-cragg.jpg",
    "source_page": "https://facebook.com/asher.cragg.1",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -526,22 +566,42 @@
    "type": "headshot"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Ashley LaFay with her partner at a formal event; the profile name matches the directory entry and the profile lists Chase Mills, New York as the current city, SUNY Canton, Rochester Regional Health, and Potsdam Town & Country Club.",
+     "photo_url": "photos/ashley-lafay-fb.jpg",
+     "source_page": "https://facebook.com/ashley.french.758",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Ashley LaFay with others; the profile name matches the directory entry and the profile lists Chase Mills, New York as the current city.",
    "name": "Ashley LaFay",
    "photo_url": "photos/ashley-lafay.jpg",
    "source_page": "https://facebook.com/ashley.french.758",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Ashley StDenis with her husband in a black-and-white portrait; the profile name matches the directory entry and the profile lists Moira, New York as the current city, plus Rochester Regional Health and UVM Health - Alice Hyde Medical Center.",
+     "photo_url": "photos/ashley-stdenis-fb.jpg",
+     "source_page": "https://facebook.com/ashley.debeer.5",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Ashley StDenis with others; the profile name matches the directory entry and the profile lists Moira, New York as the current city.",
    "name": "Ashley StDenis",
    "photo_url": "photos/ashley-stdenis.jpg",
    "source_page": "https://facebook.com/ashley.debeer.5",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -562,13 +622,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists SUNY Canton.",
    "name": "Avery Charleson",
    "photo_url": "photos/avery-charleson.jpg",
    "source_page": "https://facebook.com/avery.raymonda.50",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -588,13 +648,23 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Baxter Brown playing violin; the profile name (R Baxter Brown) matches the directory entry and the profile lists Wheaton College, which is on file.",
+     "photo_url": "photos/baxter-brown-fb.jpg",
+     "source_page": "https://facebook.com/r.baxter.brown.2025",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Kenosha as the current city.",
    "name": "Baxter Brown",
    "photo_url": "photos/baxter-brown.jpg",
    "source_page": "https://facebook.com/r.baxter.brown.2025",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -606,13 +676,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Beka Martin with her partner and baby; the profile name matches the directory entry and the profile lists Old Market Coffee as her employer, which is on file.",
+     "photo_url": "photos/beka-martin-fb.jpg",
+     "source_page": "https://facebook.com/bekamartin20",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Beka Martin with others; the profile name matches the directory entry and the profile lists Old Market Coffee.",
    "name": "Beka Martin",
    "photo_url": "photos/beka-martin.jpg",
    "source_page": "https://facebook.com/bekamartin20",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -633,31 +713,51 @@
    "type": "staff photo"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Ben Newton and his wife walking on a beach in wedding attire, seen from behind; the profile name matches the directory entry and the profile lists Webster, New York as his hometown, plus Monroe Community College and Clarkson University. Filed as possible because the photo is a back view.",
+     "photo_url": "photos/ben-newton-fb.jpg",
+     "source_page": "https://facebook.com/ben.newton.77312",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Rochester, New York as the current city.",
    "name": "Ben Newton",
    "photo_url": "photos/ben-newton.jpg",
    "source_page": "https://facebook.com/ben.newton.77312",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Conway, New Hampshire as the current city.",
    "name": "Ben Roberts",
    "photo_url": "photos/ben-roberts.jpg",
    "source_page": "https://facebook.com/ben.roberts.39948856",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Benjamin Emmanuel standing at Delicate Arch; the profile name matches the directory entry and the profile lists Oswego, New York as his hometown, plus SUNY Canton, University at Albany, Finger Lakes Community College, G4S, and NY State Parks, all on file.",
+     "photo_url": "photos/benjamin-emmanuel-fb.jpg",
+     "source_page": "https://facebook.com/ben.muckey",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Oswego, New York as the hometown.",
    "name": "Benjamin Emmanuel",
    "photo_url": "photos/benjamin-emmanuel.jpg",
    "source_page": "https://facebook.com/ben.muckey",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-28",
@@ -710,13 +810,23 @@
    "type": "Captioned group photo (crop)"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Bob Dale in a selfie with a woman at a waterfall; the profile name matches the directory entry and the profile lists the University at Albany (SUNY) and TESOL International Association, both on file.",
+     "photo_url": "photos/bob-dale-fb.jpg",
+     "source_page": "https://facebook.com/robert.dale2009",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Bob Dale with others; the profile name matches the directory entry and the profile lists TESOL International Association.",
    "name": "Bob Dale",
    "photo_url": "photos/bob-dale.jpg",
    "source_page": "https://facebook.com/robert.dale2009",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -813,13 +923,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Cary, North Carolina as the current city.",
    "name": "Briana McGrath",
    "photo_url": "photos/briana-mcgrath.jpg",
    "source_page": "https://facebook.com/briana.mcgrath.3",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -858,22 +968,32 @@
    "type": "headshot"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Brittany Fountain Sharlow with her husband and children; the profile name matches the directory entry and the profile lists SUNY Potsdam, Potters Industries, Rochester Regional Health, Potsdam Central School, and Deer Valley Trails, all on file.",
+     "photo_url": "photos/brittany-fountain-sharlow-fb.jpg",
+     "source_page": "https://facebook.com/brittany.fountain.756",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Brittany Fountain Sharlow with others; the profile name matches the directory entry and the profile lists Potters Industries.",
    "name": "Brittany Fountain Sharlow",
    "photo_url": "photos/brittany-fountain-sharlow.jpg",
    "source_page": "https://facebook.com/brittany.fountain.756",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Auburn, New York as the current city.",
    "name": "Brittney Carnicelli",
    "photo_url": "photos/brittney-carnicelli.jpg",
    "source_page": "https://facebook.com/brittney.carnicelli.2025",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -957,13 +1077,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Colton, New York as the hometown.",
    "name": "Caleb Dollinger",
    "photo_url": "photos/caleb-dollinger.jpg",
    "source_page": "https://facebook.com/caleb.dollinger.50",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -975,13 +1095,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Calvin Brown",
    "photo_url": "photos/calvin-brown.jpg",
    "source_page": "https://facebook.com/calvin.brown.927",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -1037,13 +1157,13 @@
    "type": "staff headshot"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Saranac Lake, New York as the current city.",
    "name": "Carson Hayes Ryan",
    "photo_url": "photos/carson-hayes-ryan.jpg",
    "source_page": "https://facebook.com/carsonhayes.ryan",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -1064,13 +1184,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Catherine M Thomas with a man in a vehicle; the profile name matches the directory entry and the profile lists Colton, New York as the current city, which is on file.",
+     "photo_url": "photos/catherine-m-thomas-fb.jpg",
+     "source_page": "https://facebook.com/thomascm9",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Catherine M Thomas with others; the profile name matches the directory entry and the profile lists Colton, New York as the current city.",
    "name": "Catherine M Thomas",
    "photo_url": "photos/catherine-m-thomas.jpg",
    "source_page": "https://facebook.com/thomascm9",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -1082,13 +1212,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Cathy Boyle hugging a man in a suit at an outdoor event; the profile name matches the directory entry and the profile lists Jefferson Community College and Homeschool Mom, both on file.",
+     "photo_url": "photos/cathy-boyle-fb.jpg",
+     "source_page": "https://facebook.com/catherine.boyle.9",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Cathy Boyle with others; the profile name matches the directory entry and the profile lists Homeschool Mom.",
    "name": "Cathy Boyle",
    "photo_url": "photos/cathy-boyle.jpg",
    "source_page": "https://facebook.com/catherine.boyle.9",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -1145,6 +1285,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Chelsea McGrath in a solo selfie; the profile name matches the directory entry and the bio describes her as the wife of Josiah, matching the spouse on file.",
+     "photo_url": "photos/chelsea-mcgrath-ig.jpg",
+     "source_page": "https://www.instagram.com/chelsea__mcgrath/",
+     "status": "likely",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @chelsea__mcgrath (display name \"C H E L S E A M C G R A T H\"); bio: \"Follower of Jesus. Wife of Josiah. Mama of Adalie, Sutton + Emery. Maker of Jewelry. (@clay_bychels ) Fan of \ud83d\udc90\".",
    "name": "Chelsea McGrath",
    "photo_url": "photos/chelsea-mcgrath.jpg",
@@ -1171,13 +1321,13 @@
    "type": "article photo (presenting)"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Brussels, Belgium as the current city.",
    "name": "Christa Scott",
    "photo_url": "photos/christa-scott.jpg",
    "source_page": "https://facebook.com/christa.scott.33",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1188,13 +1338,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Christine Sinicropi Anderson",
    "photo_url": "photos/christine-sinicropi-anderson.jpg",
    "source_page": "https://facebook.com/christine.sinicropianderson",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-30",
@@ -1261,12 +1411,13 @@
    "type": "PDGA profile photo"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Cody Dennis embracing his partner under an umbrella in the snow; the profile name matches the directory entry and the profile lists Norwood, New York as the current city, SUNY Canton, APC paper group, Mapleview Dairy, and Cornerstone Services, all on file.",
    "name": "Cody Dennis",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/cody-dennis.jpg",
+   "source_page": "https://facebook.com/cody.dennis.33",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -1365,13 +1516,7 @@
    "type": "Yearbook senior portrait"
   },
   {
-   "name": "Cory Williams",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
-   "photo_url": "photos/cory-williams.jpg",
-   "source_page": "https://facebook.com/willi183",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -1386,16 +1531,22 @@
      "status": "possible",
      "type": "business gallery headshot"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
+   "name": "Cory Williams",
+   "photo_url": "photos/cory-williams.jpg",
+   "source_page": "https://facebook.com/willi183",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Courtney Cabaniss",
    "photo_url": "photos/courtney-cabaniss.jpg",
    "source_page": "https://facebook.com/courtney.cabaniss.98",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -1407,13 +1558,23 @@
    "type": "profile photo (LinkedIn)"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Courtney Kelly with a companion at a mountain overlook; the profile name matches the directory entry and the profile lists Black Cat Yoga LLC as her business, which is on file.",
+     "photo_url": "photos/courtney-kelly-fb.jpg",
+     "source_page": "https://facebook.com/courtney.kelly.848823",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Black Cat Yoga LLC.",
    "name": "Courtney Kelly",
    "photo_url": "photos/courtney-kelly.jpg",
    "source_page": "https://facebook.com/courtney.kelly.848823",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list \u2014 no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type.",
@@ -1525,13 +1686,23 @@
    "zoom": 1.9
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Danny Wangerin in a selfie with a woman; the profile name matches the directory entry and the profile lists Norwood, New York as the current city, plus the Kevin Daniels Agency and Rochester Regional Health, both on file. This is his genuine Facebook profile photo, not the excluded Webflow image.",
+     "photo_url": "photos/danny-wangerin-fb.jpg",
+     "source_page": "https://facebook.com/danny.wangerin",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Danny Wangerin with others; the profile name matches the directory entry and the profile lists Norwood, New York as the current city.",
    "name": "Danny Wangerin",
    "photo_url": "photos/danny-wangerin.jpg",
    "source_page": "https://facebook.com/danny.wangerin",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -1611,13 +1782,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "name": "David Zufall",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Lisbon, New York as the current city.",
-   "photo_url": "photos/david-zufall-fb.jpg",
-   "source_page": "https://facebook.com/david.zufall.18",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added_approx": "Oct 2026",
@@ -1635,7 +1800,13 @@
      "status": "possible",
      "type": "Instagram profile picture"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Lisbon, New York as the current city.",
+   "name": "David Zufall",
+   "photo_url": "photos/david-zufall-fb.jpg",
+   "source_page": "https://facebook.com/david.zufall.18",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -1647,13 +1818,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Deanna Colbert Dennis in a selfie with a man at a fountain; the profile name matches the directory entry exactly and the account is JD's Facebook friend, but the profile lists no city, employer, or school to serve as a second anchor, so it is filed as possible.",
+     "photo_url": "photos/deanna-colbert-dennis-fb.jpg",
+     "source_page": "https://facebook.com/deanna.c.dennis",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Deanna Colbert Dennis with others; the profile name matches the directory entry and the profile lists at home.",
    "name": "Deanna Colbert Dennis",
    "photo_url": "photos/deanna-colbert-dennis.jpg",
    "source_page": "https://facebook.com/deanna.c.dennis",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-03",
@@ -1902,6 +2083,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Elizabeth Daniels in a solo selfie; the account is the @elizabethadaniels handle on file for the directory entry, matching her full name, but the profile carries no bio or other anchor, so it is filed as possible.",
+     "photo_url": "photos/elizabeth-daniels-ig.jpg",
+     "source_page": "https://www.instagram.com/elizabethadaniels/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @elizabethadaniels (display name \"\").",
    "name": "Elizabeth Daniels",
    "photo_url": "photos/elizabeth-daniels.jpg",
@@ -1936,13 +2127,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Fairbanks, Alaska as the current city.",
    "name": "Ellen M Miller",
    "photo_url": "photos/ellen-m-miller.jpg",
    "source_page": "https://facebook.com/ellen.m.miller.94",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-30",
@@ -1983,13 +2174,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-04",
    "evidence": "Senior-superlatives photo in the Algonquin 2015, the Canton Central School yearbook: the printed caption names the pair 'Funniest: Emilee McAdoo & Chase McLaughlin' and she is the young woman in front, wearing a Canton Swimming sweatshirt matching her seeded swim history.",
    "name": "Emilee McAdoo",
    "photo_url": "photos/emilee-mcadoo.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/api/collection/sllboces/id/156134/download",
    "status": "confirmed",
-   "type": "Yearbook photo",
-   "added": "2026-11-04"
+   "type": "Yearbook photo"
   },
   {
    "added": "2026-11-02",
@@ -2001,13 +2192,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Emily Baxter in a solo outdoor portrait; the profile name matches the directory entry and the account is JD's Facebook friend, but neither the directory entry nor the profile carries a city, employer, or school anchor, so it is filed as possible.",
+     "photo_url": "photos/emily-baxter-fb.jpg",
+     "source_page": "https://facebook.com/ae.baxter.1",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture; the profile name matches the directory entry.",
    "name": "Emily Baxter",
    "photo_url": "photos/emily-baxter.jpg",
    "source_page": "https://facebook.com/ae.baxter.1",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -2028,22 +2229,32 @@
    "type": "Business About page founders photo (crop)"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Emily Elliott with her partner and child by a stream; the profile name matches the directory entry and the profile lists Madrid, New York as the current city, SUNY Plattsburgh, Siena University, Emily Murphy Photography, and Upstate Selfie Co., all on file.",
+     "photo_url": "photos/emily-elliott-fb.jpg",
+     "source_page": "https://facebook.com/emily.murphy.1806",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Emily Elliott with others; the profile name matches the directory entry and the profile lists Madrid, New York as the current city.",
    "name": "Emily Elliott",
    "photo_url": "photos/emily-elliott.jpg",
    "source_page": "https://facebook.com/emily.murphy.1806",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Madrid, New York as the hometown.",
    "name": "Emily Kendall",
    "photo_url": "photos/emily-kendall.jpg",
    "source_page": "https://facebook.com/emily.hargrave.564",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -2082,13 +2293,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Emily Ward with her partner and two children on a lawn; the profile name matches the directory entry and the profile lists Massena, New York as the current city, which is on file, with nursing work at Canton-Potsdam Hospital.",
+     "photo_url": "photos/emily-ward-fb.jpg",
+     "source_page": "https://facebook.com/emily.ward.818205",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Emily Ward with others; the profile name matches the directory entry and the profile lists Massena, New York as the current city.",
    "name": "Emily Ward",
    "photo_url": "photos/emily-ward.jpg",
    "source_page": "https://facebook.com/emily.ward.818205",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -2207,13 +2428,7 @@
    "type": "Yearbook senior portrait"
   },
   {
-   "name": "Erin Dunham",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists SUNY Potsdam.",
-   "photo_url": "photos/erin-dunham-fb.jpg",
-   "source_page": "https://facebook.com/erin.dunham",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-03",
@@ -2223,7 +2438,13 @@
      "status": "possible",
      "type": "Group photo"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists SUNY Potsdam.",
+   "name": "Erin Dunham",
+   "photo_url": "photos/erin-dunham-fb.jpg",
+   "source_page": "https://facebook.com/erin.dunham",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -2269,21 +2490,22 @@
    "type": "Employer team introduction photo"
   },
   {
+   "added": "2026-11-09",
    "evidence": "SUNY Potsdam Law Enforcement Training Institute graduation group photo (Knowles Hall, July 18): the source page's caption describes all the graduating officers in the frame and its graduate list names Ethan Ryan under Norwood Police Department, matching his profile (SUNY Canton AAS Criminal Justice 2024, Norwood PD). His individual position in the group is not identified, so this files as possible, not confirmed. Coordinator GET-verified 2026-11-09 (HTTP 200, image/jpeg) and eyeballed the frame against the institute banner.",
    "name": "Ethan Ryan",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/Police%20academy%20graduates.jpg?itok=8nsX0ApA",
    "source_page": "https://www.potsdam.edu/news/lawenforcementgraduates",
    "status": "possible",
-   "type": "Police academy graduation group photo (SUNY Potsdam LETI)",
-   "added": "2026-11-09"
+   "type": "Police academy graduation group photo (SUNY Potsdam LETI)"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Ethan Thompson standing on a bench by a river, seen from behind; the profile name matches the directory entry and the profile lists Canton, New York as the current city, which is on file. Filed as possible because the photo is a back view.",
    "name": "Ethan Thompson",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/ethan-thompson.jpg",
+   "source_page": "https://facebook.com/ethan.thompson.528316",
+   "status": "possible",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -2339,15 +2561,26 @@
    "type": "article photo"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing G.C. Jaggs serving in a beach volleyball game, seen from behind; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city, SUNY Potsdam, Salmon River Central School District, Akwesasne Boys & Girls Club, and NOCO NY, all on file. Filed as possible because the photo is a back view.",
    "name": "G.C. Jaggs",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/g-c-jaggs.jpg",
+   "source_page": "https://facebook.com/gcj99084",
+   "status": "possible",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Gabe Matthis with three friends indoors; the account is the @gabematthis handle on file for the directory entry and he is also JD's Facebook friend (his Facebook profile picture is the default placeholder), but the Instagram profile carries no city or other anchor, so it is filed as possible.",
+     "photo_url": "photos/gabe-matthis-ig.jpg",
+     "source_page": "https://www.instagram.com/gabematthis/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @gabematthis (display name \"\"). Repair 2026-11-09: the original Instagram CDN link's signature expired 2026-10-27 and the picture stopped loading; the picture was re-downloaded from the same Instagram profile and is now hosted locally.",
    "name": "Gabe Matthis",
    "photo_url": "photos/gabe-matthis.jpg",
@@ -2439,22 +2672,22 @@
    "type": "profile portrait"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Salem, Massachusetts as the current city.",
    "name": "Grace LaPointe",
    "photo_url": "photos/grace-lapointe.jpg",
    "source_page": "https://facebook.com/grace.lapointe.359",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Farmingville, New York as the hometown.",
    "name": "Grace Martin",
    "photo_url": "photos/grace-martin.jpg",
    "source_page": "https://facebook.com/headytheyeti",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "Merit story names Grace E. Ockrin as an incoming St. Lawrence University Class of 2025 student (Webster Schroeder HS) but is text-only.",
@@ -2479,6 +2712,14 @@
      "source_page": "https://www.youtube.com/watch?v=1EMxF5PqJ8o",
      "status": "possible",
      "type": "YouTube video frame"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Grace Serene in a close-up selfie wearing a cow-print hat; the profile name matches the directory entry and the business profile's listed location is Nashville, Tennessee, on file for her.",
+     "photo_url": "photos/grace-serene-ig.jpg",
+     "source_page": "https://www.instagram.com/grace.serene/",
+     "status": "likely",
+     "type": "Instagram profile picture"
     }
    ],
    "evidence": "Grace Serene at the microphone, center stage, performing with Grace Serene and the Super Clean at their album-release party at Essex, Rochester; photo by Fred McCoy for Roc City Magazine.",
@@ -2489,22 +2730,26 @@
    "type": "Stage photo"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Grace Zehr Cassulis with a man at night; the profile name matches the directory entry exactly and this is the same Facebook profile already on file as her source, with no conflicting city, employer, or school listed.",
+     "photo_url": "photos/grace-zehr-cassulis-fb.jpg",
+     "source_page": "https://facebook.com/grace.zehr.cassulis",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Grace Zehr Cassulis with others; the profile name matches the directory entry.",
    "name": "Grace Zehr Cassulis",
    "photo_url": "photos/grace-zehr-cassulis.jpg",
    "source_page": "https://facebook.com/grace.zehr.cassulis",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
-   "name": "Gracyn Denny",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture showing Gracyn Denny with others; the profile name matches the directory entry and the profile lists Registered Nurse.",
-   "photo_url": "photos/gracyn-denny-fb.jpg",
-   "source_page": "https://facebook.com/gdenny35",
-   "status": "likely",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-02",
@@ -2513,17 +2758,41 @@
      "source_page": "https://www.instagram.com/gracyn_elizabeth/",
      "status": "possible",
      "type": "Instagram profile picture"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Gracyn Denny with a man; the profile name matches the directory entry and the profile lists Capella University and North Country Community College, both on file for her.",
+     "photo_url": "photos/gracyn-denny-fb2.jpg",
+     "source_page": "https://facebook.com/gdenny35",
+     "status": "likely",
+     "type": "Facebook profile picture"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture showing Gracyn Denny with others; the profile name matches the directory entry and the profile lists Registered Nurse.",
+   "name": "Gracyn Denny",
+   "photo_url": "photos/gracyn-denny-fb.jpg",
+   "source_page": "https://facebook.com/gdenny35",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Greg Lapinski with a woman at a coastal overlook, wearing a Michigan State hoodie; the profile name matches the directory entry and the profile lists Canton, New York as the current city and Michigan State University, both on file for him.",
+     "photo_url": "photos/greg-lapinski-fb.jpg",
+     "source_page": "https://facebook.com/greg.lapinski.9",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Greg Lapinski with others; the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Greg Lapinski",
    "photo_url": "photos/greg-lapinski.jpg",
    "source_page": "https://facebook.com/greg.lapinski.9",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -2669,22 +2938,16 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Massena, New York as the current city.",
    "name": "Heather Marie",
    "photo_url": "photos/heather-marie.jpg",
    "source_page": "https://facebook.com/hlosey1",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
-   "evidence": "Crop of the woman from New Testament Church Massena's 'Three Questions' sermon-series artwork, built on a real couple photograph: the man is Tony Ramsdell (named in the graphic) and the woman beside him is presumed to be his wife Heather; the church's preacher archive names 'Pastor Heather Ramsdell' across three sermon series.",
-   "name": "Heather Ramsdell",
-   "photo_url": "photos/heather-ramsdell.jpg",
-   "source_page": "https://www.ntcmassena.com/series/three-questions/",
-   "status": "possible",
-   "type": "Series artwork photo (crop)",
    "also": [
     {
      "added": "2026-11-05",
@@ -2693,8 +2956,22 @@
      "source_page": "https://facebook.com/heather.g.ramsdell",
      "status": "possible",
      "type": "Facebook profile picture"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Heather Ramsdell with two other people at an outdoor gathering; the profile name matches the directory entry and the profile lists Winthrop, New York as the current city and work at Living Hope Church and New Testament Church, all on file for her.",
+     "photo_url": "photos/heather-ramsdell-fb2.jpg",
+     "source_page": "https://facebook.com/heather.g.ramsdell",
+     "status": "likely",
+     "type": "Facebook profile picture"
     }
-   ]
+   ],
+   "evidence": "Crop of the woman from New Testament Church Massena's 'Three Questions' sermon-series artwork, built on a real couple photograph: the man is Tony Ramsdell (named in the graphic) and the woman beside him is presumed to be his wife Heather; the church's preacher archive names 'Pastor Heather Ramsdell' across three sermon series.",
+   "name": "Heather Ramsdell",
+   "photo_url": "photos/heather-ramsdell.jpg",
+   "source_page": "https://www.ntcmassena.com/series/three-questions/",
+   "status": "possible",
+   "type": "Series artwork photo (crop)"
   },
   {
    "added": "2026-10-31",
@@ -2713,6 +2990,14 @@
      "note": "Prior primary (expired or remote URL).",
      "source_page": "https://www.instagram.com/hjlevendusky/",
      "url": "https://scontent.cdninstagram.com/v/t51.2885-19/356257467_197586246245200_6221625728069100224_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7JDHijq2qwcQ7kNvwGRX_1b&_nc_oc=AdqpZTeaZ6H836Xnjrr17jL2u9-b732r5KF5aXszY7-ECrj9t4man4HvEOCLx4TbEvIx2ydTg4cbw_gbQ9rtYvsZ&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNuOQhzlu11AJR5Sg7xKKfdc_EbpFaWsNqOYKN-5vtsDg&oe=6AE010D9"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Heidi Jo Levendusky in a car with her husband; the profile name matches the directory entry and her bio describes her as a wrestling mom, consistent with the Slingshot Wrestling Club tie on file for her.",
+     "photo_url": "photos/heidi-jo-levendusky-ig.jpg",
+     "source_page": "https://www.instagram.com/hjlevendusky/",
+     "status": "possible",
+     "type": "Instagram profile picture"
     }
    ],
    "evidence": "Crop of Heidi Levendusky from the poster frame of '\"God is Not An American\" with Derek & Heidi Levendusky' on her husband Derek's ministry channel: Heidi is the woman at right in the blue long-sleeve shirt. Her full name is in the video title.",
@@ -2790,13 +3075,23 @@
    "type": "Staff headshot"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Ilene Rose embracing another young woman in matching white dresses; the profile name matches the directory entry and the profile lists Ogdensburg, New York as the current city, work at Clarkson University, and Elim Bible Institute, all on file for her.",
+     "photo_url": "photos/ilene-rose-fb.jpg",
+     "source_page": "https://facebook.com/ilene.rose87",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Ogdensburg, New York as the current city.",
    "name": "Ilene Rose",
    "photo_url": "photos/ilene-rose.jpg",
    "source_page": "https://facebook.com/ilene.rose87",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -2859,13 +3154,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "name": "Isabelle Westerman",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Pike, New Hampshire as the current city.",
-   "photo_url": "photos/isabelle-westerman.jpg",
-   "source_page": "https://facebook.com/isabelle.bailey.52",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-03",
@@ -2875,7 +3164,13 @@
      "status": "likely",
      "type": "Business bio portrait"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Pike, New Hampshire as the current city.",
+   "name": "Isabelle Westerman",
+   "photo_url": "photos/isabelle-westerman.jpg",
+   "source_page": "https://facebook.com/isabelle.bailey.52",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -2906,13 +3201,13 @@
    "type": "portrait"
   },
   {
+   "added": "2026-11-04",
    "evidence": "Sophomore portrait in the Centralian 2017, the St. Lawrence Central School yearbook, with her name printed directly under the portrait; sophomore in 2017 matches her seeded class of 2019.",
    "name": "Jacinta Gomes",
    "photo_url": "photos/jacinta-gomes.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/api/collection/sllboces/id/158562/download",
    "status": "confirmed",
-   "type": "Yearbook portrait",
-   "added": "2026-11-04"
+   "type": "Yearbook portrait"
   },
   {
    "added": "2026-11-09",
@@ -2933,13 +3228,23 @@
    "type": "Staff photo"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jackie Shampine in a group of five at a nighttime stadium event; the profile name matches the directory entry and the profile lists Massena, New York as the current city, Rochester Regional Health and Wendy's Diner as employers, and SUNY Canton and Daemen University, all on file for her.",
+     "photo_url": "photos/jackie-shampine-fb.jpg",
+     "source_page": "https://facebook.com/Jackieshampine",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Massena, New York as the current city.",
    "name": "Jackie Shampine",
    "photo_url": "photos/jackie-shampine.jpg",
    "source_page": "https://facebook.com/Jackieshampine",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -2987,13 +3292,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Washington D.C. as the current city.",
    "name": "Jamal Moses",
    "photo_url": "photos/jamal-moses.jpg",
    "source_page": "https://facebook.com/jamal.moses.79",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -3004,22 +3309,16 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Bonita Springs, Florida as the current city.",
    "name": "James Gilchrist",
    "photo_url": "photos/james-gilchrist.jpg",
    "source_page": "https://facebook.com/james.gilchrist.165",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
-   "name": "James Harmer",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture showing James Harmer with others; the profile name matches the directory entry and the profile lists Gouverneur, New York as the current city.",
-   "photo_url": "photos/james-harmer.jpg",
-   "source_page": "https://facebook.com/HarmerJ7",
-   "status": "likely",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-01",
@@ -3028,8 +3327,22 @@
      "source_page": "https://www.airgigs.com/user/SoundhillStudio",
      "status": "possible",
      "type": "Profile avatar (stage performance photo)"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing James Harmer with a woman in a graduation gown; the profile name matches the directory entry and the profile lists Gouverneur, New York as the current city, SUNY Canton, and employers including Indian River Central School District and Cerebral Palsy Association of the North Country, all on file for him.",
+     "photo_url": "photos/james-harmer-fb.jpg",
+     "source_page": "https://facebook.com/HarmerJ7",
+     "status": "likely",
+     "type": "Facebook profile picture"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture showing James Harmer with others; the profile name matches the directory entry and the profile lists Gouverneur, New York as the current city.",
+   "name": "James Harmer",
+   "photo_url": "photos/james-harmer.jpg",
+   "source_page": "https://facebook.com/HarmerJ7",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -3168,6 +3481,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jeeves Green in silhouette with his wife and newborn; the profile name matches the directory entry and the profile lists SUNY Potsdam, on file for him, though the faces are in shadow and the profile lists Potsdam rather than the Massena address on file.",
+     "photo_url": "photos/jeeves-green-fb.jpg",
+     "source_page": "https://facebook.com/JeevesGreen",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Instagram profile @jeevesgreen (display name \"jeevesgreen\"); bio: \"Husband to @_cathaccino_ : Father to Archer & Ollie : Follower of Christ : Worship Leader : Family : Friends :\".",
    "name": "Jeeves Green",
    "photo_url": "photos/jeeves-green.jpg",
@@ -3230,13 +3553,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city.",
    "name": "Jennifer Gallagher Moore",
    "photo_url": "photos/jennifer-gallagher-moore.jpg",
    "source_page": "https://facebook.com/jennifer.g.moore.14",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-03",
@@ -3266,13 +3589,13 @@
    "type": "Couple portrait at their shop (NCPR)"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Madrid, New York as the hometown.",
    "name": "Jeremy Taylor",
    "photo_url": "photos/jeremy-taylor.jpg",
    "source_page": "https://facebook.com/jeremy.taylor.878920",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -3293,13 +3616,23 @@
    "type": "group"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jessica Atindama with her husband and two young children in matching red outfits; the profile name matches the directory entry exactly and this is the same Facebook profile already on file as her source, with no conflicting city, employer, or school listed.",
+     "photo_url": "photos/jessica-atindama-fb.jpg",
+     "source_page": "https://facebook.com/jessica.atindama",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Jessica Atindama with others; the profile name matches the directory entry and the profile lists Home.",
    "name": "Jessica Atindama",
    "photo_url": "photos/jessica-atindama.jpg",
    "source_page": "https://facebook.com/jessica.atindama",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3340,6 +3673,14 @@
      "source_page": "https://facebook.com/jessica.hurlbut.3",
      "status": "likely",
      "type": "Facebook profile picture"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jessica Hurlbut with her husband by a river; the profile name matches the directory entry and the profile lists Massena, New York as the current city and SUNY Potsdam and Southeastern University, all on file for her.",
+     "photo_url": "photos/jessica-hurlbut-fb2.jpg",
+     "source_page": "https://facebook.com/jessica.hurlbut.3",
+     "status": "likely",
+     "type": "Facebook profile picture"
     }
    ],
    "evidence": "Jessica Hurlbut; photo from the About page of her author website, jessicahurlbut.com.",
@@ -3350,13 +3691,23 @@
    "type": "Profile photo"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jessica Osypiewski with her family under a scenic overlook arch; the profile name matches the directory entry and the profile lists SUNY Canton and Champlain College, both on file for her, and this is the same Facebook profile already on file as her source.",
+     "photo_url": "photos/jessica-osypiewski-fb.jpg",
+     "source_page": "https://facebook.com/jessica.pike.104",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Madrid, New York as the hometown.",
    "name": "Jessica Osypiewski",
    "photo_url": "photos/jessica-osypiewski.jpg",
    "source_page": "https://facebook.com/jessica.pike.104",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-01",
@@ -3404,13 +3755,13 @@
    "type": "Sermon video frame (solo)"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Ogdensburg, New York as the current city.",
    "name": "Jim Wing",
    "photo_url": "photos/jim-wing.jpg",
    "source_page": "https://facebook.com/jim.wing.54",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-30",
@@ -3487,12 +3838,13 @@
    "type": "LinkedIn profile headshot"
   },
   {
-   "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings \u2014 no profile photo extractable.",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Joelle Kowalka alone holding two professional video cameras; the profile name matches the directory entry and the profile lists Boone, North Carolina as the current city and Clarkson University, both on file for her.",
    "name": "Joelle Kowalka",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Joelle-Elizabeth-Kowalka/2938066",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/joelle-kowalka.jpg",
+   "source_page": "https://facebook.com/joelle.kowalka",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -3555,6 +3907,14 @@
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
      "source_page": "https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market",
      "url": "https://www.natureupnorth.org/sites/default/files/inline-images/Zufall_grid.jpg"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing John Zufall alone with hot air balloons in the background; the profile name matches the directory entry and the profile lists Lisbon, New York as the current city, on file for him.",
+     "photo_url": "photos/john-zufall.jpg",
+     "source_page": "https://facebook.com/john.zufall.16",
+     "status": "likely",
+     "type": "Facebook profile picture"
     }
    ],
    "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' \u2014 a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others).",
@@ -3625,6 +3985,14 @@
      "source_page": "https://www.cfconline.org/",
      "status": "possible",
      "type": "Family portrait"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Jonathan Puglia alone at a cafe table; the profile name matches the directory entry and he is JD's Facebook friend under this distinctive name, though the profile lists no city, employer, or school to compare with the South Colton and Shippensburg details on file.",
+     "photo_url": "photos/jonathan-puglia-fb.jpg",
+     "source_page": "https://facebook.com/jonathan.puglia.9",
+     "status": "possible",
+     "type": "Facebook profile picture"
     }
    ],
    "evidence": "Christian Fellowship Center leadership page photo beside the text naming Jonathan Puglia, Pastor at CFC Moira: a family portrait the church uses as his leadership image.",
@@ -3675,6 +4043,14 @@
      "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
      "source_page": "https://www.instagram.com/joetherockboyle/",
      "url": "https://scontent.cdninstagram.com/v/t51.2885-19/453448963_1048926319917119_3693739310785806000_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTMuQzMifQ%3D%3D&_nc_ohc=sPXlBNRqxpcQ7kNvwEgWCS_&_nc_oc=Adrl8rDyVdmTfQaWgyavj_cYjy9z3nkuiXuFwBxsCsC0LNxoqqKFtbzlE1iw_UFd5YDVArLtAWFJBIPJGgX4go4K&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMyYWsbd-Xwf6Rl1FrHNvTVFavsqdjeXVDw2bAv8RTijA&oe=6AE0334A"
+    },
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Joseph Boyle alone holding a large fish on a boat; the profile name matches the directory entry and the username is the handle on file for him, though the profile lists no city, employer, or school to compare with the Potsdam and SUNY Potsdam details on file.",
+     "photo_url": "photos/joseph-boyle-ig.jpg",
+     "source_page": "https://www.instagram.com/joetherockboyle/",
+     "status": "possible",
+     "type": "Instagram profile picture"
     }
    ],
    "evidence": "Crop of Joseph Boyle from the Chess Club group photo in Tatler 2018 (Massena Central High School), printed p. 137, captioned 'Left to Right: Mr. Boyle, Axelle Langle, Dr. David Kistler, Jimmy Harvey, Micah Avery, Johnny Harvey, Miles LaFrance, Aidan Shanty' \u2014 the far-left man (green shirt, glasses, beard). He is the school's Spanish teacher 'Mr. Boyle', pictured across a decade of Tatlers.",
@@ -3695,6 +4071,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Josh McGrath as a silhouette playing tennis at sunset; the profile name is Joshua McGrath, matching the directory entry, and the profile lists Potsdam, New York as the hometown, on file for him, though the silhouette does not show his face.",
+     "photo_url": "photos/josh-mcgrath-fb.jpg",
+     "source_page": "https://facebook.com/joshuajmcgrath",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Profile photo on his Kickstarter 'About the creator' page ('About Josh McGrath, Potsdam NY', first-person bio) \u2014 the single image on the page, also shown beside 'Created by Josh McGrath'. No caption or alt text names him in the image. The campaign's main image is book art.",
    "name": "Josh McGrath",
    "photo_url": "photos/josh-mcgrath.jpg",
@@ -3740,6 +4126,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Josiah McGrath in a solo selfie; the profile name is Josiah D. and the username is the handle on file for him, though the profile lists no city, employer, or school to compare with the Massena and SUNY Canton details on file.",
+     "photo_url": "photos/josiah-mcgrath-ig.jpg",
+     "source_page": "https://www.instagram.com/josiahbounce/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @josiahbounce (display name \"Josiah D.\").",
    "name": "Josiah McGrath",
    "photo_url": "photos/josiah-mcgrath.jpg",
@@ -3748,13 +4144,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Josiah Tabolt with his wife and two young children on a couch; the profile name matches the directory entry and the profile lists Lyons Falls, New York as the current city, on file for him.",
+     "photo_url": "photos/josiah-tabolt-fb.jpg",
+     "source_page": "https://facebook.com/josiah.tabolt",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Josiah Tabolt with others; the profile name matches the directory entry and the profile lists Lyons Falls, New York as the current city.",
    "name": "Josiah Tabolt",
    "photo_url": "photos/josiah-tabolt.jpg",
    "source_page": "https://facebook.com/josiah.tabolt",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -3875,6 +4281,16 @@
   },
   {
    "added": "2026-11-03",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Julie Feliciano alone in sunglasses; the profile name matches the directory entry and the profile lists Saint Michael's College, on file for her, and its bio points to Aja Performance Media, the source already on file for her.",
+     "photo_url": "photos/julie-feliciano-fb.jpg",
+     "source_page": "https://facebook.com/profile.php?id=100070573940213",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Julie Feliciano photographing with a telephoto lens from a wooden hide; lead photo on the Aja Performance Media About page.",
    "name": "Julie Feliciano",
    "photo_url": "photos/julie-feliciano.jpg",
@@ -3883,21 +4299,22 @@
    "type": "portrait / action photo"
   },
   {
-   "evidence": "No source links on file.",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Julie McOrmond kissing a young child's cheek; the profile name matches the directory entry and she is JD's Facebook friend under this distinctive name, though the profile lists no city, employer, or school to compare with the Christian Fellowship Center tie on file.",
    "name": "Julie McOrmond",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "photos/julie-mcormond.jpg",
+   "source_page": "https://facebook.com/juliemcormond",
+   "status": "possible",
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Parishville, New York as the current city.",
    "name": "Julie Rose LaShomb",
    "photo_url": "photos/julie-rose-lashomb.jpg",
    "source_page": "https://facebook.com/julie.lashomb.1",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -3909,13 +4326,13 @@
    "type": "Business event group photo"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the hometown.",
    "name": "Justin Daniels",
    "photo_url": "photos/justin-daniels.jpg",
    "source_page": "https://facebook.com/justin.daniels.18",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -3926,13 +4343,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "SUNY Potsdam's Lougheed Learning Commons Tutoring Services 'Meet the Tutor' poster prints Kailee Paige's name and her major, Biomedical Science, directly beside her photo, matching her Massena and SUNY Potsdam anchors.",
    "name": "Kailee Paige",
    "photo_url": "photos/kailee-paige.jpg",
    "source_page": "https://www.instagram.com/p/DW_33GLlnuy/",
    "status": "confirmed",
-   "type": "school tutor bio poster (SUNY Potsdam tutoring services, Instagram)",
-   "added": "2026-11-05"
+   "type": "school tutor bio poster (SUNY Potsdam tutoring services, Instagram)"
   },
   {
    "added": "2026-11-01",
@@ -4026,22 +4443,32 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Katelyn Tomford with her husband and two daughters in the snow; the profile name matches the directory entry and the profile lists Clarkson University, on file for her, and a relationship with Matthew Tomford, her spouse on file.",
+     "photo_url": "photos/katelyn-tomford-fb.jpg",
+     "source_page": "https://facebook.com/katelyn.venable",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Katelyn Tomford with others; the profile name matches the directory entry and the profile lists Clarkson University.",
    "name": "Katelyn Tomford",
    "photo_url": "photos/katelyn-tomford.jpg",
    "source_page": "https://facebook.com/katelyn.venable",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-04",
    "evidence": "Named senior portrait in the Deanonian 2012, the Gouverneur Central School yearbook; her yearbook bio lists the ambition to work as a registered nurse, matching her seeded nursing career.",
    "name": "Katelynne Kulp",
    "photo_url": "photos/katelynne-kulp.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/150733",
    "status": "confirmed",
-   "type": "Yearbook senior portrait",
-   "added": "2026-11-04"
+   "type": "Yearbook senior portrait"
   },
   {
    "added": "2026-11-02",
@@ -4086,13 +4513,23 @@
    "type": "Merit Pages (DMNA)"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Kathy Eggleson with three colleagues in a board room; the profile name matches the directory entry and the profile lists Norwood, New York as the current city and Rochester Regional Health as the employer, both on file for her.",
+     "photo_url": "photos/kathy-eggleson-fb.jpg",
+     "source_page": "https://facebook.com/kathy.eggleson",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Norwood, New York as the current city.",
    "name": "Kathy Eggleson",
    "photo_url": "photos/kathy-eggleson.jpg",
    "source_page": "https://facebook.com/kathy.eggleson",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -4165,13 +4602,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Massena, New York as the hometown.",
    "name": "Katie Wolstenholme",
    "photo_url": "photos/katie-wolstenholme.jpg",
    "source_page": "https://facebook.com/katie.beaulieu.56",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -4201,22 +4638,32 @@
    "type": "portrait"
   },
   {
+   "added": "2026-11-04",
    "evidence": "Juniors (Class of 2021) portrait in the Ogdensburg Free Academy Devilog 2020 with her name printed beside the portrait row; the same book's Girls Varsity Spring Track roster also names her.",
    "name": "Kaylee Gilbert",
    "photo_url": "photos/kaylee-gilbert.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/163819",
    "status": "confirmed",
-   "type": "Yearbook portrait",
-   "added": "2026-11-04"
+   "type": "Yearbook portrait"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Kaylee Hartley in the foreground on a boat; the profile name matches the directory entry and the profile lists Edwards, New York as the hometown, Empire State University, and Emergency Department work, all on file for her.",
+     "photo_url": "photos/kaylee-hartley-fb.jpg",
+     "source_page": "https://facebook.com/kaylee.hartley.1",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Edwards, New York as the hometown.",
    "name": "Kaylee Hartley",
    "photo_url": "photos/kaylee-hartley.jpg",
    "source_page": "https://facebook.com/kaylee.hartley.1",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -4237,13 +4684,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "name": "Kelsey Wilbur",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Binghamton, New York as the current city.",
-   "photo_url": "photos/kelsey-wilbur-fb.jpg",
-   "source_page": "https://facebook.com/kelsey.tombs",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-03",
@@ -4253,16 +4694,32 @@
      "status": "likely",
      "type": "Profile photo"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Binghamton, New York as the current city.",
+   "name": "Kelsey Wilbur",
+   "photo_url": "photos/kelsey-wilbur-fb.jpg",
+   "source_page": "https://facebook.com/kelsey.tombs",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Kenna Leigh with a man on a beach; the profile name matches the directory entry and the profile lists St. John Fisher University and SUNY Potsdam, both on file for her.",
+     "photo_url": "photos/kenna-leigh-fb.jpg",
+     "source_page": "https://facebook.com/kenna.king.20",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Norwood, New York as the hometown.",
    "name": "Kenna Leigh",
    "photo_url": "photos/kenna-leigh.jpg",
    "source_page": "https://facebook.com/kenna.king.20",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -4283,12 +4740,13 @@
    "type": "headshot"
   },
   {
-   "evidence": "No source links on file.",
+   "added": "2026-11-15",
+   "evidence": "Instagram profile picture showing Khosa Muno in a solo car selfie; the profile name matches the directory entry exactly under this distinctive name and the username is the handle on file for her, though the profile lists no city or school to compare with the Potsdam and Clarkson University details on file.",
    "name": "Khosa Muno",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "photos/khosa-muno.jpg",
+   "source_page": "https://www.instagram.com/muno_khosa/",
+   "status": "possible",
+   "type": "Instagram profile picture"
   },
   {
    "added": "2026-11-03",
@@ -4301,6 +4759,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Kimberly Damon alone outdoors in sunglasses; the profile name is Kimberly Mitchell Damon, matching the directory entry, and the username is the handle on file for her, though the profile lists no city or employer to compare with the Potsdam and Bright Beginnings Daycare details on file.",
+     "photo_url": "photos/kimberly-damon-ig.jpg",
+     "source_page": "https://www.instagram.com/kimberlymitchelldamon/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @kimberlymitchelldamon (display name \"Kimberly Mitchell Damon\").",
    "name": "Kimberly Damon",
    "photo_url": "photos/kimberly-damon.jpg",
@@ -4318,22 +4786,22 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Rochester Regional Health - St. Lawrence Region.",
    "name": "Krysten Emily",
    "photo_url": "photos/krysten-emily.jpg",
    "source_page": "https://facebook.com/Krysten",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Marondera as the hometown.",
    "name": "Kundai Mugugu",
    "photo_url": "photos/kundai-mugugu.jpg",
    "source_page": "https://facebook.com/kundai.mugugu",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -4380,13 +4848,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city.",
    "name": "Kyle Prescott",
    "photo_url": "photos/kyle-prescott.jpg",
    "source_page": "https://facebook.com/kyle.prescott.473469",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -4486,13 +4954,23 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Lindsey Elaine with an older woman in a close-up selfie; the profile name matches the directory entry and the profile lists Woburn, Massachusetts as the current city, SUNY Potsdam, Onondaga Community College, and Montclair State University, and work at Lexington High School and Karma Asian Fusian, all on file for her.",
+     "photo_url": "photos/lindsey-elaine-fb.jpg",
+     "source_page": "https://facebook.com/lindsey.casler.9",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Woburn, Massachusetts as the current city.",
    "name": "Lindsey Elaine",
    "photo_url": "photos/lindsey-elaine.jpg",
    "source_page": "https://facebook.com/lindsey.casler.9",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -4504,13 +4982,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Lisa Arquette in a sheriff's uniform with two men and a toddler; the profile name matches the directory entry and the profile lists Kissimmee, Florida as the current city and work at Polk County Sheriffs Office, Great Clips, and Byrns Realty, all on file for her.",
+     "photo_url": "photos/lisa-arquette-fb.jpg",
+     "source_page": "https://facebook.com/lisainthegap4u",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Kissimmee, Florida as the current city.",
    "name": "Lisa Arquette",
    "photo_url": "photos/lisa-arquette.jpg",
    "source_page": "https://facebook.com/lisainthegap4u",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "Her on-file sources appear mismatched: the opengovpay page is for a different name, no NCPR story about her surfaced, and the police-reform PDF is not about her. No checkable source actually about her, and no photo of her found.",
@@ -4521,12 +5009,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Liz Wangerin with a toddler on a beach; the profile name is Elizabeth Wangerin, matching the directory entry, and the profile lists Anastasia's Bakery as an employer, on file for her.",
    "name": "Liz Wangerin",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/liz-wangerin.jpg",
+   "source_page": "https://facebook.com/elizabeth.wangerin.2025",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -4598,16 +5087,36 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Mackenzie Leigh with another woman; the profile name matches the directory entry and the profile lists Canton, New York as the current city and Rochester Regional Health and United Helpers Maplewood Campus as employers.",
+     "photo_url": "photos/mackenzie-leigh-fb.jpg",
+     "source_page": "https://facebook.com/kenzilv",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Mackenzie Leigh",
    "photo_url": "photos/mackenzie-leigh.jpg",
    "source_page": "https://facebook.com/kenzilv",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing a woman in a white dress outdoors; the profile name matches the directory entry and the account is the Instagram handle on file for her, though the profile lists no city, employer, or school on file.",
+     "photo_url": "photos/maddie-barton-ig.jpg",
+     "source_page": "https://www.instagram.com/m.bsouth02",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile picture of @m.bsouth02 (display name 'Maddie Barton'); the bio says Kentucky.",
    "name": "Maddie Barton",
    "photo_url": "photos/maddie-barton.jpg",
@@ -4616,13 +5125,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Moriah, New York as the current city.",
    "name": "Maddie Morgan",
    "photo_url": "photos/maddie-morgan.jpg",
    "source_page": "https://facebook.com/madison.morgan.1238",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -4686,13 +5195,13 @@
    "type": "College athletics roster headshot"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Malone, New York as the current city.",
    "name": "Maggie Marceau",
    "photo_url": "photos/maggie-marceau.jpg",
    "source_page": "https://facebook.com/maggie.marceau.7",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -4703,22 +5212,32 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Maggie Tibs in a wedding dress with her husband; the profile name matches the directory entry and the profile lists St. Michael's College under education.",
+     "photo_url": "photos/maggie-tibs-fb.jpg",
+     "source_page": "https://facebook.com/maggie.ecker.9",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists St. Michael\u2019s College.",
    "name": "Maggie Tibs",
    "photo_url": "photos/maggie-tibs.jpg",
    "source_page": "https://facebook.com/maggie.ecker.9",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists SUNY Potsdam.",
    "name": "Makiah Barber",
    "photo_url": "photos/makiah-barber.jpg",
    "source_page": "https://facebook.com/kia.charli",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -4757,13 +5276,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "The Zola wedding-party page for Haley Quinlan and Brandon Keough places this photo directly with the entry headed 'Maria Criscitello \u2014 Bridesmaid,' and her bio on the same page says she became friends with the bride while they worked together at the Potsdam Bagelry in Potsdam, NY.",
    "name": "Maria Criscitello",
    "photo_url": "photos/maria-criscitello.jpg",
    "source_page": "https://www.zola.com/wedding/pvt/quinlankeoughwedding/wedding_party",
    "status": "confirmed",
-   "type": "Wedding party page portrait",
-   "added": "2026-11-05"
+   "type": "Wedding party page portrait"
   },
   {
    "added": "2026-11-02",
@@ -4865,13 +5384,23 @@
    "type": "University directory headshot"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Martha Martin with a man in a vehicle; the profile name matches the directory entry and the profile lists Moira, New York as the current city and Martin Castle as an employer.",
+     "photo_url": "photos/martha-martin-fb.jpg",
+     "source_page": "https://facebook.com/martha.martin.14473",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Moira, New York as the current city.",
    "name": "Martha Martin",
    "photo_url": "photos/martha-martin.jpg",
    "source_page": "https://facebook.com/martha.martin.14473",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -4909,13 +5438,23 @@
    "type": "Yearbook senior portrait"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Matthew Cote standing in Times Square; the profile name matches the directory entry and the profile lists New Gloucester, Maine as the current city, the University of Vermont and Clarkson University under education, and Maxfields and Park Bros Coffee among his employers.",
+     "photo_url": "photos/matthew-cote-fb.jpg",
+     "source_page": "https://facebook.com/matthew.cote.3114",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists New Gloucester, Maine as the current city.",
    "name": "Matthew Cote",
    "photo_url": "photos/matthew-cote.jpg",
    "source_page": "https://facebook.com/matthew.cote.3114",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-28",
@@ -5024,13 +5563,23 @@
    "type": "Yearbook senior portrait"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Megan Eurto in a wedding dress with her partner; the profile name matches the directory entry and the profile lists Canton, New York as the current city and the Village of Canton as an employer.",
+     "photo_url": "photos/megan-eurto-fb.jpg",
+     "source_page": "https://facebook.com/megan.howard.98",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Canton, New York as the current city.",
    "name": "Megan Eurto",
    "photo_url": "photos/megan-eurto.jpg",
    "source_page": "https://facebook.com/megan.howard.98",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5095,13 +5644,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Red Mills, New York as the hometown.",
    "name": "Merria Figueiredo",
    "photo_url": "photos/merria-figueiredo.jpg",
    "source_page": "https://facebook.com/merria.recker",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -5146,13 +5695,13 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists North Bangor, New York as the current city.",
    "name": "Michelle Chartier",
    "photo_url": "photos/michelle-chartier.jpg",
    "source_page": "https://facebook.com/michelle.durant.75",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5182,13 +5731,13 @@
    "type": "headshot"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Massena, New York as the hometown.",
    "name": "Michelle Shirley",
    "photo_url": "photos/michelle-shirley.jpg",
    "source_page": "https://facebook.com/michelle.shirley.904",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -5271,13 +5820,13 @@
    "type": "profile photo"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city.",
    "name": "Morgan Williams",
    "photo_url": "photos/morgan-williams.jpg",
    "source_page": "https://facebook.com/morgan.williams.18488",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5394,16 +5943,36 @@
    "type": "College profile portrait"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Nicole Lee Haverstock in a wedding dress with her partner; the profile name matches the directory entry and the profile lists Brasher Falls, New York as the current city, SUNY Canton under education, and Rochester Regional Health and Hospice among her employers.",
+     "photo_url": "photos/nicole-lee-haverstock-fb.jpg",
+     "source_page": "https://facebook.com/nicole.l.collins.33",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Brasher Falls, New York as the current city.",
    "name": "Nicole Lee Haverstock",
    "photo_url": "photos/nicole-lee-haverstock.jpg",
    "source_page": "https://facebook.com/nicole.l.collins.33",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing a young woman in a close-up selfie; the account is the Instagram handle on file for Nicole Seward and its display name is Nicole Robyn, though the profile lists no city, employer, or school on file.",
+     "photo_url": "photos/nicole-seward-ig.jpg",
+     "source_page": "https://www.instagram.com/nikki.sew",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Instagram profile @nikki.sew (display name \"Nicole Robyn\"); bio: \"Love anyways // Trees have the answers Doctor of Physical Therapy \ud83d\udccdAll business inquiries to @rootspt\".",
    "name": "Nicole Seward",
    "photo_url": "photos/nicole-seward.jpg",
@@ -5412,13 +5981,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists ServiceMaster Apple Valley CT.",
    "name": "Nina Criscitello",
    "photo_url": "photos/nina-criscitello.jpg",
    "source_page": "https://facebook.com/nina.criscitello",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -5453,22 +6022,26 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Noah Michael with his partner by a waterfall; the profile name matches the directory entry and the profile lists Lake Placid, New York as the current city.",
+     "photo_url": "photos/noah-michael-fb.jpg",
+     "source_page": "https://facebook.com/noah.michael.172634",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Noah Michael with others; the profile name matches the directory entry and the profile lists Lake Placid, New York as the current city.",
    "name": "Noah Michael",
    "photo_url": "photos/noah-michael.jpg",
    "source_page": "https://facebook.com/noah.michael.172634",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
-   "name": "Norah Pease",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Hammond, New York as the current city.",
-   "photo_url": "photos/norah-pease-fb.jpg",
-   "source_page": "https://facebook.com/norah.pease.3",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "note": "Original launch shot (02_0.JPG), replaced 2026-10-22 at JD note: better photos of her on this site.",
@@ -5490,17 +6063,17 @@
      "status": "possible",
      "type": "article photo (canoe launch, uncaptioned)"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Hammond, New York as the current city.",
+   "name": "Norah Pease",
+   "photo_url": "photos/norah-pease-fb.jpg",
+   "source_page": "https://facebook.com/norah.pease.3",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
-   "added_approx": "Oct 2026",
-   "name": "Olena Musiienko",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Ottawa, Ontario as the current city.",
-   "photo_url": "photos/olena-musiienko.jpg",
-   "source_page": "https://facebook.com/olena.musiienko.815086",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
+   "added_approx": "Oct 2026",
    "also": [
     {
      "added_approx": "Oct 2026",
@@ -5518,7 +6091,13 @@
      "status": "possible",
      "type": "Website hero photo"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Ottawa, Ontario as the current city.",
+   "name": "Olena Musiienko",
+   "photo_url": "photos/olena-musiienko.jpg",
+   "source_page": "https://facebook.com/olena.musiienko.815086",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5548,13 +6127,7 @@
    "type": "University news field photo (captioned)"
   },
   {
-   "name": "Olivia Goodrow",
    "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city.",
-   "photo_url": "photos/olivia-goodrow-fb.jpg",
-   "source_page": "https://facebook.com/olivia.goodrow.2025",
-   "status": "confirmed",
-   "type": "Facebook profile picture",
    "also": [
     {
      "added": "2026-11-03",
@@ -5564,7 +6137,13 @@
      "status": "likely",
      "type": "group"
     }
-   ]
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city.",
+   "name": "Olivia Goodrow",
+   "photo_url": "photos/olivia-goodrow-fb.jpg",
+   "source_page": "https://facebook.com/olivia.goodrow.2025",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5638,13 +6217,23 @@
    "type": null
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing a young woman smiling in a car; the profile is the Facebook page already on file for Paige Davis and now displays the name Paige Goyco, and it lists Cazenovia College under education and Massena, New York as her hometown, matching the directory entry.",
+     "photo_url": "photos/paige-davis-fb.jpg",
+     "source_page": "https://facebook.com/ImPaige",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Massena, New York as the hometown.",
    "name": "Paige Davis",
    "photo_url": "photos/paige-davis.jpg",
    "source_page": "https://facebook.com/ImPaige",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -5684,21 +6273,32 @@
    "type": "Business portrait"
   },
   {
-   "evidence": "The Ombra news post names him as Potsdam site lead in text, but its sole image is an unlabeled header graphic with no caption tying it to him \u2014 excluded. His other source is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing a silhouetted figure kayaking at sunset, with no visible face; the profile name matches the directory entry and the profile lists Clarkson University under education.",
    "name": "Peter Johnson",
-   "photo_url": null,
-   "source_page": "https://ombra.us/ombra-opens-new-office-in-potsdam-ny-1/",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/peter-johnson.jpg",
+   "source_page": "https://facebook.com/peter.johnson.3910",
+   "status": "possible",
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Peter Michael with his partner, their baby, and a dog in the woods; the profile name matches the directory entry and the profile lists Madrid, New York as the current city.",
+     "photo_url": "photos/peter-michael-fb.jpg",
+     "source_page": "https://facebook.com/peter.pease.35",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Peter Michael with others; the profile name matches the directory entry and the profile lists Madrid, New York as the current city.",
    "name": "Peter Michael",
    "photo_url": "photos/peter-michael.jpg",
    "source_page": "https://facebook.com/peter.pease.35",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -5719,13 +6319,13 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Los Alamos, New Mexico as the current city.",
    "name": "Philip Hubbe",
    "photo_url": "photos/philip-hubbe.jpg",
    "source_page": "https://facebook.com/philip.hubbe.7",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -5746,22 +6346,42 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Phyllis Paladin with her husband on a boat; the profile name matches the directory entry and the profile lists Pittsburgh, Pennsylvania as the current city.",
+     "photo_url": "photos/phyllis-paladin-fb.jpg",
+     "source_page": "https://facebook.com/phyllis.paladin",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Phyllis Paladin with others; the profile name matches the directory entry and the profile lists Pittsburgh, Pennsylvania as the current city.",
    "name": "Phyllis Paladin",
    "photo_url": "photos/phyllis-paladin.jpg",
    "source_page": "https://facebook.com/phyllis.paladin",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Rachael Marshall at the beach with her partner and baby; the profile name matches the directory entry and the profile lists Taylorsville, Kentucky as the current city.",
+     "photo_url": "photos/rachael-marshall-fb.jpg",
+     "source_page": "https://facebook.com/rachael.marshall.478234",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture showing Rachael Marshall with others; the profile name matches the directory entry and the profile lists Taylorsville, Kentucky as the current city.",
    "name": "Rachael Marshall",
    "photo_url": "photos/rachael-marshall.jpg",
    "source_page": "https://facebook.com/rachael.marshall.478234",
    "status": "likely",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -5809,12 +6429,13 @@
    "type": "group"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Rebecca Guldan in a solo portrait; the profile name matches the directory entry and the profile lists Liberty University and Word of Life Bible Institute under education.",
    "name": "Rebecca Guldan",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/rebecca-guldan.jpg",
+   "source_page": "https://facebook.com/rebecca.guldan.7",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-28",
@@ -5826,12 +6447,13 @@
    "type": "School staff page portrait"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Renee Lia De Voe in a solo portrait; the profile name matches the directory entry and the profile lists Kansas City, Missouri as the current city, the University of California, Irvine under education, and The Culture House and Evanston Vineyard as employers.",
    "name": "Renee Lia De Voe",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/renee-lia-de-voe.jpg",
+   "source_page": "https://facebook.com/renee.l.devoe",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -5844,6 +6466,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Ria Amo in a solo portrait on a city sidewalk; the profile name matches the directory entry and her bio cites ACPHS, matching the Albany College entry on file.",
+     "photo_url": "photos/ria-amo-ig.jpg",
+     "source_page": "https://www.instagram.com/ria.amo",
+     "status": "likely",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees \u2014 no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable.",
    "name": "Ria Amo",
    "photo_url": "photos/ria-amo.jpg",
@@ -5852,13 +6484,13 @@
    "type": "group"
   },
   {
+   "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Fredericksburg, Virginia as the current city.",
    "name": "Richard Gilchrist",
    "photo_url": "photos/richard-gilchrist.jpg",
    "source_page": "https://facebook.com/gilchrist.rick",
    "status": "confirmed",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -5905,12 +6537,13 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Rina Nicole in a solo portrait; the profile name matches the directory entry and the profile lists Monarch Boudoir as her employer.",
    "name": "Rina Nicole",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/rina-nicole.jpg",
+   "source_page": "https://facebook.com/Rina001178",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-09",
@@ -5947,12 +6580,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Rohallah Hakimvand smiling with family members beside him; the profile name matches the directory entry and the profile lists Shiraz, Iran as his hometown.",
    "name": "Rohallah Hakimvand",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/rohallah-hakimvand.jpg",
+   "source_page": "https://facebook.com/rohallah.hakimvand.5",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -5974,6 +6608,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Rumbidzai Mushamba seated outdoors at a picnic table; the profile name matches the directory entry and the profile lists Harare Institute of Technology under education.",
+     "photo_url": "photos/rumbidzai-mushamba-fb.jpg",
+     "source_page": "https://facebook.com/rumbidzai.mushamba",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Portrait on her personal website rumbidzai.com (her own name domain).",
    "name": "Rumbidzai Mushamba",
    "photo_url": "photos/rumbidzai-mushamba.jpg",
@@ -6103,12 +6747,13 @@
    "type": "Yearbook senior portrait"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Sandie Waite Colbert in a solo portrait; the profile name matches the directory entry and the profile lists Norwood, New York as the current city and Cornerstone Services as an employer.",
    "name": "Sandie Waite Colbert",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/sandie-waite-colbert.jpg",
+   "source_page": "https://facebook.com/sandie.colbert",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -6136,12 +6781,13 @@
    "type": "roster headshot"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Sara Hargrave kneeling on a beach with a dog; the profile name matches the directory entry and the profile lists Carthage, New York as the current city.",
    "name": "Sara Hargrave",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/sara-hargrave.jpg",
+   "source_page": "https://facebook.com/sara.hargrave.9",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6214,6 +6860,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Savannah Gabriella in a black-and-white solo portrait; the profile name matches the directory entry and the profile lists Anderson, South Carolina as the current city, Anderson University under education, and Kozlowski DePascale Orthodontics, Elohee, and AT&T as employers.",
+     "photo_url": "photos/savannah-gabriella-fb.jpg",
+     "source_page": "https://facebook.com/savannah.gabriella",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Headshot file named 'savannahs-headshot' on Anderson University's SGA site; the current page no longer lists her.",
    "name": "Savannah Gabriella",
    "photo_url": "photos/savannah-gabriella.jpg",
@@ -6231,12 +6887,13 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Scott Hanlin holding a fish on a boat; the profile name matches the directory entry and the profile lists Southern New Hampshire University under education and Northpole Fire Company as an employer.",
    "name": "Scott Hanlin",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/scott-hanlin.jpg",
+   "source_page": "https://facebook.com/scott.hanlin.2025",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6268,23 +6925,35 @@
    "type": "DVIDS"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Shelleymae Bartlett in a solo portrait; the profile name matches the directory entry exactly and she is JD's Facebook friend, though the profile lists no city, employer, or school on file.",
    "name": "Shelleymae Bartlett",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/shelleymae-bartlett.jpg",
+   "source_page": "https://facebook.com/shelleymae.bartlett",
+   "status": "possible",
+   "type": "Facebook profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Sian Miller in a solo portrait; the profile name matches the directory entry and the profile lists Brasher Falls, New York as the current city, SUNY Canton under education, and Hair Studio as an employer.",
    "name": "Sian Miller",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/sian-miller.jpg",
+   "source_page": "https://facebook.com/sian.millercootware",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Sierra Damon with her partner under a floral arch; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city and SUNY Potsdam under education.",
+     "photo_url": "photos/sierra-damon-fb.jpg",
+     "source_page": "https://facebook.com/sierra.damon",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Potsdam article names her on the semifinal team ('Bradley Sweet, Himani Shaker, McKenna Middlebrook, and Sierra Damon') and quotes her; the page's group photos show the Potsdam business students at the Buffalo finals but no caption identifies her individually \u2014 she is one of eight Potsdam students at the event.",
    "name": "Sierra Damon",
    "photo_url": "photos/sierra-damon.jpg",
@@ -6313,6 +6982,16 @@
   },
   {
    "added": "2026-10-29",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Skyler Trumble crouching by a campfire; the profile name matches the directory entry and the profile lists Massena, New York as the current city and Jefferson Community College and SUNY Potsdam under education.",
+     "photo_url": "photos/skyler-trumble-fb.jpg",
+     "source_page": "https://facebook.com/skyler.trumble",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Crop of Skyler Trumble (2nd player from the left in the back row) from the Junior Varsity girls basketball team photo in Tatler 2016 (Massena Central High School), printed p. 99, captioned 'Back Row (L-R): Kayleigh Peets, Skyler Trumble, Liz George, Allainya Dumas, Hannah Greco, Chloe Violi, Lauren Laughman, and Alexandra Convertini'.",
    "name": "Skyler Trumble",
    "photo_url": "photos/skyler-trumble.jpg",
@@ -6322,6 +7001,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Song Yi Lee in a family portrait with her husband and children; the profile name matches the directory entry and the profile lists Busan, South Korea as her hometown, SUNY Potsdam under education, and stay-at-home parent as her work.",
+     "photo_url": "photos/song-yi-lee-fb.jpg",
+     "source_page": "https://facebook.com/immisssnow",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "SUNY ResearchConnect portrait associated with 'Song Yi Lee SUNY Potsdam'.",
    "name": "Song Yi Lee",
    "photo_url": "photos/song-yi-lee.jpg",
@@ -6340,6 +7029,16 @@
   },
   {
    "added": "2026-11-03",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Instagram profile picture showing Stephanie Adams standing on a dock by a lake; the account is the Instagram handle on file for her and her bio cites Potsdam and St. Bonaventure, matching both universities on file, and her matching Facebook profile lists the same schools and the employers on file.",
+     "photo_url": "photos/stephanie-adams-ig.jpg",
+     "source_page": "https://www.instagram.com/stephanieadamss",
+     "status": "likely",
+     "type": "Instagram profile picture"
+    }
+   ],
    "evidence": "Stephanie Adams '23 of Endwell, N.Y., rehearsing 'Angels Round the Zenith' with fellow dancers, SUNY Potsdam Faculty Dance Concert, February 2022.",
    "name": "Stephanie Adams",
    "photo_url": "photos/stephanie-adams.jpg",
@@ -6348,12 +7047,13 @@
    "type": "article photo"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Stephanie Elisa in a solo portrait; the profile name matches the directory entry and the profile lists the University of Groningen and Utrecht University under education.",
    "name": "Stephanie Elisa",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/stephanie-elisa.jpg",
+   "source_page": "https://facebook.com/stephanie.gonzalez.riedel",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-29",
@@ -6374,12 +7074,13 @@
    "type": "profile photo (LinkedIn)"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Stephy Michele in a family portrait beside a large Christmas ornament prop; the profile name matches the directory entry and the profile lists SUNY Potsdam under education.",
    "name": "Stephy Michele",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/stephy-michele.jpg",
+   "source_page": "https://facebook.com/stephanie.stone.792",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-02",
@@ -6400,12 +7101,13 @@
    "type": "Photo: Sunday's Story page, midwifesunday.com"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Susan Blewett with another woman; the profile name matches the directory entry and the profile lists Whittier, California as her hometown, matching the location on file.",
    "name": "Susan Blewett",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/susan-blewett.jpg",
+   "source_page": "https://facebook.com/susan.blewett.3",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "evidence": "No source links on file.",
@@ -6452,13 +7154,13 @@
    "type": "Staff directory headshot"
   },
   {
+   "added": "2026-11-04",
    "evidence": "Senior portrait in Memories 2001, the Madrid-Waddington Central School yearbook, printed name 'Tasha Marie Bernard' directly under the portrait; matches her seeded Madrid-Waddington High School.",
    "name": "Tasha Bernard",
    "photo_url": "photos/tasha-bernard.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/17721",
    "status": "confirmed",
-   "type": "Yearbook senior portrait",
-   "added": "2026-11-04"
+   "type": "Yearbook senior portrait"
   },
   {
    "added": "2026-11-09",
@@ -6507,6 +7209,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Thomas Quant kneeling outdoors behind a turkey; the profile name matches the directory entry and the profile lists Norwood, New York as the current city and Alfred State College as his school, both matching the record on file.",
+     "photo_url": "photos/thomas-quant-fb.jpg",
+     "source_page": "https://facebook.com/Honkyone",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Headshot served by the Clarkson University directory under the username tquant, from Thomas Quant's Clarkson org-chart entry.",
    "name": "Thomas Quant",
    "photo_url": "photos/thomas-quant.jpg",
@@ -6575,20 +7287,22 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Timothy Moulton in profile wearing a cap; the profile name matches the directory entry and the profile lists Stockholm Center, New York as his hometown, matching the location on file.",
    "name": "Timothy Moulton",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/timothy-moulton.jpg",
+   "source_page": "https://facebook.com/timothy.moulton.7",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing a solo portrait of Tom Allan Green wearing sunglasses; the profile name matches the directory entry and the profile lists Portland, Oregon as the current city, matching the location on file.",
    "name": "Tom Allan Green",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/tom-allan-green.jpg",
+   "source_page": "https://facebook.com/tom.a.green",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6600,12 +7314,13 @@
    "type": "portrait"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing Toni Squires with family at a graduation; the profile name matches the directory entry and the profile lists Potsdam, New York as the current city and Excelsior College as her school, both matching the record on file.",
    "name": "Toni Squires",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/toni-squires.jpg",
+   "source_page": "https://facebook.com/tonicampbell03",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-26",
@@ -6627,12 +7342,13 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing a solo portrait of Tracy Lynn Stowe; the profile name matches the directory entry and the profile lists Canton, New York as the current city and Traveling Circus as her employer, both matching the record on file.",
    "name": "Tracy Lynn Stowe",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/tracy-lynn-stowe.jpg",
+   "source_page": "https://facebook.com/tracy.s.vanbrocklin",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6644,13 +7360,23 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Ujuu Tate with a man in traditional dress at a ceremony; the profile name matches the directory entry and the profile lists the University of Mumbai as her school and Hotelier as her employer, both matching the record on file.",
+     "photo_url": "photos/ujuu-tate-fb.jpg",
+     "source_page": "https://facebook.com/profile.php?id=100004361146769",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture (group or distant photo; the person is not singled out); the profile name matches the directory entry and the profile lists Hotelier.",
    "name": "Ujuu Tate",
    "photo_url": "photos/ujuu-tate.jpg",
    "source_page": "https://facebook.com/profile.php?id=100004361146769",
    "status": "possible",
-   "type": "Facebook profile picture",
-   "added": "2026-11-05"
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6662,12 +7388,13 @@
    "type": "profile photo (LinkedIn)"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-15",
+   "evidence": "Facebook profile picture showing a solo portrait of Vanessa Bevilacqua; the profile name matches the directory entry and the profile lists Molloy University as her school and Anthony's Coal Fired Pizza & Wings and Garden Ob/Gyn among her employers, matching the record on file.",
    "name": "Vanessa Bevilacqua",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/vanessa-bevilacqua.jpg",
+   "source_page": "https://facebook.com/vanessa.rose.50",
+   "status": "likely",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-10-31",
@@ -6759,6 +7486,16 @@
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing a solo portrait of Whitney Verbeck on a beach; the profile name matches the directory entry and the profile lists North Tonawanda, New York as her hometown and SUNY Potsdam as her school, matching the record on file.",
+     "photo_url": "photos/whitney-verbeck-fb.jpg",
+     "source_page": "https://facebook.com/whitney.verbeck",
+     "status": "likely",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Crop of the woman at right (gray cardigan/poncho) from the SUNY Potsdam Mentoring Madness Merit story photo (Mentors3.jpg), captioned 'Sean Sievers '22, left, and Whitney Verbeck '22 speak to a classroom...'.",
    "name": "Whitney Verbeck",
    "photo_url": "photos/whitney-verbeck.jpg",
@@ -6845,18 +7582,28 @@
    "type": "staff headshot"
   },
   {
-   "name": "Lydia Bartlett",
    "added": "2026-11-05",
    "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Smithfield, Rhode Island as the hometown.",
+   "name": "Lydia Bartlett",
    "photo_url": "photos/lydia-bartlett.jpg",
    "source_page": "https://facebook.com/lydiaab",
    "status": "confirmed",
    "type": "Facebook profile picture"
   },
   {
-   "name": "Conor Miller-Lynch",
    "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Conor Miller-Lynch holding a baby; the profile name matches the directory entry, the profile is JD's Facebook friend, and the same Facebook profile was already cited as the source for his earlier possible photo, though the profile lists no city or school anchor.",
+     "photo_url": "photos/conor-miller-lynch-fb.jpg",
+     "source_page": "https://facebook.com/ctml03",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
    "evidence": "Facebook profile picture; the profile name matches the directory entry.",
+   "name": "Conor Miller-Lynch",
    "photo_url": "photos/conor-miller-lynch.jpg",
    "source_page": "https://facebook.com/ctml03",
    "status": "possible",
@@ -6900,5 +7647,5 @@
   }
  ],
  "total": 701,
- "updated": "2026-11-12"
+ "updated": "2026-11-15"
 }
