@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1437,
-  "dated": 47,
+  "total": 1451,
+  "dated": 61,
   "undated": 1390,
-  "placed": 1289,
-  "unplaced": 148,
+  "placed": 1300,
+  "unplaced": 151,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 25,
-  "brief_standalone": 22,
+  "brief_standalone": 36,
   "brief_unresolved": 0
  },
  "items": [
@@ -254,12 +254,36 @@
    "place_src": "text"
   },
   {
+   "di": 167,
+   "display": "Joye Levendusky",
+   "text": "Qualified for the 2026 Senior World Team Trials Challenge Tournament in Louisville as a U.S. Open top-seven placer and was pre-seeded ninth at 72 kg, May 2026",
+   "source": "USA Wrestling",
+   "url": "https://www.themat.com/news/2026/may/13/women-s-freestyle-pre-seeds-announced-for-2026-senior-world-team-trials-challenge-tournament",
+   "published": "2026-05-13",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
    "di": 324,
    "display": "Wayne Brown",
    "text": "Launched GATHER, an end-to-end institutional platform for CRA-eligible mortgage assets, with CRA Marketplace and Black Lake Digital Markets, May 2026",
    "source": "Bitwire",
    "url": "https://www.bitwire.com/feed/cra-marketplace-and-black-lake-digital-markets-launch-gather-tm-the-first-end-to-end-institutional-platform-built-for-cra-eligible-mortgage-assets",
    "published": "2026-05-11",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 167,
+   "display": "Joye Levendusky",
+   "text": "Placed seventh at 72 kg at the 2026 U.S. Open Championships in Las Vegas, beating Mikayla Lancaster of Menlo WC 10-0 in the seventh-place match, Apr 2026",
+   "source": "USA Wrestling",
+   "url": "https://www.themat.com/news/2026/april/24/katie-gomez-named-outstanding-wrestler-as-senior-women-s-freestyle-crowns-10-u-s-open-champions",
+   "published": "2026-04-25",
    "fresh": false,
    "pid": "",
    "place": "",
@@ -300,6 +324,30 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 164,
+   "display": "Jessica Hurlbut",
+   "text": "Featured on the MFI Leaders Podcast episode 'Stretched Thin - Juggling Motherhood & Ministry,' Nov 2025",
+   "source": "MFI Leaders Podcast",
+   "url": "https://www.listennotes.com/ko/podcasts/mfi-leaders-podcast/stretched-thin-juggling-ajOzEANuU39/",
+   "published": "2025-11-06",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 164,
+   "display": "Jessica Hurlbut",
+   "text": "Was a guest on episode 117 of the Growing Home Together Podcast, 'Finding Your Ministry in the Season of Motherhood,' Oct 2025",
+   "source": "Growing Home Together",
+   "url": "https://growinghometogether.com/jessica-hurlbut-117/",
+   "published": "2025-10-28",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena, NY",
+   "place_src": "profile"
   },
   {
    "di": 584,
@@ -353,6 +401,18 @@
    "di": 92,
    "display": "Daniel Paladin",
    "text": "Travelled to Ukraine with a Network of Related Pastors ministry team that held 33 meetings in eight days in the Kharkiv and Chernivtsi area, Aug 2024",
+   "source": "Network of Related Pastors",
+   "url": "https://www.nrpastors.com/post/the-fruit-of-the-gospel-in-ukraine",
+   "published": "2024-08-30",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 92,
+   "display": "Daniel Paladin",
+   "text": "Led part of the worship during the Network of Related Pastors ministry trip to Ukraine, Aug 2024",
    "source": "Network of Related Pastors",
    "url": "https://www.nrpastors.com/post/the-fruit-of-the-gospel-in-ukraine",
    "published": "2024-08-30",
@@ -458,6 +518,30 @@
    "place_src": "text"
   },
   {
+   "di": 82,
+   "display": "David Tulloch",
+   "text": "Preached the sermon 'State of the Heart' at Christian Fellowship Center in Madrid, Jan 22, 2023",
+   "source": "Christian Fellowship Center",
+   "url": "https://podcasts.subsplash.com/mv6njtv/podcast.rss",
+   "published": "2023-01-22",
+   "fresh": false,
+   "pid": "44.7497,-75.1282",
+   "place": "Madrid",
+   "place_src": "text"
+  },
+  {
+   "di": 82,
+   "display": "David Tulloch",
+   "text": "Preached the sermon 'Abiding and Contentment' at Christian Fellowship Center in Moira, Jan 15, 2023",
+   "source": "Christian Fellowship Center",
+   "url": "https://podcasts.subsplash.com/mv6njtv/podcast.rss",
+   "published": "2023-01-15",
+   "fresh": false,
+   "pid": "44.8131,-74.5419",
+   "place": "Moira",
+   "place_src": "text"
+  },
+  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Fall 2022 semester as a Criminal Investigation major",
@@ -506,6 +590,18 @@
    "place_src": "text"
   },
   {
+   "di": 252,
+   "display": "Michael Jent",
+   "text": "Named to SUNY Canton's President's List for Spring 2021 as a Nursing student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2021/honorss21.php",
+   "published": "2021-06-11",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 335,
    "display": "Justin Estep",
    "text": "Named to SUNY Canton's Part-Time Honors list for Spring 2021 as an Emergency Management student",
@@ -548,6 +644,78 @@
    "source": "North Country This Week",
    "url": "https://zeta.creativecirclecdn.com/ncn/files/20220513-143756-2021-02-20.pdf",
    "published": "2021-02-20",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 252,
+   "display": "Michael Jent",
+   "text": "Named to SUNY Canton's Part-Time Honors for Fall 2020 as a Nursing student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2021/honorsf20.php",
+   "published": "2021-01-15",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 87,
+   "display": "Haydn Demers-St.Hilaire",
+   "text": "Named to the Empire 8 President's List for Fall 2019 as a Utica College baseball senior",
+   "source": "Empire 8",
+   "url": "http://empire8.com/news/2020/5/11/empire-8-honors-2020-baseball-senior-class.aspx",
+   "published": "2020-05-11",
+   "fresh": false,
+   "pid": "44.8269,-74.6583",
+   "place": "North Lawrence, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 118,
+   "display": "Julia Fulton",
+   "text": "Was a French and political science major at Hope College",
+   "source": "Hope College",
+   "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
+   "published": "2018-08-07",
+   "fresh": false,
+   "pid": "44.5531,-74.9394",
+   "place": "Colton, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 118,
+   "display": "Julia Fulton",
+   "text": "Worked for the CAIR (Capitol Area Immigrant Rights) Coalition in Washington, D.C., during Hope College's Washington Honors Semester, spring 2018",
+   "source": "Hope College",
+   "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
+   "published": "2018-08-07",
+   "fresh": false,
+   "pid": "38.9072,-77.0369",
+   "place": "Washington",
+   "place_src": "text"
+  },
+  {
+   "di": 118,
+   "display": "Julia Fulton",
+   "text": "Served as community coordinator for Lighthouse Immigrant Advocates in Holland, Michigan, in summer 2018",
+   "source": "Hope College",
+   "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
+   "published": "2018-08-07",
+   "fresh": false,
+   "pid": "44.5531,-74.9394",
+   "place": "Colton, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 277,
+   "display": "Jeff McGrath",
+   "text": "Was President of Nicholville Telephone Company, Inc. in 2017",
+   "source": "New York State Department of Public Service",
+   "url": "https://documents.dps.ny.gov/public/Common/ViewDoc.aspx?DocRefId=%7B44EE5F56-3DAF-479E-BBCC-8F37159AC5C4%7D",
+   "published": "2017-06-30",
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
