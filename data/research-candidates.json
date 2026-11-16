@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-14",
+ "updated": "2026-11-15",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16501,6 +16501,85 @@
     "identity": 22,
     "source": 27,
     "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261115-ct-dr-kring-son-joseph-kring-will-graduate-from",
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring",
+   "run_date": "2026-11-15",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Joseph Kring, Lawrence Kring's son, will graduate from Morristown Central School with 38 college credits and a 1410 SAT score; Morristown Central School says he is President of the National Honor Society and Student Council and plans to study mechanical engineering at Clarkson University or Rochester Institute of Technology.",
+   "file_text": "Son Joseph Kring will graduate from Morristown Central School with 38 college credits and a 1410 SAT score, as President of the National Honor Society and Student Council, planning to attend Clarkson University or Rochester Institute of Technology for mechanical engineering",
+   "source": "Morristown Central School",
+   "url": "https://www.greenrockets.org/apps/news/article/2203708?categoryId=17232",
+   "anchors": [
+    "Morristown Central School, where his son Joseph's salutatorian honor is already on file",
+    "The page names him as Joseph's father, Lawrence Kring, III"
+   ],
+   "quote": "He will also graduate with 38 college credits and a 1410 SAT score. He is the President of both the National Honor Society and the Student Council",
+   "missing_gate": "This is about Lawrence Kring's family, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 24,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261115-sf-whitney-verbeck-graduated-from-north-tonawanda-high",
+   "name": "sf:whitney-verbeck",
+   "display": "Whitney Verbeck",
+   "run_date": "2026-11-15",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A North Tonawanda City Schools graduation newsletter lists a Whitney Verbeck in the North Tonawanda High School Class of 2018.",
+   "file_text": "Graduated from North Tonawanda High School in the Class of 2018",
+   "source": "North Tonawanda City Schools",
+   "url": "https://resources.finalsite.net/images/v1719261817/ntschoolsorg/vfcvixc0t03pw0cd8ob8/NT_Newsletter_-_Graduation_2018_Issue.pdf",
+   "anchors": [
+    "North Tonawanda, her hometown on file"
+   ],
+   "quote": "| Amylea Carson | Michael Hackford | Daniel Manzella | Hailey Redmond | Whitney Verbeck |",
+   "missing_gate": "The page names a Whitney Verbeck in North Tonawanda, but nothing on it ties her to the SUNY Potsdam studies on file.",
+   "confidence": 52,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261115-sf-brenna-mcgrath-named-to-suny-plattsburgh-s-dean-s-l",
+   "name": "sf:brenna-mcgrath",
+   "display": "Brenna McGrath",
+   "run_date": "2026-11-15",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "SUNY Plattsburgh's Fall 2019 Dean's List names a Brenna McGrath under Spencerport.",
+   "file_text": "Named to SUNY Plattsburgh's Dean's List for Fall 2019, listed under Spencerport",
+   "source": "SUNY Plattsburgh",
+   "url": "https://www.plattsburgh.edu/news/news-archive/suny-plattsburgh-announces-fall-2019-deans-list.html",
+   "anchors": [
+    "Name match only"
+   ],
+   "quote": "Spencerport: Anthony Galletto, Brenna Mcgrath",
+   "missing_gate": "The page names a Brenna McGrath in Spencerport, but nothing on it ties her to Potsdam or the people on file.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 14,
+    "source": 24,
+    "detail": 12
    },
    "fields": {},
    "published": "",
