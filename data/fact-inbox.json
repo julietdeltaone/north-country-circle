@@ -5774,6 +5774,10 @@
    "name": "ig:dpaladin",
    "pattern": "employer_change",
    "source": "Christian Fellowship Center",
+   "state": {
+    "at": "2026-11-16T20:33:10.376Z",
+    "status": "read"
+   },
    "url": "https://us2.campaign-archive.com/?u=a662b588b426076a9576affca&id=5b065747a7"
   },
   {
@@ -5787,6 +5791,10 @@
    "name": "ig:dpaladin",
    "pattern": "milestone",
    "source": "Network of Related Pastors",
+   "state": {
+    "at": "2026-11-16T20:33:10.376Z",
+    "status": "read"
+   },
    "url": "https://www.nrpastors.com/post/the-fruit-of-the-gospel-in-ukraine"
   },
   {
@@ -5800,6 +5808,10 @@
    "name": "ig:jlevens18",
    "pattern": "milestone",
    "source": "USA Wrestling",
+   "state": {
+    "at": "2026-11-16T20:33:10.664Z",
+    "status": "read"
+   },
    "url": "https://www.themat.com/news/2026/april/24/katie-gomez-named-outstanding-wrestler-as-senior-women-s-freestyle-crowns-10-u-s-open-champions"
   },
   {
@@ -5813,6 +5825,10 @@
    "name": "ig:jlevens18",
    "pattern": "milestone",
    "source": "USA Wrestling",
+   "state": {
+    "at": "2026-11-16T20:33:10.664Z",
+    "status": "read"
+   },
    "url": "https://www.themat.com/news/2026/may/13/women-s-freestyle-pre-seeds-announced-for-2026-senior-world-team-trials-challenge-tournament"
   },
   {
@@ -5826,6 +5842,10 @@
    "name": "ig:michaeljent1",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-16T20:33:11.558Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2021/honorss21.php"
   },
   {
@@ -5839,6 +5859,10 @@
    "name": "ig:michaeljent1",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-16T20:33:11.558Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2021/honorsf20.php"
   },
   {
@@ -5852,6 +5876,10 @@
    "name": "ig:demers_st.hilaire",
    "pattern": "new_credential",
    "source": "Empire 8",
+   "state": {
+    "at": "2026-11-16T20:33:12.112Z",
+    "status": "read"
+   },
    "url": "http://empire8.com/news/2020/5/11/empire-8-honors-2020-baseball-senior-class.aspx"
   },
   {
@@ -5865,6 +5893,10 @@
    "name": "ig:david.tulloch.10",
    "pattern": "milestone",
    "source": "Christian Fellowship Center",
+   "state": {
+    "at": "2026-11-16T20:33:12.701Z",
+    "status": "read"
+   },
    "url": "https://podcasts.subsplash.com/mv6njtv/podcast.rss"
   },
   {
@@ -5878,6 +5910,10 @@
    "name": "ig:david.tulloch.10",
    "pattern": "milestone",
    "source": "Christian Fellowship Center",
+   "state": {
+    "at": "2026-11-16T20:33:12.701Z",
+    "status": "read"
+   },
    "url": "https://podcasts.subsplash.com/mv6njtv/podcast.rss"
   },
   {
@@ -5891,6 +5927,10 @@
    "name": "ig:fulton.julia",
    "pattern": "new_credential",
    "source": "Hope College",
+   "state": {
+    "at": "2026-11-16T20:33:14.081Z",
+    "status": "read"
+   },
    "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/"
   },
   {
@@ -5904,6 +5944,10 @@
    "name": "ig:fulton.julia",
    "pattern": "milestone",
    "source": "Hope College",
+   "state": {
+    "at": "2026-11-16T20:33:14.081Z",
+    "status": "read"
+   },
    "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/"
   },
   {
@@ -5917,6 +5961,10 @@
    "name": "ig:fulton.julia",
    "pattern": "milestone",
    "source": "Hope College",
+   "state": {
+    "at": "2026-11-16T20:33:14.081Z",
+    "status": "read"
+   },
    "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/"
   },
   {
@@ -5930,6 +5978,10 @@
    "name": "ig:outrageouslyloved",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-16T20:34:18.925Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/CS/EmilyMorse"
   },
   {
@@ -5943,6 +5995,10 @@
    "name": "ig:outrageouslyloved",
    "pattern": "title_change",
    "source": "New York State Department of Public Service",
+   "state": {
+    "at": "2026-11-16T20:34:18.925Z",
+    "status": "read"
+   },
    "url": "https://documents.dps.ny.gov/public/Common/ViewDoc.aspx?DocRefId=%7B44EE5F56-3DAF-479E-BBCC-8F37159AC5C4%7D"
   }
  ],
