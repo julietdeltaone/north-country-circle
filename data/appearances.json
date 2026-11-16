@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1436,
+  "total": 1437,
   "dated": 47,
-  "undated": 1389,
-  "placed": 1288,
+  "undated": 1390,
+  "placed": 1289,
   "unplaced": 148,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -16907,6 +16907,18 @@
    "fresh": false,
    "pid": "43.0411,-78.8773",
    "place": "North Tonawanda, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 648,
+   "display": "Whitney Verbeck",
+   "text": "Graduated from North Tonawanda High School in the Class of 2018 (North Tonawanda City Schools)",
+   "source": "North Tonawanda City Schools",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0411,-78.8773",
+   "place": "North Tonawanda",
    "place_src": "text"
   },
   {
