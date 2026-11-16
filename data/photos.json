@@ -1254,7 +1254,17 @@
    "photo_url": "photos/cecilie-smith.jpg",
    "source_page": "https://www.instagram.com/ceciliesmith2025/",
    "status": "possible",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "The image is a solo photo of a woman in a red swimsuit and straw hat reclining on a lounge chair by a pool; her face is partly shaded by the hat, so the portrait is real but not a clear face-on shot. It is the current profile picture of @ceciliesmith2025, the Instagram handle on file for Cecilie Smith (Massena, NY on file), downloaded on the one permitted retry after tonight's 403.",
+     "photo_url": "photos/cecilie-smith-ig-retry.jpg",
+     "source_page": "https://www.instagram.com/ceciliesmith2025/",
+     "status": "possible",
+     "type": "Instagram profile picture"
+    }
+   ]
   },
   {
    "added": "2026-11-02",
