@@ -5434,6 +5434,10 @@
    "name": "sf:jordyn-hill",
    "pattern": "milestone",
    "source": "SUNY Oneonta Athletics",
+   "state": {
+    "at": "2026-11-16T03:36:07.899Z",
+    "status": "read"
+   },
    "url": "https://oneontaathletics.com/news/2025/11/24/wrestling-leonard-and-monina-win-titles-at-nys-collegiate-championships-as-eight-red-dragons-place-top-six.aspx"
   },
   {
@@ -5447,6 +5451,10 @@
    "name": "sf:kaitlyn-mallette",
    "pattern": "new_credential",
    "source": "Clarkson University Athletics",
+   "state": {
+    "at": "2026-11-16T03:36:09.266Z",
+    "status": "read"
+   },
    "url": "https://clarksonathletics.com/sports/womens-ice-hockey/roster/kaitlyn-mallette/9474"
   },
   {
@@ -5460,6 +5468,10 @@
    "name": "sf:victoria-fitch",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-16T03:36:09.623Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/alumni-friends/reunion/reunion-schedule"
   },
   {
@@ -5473,6 +5485,10 @@
    "name": "sf:conor-miller-lynch",
    "pattern": "milestone",
    "source": "Center for Identification Technology Research",
+   "state": {
+    "at": "2026-11-16T03:36:10.105Z",
+    "status": "read"
+   },
    "url": "https://research.charlotte.edu/wp-content/uploads/sites/631/2026/10/DRAFT-Fall-2026-Agenda-updated-10-15-2026.pdf"
   },
   {
@@ -5486,6 +5502,10 @@
    "name": "sf:conor-miller-lynch",
    "pattern": "milestone",
    "source": "Center for Identification Technology Research",
+   "state": {
+    "at": "2026-11-16T03:36:10.105Z",
+    "status": "read"
+   },
    "url": "https://research.charlotte.edu/wp-content/uploads/sites/631/2026/10/DRAFT-Fall-2026-Agenda-updated-10-15-2026.pdf"
   },
   {
@@ -5499,6 +5519,10 @@
    "name": "ct:ana miller",
    "pattern": "correction",
    "source": "Massena Central School District",
+   "state": {
+    "at": "2026-11-16T03:36:10.582Z",
+    "status": "read"
+   },
    "url": "https://4.files.edl.io/9751/09/03/26/194247-dd24acc4-3053-4b0a-8725-2e47d162bb3d.pdf"
   },
   {
@@ -5512,6 +5536,10 @@
    "name": "sf:karen-hoover",
    "pattern": "milestone",
    "source": "Seton Hall University",
+   "state": {
+    "at": "2026-11-16T03:36:11.696Z",
+    "status": "read"
+   },
    "url": "http://blogs.shu.edu/projectwritetolearn/files/2024/11/PWTL-2024-November-Resource-Manual.pdf"
   },
   {
@@ -5525,6 +5553,10 @@
    "name": "sf:mark-cornett",
    "pattern": "milestone",
    "source": "Precise Biometrics",
+   "state": {
+    "at": "2026-11-16T03:36:11.874Z",
+    "status": "read"
+   },
    "url": "https://view.news.eu.nasdaq.com/view?id=b77b275d0bc5c01eb2a7d9196e3fe9419&lang=en&src=listed"
   },
   {
@@ -5538,6 +5570,10 @@
    "name": "sf:megan-eddy",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-16T03:35:36.352Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo"
   },
   {
@@ -5551,6 +5587,10 @@
    "name": "ct:savannah adams",
    "pattern": "milestone",
    "source": "Brasher Falls Central School District",
+   "state": {
+    "at": "2026-11-16T03:35:38.169Z",
+    "status": "read"
+   },
    "url": "https://5il.co/2qvol"
   },
   {
@@ -5564,6 +5604,10 @@
    "name": "ct:joe mastro",
    "pattern": "employer_change",
    "source": "New York State Governor's Office",
+   "state": {
+    "at": "2026-11-16T03:35:50.078Z",
+    "status": "read"
+   },
    "url": "https://www.governor.ny.gov/news/governor-hochul-announces-215th-session-graduation-state-police-basic-school"
   },
   {
@@ -5577,6 +5621,10 @@
    "name": "sf:megan-eurto",
    "pattern": "title_change",
    "source": "Village of Canton",
+   "state": {
+    "at": "2026-11-16T03:35:51.743Z",
+    "status": "read"
+   },
    "url": "https://cms3.revize.com/revize/canton/2025 6 18  Village Board Meeting Minutes.pdf?t=202508191105500&t=202508191105500"
   },
   {
@@ -5590,6 +5638,10 @@
    "name": "ct:dr kring",
    "pattern": "milestone",
    "source": "Morristown Central School",
+   "state": {
+    "at": "2026-11-16T03:35:52.389Z",
+    "status": "read"
+   },
    "url": "https://www.greenrockets.org/apps/pages/index.jsp?uREC_ID=2065221&type=d&pREC_ID=2129703"
   },
   {
@@ -5603,6 +5655,10 @@
    "name": "ct:justin estep",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-16T03:35:53.875Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2022/honorsf21.php"
   },
   {
@@ -5616,6 +5672,10 @@
    "name": "ct:justin estep",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-16T03:35:53.875Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2021/honorss21.php"
   },
   {
@@ -5629,6 +5689,10 @@
    "name": "sf:brittany-disalvo",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-16T03:35:57.954Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/news-events/clarkson-university-occupational-therapy-students-host-carfit-program-older-drivers"
   },
   {
@@ -5642,6 +5706,10 @@
    "name": "sf:brittany-disalvo",
    "pattern": "milestone",
    "source": "Interprofessional Education Collaborative",
+   "state": {
+    "at": "2026-11-16T03:35:57.954Z",
+    "status": "read"
+   },
    "url": "https://ipec.memberclicks.net/assets/event-docs/23-11-poster-fair/IPEC_Poster-Fair_2023-11-29_Poster-Listing.pdf"
   },
   {
@@ -5655,6 +5723,10 @@
    "name": "ct:elena trempe",
    "pattern": "milestone",
    "source": "Leone Timing and Results Services",
+   "state": {
+    "at": "2026-11-16T03:35:59.888Z",
+    "status": "read"
+   },
    "url": "https://www.leonetiming.com/2025/Indoor/SLUOpen/Results.pdf"
   },
   {
@@ -5668,6 +5740,10 @@
    "name": "ig:adria.t18",
    "pattern": "milestone",
    "source": "Roger Williams University Athletics",
+   "state": {
+    "at": "2026-11-16T03:36:00.850Z",
+    "status": "read"
+   },
    "url": "https://rwuhawks.com/news/2026/11/13/womens-ice-hockey-womens-ice-hockey-brazeau-makes-career-high-53-saves-against-une.aspx"
   },
   {
@@ -5681,6 +5757,10 @@
    "name": "sf:christopher-towler",
    "pattern": "milestone",
    "source": "APTA Academy of Cardiovascular and Pulmonary Physical Therapy",
+   "state": {
+    "at": "2026-11-16T03:36:03.972Z",
+    "status": "read"
+   },
    "url": "https://cardiopt.memberclicks.net/clinical-practice-guidelines"
   }
  ],
