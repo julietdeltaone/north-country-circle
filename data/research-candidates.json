@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-15",
+ "updated": "2026-11-16",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16580,6 +16580,113 @@
     "identity": 14,
     "source": 24,
     "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-mauramayer-featured-in-a-rochester-regional-hea",
+   "name": "mauramayer",
+   "display": "Maura Mayer",
+   "run_date": "2026-11-16",
+   "run_label": "Fresh sweep",
+   "category": "sensitive",
+   "claim": "Rochester Regional Health published a story about Maura Mayer taking part in its GenoWell genetic screening program. The story says her test found a harmful genetic mutation linked to Lynch syndrome and that she then took preventive screening steps.",
+   "file_text": "Featured in a Rochester Regional Health story about the GenoWell genetic screening program, sharing that she tested positive for a harmful genetic mutation associated with Lynch syndrome and took preventive screening steps",
+   "source": "Rochester Regional Health",
+   "url": "https://www.rochesterregional.org/hub/maura-mayer-genowell-genetic-screening",
+   "anchors": [
+    "Potsdam, NY",
+    "Patient Experience and Compliance Manager at Rochester Regional Health in Potsdam"
+   ],
+   "quote": "Maura had a positive result for a harmful genetic mutation associated with Lynch Syndrome",
+   "missing_gate": "This is about Maura's health, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 50,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-kaylawatkins8-now-listed-as-kayla-watkins-lm-cpm-o",
+   "name": "kaylawatkins8",
+   "display": "Kayla Hettel",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Puget Sound Birth Center's staff and bio pages now call her Kayla Watkins, LM CPM. Her bio page still says she is engaged to Luke and getting married in February 2026, and no page says the wedding happened or that she changed her name.",
+   "file_text": "Now listed as Kayla Watkins, LM CPM, on Puget Sound Birth Center's staff and bio pages",
+   "source": "Puget Sound Birth Center",
+   "url": "https://www.birthcenter.com/midwives-and-staff/kaylawatkins-lm-cpm",
+   "anchors": [
+    "Puget Sound Birth Center in Kirkland, Washington",
+    "Licensed midwife (LM, CPM) who has attended more than 700 births"
+   ],
+   "quote": "Kayla Watkins, LM CPM",
+   "missing_gate": "This is about Kayla's marriage and name, so I always check with you first.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 24,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-peyt0nsheehan-partner-of-jacob-charles-morgan-of-n",
+   "name": "peyt0nsheehan",
+   "display": "Peyton Sheehan",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Buck Funeral Home obituary for Matthew J. Morgan of Norwood names a Peyton Sheehan as the partner of his son Jacob Charles and says the couple was expecting a daughter. Nothing in the obituary ties her to SUNY Canton or to the physical therapist assistant program.",
+   "file_text": "Partner of Jacob Charles Morgan of Norwood, and expecting a daughter with him in early 2026",
+   "source": "Buck Funeral Home",
+   "url": "https://buckfuneralhome.com/tribute/details/2835",
+   "anchors": [
+    "Name Peyton Sheehan",
+    "Norwood, New York area"
+   ],
+   "quote": "Together, Matt and Melanie raised two beautiful children, Jordan Jean and Jacob Charles (Peyton Sheehan), who were the pride and joy of his life.",
+   "missing_gate": "The obituary names a Peyton Sheehan in Norwood, but nothing on it ties her to SUNY Canton or the physical therapist assistant program on file.",
+   "confidence": 47,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2026-02-04",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-rileyymulligan-co-led-a-parp-music-and-art-night-at",
+   "name": "rileyymulligan",
+   "display": "Riley Mulligan",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Port Jefferson School District's Spring 2026 newsletter says a Ms. Mulligan co-led a PARP Music and Art Night at Edna Louise Spear Elementary School, the school where Riley Mulligan teaches art. The newsletter gives no first name.",
+   "file_text": "Co-led a PARP Music and Art Night at Edna Louise Spear Elementary School in Port Jefferson, spring 2026",
+   "source": "Port Jefferson School District",
+   "url": "https://files.smartsites.parentsquare.com/7409/v6_spring_2026_news_port_jeff.pdf",
+   "anchors": [
+    "Art teacher at Edna Louise Spear Elementary School in Port Jefferson"
+   ],
+   "quote": "Students in grades 3 through 5 and their parents also attended a PARP Music and Art Night, where they learned an Olympic-themed song and created paintings of winter sports with teachers Ms. Zimlinghuas and Ms. Mulligan.",
+   "missing_gate": "The newsletter names only a Ms. Mulligan at her school, with no first name, so I cannot tell it is her.",
+   "confidence": 54,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 22,
+    "detail": 10
    },
    "fields": {},
    "published": "",
