@@ -2,365 +2,315 @@
  "date": "2026-11-15",
  "checked": [
   {
-   "name": "sf:wisdom",
-   "display": "Rojanni Wisdom"
+   "name": "ct:cayden stickney",
+   "display": "Cayden Stickney"
   },
   {
-   "name": "sf:ticia-cudjoe",
-   "display": "Ticia Cudjoe"
+   "name": "sf:murray",
+   "display": "1LT Murray"
   },
   {
-   "name": "sf:loni-hughes-recker",
-   "display": "Loni Hughes Recker"
+   "name": "sf:courtney letiecq",
+   "display": "Courtney Letiecq"
   },
   {
-   "name": "ct:jessica braman",
-   "display": "Jessica Braman"
+   "name": "ct:justin estep",
+   "display": "Justin Estep"
   },
   {
-   "name": "sf:jackie-shampine",
-   "display": "Jackie Shampine"
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath"
   },
   {
-   "name": "ct:savannah adams",
-   "display": "Savannah Adams"
+   "name": "sf:shannon-zych",
+   "display": "Shannon Zych"
   },
   {
-   "name": "sf:emily-ward",
-   "display": "Emily Ward"
+   "name": "ct:brian hanlin",
+   "display": "Brian Hanlin"
   },
   {
-   "name": "sf:jennifer-kevin-blanchard",
-   "display": "Jennifer-Kevin Blanchard"
+   "name": "sf:rina-nicole",
+   "display": "Rina Nicole"
   },
   {
-   "name": "sf:isabelle-westerman",
-   "display": "Isabelle Westerman"
+   "name": "sf:judson-foote",
+   "display": "Judson Foote"
   },
   {
-   "name": "sf:lydia-d-m",
-   "display": "Lydia Dale"
+   "name": "sf:renee-lia-de-voe",
+   "display": "Renee Lia De Voe"
   },
   {
-   "name": "sf:matthew-volz",
-   "display": "Matthew Volz"
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin"
   },
   {
-   "name": "sf:noah-michael",
-   "display": "Noah Michael"
+   "name": "ct:blake burr",
+   "display": "Blake Burr"
   },
   {
-   "name": "sf:joe-n-lydia-moore",
-   "display": "Joe Moore"
+   "name": "sf:meghan-arquette",
+   "display": "Meghan Arquette"
   },
   {
-   "name": "sf:annika-greco",
-   "display": "Annika Greco"
+   "name": "sf:raymond-persons",
+   "display": "Raymond Persons"
   },
   {
-   "name": "ct:jason sweet",
-   "display": "Jason Sweet"
+   "name": "sf:paige-davis",
+   "display": "Paige Davis"
   },
   {
-   "name": "sf:ethan-thompson",
-   "display": "Ethan Thompson"
+   "name": "sf:cassandra-fernandez",
+   "display": "Cassandra Fernandez"
   },
   {
-   "name": "ct:timothy kunkle",
-   "display": "Timothy Kunkle"
+   "name": "sf:christopher-towler",
+   "display": "Christopher Towler"
   },
   {
-   "name": "ct:james fortunato",
-   "display": "James Fortunato"
+   "name": "sf:christopher-pagan",
+   "display": "Christopher Pagan"
   },
   {
-   "name": "ct:emma gravlin",
-   "display": "Emma Gravlin"
+   "name": "sf:jeremy-taylor",
+   "display": "Jeremy Taylor"
   },
   {
-   "name": "sf:zachary-dean",
-   "display": "Zachary Dean"
+   "name": "sf:makiah-barber",
+   "display": "Makiah Barber"
   },
   {
-   "name": "sf:ian-bailey",
-   "display": "Ian Bailey"
+   "name": "sf:nina-criscitello",
+   "display": "Nina Criscitello"
   },
   {
-   "name": "ct:grace ockrin",
-   "display": "Grace Ockrin"
+   "name": "sf:lisa-arquette",
+   "display": "Lisa Arquette"
   },
   {
-   "name": "sf:megan-eddy",
-   "display": "Megan Eddy"
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck"
   },
   {
-   "name": "sf:bob-dale",
-   "display": "Bob Dale"
+   "name": "sf:grace-lapointe",
+   "display": "Grace LaPointe"
   },
   {
-   "name": "sf:timothy-moulton",
-   "display": "Timothy Moulton"
+   "name": "sf:ryan-blount",
+   "display": "Ryan Blount"
   },
   {
-   "name": "sf:sara-hargrave",
-   "display": "Sara Hargrave"
+   "name": "sf:josiah-tabolt",
+   "display": "Josiah Tabolt"
   },
   {
-   "name": "sf:haley-quinlan-keough",
-   "display": "Haley Quinlan Keough"
+   "name": "sf:shelleymae-bartlett",
+   "display": "Shelleymae Bartlett"
   },
   {
-   "name": "ct:susan buckley",
-   "display": "Susan Buckley"
+   "name": "sf:vanessa-bevilacqua",
+   "display": "Vanessa Bevilacqua"
   },
   {
-   "name": "sf:nanette-yervasi-holt",
-   "display": "Nanette Yervasi Holt"
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring"
   },
   {
-   "name": "sf:alisha-ohl",
-   "display": "Alisha Ohl"
+   "name": "sf:matthew-merria",
+   "display": "Matthew Merria"
   },
   {
-   "name": "sf:greg-lapinski",
-   "display": "Greg Lapinski"
+   "name": "ct:emily criscitello",
+   "display": "Emily Criscitello"
   },
   {
-   "name": "sf:cody-benham",
-   "display": "Cody Benham"
+   "name": "sf:antolik",
+   "display": "Samantha Antolik"
   },
   {
-   "name": "sf:kwadwo-appiah-kubi",
-   "display": "Kwadwo Appiah-Kubi"
+   "name": "sf:megan-eurto",
+   "display": "Megan Eurto"
   },
   {
-   "name": "fdb:maggie_marceau",
-   "display": "Maggie Marceau"
+   "name": "sf:cj-tomford",
+   "display": "CJ Tomford"
   },
   {
-   "name": "sf:peter-johnson",
-   "display": "Peter Johnson"
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda"
   },
   {
-   "name": "sf:ilene-rose",
-   "display": "Ilene Rose"
+   "name": "ct:sarah pederson",
+   "display": "Sarah Pederson"
   },
   {
-   "name": "sf:jared-thibodeau",
-   "display": "Jared Thibodeau"
+   "name": "sf:emily-zimmer",
+   "display": "Emily Zimmer"
   },
   {
-   "name": "fdb:amber_ingram",
-   "display": "Amber Ingram"
+   "name": "sf:michelle-chartier",
+   "display": "Michelle Chartier"
   },
   {
-   "name": "ct:sarah garber",
-   "display": "Sarah Garber"
+   "name": "sf:robin-dipasquale",
+   "display": "Robin DiPasquale"
   },
   {
-   "name": "sf:kayla-ervin",
-   "display": "Kayla Ervin"
+   "name": "sf:kara-ferguson",
+   "display": "Kara Ferguson"
   },
   {
-   "name": "sf:savannah-durant",
-   "display": "Savannah Durant"
+   "name": "sf:katelynne-kulp",
+   "display": "Katelynne Kulp"
   },
   {
-   "name": "ct:kathy eggleson",
-   "display": "Kathy Eggleson"
+   "name": "sf:evan-dimakas",
+   "display": "Evan Dimakas"
   },
   {
-   "name": "sf:salako-gbenga-oladoyin",
-   "display": "Salako Gbenga Oladoyin"
+   "name": "ct:annabelle boudreau",
+   "display": "Annabelle Boudreau"
   },
   {
-   "name": "sf:cody-dennis",
-   "display": "Cody Dennis"
+   "name": "sf:stephanie-elisa",
+   "display": "Stephanie Elisa"
   },
   {
-   "name": "sf:thea-krywanczyk",
-   "display": "Thea Krywanczyk"
+   "name": "sf:pete-molinero",
+   "display": "Pete Molinero"
   },
   {
-   "name": "sf:katie-wolstenholme",
-   "display": "Katie Wolstenholme"
+   "name": "sf:david-disalvo",
+   "display": "David DiSalvo"
   },
   {
-   "name": "sf:victoria lucas",
-   "display": "Victoria Lucas"
+   "name": "sf:grace cicchinelli",
+   "display": "Grace Cicchinelli"
   },
   {
-   "name": "sf:brenden-vanhorn",
-   "display": "Brenden Vanhorn"
+   "name": "sf:whitney-verbeck",
+   "display": "Whitney Verbeck"
   },
   {
-   "name": "sf:isreal-tyler",
-   "display": "Isreal Tyler"
+   "name": "sf:owen-kennedy",
+   "display": "Owen Kennedy"
   },
   {
-   "name": "ct:emilee mcadoo",
-   "display": "Emilee McAdoo"
+   "name": "sf:brittany-disalvo",
+   "display": "Brittany DiSalvo"
   },
   {
-   "name": "sf:cristian-ruiz-marquez",
-   "display": "Cristian Ruiz-Marquez"
+   "name": "sf:shania-clayton",
+   "display": "Shania Clayton"
   },
   {
-   "name": "sf:judith-tomford",
-   "display": "Judith Tomford"
+   "name": "fdb:lacey_matott",
+   "display": "Lacey Matott"
   },
   {
-   "name": "sf:jamal-moses",
-   "display": "Jamal Moses"
+   "name": "sf:susan-blewett",
+   "display": "Susan Blewett"
   },
   {
-   "name": "ct:olivia brown",
-   "display": "Olivia Brown"
+   "name": "sf:brittney-carnicelli",
+   "display": "Brittney Carnicelli"
   },
   {
-   "name": "sf:jennifer-meyer",
-   "display": "Jennifer Meyer"
+   "name": "ct:joe mastro",
+   "display": "Joe Mastro"
   },
   {
-   "name": "sf:song-yi-lee",
-   "display": "Song Yi Lee"
+   "name": "sf:bartlomiej-brodzki",
+   "display": "Bartlomiej Brodzki"
   },
   {
-   "name": "ct:philip hubbe",
-   "display": "Philip Hubbe"
+   "name": "sf:corbin-ladison",
+   "display": "Corbin Ladison"
   },
   {
-   "name": "sf:jennifer-gallagher-moore",
-   "display": "Jennifer Gallagher Moore"
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe"
   },
   {
-   "name": "sf:cathy-boyle",
-   "display": "Cathy Boyle"
+   "name": "fdb:b._ryan_dunphey",
+   "display": "B. Ryan Dunphey"
   },
   {
-   "name": "ct:jillian ferrante",
-   "display": "Jillian Ferrante"
+   "name": "ct:matthew tomford",
+   "display": "Matthew Tomford"
   },
   {
-   "name": "ct:david hartman",
-   "display": "David Hartman"
+   "name": "sf:lindsey-elaine",
+   "display": "Lindsey Elaine"
   },
   {
-   "name": "sf:tyreese-brown",
-   "display": "Tyreese Brown"
+   "name": "sf:wesley-hissong",
+   "display": "Wesley Hissong"
   },
   {
-   "name": "sf:merria-figueiredo",
-   "display": "Merria Figueiredo"
+   "name": "sf:maggie-tibs",
+   "display": "Maggie Tibs"
   },
   {
-   "name": "sf:caroline-willis",
-   "display": "Caroline Willis"
+   "name": "sf:ben-newton",
+   "display": "Ben Newton"
   },
   {
-   "name": "sf:michelle-shirley",
-   "display": "Michelle Shirley"
+   "name": "sf:maria-tallo",
+   "display": "Maria Criscitello"
   },
   {
-   "name": "sf:toni-ajayi",
-   "display": "Toni Ajayi"
+   "name": "sf:rebecca-guldan",
+   "display": "Rebecca Guldan"
   },
   {
-   "name": "sf:acacia-white",
-   "display": "Acacia White"
+   "name": "ct:julia tomford",
+   "display": "Julia Tomford"
   },
   {
-   "name": "ct:samarah martin",
-   "display": "Samarah Martin"
+   "name": "sf:jessica-osypiewski",
+   "display": "Jessica Osypiewski"
   },
   {
-   "name": "sf:tom-allan-green",
-   "display": "Tom Allan Green"
+   "name": "ct:david tomford",
+   "display": "David Tomford"
   },
   {
-   "name": "sf:alexander-hacker",
-   "display": "Alexander Hacker"
+   "name": "sf:jaime-bicknell",
+   "display": "Jaime Bicknell"
   },
   {
-   "name": "sf:lennart-johns",
-   "display": "Lennart Johns"
+   "name": "sf:brenna-mcgrath",
+   "display": "Brenna McGrath"
   },
   {
-   "name": "ct:danny witkop",
-   "display": "Danny Witkop"
+   "name": "ct:megan davis",
+   "display": "Megan Davis"
   },
   {
-   "name": "sf:jillian-chapman",
-   "display": "Jillian Chapman"
+   "name": "sf:gregory-hurlbut",
+   "display": "Gregory Hurlbut"
   },
   {
-   "name": "sf:nadia-thomas",
-   "display": "Nadia Thomas"
+   "name": "sf:gavin-matthews",
+   "display": "Gavin Matthews"
   },
   {
-   "name": "ct:michelle larson",
-   "display": "Michelle Larson"
+   "name": "sf:sam-rusaw",
+   "display": "Sam Rusaw"
   }
  ],
  "filed": [
   {
-   "name": "sf:janelle-evans",
-   "display": "Janelle Evans",
+   "name": "ct:joe mastro",
+   "display": "Joe Mastro",
    "facts": [
     {
-     "text": "Scored a goal in Clarkson's 5-3 win over Brown, Nov 14, 2026",
-     "source": "Clarkson University Athletics",
-     "url": "https://clarksonathletics.com/news/2026/11/14/womens-hockey-pair-of-power-play-goals-lead-knights-past-brown-5-3.aspx",
-     "novelty": "new",
-     "published": "2026-11-14",
-     "fresh": true
-    }
-   ]
-  },
-  {
-   "name": "sf:isa-goettl",
-   "display": "Isa Goettl",
-   "facts": [
-    {
-     "text": "Scored a goal and recorded an assist in Clarkson's 5-3 win over Brown, Nov 14, 2026",
-     "source": "Clarkson University Athletics",
-     "url": "https://clarksonathletics.com/news/2026/11/14/womens-hockey-pair-of-power-play-goals-lead-knights-past-brown-5-3.aspx",
-     "novelty": "new",
-     "published": "2026-11-14",
-     "fresh": true
-    }
-   ]
-  },
-  {
-   "name": "sf:lennart-johns",
-   "display": "Lennart Johns",
-   "facts": [
-    {
-     "text": "Co-authored a Frontiers in Education paper on Clarkson's secondary school-university STEMM partnerships fostering rural students' interest and self-agency, Jun 2025",
-     "source": "Frontiers in Education",
-     "url": "https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1578370/full",
-     "novelty": "new",
-     "published": "2025-06-17",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:cody-benham",
-   "display": "Cody Benham",
-   "facts": [
-    {
-     "text": "Finished 3rd in the General division at the PBC Disc Golf Mini Glow Night in Watertown, New York, Mar 18, 2026, shooting even par",
-     "source": "UDisc",
-     "url": "https://udisc.com/events/glow-night-ZiVK9M/leaderboard?round=1",
-     "novelty": "new",
-     "published": "2026-03-18",
-     "fresh": false
-    },
-    {
-     "text": "Tied for 12th in MA2 at Discraft's Green Mountain Championship (Amateur) at Smugglers' Notch, Vermont, in 2025, shooting +23",
-     "source": "PDGA",
-     "url": "https://www.pdga.com/tour/event/95041",
+     "text": "Graduated from the 215th session of the New York State Police Academy Basic School and was assigned to Troop B for field duty, reporting Oct 23, 2024",
+     "source": "New York State Governor's Office",
+     "url": "https://www.governor.ny.gov/news/governor-hochul-announces-215th-session-graduation-state-police-basic-school",
      "novelty": "new",
      "published": "",
      "fresh": false
@@ -368,29 +318,143 @@
    ]
   },
   {
-   "name": "sf:megan-eddy",
-   "display": "Megan Eddy",
+   "name": "sf:megan-eurto",
+   "display": "Megan Eurto",
    "facts": [
     {
-     "text": "Named to SUNY Canton's Dean's List for Fall 2024 as a Bachelor of Science in Nursing student",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo",
+     "text": "Appointed Village Registrar for the Village of Canton, Jun 2025",
+     "source": "Village of Canton",
+     "url": "https://cms3.revize.com/revize/canton/2025 6 18  Village Board Meeting Minutes.pdf?t=202508191105500&t=202508191105500",
      "novelty": "new",
-     "published": "2025-01-08",
+     "published": "2025-06-18",
      "fresh": false
     }
    ]
   },
   {
-   "name": "ct:savannah adams",
-   "display": "Savannah Adams",
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring",
    "facts": [
     {
-     "text": "Approved as a substitute aide, teacher assistant and teacher at St. Lawrence Central School in Brasher Falls for the 2024-2025 school year, Jun 2024",
-     "source": "Brasher Falls Central School District",
-     "url": "https://5il.co/2qvol",
+     "text": "Re-elected to the Morristown Central School Board of Education, with a new term beginning Jul 1, 2025",
+     "source": "Morristown Central School",
+     "url": "https://www.greenrockets.org/apps/pages/index.jsp?uREC_ID=2065221&type=d&pREC_ID=2129703",
+     "novelty": "new",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ct:justin estep",
+   "display": "Justin Estep",
+   "facts": [
+    {
+     "text": "Named to SUNY Canton's Dean's List for Fall 2021 as an Emergency Management student",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2022/honorsf21.php",
      "novelty": "expands",
-     "published": "2024-06-17",
+     "published": "2022-01-10",
+     "fresh": false
+    },
+    {
+     "text": "Named to SUNY Canton's Part-Time Honors list for Spring 2021 as an Emergency Management student",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2021/honorss21.php",
+     "novelty": "expands",
+     "published": "2021-06-11",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:brittany-disalvo",
+   "display": "Brittany DiSalvo",
+   "facts": [
+    {
+     "text": "Was the reservation contact for Clarkson University occupational therapy students' CarFit event for older drivers in Potsdam on Wednesday, April 22, 2026",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/news-events/clarkson-university-occupational-therapy-students-host-carfit-program-older-drivers",
+     "novelty": "new",
+     "published": "",
+     "fresh": false
+    },
+    {
+     "text": "Co-authored the IPEC Poster Fair poster on using an educational module within a health science program to increase interprofessional education and competency, Nov 29, 2023",
+     "source": "Interprofessional Education Collaborative",
+     "url": "https://ipec.memberclicks.net/assets/event-docs/23-11-poster-fair/IPEC_Poster-Fair_2023-11-29_Poster-Listing.pdf",
+     "novelty": "new",
+     "published": "2023-11-29",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:grace cicchinelli",
+   "display": "Grace Cicchinelli",
+   "facts": [
+    {
+     "text": "Her work was featured in St. Lawrence University's Art & Music Video Installation, Apr 28, 2023",
+     "source": "St. Lawrence University",
+     "url": "https://www.stlawu.edu/events/art-music-video-installation",
+     "novelty": "new",
+     "published": "2023-04-28",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe",
+   "facts": [
+    {
+     "text": "Placed fourth in the 60-meter hurdles in 10.58 seconds, sixth in the 200 meters in 30.40 seconds, and anchored St. Lawrence's winning 4x400-meter relay team (4:35.36) at the SLU Open, Feb 21, 2025",
+     "source": "Leone Timing and Results Services",
+     "url": "https://www.leonetiming.com/2025/Indoor/SLUOpen/Results.pdf",
+     "novelty": "new",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:robin-dipasquale",
+   "display": "Robin DiPasquale",
+   "facts": [
+    {
+     "text": "Teaches Human Anatomy I and II, Health Systems I: Global Health, and Neuroscience at Clarkson University",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/people/robin-dipasquale",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:adria.t18",
+   "display": "Adria Tebo",
+   "facts": [
+    {
+     "text": "Scored a power-play goal in the University of New England's 3-0 win over Roger Williams, Nov 13, 2026",
+     "source": "Roger Williams University Athletics",
+     "url": "https://rwuhawks.com/news/2026/11/13/womens-ice-hockey-womens-ice-hockey-brazeau-makes-career-high-53-saves-against-une.aspx",
+     "novelty": "new",
+     "published": "2026-11-13",
+     "fresh": true
+    }
+   ]
+  },
+  {
+   "name": "sf:christopher-towler",
+   "display": "Christopher Towler",
+   "facts": [
+    {
+     "text": "The APTA Academy guideline group he serves on for obstructive lung pathologies is in its appraisal phase, with completion scheduled for Fall 2026",
+     "source": "APTA Academy of Cardiovascular and Pulmonary Physical Therapy",
+     "url": "https://cardiopt.memberclicks.net/clinical-practice-guidelines",
+     "novelty": "expands",
+     "published": "",
      "fresh": false
     }
    ]
@@ -403,44 +467,44 @@
  },
  "next_up": [
   {
-   "name": "sf:murray",
-   "display": "1LT Murray"
+   "name": "ct:alexis donnely",
+   "display": "Alexis Donnely"
   },
   {
-   "name": "sf:alex-koberda",
-   "display": "Alex Koberda"
+   "name": "ct:andrew wiseman",
+   "display": "Andrew Wiseman"
   },
   {
-   "name": "ct:annabelle boudreau",
-   "display": "Annabelle Boudreau"
+   "name": "sf:anna-molinero",
+   "display": "Anna Molinero"
   },
   {
-   "name": "ct:blake burr",
-   "display": "Blake Burr"
+   "name": "sf:anne-shaver",
+   "display": "Anne Shaver"
   },
   {
-   "name": "ct:brian hanlin",
-   "display": "Brian Hanlin"
+   "name": "sf:asher-cragg",
+   "display": "Asher Cragg"
   },
   {
-   "name": "sf:cj-tomford",
-   "display": "CJ Tomford"
+   "name": "sf:avery-charleson",
+   "display": "Avery Charleson"
   },
   {
-   "name": "sf:cassandra-fernandez",
-   "display": "Cassandra Fernandez"
+   "name": "sf:benjamin-horner",
+   "display": "Benjamin Horner"
   },
   {
-   "name": "ct:cayden stickney",
-   "display": "Cayden Stickney"
+   "name": "sf:beth-randall",
+   "display": "Beth Randall"
   },
   {
-   "name": "sf:christopher-pagan",
-   "display": "Christopher Pagan"
+   "name": "ct:blake amo",
+   "display": "Blake Amo"
   },
   {
-   "name": "sf:christopher-towler",
-   "display": "Christopher Towler"
+   "name": "sf:brayden-amo",
+   "display": "Brayden Amo"
   }
  ],
  "unchecked_remaining": 0,
@@ -450,7 +514,7 @@
   "d90": 0,
   "older": 0,
   "never": 0,
-  "oldest": "2026-11-09"
+  "oldest": "2026-11-10"
  },
  "hot": [
   {
@@ -470,5 +534,5 @@
    "published": "2026-11-14"
   }
  ],
- "note": "AM run. Checked 75 people and filed 7 bullets across 6 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: 2 winners, both from Clarkson's 5-3 win over Brown on Nov 14, 2026 \u2014 Janelle Evans scored a goal and Isa Goettl scored a goal and recorded an assist; no third winner verified, so the slot was left empty. Also filed: Lennart Johns's co-authorship of a June 2025 Frontiers in Education paper on Clarkson's school-university STEMM partnerships; two Cody Benham disc golf results (3rd at the Watertown Glow Night, Mar 2026, and tied 12th in MA2 at the 2025 Green Mountain Championship); Megan Eddy's SUNY Canton Dean's List honor for Fall 2024 (a batch report called it the President's List; the parent's section check placed her line in the Dean's List section and the corrected fact was filed); and Savannah Adams's substitute approval at St. Lawrence Central for 2024-25. Not filed: a Kwadwo Appiah-Kubi BOREALIS paper was already on his record word for word; Michelle Larson's Ogdensburg Promise item is her known presidential role, the same call as Oct 30; two Annika Greco Stewardship articles repeat a pattern already on her record three times over. 0 candidates added to Research Command \u2014 no identity question or family item with a verified source page came up this run. Unharvested photo leads flagged by JD: Christine Sutter, Emily Criscitello, Jale -, Joann Duclos, Joe Charlebois, Katelyn Tomford, Kayla Hettel, Max Ferran, Megan Converse."
+ "note": "PM run. Checked 75 people and filed 12 bullets across 10 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: 1 winner \u2014 Adria Tebo scored a power-play goal in the University of New England's 3-0 win over Roger Williams, Nov 13, 2026 (Roger Williams University Athletics); the other two slots were left empty rather than stretched. Strongest rotation find: Joe Mastro graduated from the 215th session of the New York State Police Academy and was assigned to Troop B for field duty, Oct 23, 2024. Also filed: Megan Eurto's appointment as Village Registrar for Canton (Jun 2025), Lawrence Kring's re-election to the Morristown Central School Board (term from Jul 1, 2025), Brittany DiSalvo's CarFit contact role and her 2023 IPEC poster co-authorship, Grace Cicchinelli's 2023 SLU art and music installation feature, Elena Trempe's SLU Open results (Feb 21, 2025), Robin DiPasquale's Clarkson courses, and, from the compounding lane, the appraisal-phase status of Christopher Towler's APTA guideline group. Two batch claims were corrected by the parent's section checks before filing: Justin Estep's SUNY Canton honors are a Fall 2021 Dean's List and a Spring 2021 Part-Time Honors, not the President's List the batch reported both times. Not filed: Wesley Hissong's 2024 Clarkson and 2021 Jefferson security reports repeat roles already on his record; Jaime Bicknell items were quotes in her known role; the lane's Aidan Daniels correction is already on his Sheet record word for word, so it was counted as a discard. The lane also flagged Cecilie Smith's record (her district directory listing and resignation item name different buildings, and her substitute approval sits in a board addendum that could not be located) \u2014 logged only, nothing changed. Bob Blewett's birth date and degree years rest on an aggregator (Prabook) alone and were logged only. 3 candidates added to Research Command. Unharvested photo leads flagged by JD: Christine Sutter, Emily Criscitello, Jale -, Joann Duclos, Joe Charlebois, Katelyn Tomford, Kayla Hettel, Max Ferran, Megan Converse."
 }
