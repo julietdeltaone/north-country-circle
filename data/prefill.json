@@ -1,8 +1,16 @@
 {
- "generated": "2026-11-16",
+ "generated": "2026-11-17",
  "count": 0,
  "suggestions": [],
  "auto_apply": [
+  {
+   "key": "midwifesunday",
+   "display": "Sunday Wright Smith",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-6e8b145e39"
+  },
   {
    "key": "sf:murray",
    "display": "Murray",
@@ -40,16 +48,6 @@
    "shelved": 2
   },
   "items": [
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
    {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
@@ -126,6 +124,16 @@
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-5b6da55f7a",
+    "key": "ct:susan buckley",
+    "display": "Susan Buckley",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
