@@ -6012,6 +6012,10 @@
    "name": "ig:philiplloydpaige",
    "pattern": "milestone",
    "source": "Homes.com",
+   "state": {
+    "at": "2026-11-17T16:29:52.416Z",
+    "status": "read"
+   },
    "url": "https://www.homes.com/potsdam-ny/acreage/p2/"
   },
   {
@@ -6025,6 +6029,10 @@
    "name": "ig:philiplloydpaige",
    "pattern": "milestone",
    "source": "Homes.com",
+   "state": {
+    "at": "2026-11-17T16:29:52.416Z",
+    "status": "read"
+   },
    "url": "https://www.homes.com/norwood-ny/"
   },
   {
@@ -6038,6 +6046,10 @@
    "name": "ig:philiplloydpaige",
    "pattern": "milestone",
    "source": "Homes.com",
+   "state": {
+    "at": "2026-11-17T16:29:52.416Z",
+    "status": "read"
+   },
    "url": "https://www.homes.com/norwood-ny/"
   },
   {
@@ -6051,6 +6063,10 @@
    "name": "ig:colleendcheney",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-17T16:29:53.961Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2024/honors-spring24.php"
   },
   {
@@ -6064,6 +6080,10 @@
    "name": "ig:midwifesunday",
    "pattern": "title_change",
    "source": "New York Midwives",
+   "state": {
+    "at": "2026-11-17T16:29:55.047Z",
+    "status": "read"
+   },
    "url": "https://newyorkmidwives.org/leadership/"
   },
   {
@@ -6077,6 +6097,10 @@
    "name": "ig:midwifesunday",
    "pattern": "milestone",
    "source": "New York Midwives",
+   "state": {
+    "at": "2026-11-17T16:29:55.047Z",
+    "status": "read"
+   },
    "url": "https://newyorkmidwives.org/leadership/"
   },
   {
@@ -6090,6 +6114,10 @@
    "name": "ig:midwifesunday",
    "pattern": "milestone",
    "source": "New York Midwives",
+   "state": {
+    "at": "2026-11-17T16:29:55.047Z",
+    "status": "read"
+   },
    "url": "https://newyorkmidwives.org/leadership/"
   },
   {
@@ -6103,6 +6131,10 @@
    "name": "ig:midwifesunday",
    "pattern": "milestone",
    "source": "New York Midwives",
+   "state": {
+    "at": "2026-11-17T16:29:55.047Z",
+    "status": "read"
+   },
    "url": "https://newyorkmidwives.org/leadership/"
   },
   {
@@ -6116,6 +6148,10 @@
    "name": "ig:midwifesunday",
    "pattern": "new_credential",
    "source": "New York Midwives",
+   "state": {
+    "at": "2026-11-17T16:29:55.047Z",
+    "status": "read"
+   },
    "url": "https://newyorkmidwives.org/leadership/"
   },
   {
@@ -6129,6 +6165,10 @@
    "name": "ig:spurgeonfiddle",
    "pattern": "milestone",
    "source": "Violin Society of America",
+   "state": {
+    "at": "2026-11-17T16:30:00.173Z",
+    "status": "read"
+   },
    "url": "https://vsa.memberclicks.net/previous-scholarship-recipients"
   },
   {
@@ -6142,6 +6182,10 @@
    "name": "ig:nevaeh_phillips",
    "pattern": "milestone",
    "source": "Katy ISD",
+   "state": {
+    "at": "2026-11-17T16:30:01.041Z",
+    "status": "read"
+   },
    "url": "https://www.katyisd.org/news-details/~board/news-headlines-katy-independent-school-district-100/post/softball-dynasty-katy-softball-dominates-to-net-third-state-title-in-11-years"
   },
   {
@@ -6155,6 +6199,10 @@
    "name": "ig:sammace11",
    "pattern": "milestone",
    "source": "SUNY Potsdam Athletics",
+   "state": {
+    "at": "2026-11-17T16:30:02.272Z",
+    "status": "read"
+   },
    "url": "https://potsdambears.com/news/2020/5/13/seniors-team-share-womens-lacrosse-awards051320.aspx"
   },
   {
@@ -6168,6 +6216,10 @@
    "name": "ig:sammace11",
    "pattern": "correction",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-17T16:30:02.272Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/offices/environmental-health-and-safety/safety-committee"
   },
   {
@@ -6181,6 +6233,10 @@
    "name": "ig:megphill_",
    "pattern": "milestone",
    "source": "Adirondack Park Agency",
+   "state": {
+    "at": "2026-11-17T16:29:51.542Z",
+    "status": "read"
+   },
    "url": "https://apa.ny.gov/meeting/2026/11/DRAFT10-26-min.pdf"
   }
  ],
