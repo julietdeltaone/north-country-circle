@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.17.1';
+var APP_VERSION = '4.17.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3362,7 +3362,7 @@ function ptVisibleCols(){
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:16, loc:9, work:11, school:11, phone:11, lastc:10, years:6, close:7, record:9, tier:9, orgs:14, assoc:7, msgs:8, skills:9, rel:10, handle:9, groups:11, email:11, updated:8, firstc:10 };   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
+var PT_W = { name:15, loc:9, work:11, school:11, phone:11, lastc:10, years:8, close:6, record:9, tier:9, orgs:14, assoc:7, msgs:8, skills:9, rel:10, handle:9, groups:11, email:11, updated:8, firstc:10 };   /* V4.17.2: Known since widened 6 -> 8 (from Name 16 -> 15 and Closeness 7 -> 6) so its header stops wrapping onto a line above the other headers */   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
 function ptColgroupHTML(){ return '<colgroup><col style="width:3%">' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -16601,7 +16601,7 @@ function onClick(ev){
     case 'pvmerge': { var sel4 = pvPickedDis(); if(sel4.length < 2){ toast('Tick at least two rows to merge.'); break; } openMergeSheet(sel4[0]); break; }
     case 'pvproxjump': { CALFOLD.prox = true; render(); var px = $('#pv-proxlogger'); if(px) px.scrollIntoView({ block:'start' }); break; }
     case 'calfold': { var cf = t.getAttribute('data-f'); if(cf && CALFOLD[cf] != null){ CALFOLD[cf] = !CALFOLD[cf]; render(); } break; }
-    case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
+    case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; if(S.ppl.view === 'recent'){ S.ppl.view = 'list'; viewPeople($('#view')); } else paintPeople(); break; }   /* V4.17.2: the By-last-contact view re-buckets rows by recency and discards the column sort, so a header click there flipped the arrow but never moved a row — one click now lands in List view with the sort applied */
     case 'sstsort': { var sk2 = el.getAttribute('data-k'); if(SB.st.sortK === sk2) SB.st.sortD = -SB.st.sortD; else { SB.st.sortK = sk2; SB.st.sortD = SST_NUM[sk2] ? -1 : 1; } SB.st.result = ''; sstPaint(); break; }
     case 'ssttier': SB.st.tier = el.getAttribute('data-v'); SB.st.confirm = false; SB.st.result = ''; sstPaintTiers(); sstPaint(); break;
     case 'sstclear': SB.st.q = ''; SB.st.tier = 'all'; SB.st.group = ''; SB.st.confirm = false; SB.st.result = ''; { var sq2 = $('#sst-q'); if(sq2) sq2.value = ''; var sg2 = $('#sst-group'); if(sg2) sg2.value = ''; } sstPaintTiers(); sstPaint(); break;
