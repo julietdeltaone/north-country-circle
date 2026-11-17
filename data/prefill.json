@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "midwifesunday",
-   "display": "Sunday Wright Smith",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-6e8b145e39"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
