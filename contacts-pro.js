@@ -3127,7 +3127,7 @@ function ptheadHTML(){
   var nPick = Object.keys(PTPICK).filter(function(k){ return PTPICK[k]; }).length;
   return '<thead><tr><th class="ptpickcell"><input type="checkbox" data-act="ptpickall"' + (nPick ? ' checked' : '') + ' aria-label="Select all shown"></th>' + ptVisibleCols().map(function(c){
     var on = ts.k === c.k;
-    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + (on ? '<span class="sarr" aria-hidden="true">' + (ts.d < 0 ? '▾' : '▴') + '</span>' : '') + '</th>';   /* V4.17.2: arrow span renders only on the active column — as an always-present empty span it wrapped onto a phantom second line in narrow columns and pushed those headers half a line up */
   }).join('') + '</tr></thead>';
 }
 function ptierCell(e){
@@ -3362,7 +3362,7 @@ function ptVisibleCols(){
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:15, loc:9, work:11, school:11, phone:11, lastc:10, years:8, close:6, record:9, tier:9, orgs:14, assoc:7, msgs:8, skills:9, rel:10, handle:9, groups:11, email:11, updated:8, firstc:10 };   /* V4.17.2: Known since widened 6 -> 8 (from Name 16 -> 15 and Closeness 7 -> 6) so its header stops wrapping onto a line above the other headers */   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
+var PT_W = { name:14, loc:9, work:11, school:11, phone:11, lastc:10, years:8, close:7, record:9, tier:9, orgs:14, assoc:7, msgs:8, skills:9, rel:10, handle:9, groups:11, email:11, updated:8, firstc:10 };   /* V4.17.2: Known since widened 6 -> 8 (from Name 16 -> 14) so its header stops wrapping onto a line above the other headers */   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
 function ptColgroupHTML(){ return '<colgroup><col style="width:3%">' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -18476,7 +18476,7 @@ function sstPaint(){
   }
   var head = '<thead><tr><th class="sst-ckh"><input type="checkbox" data-sstckall aria-label="Select all rows in the current view"></th>' + cols.map(function(c){
     var on = st.sortK === c.k;
-    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="sstsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (st.sortD < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + esc(c.label.toLowerCase()) + '">' + esc(c.label) + '<span class="sarr" aria-hidden="true">' + (on ? (st.sortD < 0 ? '▾' : '▴') : '') + '</span></th>';
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="sstsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (st.sortD < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + esc(c.label.toLowerCase()) + '">' + esc(c.label) + (on ? '<span class="sarr" aria-hidden="true">' + (st.sortD < 0 ? '▾' : '▴') + '</span>' : '') + '</th>';   /* V4.17.2: arrow span only on the active column (see ptheadHTML) */
   }).join('') + '</tr></thead>';
   var cg = '<colgroup><col style="width:34px">' + cols.map(function(c){ return '<col style="width:' + (c.k === 'prox' ? 12 : (PT_W[c.k] || 10)) + '%">'; }).join('') + '</colgroup>';
   main.innerHTML = '<div class="ptwrap sst-wrap"><table class="ptable sst-table">' + cg + head + '<tbody>' +
