@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1454,
-  "dated": 64,
+  "total": 1455,
+  "dated": 65,
   "undated": 1390,
-  "placed": 1302,
+  "placed": 1303,
   "unplaced": 152,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 25,
-  "brief_standalone": 39,
+  "brief_standalone": 40,
   "brief_unresolved": 0
  },
  "items": [
@@ -203,6 +203,18 @@
    "fresh": true,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 248,
+   "display": "Megan Phillips",
+   "text": "Provided the Adirondack Park Agency Planning Division report on Oct 22, 2026, noting the project team continues to review a Town of Bolton map amendment application to reclassify approximately 3.3 acres from Low Intensity Use to Hamlet",
+   "source": "Adirondack Park Agency",
+   "url": "https://apa.ny.gov/meeting/2026/11/DRAFT10-26-min.pdf",
+   "published": "2026-10-22",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena, NY",
    "place_src": "profile"
   },
   {
