@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1451,
-  "dated": 61,
+  "total": 1454,
+  "dated": 64,
   "undated": 1390,
-  "placed": 1300,
-  "unplaced": 151,
+  "placed": 1302,
+  "unplaced": 152,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 25,
-  "brief_standalone": 36,
+  "brief_standalone": 39,
   "brief_unresolved": 0
  },
  "items": [
@@ -254,6 +254,18 @@
    "place_src": "text"
   },
   {
+   "di": 267,
+   "display": "Nevaeh Phillips",
+   "text": "Won the Texas UIL 6A Division II state championship with Katy High School, May 30, 2026",
+   "source": "Katy ISD",
+   "url": "https://www.katyisd.org/news-details/~board/news-headlines-katy-independent-school-district-100/post/softball-dynasty-katy-softball-dominates-to-net-third-state-title-in-11-years",
+   "published": "2026-06-01",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
    "di": 167,
    "display": "Joye Levendusky",
    "text": "Qualified for the 2026 Senior World Team Trials Challenge Tournament in Louisville as a U.S. Open top-seven placer and was pre-seeded ninth at 72 kg, May 2026",
@@ -439,6 +451,18 @@
    "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "https://canton.edu/news/2024/honors-spring24.php",
+   "published": "2024-06-17",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 65,
+   "display": "Colleen Cheney",
+   "text": "Named to the President's List at SUNY Canton for the Spring 2024 semester as a Graphic and Multimedia Design student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2024/honors-spring24.php",
    "published": "2024-06-17",
    "fresh": false,
    "pid": "44.5956,-75.1691",
@@ -659,6 +683,18 @@
    "fresh": false,
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 292,
+   "display": "Sam Mace",
+   "text": "Shared SUNY Potsdam women's lacrosse team MVP honors with the senior class in 2020, after returning from an injury that had cost her the 2019 season",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/news/2020/5/13/seniors-team-share-womens-lacrosse-awards051320.aspx",
+   "published": "2020-05-13",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
    "place_src": "text"
   },
   {
