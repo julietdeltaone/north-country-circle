@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-16",
+ "updated": "2026-11-17",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16824,6 +16824,33 @@
    },
    "fields": {},
    "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261117-jjcyph-co-wrote-more-than-a-miracle-with-gr",
+   "name": "jjcyph",
+   "display": "Jon Cyphers",
+   "run_date": "2026-11-17",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Jesus Freak Hideout reported on November 8, 2024 that Grace Graber wrote her song \"More Than A Miracle\" with Tyler Moody and Jonathan Cyphers, and that the song was released to radio that week as part of her debut album The Breakthrough.",
+   "file_text": "Co-wrote \"More Than A Miracle\" with Grace Graber and Tyler Moody, Nov 2024",
+   "source": "Jesus Freak Hideout",
+   "url": "https://www.jesusfreakhideout.com/news/2024/11/08.GraceGraberandJonathanCyphersConfidentlyDeclarethatGodisMoreThanAMiracleonNewSingle.asp",
+   "anchors": [
+    "Christian songwriting",
+    "The article links to his cyphersmusic artist page"
+   ],
+   "quote": "Grace Graber wrote \u201cMore Than A Miracle\u201d with Tyler Moody and Jonathan Cyphers.",
+   "missing_gate": "The page names a Jonathan Cyphers as a songwriter, but nothing on it ties him to Nashville or St. Lawrence County.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2024-11-08",
    "novelty": "new"
   }
  ]
