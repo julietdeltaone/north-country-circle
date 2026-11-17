@@ -875,7 +875,7 @@ details.quick[open]>summary{margin-bottom:10px}
 .ptable th{padding:10px 14px;text-align:left;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line2);white-space:nowrap;cursor:pointer;user-select:none;-webkit-user-select:none}
 .ptable th:hover{color:var(--txt)}
 .ptable th.on{color:var(--txt)}
-.ptable th .sarr{display:inline-block;width:12px;margin-left:5px;color:var(--acc);font-size:9px;vertical-align:1px}
+.ptable th .sarr{display:inline-block;width:17px;margin-left:6px;color:var(--acc);font-size:14px;font-weight:700;vertical-align:-2px}
 .ptable th.num,.ptable td.num{text-align:right}
 .ptrow{border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s var(--ease)}
 .ptrow:last-child{border-bottom:0}
@@ -5996,7 +5996,7 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 
 /* ---------- tables: headers wrap, dates never clip (contract 2) ---------- */
 .ptable{table-layout:fixed}
-.ptable th{white-space:normal !important;overflow:visible !important;text-overflow:clip !important;line-height:1.3;vertical-align:bottom}
+.ptable th{white-space:normal !important;overflow:visible !important;text-overflow:clip !important;line-height:1.3;vertical-align:middle}
 .ptable td{overflow:hidden;text-overflow:ellipsis}
 .ptable td.c-name{white-space:normal;overflow:visible;text-overflow:clip}
 .ptable td.c-lastc,.ptable td.c-firstc{white-space:nowrap;overflow:visible;text-overflow:clip}
