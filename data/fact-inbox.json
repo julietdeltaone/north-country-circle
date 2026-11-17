@@ -6169,6 +6169,19 @@
    "pattern": "correction",
    "source": "St. Lawrence University",
    "url": "https://www.stlawu.edu/offices/environmental-health-and-safety/safety-committee"
+  },
+  {
+   "anchor": "Adirondack Park Agency \u00b7 Massena, NY",
+   "batch": "AM run \u2014 Nov 17, 2026",
+   "display": "Megan Phillips",
+   "fact": "Provided the Adirondack Park Agency Planning Division report on Oct 22, 2026, noting the project team continues to review a Town of Bolton map amendment application to reclassify approximately 3.3 acres from Low Intensity Use to Hamlet",
+   "id": "fi-20261117-ig-megphill-provided-the-adirondack-park-a",
+   "key": "ig:megphill_",
+   "learned": "2026-11-17",
+   "name": "ig:megphill_",
+   "pattern": "milestone",
+   "source": "Adirondack Park Agency",
+   "url": "https://apa.ny.gov/meeting/2026/11/DRAFT10-26-min.pdf"
   }
  ],
  "patterns": {
