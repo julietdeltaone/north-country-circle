@@ -16691,6 +16691,140 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-martinlovell-8-lovell-s-tree-service-is-listed-as-a",
+   "name": "martinlovell.8",
+   "display": "Martin Lovell",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The federal FMCSA Safety Measurement System lists a carrier called Lovell's Tree Service, U.S. DOT number 4397236, with 2 vehicles and 2 drivers. The page gives no first name and no town.",
+   "file_text": "Lovell's Tree Service is listed as a U.S. DOT-registered carrier (DOT# 4397236) with two vehicles and two drivers",
+   "source": "FMCSA Safety Measurement System",
+   "url": "https://ai.fmcsa.dot.gov/sms/Carrier/4397236/Overview.aspx",
+   "anchors": [
+    "Co-owner of MG Tree LLC",
+    "Tree work in St. Lawrence County"
+   ],
+   "quote": "LOVELL'S TREE SERVICE - U.S. DOT#: 4397236 - Number of Vehicles: 2 - Number of Drivers: 2",
+   "missing_gate": "The federal page names only Lovell's Tree Service, with no first name or town, so I cannot tell it is his company.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 26,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-davidzufall-served-as-a-fine-arts-and-fine-craft",
+   "name": "davidzufall",
+   "display": "David Zufall",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The Gouverneur Tribune Press reported that David Zufall was one of the volunteers who evaluated Fine Arts and Fine Crafts projects at the St. Lawrence County 4-H Judging Day on August 1, 2026.",
+   "file_text": "Served as a Fine Arts and Fine Crafts (Section DB) project evaluator at St. Lawrence County 4-H Judging Day at the Gouverneur Fairgrounds, Aug 2026",
+   "source": "Gouverneur Tribune Press",
+   "url": "https://bloximages.chicago2.vip.townnews.com/dailygazette.com/content/tncms/assets/v3/eedition/f/08/f0846455-4e52-540d-bb09-8866e124cf74/6a725d8a38751.pdf.pdf",
+   "anchors": [
+    "St. Lawrence County, where he lives in Lisbon and runs a photography business"
+   ],
+   "quote": "David Zufall, Patty Davis, Amy Sands (Fine Arts & Fine Crafts \u2013 Section DB)",
+   "missing_gate": "The newspaper names a David Zufall in St. Lawrence County, but nothing on the page ties him to Lisbon, his farm, or his photography.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-08-07",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261116-richardsinclair-took-on-pastoral-leadership-of-the-p",
+   "name": "richardsinclair",
+   "display": "Rick Sinclair",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "In a signed email to Christian Fellowship Center members, Rick Sinclair said Daniel Paladin, Alan Daniels, and Paul Brown are leaving to plant a church in another state, and that he will provide pastoral leadership to the Potsdam congregation going forward.",
+   "file_text": "Took on pastoral leadership of the Potsdam congregation after Daniel Paladin's departure from Christian Fellowship Center",
+   "source": "Christian Fellowship Center",
+   "url": "https://us2.campaign-archive.com/?u=a662b588b426076a9576affca&id=5b065747a7",
+   "anchors": [
+    "Senior pastor of Christian Fellowship Center since 1981",
+    "Lead Pastor of CFC Potsdam"
+   ],
+   "quote": "In light of the transition, I will be providing pastoral leadership to the Potsdam congregation going forward.",
+   "missing_gate": "This is about a church leadership change after a split, so I always check with you first.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 18,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261116-josiahjmartin-co-owns-martin-s-pretzel-bakery-with",
+   "name": "josiahjmartin",
+   "display": "Josiah Martin",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "New York State Senate Resolution J1986 names Josiah Martin and Justus Martin as the owners of Martin's Pretzel Bakery in Moira, and says Josiah co-manages Martin's Country Store with his father, Justus Martin. His record says he runs the store with his father but does not name him.",
+   "file_text": "Co-owns Martin's Pretzel Bakery with his father, Justus Martin, whom he also co-manages Martin's Country Store with",
+   "source": "New York State Senate",
+   "url": "https://www.nysenate.gov/legislation/bills/2025/J1986",
+   "anchors": [
+    "Owner-operator of Martin's Handmade Pretzels in Moira",
+    "Co-manages Martin's Country Store with his father"
+   ],
+   "quote": "Josiah Martin co-manages Martin's Country Store with his father, Justus Martin",
+   "missing_gate": "This names Josiah's father, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 50,
+    "source": 28,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-05-11",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261116-nevaeh-phillips-hit-a-2-rbi-double-in-katy-s-6-2-eig",
+   "name": "nevaeh_phillips",
+   "display": "Nevaeh Phillips",
+   "run_date": "2026-11-16",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A VYPE playoff report said Nevaeh Phillips hit a 2-RBI double in Katy's 6-2, eight-inning regional-semifinal win over defending champion Kingwood in May 2026.",
+   "file_text": "Hit a 2-RBI double in Katy's 6-2, eight-inning regional-semifinal win over defending champion Kingwood, May 2026",
+   "source": "VYPE",
+   "url": "",
+   "anchors": [
+    "Katy High School softball",
+    "Class of 2028"
+   ],
+   "quote": "Game 1 remained deadlocked at 1-1 through seven innings Thursday before Katy erupted in extras behind RBI doubles from Nevaeh Phillips (2 RBI), Libby Hroch, and Haley Schmitt (2 RBI).",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
