@@ -3,6 +3,14 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-17",
+   "kind": "filed",
+   "display": "Megan Phillips",
+   "text": "Provided the Adirondack Park Agency Planning Division report on Oct 22, 2026, noting the project team continues to review a Town of Bolton map amendment application to reclassify approximately 3.3 acres from Low Intensity Use to Hamlet",
+   "source": "Adirondack Park Agency",
+   "url": "https://apa.ny.gov/meeting/2026/11/DRAFT10-26-min.pdf"
+  },
+  {
    "date": "2026-11-16",
    "kind": "filed",
    "display": "Kayla Hettel",
@@ -2393,14 +2401,6 @@
    "text": "Filed 1 new fact from the Nov 12, 2026 full-directory sweep: At St. Lawrence University, Dr. Bob Blewett mentored student Francisco Rodriguez-Tineo's summer 2018 CSTEP res",
    "source": "St. Lawrence University Merit Pages",
    "url": "https://stlawu.meritpages.com/stories/Francisco-Rodriguez-Tineo-to-Participate-in-Summer-Research-Internship-at-St-Lawrence-University-/10947777"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "sf:lennart-johns",
-   "text": "Filed 1 new fact from the Nov 12, 2026 full-directory sweep: Presented Clarkson's BRAIN-STEM work at the NIH Science Education conference, September 29 to October 1, 2026.",
-   "source": "NIH SciEd / SEPA Community",
-   "url": "https://sepacommunity.org/wp-content/uploads/NIH-SciEd-Full-Schedule-09-24-26.pdf"
   }
  ]
 }
