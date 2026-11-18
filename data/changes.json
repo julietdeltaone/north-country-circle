@@ -1,6 +1,22 @@
 {
  "entries": [
   {
+   "filed": "2026-11-18",
+   "name": "Colin Mackey",
+   "what": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026",
+   "source": "Mohawk Valley Community College",
+   "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf",
+   "novelty": "new"
+  },
+  {
+   "filed": "2026-11-18",
+   "name": "Isa Goettl",
+   "what": "Has two goals and six assists for eight points through Clarkson's first 16 games of the 2026-27 women's hockey season, as of Nov 14, 2026",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats/2026-27?path=whock",
+   "novelty": "expands"
+  },
+  {
    "filed": "2026-11-17",
    "name": "Liam Miller-Lynch",
    "what": "Named to the 2026 Liberty League Football All-Academic Team as a St. Lawrence University sophomore from Potsdam, New York",
@@ -13355,5 +13371,5 @@
    "novelty": "new"
   }
  ],
- "updated": "2026-11-17"
+ "updated": "2026-11-18"
 }
