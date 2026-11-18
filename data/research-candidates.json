@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-17",
+ "updated": "2026-11-18",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16877,6 +16877,112 @@
    },
    "fields": {},
    "published": "2024-05-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-jacinta-gomes-awarded-a-northern-new-york-communit",
+   "name": "sf:jacinta-gomes",
+   "display": "Jacinta Gomes",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Northern New York Community Foundation's scholarship page lists Jacinta Gomes among the St. Lawrence Central School students awarded a scholarship for 2019-2020.",
+   "file_text": "Awarded a Northern New York Community Foundation scholarship for 2019-2020 as a St. Lawrence Central School student",
+   "source": "Northern New York Community Foundation",
+   "url": "https://nnycf.org/foundation-awards-scholarships/",
+   "anchors": [
+    "St. Lawrence County, where her hometown North Lawrence is, in the St. Lawrence Central district"
+   ],
+   "quote": "St. Lawrence Central School \u2014 Daisy Bissonette, Hannah Crump, Leah Francis, Jacinta Gomes, Sidney Guerard, Aleea Larock, Margarita Miner, Kolby Perkins",
+   "missing_gate": "The page names a Jacinta Gomes in St. Lawrence County, but nothing on it ties her to SUNY Plattsburgh or nursing.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-andrew-wiseman-competed-in-track-at-wood-memorial-h",
+   "name": "ct:andrew wiseman",
+   "display": "Andrew Wiseman",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Athletic.net's Wood Memorial High School team records list an Andrew Wiseman running 58.77 in the 400 meters as a sophomore in 2009, and 20.25 in the 110-meter hurdles and 49.71 in the 300-meter hurdles as a junior in 2010.",
+   "file_text": "Competed in track at Wood Memorial High School, recording 58.77 in the 400m as a sophomore in 2009 and 20.25 in the 110m hurdles and 49.71 in the 300m hurdles as a junior in 2010",
+   "source": "Athletic.net",
+   "url": "https://www.athletic.net/team/17112/track-and-field-outdoor/2026/team-records",
+   "anchors": [
+    "Wood Memorial High School, the school on his record"
+   ],
+   "quote": "Andrew Wiseman 58.77 10 Wood Memorial 2009 IHSAA Boys Sectional Championships - Princeton",
+   "missing_gate": "The page names an Andrew Wiseman at Wood Memorial High School, but nothing else on it ties him to the Army or to Princeton, Indiana.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-phyllis-paladin-sold-her-penn-hills-home-and-bought",
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A 2019 review on a real estate team's page, signed Phyllis Paladin, says she and her husband sold their four-bedroom home in Penn Hills and bought a smaller two-bedroom ranch near their oldest son about a year earlier.",
+   "file_text": "Sold her Penn Hills home and bought a smaller two-bedroom ranch near her oldest son, c. 2018",
+   "source": "USDAProperties",
+   "url": "https://usdaproperties.com/property/agents/748365/",
+   "anchors": [
+    "The Pittsburgh area (Penn Hills); she lives in the Pittsburgh area on file",
+    "A husband, matching her marriage on file"
+   ],
+   "quote": "Phyllis Paladin 2019-09-05 \u2014 A little over a year ago my husband and I knew it was time to sell our four bedroom two story home and buy a smaller home\u2026 They listed our Penn Hills. It sold in six days!",
+   "missing_gate": "The review names a Phyllis Paladin in the Pittsburgh area, but it does not name her husband, so I cannot be sure it is her.",
+   "confidence": 46,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2019-09-05",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-max-ferran-author-of-blue-dominion-an-80-000-wo",
+   "name": "max_ferran06",
+   "display": "Max Ferran",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Max Ferran's own Bold.org profile says he is the author of Blue Dominion, an 80,000-word dystopian novel in progress since 2021. The same profile says he founded ClearThePath.org, a nonprofit offering free tutoring to teenagers from cluttered and chaotic homes, about two years before the undated essay.",
+   "file_text": "Author of Blue Dominion, an 80,000-word dystopian novel in progress since 2021 ;; Founded ClearThePath.org, a nonprofit offering free tutoring to teenagers from cluttered and chaotic homes, c. 2024",
+   "source": "Bold.org",
+   "url": "http://bold.org/students/max-ferran/",
+   "anchors": [
+    "Clarkson University, on file",
+    "Mechanical Engineering, on file"
+   ],
+   "quote": "Beyond STEM, I am the author of Blue Dominion, an 80,000-word dystopian novel in progress since 2021, weaving themes of technology, friendship, and endurance\u2014much like my own journey. Two years ago, I used what resources I could to launch ClearThePath.org, a nonprofit that offered free and discreet tutoring to teenagers who, like me, came from cluttered and chaotic homes.",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 6,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
    "novelty": "new"
   }
  ]
