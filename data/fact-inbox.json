@@ -6250,6 +6250,10 @@
    "name": "ig:liammillerlynch",
    "pattern": "new_credential",
    "source": "Liberty League Athletics",
+   "state": {
+    "at": "2026-11-18T12:36:05.653Z",
+    "status": "read"
+   },
    "url": "https://libertyleagueathletics.com/sports/2026/10/7/2026_FB_All-Academic_Team.aspx"
   },
   {
@@ -6263,6 +6267,10 @@
    "name": "ig:liammillerlynch",
    "pattern": "milestone",
    "source": "Buffalo State Athletics",
+   "state": {
+    "at": "2026-11-18T12:36:05.653Z",
+    "status": "read"
+   },
    "url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/buffalostateathletics.com/stats/football/2026/pdf/20261109103957-48033.pdf"
   },
   {
@@ -6328,6 +6336,10 @@
    "name": "sf:colin-mackey",
    "pattern": "title_change",
    "source": "Mohawk Valley Community College",
+   "state": {
+    "at": "2026-11-18T12:35:49.450Z",
+    "status": "read"
+   },
    "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf"
   }
  ],
