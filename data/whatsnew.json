@@ -3,6 +3,22 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-18",
+   "kind": "filed",
+   "display": "Colin Mackey",
+   "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026",
+   "source": "Mohawk Valley Community College",
+   "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf"
+  },
+  {
+   "date": "2026-11-18",
+   "kind": "filed",
+   "display": "Isa Goettl",
+   "text": "Has two goals and six assists for eight points through Clarkson's first 16 games of the 2026-27 women's hockey season, as of Nov 14, 2026",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats/2026-27?path=whock"
+  },
+  {
    "date": "2026-11-17",
    "kind": "filed",
    "display": "Liam Miller-Lynch",
@@ -2385,22 +2401,6 @@
    "text": "Filed 1 new fact from the Nov 12, 2026 full-directory sweep: Named to SUNY Canton's President's List for the Fall 2013 semester as an Accounting major from Potsdam.",
    "source": "SUNY Canton (Merit Pages)",
    "url": "https://canton.meritpages.com/stories/Trenton-Daniels-of-Potsdam-Named-to-President-s-List-at-SUNY-Canton/3189099"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "ig:wayne_brown_ii",
-   "text": "Filed 1 new fact from the Nov 12, 2026 full-directory sweep: Launched GATHER in May 2026, an end-to-end platform matching CRA-eligible mortgage loans to bank buyers, throu",
-   "source": "BitWire press release, CRA Marketplace and Black Lake Digital Markets",
-   "url": "https://www.bitwire.com/feed/cra-marketplace-and-black-lake-digital-markets-launch-gather-tm-the-first-end-to-end-institutional-platform-built-for-cra-eligible-mortgage-assets"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "ct:ethan ryan",
-   "text": "Filed 1 new fact from the Nov 12, 2026 full-directory sweep: Graduated from SUNY Potsdam's Law Enforcement Training Institute on July 18, 2025 as a Norwood Police Departme",
-   "source": "SUNY Potsdam",
-   "url": "https://www.potsdam.edu/news/lawenforcementgraduates"
   }
  ]
 }
