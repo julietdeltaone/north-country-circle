@@ -16852,6 +16852,32 @@
    "fields": {},
    "published": "2024-11-08",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261117-cashhyyy-baby-registry-with-judson-colbert-madr",
+   "name": "cashhyyy",
+   "display": "Cashlynn Colbert",
+   "run_date": "2026-11-17",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A Babylist registry in Cashlynn Colbert's name, with Judson Colbert of Madrid, New York, said a baby was due on May 22, 2024.",
+   "file_text": "Baby registry with Judson Colbert of Madrid, New York, listed a baby due May 22, 2024",
+   "source": "Babylist",
+   "url": "https://my.babylist.com/cashlynn-colbert",
+   "anchors": [
+    "Cashlynn Colbert (full name on the registry)"
+   ],
+   "quote": "Hi Friends & Family! I am honored to share the news of Baby C joining us this May.",
+   "missing_gate": "This is about Cashlynn's family, so I always check with you first.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 10,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2024-05-22",
+   "novelty": "new"
   }
  ]
 }
