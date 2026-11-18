@@ -6316,6 +6316,19 @@
    "pattern": "milestone",
    "source": "Leone Timing and Results Services",
    "url": "https://www.leonetiming.com/2025/Outdoor/States/Day2StartLists.htm"
+  },
+  {
+   "anchor": "Mohawk Valley Community College \u00b7 Utica",
+   "batch": "AM run \u2014 Nov 18, 2026",
+   "display": "Colin Mackey",
+   "fact": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026",
+   "id": "fi-20261118-colin-mackey-named-treasurer-of-mohawk-vall",
+   "key": "sf:colin-mackey",
+   "learned": "2026-11-18",
+   "name": "sf:colin-mackey",
+   "pattern": "title_change",
+   "source": "Mohawk Valley Community College",
+   "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf"
   }
  ],
  "patterns": {
