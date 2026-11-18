@@ -6238,6 +6238,84 @@
     "status": "read"
    },
    "url": "https://apa.ny.gov/meeting/2026/11/DRAFT10-26-min.pdf"
+  },
+  {
+   "anchor": "St. Lawrence University \u00b7 football",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Liam Miller-Lynch",
+   "fact": "Named to the 2026 Liberty League Football All-Academic Team as a St. Lawrence University sophomore from Potsdam, New York",
+   "id": "fi-20261117-liam-miller-lynch-named-to-the-2026-liberty-league-f",
+   "key": "ig:liammillerlynch",
+   "learned": "2026-11-17",
+   "name": "ig:liammillerlynch",
+   "pattern": "new_credential",
+   "source": "Liberty League Athletics",
+   "url": "https://libertyleagueathletics.com/sports/2026/10/7/2026_FB_All-Academic_Team.aspx"
+  },
+  {
+   "anchor": "St. Lawrence University \u00b7 football",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Liam Miller-Lynch",
+   "fact": "Recorded one solo tackle, for a 3-yard loss, for St. Lawrence in its game against Buffalo State in Canton on Nov 7, 2026",
+   "id": "fi-20261117-liam-miller-lynch-recorded-one-solo-tackle-for-a-3-y",
+   "key": "ig:liammillerlynch",
+   "learned": "2026-11-17",
+   "name": "ig:liammillerlynch",
+   "pattern": "milestone",
+   "source": "Buffalo State Athletics",
+   "url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/buffalostateathletics.com/stats/football/2026/pdf/20261109103957-48033.pdf"
+  },
+  {
+   "anchor": "Ogdensburg International Airport \u00b7 Airport Manager",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Charlie Garrelts",
+   "fact": "Reported in Nov 2026 that Ogdensburg International Airport travelers are expected to be able to connect through Raleigh-Durham to Las Vegas beginning in June 2027, with an evening arrival in Las Vegas and an overnight return",
+   "id": "fi-20261117-charlie-garrelts-reported-in-nov-2026-that-ogdensbu",
+   "key": "ig:charlie_garrelts",
+   "learned": "2026-11-17",
+   "name": "ig:charlie_garrelts",
+   "pattern": "milestone",
+   "source": "ClickNNY",
+   "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Criminal Investigation",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Tori Brunet",
+   "fact": "Named to SUNY Canton's Dean's List for the Fall 2022 semester as a Criminal Investigation student",
+   "id": "fi-20261117-tori-brunet-named-to-suny-canton-s-dean-s-list",
+   "key": "sf:tori-brunet",
+   "learned": "2026-11-17",
+   "name": "sf:tori-brunet",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/honorsf22.php"
+  },
+  {
+   "anchor": "Alfred State College \u00b7 English & Humanities",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Summer Dorr",
+   "fact": "Holds a BA from Flagler College and an MFA from the University of New Orleans, in addition to her MA from the University of Alaska Fairbanks",
+   "id": "fi-20261117-summer-dorr-holds-a-ba-from-flagler-college-an",
+   "key": "ig:summerdorrphoto",
+   "learned": "2026-11-17",
+   "name": "ig:summerdorrphoto",
+   "pattern": "new_credential",
+   "source": "Alfred State College",
+   "url": "https://coursedog-pdfs-public-prod.s3.us-east-2.amazonaws.com/suny_alfredstate_banner_ethos-catalog-1758122498873.pdf"
+  },
+  {
+   "anchor": "Potsdam High School \u00b7 track",
+   "batch": "PM run + compounding lane \u2014 Nov 17, 2026",
+   "display": "Sarah El-Labban",
+   "fact": "Ran the third leg on Potsdam High School's girls 4x400-meter relay team entered at the New York State Track & Field Championships on Jun 13-14, 2025",
+   "id": "fi-20261117-sarah-el-labban-ran-the-third-leg-on-potsdam-high-",
+   "key": "ig:sarah.ellabb",
+   "learned": "2026-11-17",
+   "name": "ig:sarah.ellabb",
+   "pattern": "milestone",
+   "source": "Leone Timing and Results Services",
+   "url": "https://www.leonetiming.com/2025/Outdoor/States/Day2StartLists.htm"
   }
  ],
  "patterns": {
