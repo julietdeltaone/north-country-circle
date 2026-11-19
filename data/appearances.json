@@ -1,16 +1,16 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1456,
-  "dated": 64,
-  "undated": 1392,
-  "placed": 1304,
-  "unplaced": 152,
+  "total": 1469,
+  "dated": 72,
+  "undated": 1397,
+  "placed": 1316,
+  "unplaced": 153,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 25,
-  "brief_standalone": 39,
-  "brief_unresolved": 2
+  "brief_attached": 29,
+  "brief_standalone": 43,
+  "brief_unresolved": 1
  },
  "items": [
   {
@@ -74,6 +74,18 @@
    "place_src": "profile"
   },
   {
+   "di": 212,
+   "display": "Liam Miller-Lynch",
+   "text": "Recorded one solo tackle, for a 3-yard loss, for St. Lawrence in its game against Buffalo State in Canton on Nov 7, 2026",
+   "source": "Buffalo State Athletics",
+   "url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/buffalostateathletics.com/stats/football/2026/pdf/20261109103957-48033.pdf",
+   "published": "2026-11-07",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
+   "place_src": "text"
+  },
+  {
    "di": 322,
    "display": "Mark C Walczyk",
    "text": "Won re-election to the New York State Senate (49th District), defeating Cassie Robbins-Forbus with 69% of the vote, Nov 2026",
@@ -93,6 +105,18 @@
    "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
    "published": "2026-11-02",
    "fresh": true,
+   "pid": "44.6942,-75.4863",
+   "place": "Ogdensburg",
+   "place_src": "text"
+  },
+  {
+   "di": 58,
+   "display": "Charlie Garrelts",
+   "text": "Reported in Nov 2026 that Ogdensburg International Airport travelers are expected to be able to connect through Raleigh-Durham to Las Vegas beginning in June 2027, with an evening arrival in Las Vegas and an overnight return",
+   "source": "ClickNNY",
+   "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
+   "published": "2026-11-02",
+   "fresh": false,
    "pid": "44.6942,-75.4863",
    "place": "Ogdensburg",
    "place_src": "text"
@@ -230,6 +254,18 @@
    "place_src": "profile"
   },
   {
+   "di": 212,
+   "display": "Liam Miller-Lynch",
+   "text": "Named to the 2026 Liberty League Football All-Academic Team as a St. Lawrence University sophomore from Potsdam, New York",
+   "source": "Liberty League Athletics",
+   "url": "https://libertyleagueathletics.com/sports/2026/10/7/2026_FB_All-Academic_Team.aspx",
+   "published": "2026-10-07",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "St. Lawrence University",
+   "place_src": "text"
+  },
+  {
    "di": 719,
    "display": "Raedyn Spademan",
    "text": "Recorded a hat trick in Clarkson's 8-1 win over RIT at Cheel Arena, Sep 26, 2026 (Clarkson University Athletics)",
@@ -240,6 +276,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
+  },
+  {
+   "di": 468,
+   "display": "Colin Mackey",
+   "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
+   "source": "Mohawk Valley Community College",
+   "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf",
+   "published": "2026-08-17",
+   "fresh": false,
+   "pid": "43.0019,-75.2731",
+   "place": "Sauquoit, NY",
+   "place_src": "profile"
   },
   {
    "di": 97,
@@ -360,6 +408,18 @@
    "pid": "44.9281,-74.8919",
    "place": "Massena, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 375,
+   "display": "Bryan Noble",
+   "text": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/3e64a31",
+   "published": "2025-06-23",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 583,
@@ -566,6 +626,18 @@
    "place_src": "text"
   },
   {
+   "di": 639,
+   "display": "Tori Brunet",
+   "text": "Named to SUNY Canton's Dean's List for the Fall 2022 semester as a Criminal Investigation student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/honorsf22.php",
+   "published": "2023-01-06",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Fall 2022 semester as a Criminal Investigation major",
@@ -686,6 +758,18 @@
    "place_src": "text"
   },
   {
+   "di": 704,
+   "display": "Donovan Patraw",
+   "text": "Graduated from SUNY Canton in spring 2020 with a Bachelor of Technology in Criminal Investigation (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2020/graduates2020.php",
+   "published": "2020-06-18",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 291,
    "display": "Sam Mace",
    "text": "Shared SUNY Potsdam women's lacrosse team MVP honors with the senior class in 2020, after returning from an injury that had cost her the 2019 season",
@@ -708,6 +792,18 @@
    "pid": "44.8269,-74.6583",
    "place": "North Lawrence, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 444,
+   "display": "Benjamin Horner",
+   "text": "Named to SUNY Canton's President's List for the Fall 2019 semester as a Criminal Justice student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2020/honors-fall2019.php",
+   "published": "2020-01-08",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
   },
   {
    "di": 118,
@@ -864,6 +960,18 @@
    "pid": "44.5956,-75.1691",
    "place": "Canton",
    "place_src": "text"
+  },
+  {
+   "di": 420,
+   "display": "Alan K Daniels",
+   "text": "Leaving the Christian Fellowship Center ministry to join Daniel Paladin in planting a church in another state (Christian Fellowship Center)",
+   "source": "Christian Fellowship Center",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 420,
@@ -2620,18 +2728,6 @@
   {
    "di": 444,
    "display": "Benjamin Horner",
-   "text": "Named to SUNY Canton's President's List for the Fall 2019 semester as a Criminal Justice student (SUNY Canton)",
-   "source": "SUNY Canton",
-   "url": "",
-   "published": "",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
-   "place_src": "text"
-  },
-  {
-   "di": 444,
-   "display": "Benjamin Horner",
    "text": "Named to SUNY Canton's President's List in Criminal Investigation for the Fall 2021 and Spring 2023 semesters (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
@@ -3633,9 +3729,21 @@
    "url": "",
    "published": "",
    "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
+   "pid": "44.7247,-75.3183",
+   "place": "Lisbon, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 691,
+   "display": "Carol Fox",
+   "text": "Wife of CFC Madrid deacon Andy Fox; lives in Lisbon with their six children (Christian Fellowship Center)",
+   "source": "Christian Fellowship Center",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.7497,-75.1282",
+   "place": "Madrid",
+   "place_src": "text"
   },
   {
    "di": 456,
@@ -7792,6 +7900,18 @@
   {
    "di": 720,
    "display": "Isa Goettl",
+   "text": "Has two goals and six assists for eight points through Clarkson's first 16 games of the 2026-27 women's hockey season, as of Nov 14, 2026 (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 720,
+   "display": "Isa Goettl",
    "text": "In two seasons at Bemidji State, played all 73 games and recorded 13 goals and 20 assists; her 18 points (seven goals, 11 assists) in 2025-26 ranked third on the team (Clarkson University Athletics)",
    "source": "Clarkson University Athletics",
    "url": "",
@@ -8015,6 +8135,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 517,
+   "display": "Jacinta Gomes",
+   "text": "Awarded a Northern New York Community Foundation scholarship for 2019-2020 as a St. Lawrence Central School student (Northern New York Community Foundation)",
+   "source": "Northern New York Community Foundation",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0831,-73.7846",
+   "place": "Saratoga Springs, NY",
    "place_src": "profile"
   },
   {
@@ -14186,6 +14318,18 @@
    "place_src": "profile"
   },
   {
+   "di": 602,
+   "display": "Phyllis Paladin",
+   "text": "Sold her Penn Hills home and bought a smaller two-bedroom ranch near her oldest son, c. 2018 (USDAProperties)",
+   "source": "USDAProperties",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "40.4406,-79.9959",
+   "place": "Pittsburgh, PA",
+   "place_src": "profile"
+  },
+  {
    "di": 603,
    "display": "Rachael Marshall",
    "text": "Lives in Taylorsville, Kentucky; hometown Watertown, New York (Facebook)",
@@ -14285,6 +14429,18 @@
    "di": 719,
    "display": "Raedyn Spademan",
    "text": "Forward, #18, for the Clarkson University women's hockey team; a junior in 2026-27, from Cochrane, Alberta, and a product of RINK Hockey Academy Kelowna (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 719,
+   "display": "Raedyn Spademan",
+   "text": "Has six goals and four assists for 10 points through Clarkson's first 16 games of the 2026-27 women's hockey season, as of Nov 14, 2026 (Clarkson University Athletics)",
    "source": "Clarkson University Athletics",
    "url": "",
    "published": "",
@@ -16192,6 +16348,18 @@
   {
    "di": 699,
    "display": "Stephen Blackwood Smith",
+   "text": "Father was the Reverend Harold Watson Smith, who died on April 23, 2019, in Saratoga Springs, New York (The Saratogian)",
+   "source": "The Saratogian",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0831,-73.7846",
+   "place": "Saratoga Springs, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 699,
+   "display": "Stephen Blackwood Smith",
    "text": "Reverend living in Malone, NY, married to Theresa (Legacy.com (Saratogian))",
    "source": "",
    "url": "",
@@ -16746,18 +16914,6 @@
    "display": "Tori Brunet",
    "text": "Majored in Criminal Investigation and minored in Forensic Science at SUNY Canton, graduating with the Class of 2023, and is from Hermon, New York. (SUNY Canton (Merit Pages))",
    "source": "",
-   "url": "",
-   "published": "",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
-   "place_src": "text"
-  },
-  {
-   "di": 639,
-   "display": "Tori Brunet",
-   "text": "Named to SUNY Canton's Dean's List for the Fall 2022 semester as a Criminal Investigation student (SUNY Canton)",
-   "source": "SUNY Canton",
    "url": "",
    "published": "",
    "fresh": false,
