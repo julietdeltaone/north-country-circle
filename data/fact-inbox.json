@@ -6341,6 +6341,32 @@
     "status": "read"
    },
    "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf"
+  },
+  {
+   "anchor": "Christian Fellowship Center \u00b7 Potsdam",
+   "batch": "PM run + compounding lane \u2014 Nov 18, 2026",
+   "display": "Alan K Daniels",
+   "fact": "Leaving the Christian Fellowship Center ministry to join Daniel Paladin in planting a church in another state",
+   "id": "fi-20261118-alan-k-daniels-leaving-the-christian-fellowsh",
+   "key": "sf:alan-k-daniels",
+   "learned": "2026-11-18",
+   "name": "sf:alan-k-daniels",
+   "pattern": "employer_change",
+   "source": "Christian Fellowship Center",
+   "url": "https://us2.campaign-archive.com/?u=a662b588b426076a9576affca&id=5b065747a7"
+  },
+  {
+   "anchor": "Inner Lakes Therapy \u00b7 LMSW",
+   "batch": "PM run + compounding lane \u2014 Nov 18, 2026",
+   "display": "Christine Sutter",
+   "fact": "In-network with Cigna and Aetna at Inner Lakes Therapy, and also sees clients at a reduced fee on Tier 1",
+   "id": "fi-20261118-christine-sutter-in-network-with-cigna-and-aetn",
+   "key": "ct:christine sutter",
+   "learned": "2026-11-18",
+   "name": "ct:christine sutter",
+   "pattern": "milestone",
+   "source": "Inner Lakes Therapy",
+   "url": "https://www.innerlakestherapy.com/innerlakes-therapists"
   }
  ],
  "patterns": {
