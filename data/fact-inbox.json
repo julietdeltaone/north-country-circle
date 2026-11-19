@@ -6367,6 +6367,58 @@
    "pattern": "milestone",
    "source": "Inner Lakes Therapy",
    "url": "https://www.innerlakestherapy.com/innerlakes-therapists"
+  },
+  {
+   "anchor": "New York State DEC \u00b7 Environmental Conservation Officer",
+   "batch": "AM run \u2014 Nov 19, 2026",
+   "display": "Bryan Noble",
+   "fact": "Took part in a Brooklyn fish-market inspection that found 11 undersized porgies unlawfully offered for sale in Kings County, Feb 2025",
+   "id": "fi-20261119-bryan-noble-took-part-in-a-brooklyn-fish-m",
+   "key": "ct:bryan noble",
+   "learned": "2026-11-19",
+   "name": "ct:bryan noble",
+   "pattern": "milestone",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol"
+  },
+  {
+   "anchor": "New York State DEC \u00b7 Environmental Conservation Officer",
+   "batch": "AM run \u2014 Nov 19, 2026",
+   "display": "Bryan Noble",
+   "fact": "Presented to about 50 youth and their parents at a public outreach event at the Zimmer Club on Staten Island, Feb 2025",
+   "id": "fi-20261119-bryan-noble-presented-to-about-50-youth-an",
+   "key": "ct:bryan noble",
+   "learned": "2026-11-19",
+   "name": "ct:bryan noble",
+   "pattern": "milestone",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol"
+  },
+  {
+   "anchor": "New York State DEC \u00b7 Environmental Conservation Officer",
+   "batch": "AM run \u2014 Nov 19, 2026",
+   "display": "Bryan Noble",
+   "fact": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
+   "id": "fi-20261119-bryan-noble-crewed-a-dec-vessel-that-escor",
+   "key": "ct:bryan noble",
+   "learned": "2026-11-19",
+   "name": "ct:bryan noble",
+   "pattern": "milestone",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/3e64a31"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Criminal Investigation",
+   "batch": "AM run \u2014 Nov 19, 2026",
+   "display": "Donovan Patraw",
+   "fact": "Graduated from SUNY Canton in spring 2020 with a Bachelor of Technology in Criminal Investigation",
+   "id": "fi-20261119-donovan-patraw-graduated-from-suny-canton-in",
+   "key": "sf:donovan-patraw",
+   "learned": "2026-11-19",
+   "name": "sf:donovan-patraw",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2020/graduates2020.php"
   }
  ],
  "patterns": {
