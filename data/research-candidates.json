@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-18",
+ "updated": "2026-11-19",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -17190,6 +17190,168 @@
    "confidence_parts": {
     "identity": 10,
     "source": 0,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261119-kailee-paige-won-a-1-000-amvets-massena-ladies-au",
+   "name": "sf:kailee paige",
+   "display": "Kailee Paige",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Fall 2022 AMVETS Department of New York newsletter says Kailee Olivia Paige won a $1,000 scholarship from the AMVETS Massena Ladies Auxiliary 4 as a Massena Central senior in 2022, and planned to study neuroscience at the University of Rochester.",
+   "file_text": "Won a $1,000 AMVETS Massena Ladies Auxiliary 4 scholarship as a Massena Central senior, May 2022",
+   "source": "Empire AMVET",
+   "url": "https://img1.wsimg.com/blobby/go/4b8190b4-b82d-4074-aa8b-4305b523a042/NY%20AMVETS%2010.3%20FALL_Proof3%20(1).pdf",
+   "anchors": [
+    "Her full name, Kailee Olivia Paige, is on her record",
+    "Massena, the town on her record"
+   ],
+   "quote": "This year Kailee Olivia Paige won the award of $1,000.00. She is an eighteen-yearold Massena Central Senior who will be studying for a Bachelor\u2019s Degree in Neuroscience at the University of Rochester in the Fall.",
+   "missing_gate": "The page names a Kailee Olivia Paige in Massena, but says she planned to study in Rochester; her record shows SUNY Potsdam.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261119-michaela-hosmer-married-on-july-6-2025-at-saint-mary",
+   "name": "ct:michaela hosmer",
+   "display": "Michaela Hosmer",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A bridal shop's story about a bride named only Michaela says she married on July 6, 2025 at Saint Mary's Church in New York, with a reception overlooking the Saint Lawrence River and an after-party at her family's home on Grindstone Island, and that she earned a Master of Arts in musical theatre performance at the Royal Conservatoire of Scotland.",
+   "file_text": "Married on July 6, 2025, at Saint Mary's Church in New York, with a reception on the Saint Lawrence River and a family celebration on Grindstone Island",
+   "source": "The White Collection",
+   "url": "https://www.thewhitecollectionbridal.co.uk/real-brides/michaela-from-the-usa",
+   "anchors": [
+    "The first name Michaela only",
+    "New York and the Saint Lawrence River area"
+   ],
+   "quote": "Michaela and her husband said \u201cI Do\u201d at Saint Mary\u2019s Church in New York last July.",
+   "missing_gate": "The page names only a Michaela, with no last name and nothing tying her to Clarkson University.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-06-05",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261119-jack-kessler-expanded-jack-s-detail-pressure-wash",
+   "name": "ct:jack kessler",
+   "display": "Jack Kessler",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The website for Jack's Detail & Pressure Washing lists more than the prices on his record: base washes by vehicle size, semi, camper and trailer washes, a driveway pressure-washing add-on, and a $40 subscriber maintenance service.",
+   "file_text": "Expanded Jack's Detail & Pressure Washing to add pressure washing, semi, camper and trailer washes, and a $40 subscriber maintenance service",
+   "source": "Jack's Detail & Pressure Washing",
+   "url": "https://JacksDetail.com/services.html",
+   "anchors": [
+    "The first name Jack",
+    "A car detailing business, matching the business on his record"
+   ],
+   "quote": "Subscriber Maintenance Service $40 maintenance service available only after Jack has completed a full detail on the vehicle.",
+   "missing_gate": "The site names only a Jack, with no last name and no town, so I cannot be sure it is his business.",
+   "confidence": 59,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 18,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261119-conor-miller-lynch-competed-for-clarkson-university-in",
+   "name": "sf:conor-miller-lynch",
+   "display": "Conor Miller-Lynch",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "TFRRS results for the St. Lawrence University Twilight meet list Conor Miller-Lynch of Clarkson University ninth in the men's 400 metres in 59.88; the page shows no meet date, and its 200 metres lines could not be read cleanly.",
+   "file_text": "Competed for Clarkson University in the men's 400 metres at the St. Lawrence University Twilight meet, finishing ninth in 59.88",
+   "source": "TFRRS",
+   "url": "https://www.tfrrs.org/results/78028/m/St_Lawrence_University_Intercollegiate_Athletics_Twilight_M",
+   "anchors": [
+    "His full name",
+    "Clarkson University, on his record"
+   ],
+   "quote": "| 9 | Conor Miller-Lynch |  | Clarkson University | 59.88 | 3 |",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 14,
+    "detail": 9
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261119-carol-fox-wife-of-cfc-madrid-deacon-andy-fox-l",
+   "name": "sf:carol-fox",
+   "display": "Carol Fox",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A Christian Fellowship Center newsletter for the 2026 annual meeting says Andy Fox, a deacon at CFC Madrid, and his wife Carol have been married 19 years and live in Lisbon with their six children; the newsletter page itself would not open, so this has not been double-checked.",
+   "file_text": "Wife of CFC Madrid deacon Andy Fox; lives in Lisbon with their six children",
+   "source": "Christian Fellowship Center",
+   "url": "",
+   "anchors": [
+    "The Fox last name",
+    "Christian Fellowship Center, the church on her record"
+   ],
+   "quote": "",
+   "missing_gate": "This is about Carol's family, so I always check with you first.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 18,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261119-rachel-kushner-named-a-blue-ribbon-winner-at-the-un",
+   "name": "sf:rachel-kushner",
+   "display": "Rachel Kushner",
+   "run_date": "2026-11-19",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A search result suggested Rachel Kushner was a Summer 2020 UROP Symposium Blue Ribbon Winner for her Boston Universal Prekindergarten research, but the University of Michigan's own Blue Ribbon Winners page does not list her name.",
+   "file_text": "Named a Blue Ribbon Winner at the University of Michigan UROP Summer 2020 Symposium for her Boston Universal Prekindergarten research",
+   "source": "University of Michigan LSA UROP",
+   "url": "https://lsa.umich.edu/urop/symposium/symposium-archive/2020-symposia/2020-summer-symposium-blue-ribbon-winners.html",
+   "anchors": [
+    "University of Michigan, on her record",
+    "Her UROP work on Boston Universal Prekindergarten, on her record"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 20,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 10,
     "detail": 5
    },
    "fields": {},
