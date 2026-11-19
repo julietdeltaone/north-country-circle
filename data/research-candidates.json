@@ -16984,6 +16984,217 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-noah-marshall-graduated-from-the-new-york-state-po",
+   "name": "ct:noah marshall",
+   "display": "Noah Marshall",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A New York State Police graduation list for the 213th Basic School session, December 2023, names Noah Marshall among the graduates assigned to Troop B for field training, with hometown Lake Placid.",
+   "file_text": "Graduated from the New York State Police Basic School's 213th session and was assigned to Troop B for field training, Dec 2023",
+   "source": "All WNY",
+   "url": "https://allwny.com/2023/12/21/new-york-state-police-add-232-new-troopers/?eventDisplay=past",
+   "anchors": [
+    "New York State Police trooper work on his record",
+    "Troop B, the North Country troop"
+   ],
+   "quote": "NOAH | MARSHALL | Lake Placid, NY",
+   "missing_gate": "The graduation list gives his hometown as Lake Placid, but his record says Canton, so I am not sure it is him.",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-natalie-southworth-named-to-the-franklin-essex-hamilton",
+   "name": "ct:natalie southworth",
+   "display": "Natalie Southworth",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Franklin-Essex-Hamilton BOCES honor roll for 2021-22 Quarter 2 lists Natalie Southworth of Malone in Early Childhood Education at the North Franklin Educational Center.",
+   "file_text": "Named to the Franklin-Essex-Hamilton BOCES North Franklin Educational Center honor roll for 2021-22 Quarter 2 in Early Childhood Education",
+   "source": "Franklin-Essex-Hamilton BOCES",
+   "url": "https://core-docs.s3.amazonaws.com/documents/asset/uploaded_file/1898483/21-22_Q2_NFEC_honor_roll.pdf",
+   "anchors": [
+    "Malone, her hometown area on file"
+   ],
+   "quote": "Tiphanie Gratton, Brushton-Moira | Natalie Southworth, Malone",
+   "missing_gate": "The list names a Natalie Southworth from Malone in a different program than the one on her record, so I am not sure it is her.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 22,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-stephen-blackwood-smith-father-was-the-reverend-harold-watso",
+   "name": "sf:stephen-blackwood-smith",
+   "display": "Stephen Blackwood Smith",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "The Saratogian's obituary for the Reverend Harold Watson Smith, who died April 23, 2019, in Saratoga Springs, names the Reverend Stephen Blackwood Smith of Malone among his children.",
+   "file_text": "Father was the Reverend Harold Watson Smith, who died on April 23, 2019, in Saratoga Springs, New York",
+   "source": "The Saratogian",
+   "url": "https://www.legacy.com/us/obituaries/saratogian/name/harold-smith-obituary?id=8327528",
+   "anchors": [
+    "Malone, New York, his town on file",
+    "His wife Theresa, on file"
+   ],
+   "quote": "Harold is survived by his wife, Camilla Parlin Smith, and their four children, Hyla Smith Skudder (Chris) of Westerville, OH, Heather Smith Xie, Esq. (Dr. Xie Yong) of Hong Kong, H. Nathan Smith (Ina Witek) of Leipzig, Germany, and the Reverend Stephen Blackwood Smith (Theresa) of Malone, NY, and ten grandchildren.",
+   "missing_gate": "This is about Stephen's family, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2019-05-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-dale-fournier-named-in-the-list-of-2024-reviewers",
+   "name": "sf:dale-fournier",
+   "display": "Dale Fournier",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The journal Rheumatology Advances in Practice thanks its 2024 reviewers and includes the name Dale Fournier in the list.",
+   "file_text": "Named in the list of 2024 reviewers for Rheumatology Advances in Practice",
+   "source": "Rheumatology Advances in Practice",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11825386/",
+   "anchors": [
+    "Rheumatology, his field on file at Clarkson University"
+   ],
+   "quote": "Clio Ribbens, Corinne Fisher, Cristiana Sieiro Santos, Da-Li Tong, Dale Fournier, Dalia Ludwig, Dan P. Kelleher",
+   "missing_gate": "The list gives his name only, with nothing on the page tying him to Clarkson or his work there.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 25,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-jonathan-puglia-named-a-trustee-of-christian-fellows",
+   "name": "ct:jonathan puglia",
+   "display": "Jonathan Puglia",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A search snippet from a Christian Fellowship Center 2026 Annual Meeting newsletter names a Jonathan Puglia as a trustee; the newsletter itself could not be opened, so none of it could be checked.",
+   "file_text": "Named a trustee of Christian Fellowship Center in its 2026 Annual Meeting newsletter",
+   "source": "Christian Fellowship Center",
+   "url": "",
+   "anchors": [
+    "Christian Fellowship Center, his church on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-christine-sutter-trained-in-emdr-brainspotting-cognit",
+   "name": "ct:christine sutter",
+   "display": "Christine Sutter",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A search snippet suggested Christine Sutter is trained in EMDR, Brainspotting, Cognitive Processing Therapy for PTSD, and MBSR; on the opened Inner Lakes Therapy page that sentence sits under Emily Oliver's listing, not Christine's, so the claim does not hold.",
+   "file_text": "Trained in EMDR, Brainspotting, Cognitive Processing Therapy for PTSD, and MBSR",
+   "source": "Inner Lakes Therapy",
+   "url": "",
+   "anchors": [
+    "Inner Lakes Therapy, her workplace on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 10,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 0,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-sarah-diederich-earned-a-further-suny-potsdam-creden",
+   "name": "sf:sarah-diederich",
+   "display": "Sarah Diederich",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "SUNY Potsdam's Cinderella page lists her as 'Sarah Diederich \u201902 & \u201925,' which could suggest a further Potsdam credential in 2025, but the college's own 2025 Something Rotten! page lists her as \u201902 & \u201908, matching her record, so the \u201925 could not be confirmed.",
+   "file_text": "Earned a further SUNY Potsdam credential in 2025",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "anchors": [
+    "SUNY Potsdam, her school on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 25,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 5,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261118-hudson-brown-promoted-to-loan-originator-at-north",
+   "name": "sf:hudson-brown",
+   "display": "Hudson Brown",
+   "run_date": "2026-11-18",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "North Country Savings Bank's page for Hudson Brown carries 'Loan Originator' in its page title, but the page itself calls him a Floating Relationship Banker throughout, so no promotion could be confirmed.",
+   "file_text": "Promoted to Loan Originator at North Country Savings Bank",
+   "source": "North Country Savings Bank",
+   "url": "",
+   "anchors": [
+    "North Country Savings Bank, his employer on file",
+    "Canton branch, on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 15,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 0,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
