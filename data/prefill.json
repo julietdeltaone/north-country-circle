@@ -41,6 +41,16 @@
   },
   "items": [
    {
+    "id": "pf-a4c989c515",
+    "key": "cashhyyy",
+    "display": "Cashlynn Colbert",
+    "field": "location_on_file",
+    "value": "Fort Covington, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
     "display": "Chiara",
@@ -116,16 +126,6 @@
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-5b6da55f7a",
-    "key": "ct:susan buckley",
-    "display": "Susan Buckley",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
