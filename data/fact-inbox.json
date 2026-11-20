@@ -6471,6 +6471,19 @@
    "pattern": "milestone",
    "source": "Advancing Tobacco Free Communities",
    "url": "https://app.smore.com/n/n0dy3-advancing-tobacco-free-communities"
+  },
+  {
+   "anchor": "Massena Central School \u00b7 Daemen College",
+   "batch": "AM run \u2014 Nov 20, 2026",
+   "display": "Jillian Chapman",
+   "fact": "Received a $1,000 Massena Hospital Auxiliary scholarship in 2020 and entered Daemen College's Physician Assistant program",
+   "id": "fi-20261120-jillian-chapman-received-a-1-000-massena-hospi",
+   "key": "sf:jillian-chapman",
+   "learned": "2026-11-20",
+   "name": "sf:jillian-chapman",
+   "pattern": "new_credential",
+   "source": "Rochester Regional Health",
+   "url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/files/slh/mh-2020-auxiliary-report.pdf"
   }
  ],
  "patterns": {
