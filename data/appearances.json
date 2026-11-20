@@ -1,18 +1,30 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1469,
-  "dated": 72,
-  "undated": 1397,
-  "placed": 1316,
-  "unplaced": 153,
+  "total": 1476,
+  "dated": 76,
+  "undated": 1400,
+  "placed": 1322,
+  "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 29,
+  "brief_attached": 33,
   "brief_standalone": 43,
   "brief_unresolved": 1
  },
  "items": [
+  {
+   "di": 687,
+   "display": "Nelson Dane",
+   "text": "Released fennel_invest_api version 2.1.0 on PyPI, Nov 17, 2026 (PyPI)",
+   "source": "PyPI",
+   "url": "https://pypi.org/project/fennel-invest-api/",
+   "published": "2026-11-17",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
   {
    "di": 717,
    "display": "Janelle Evans",
@@ -554,6 +566,18 @@
    "place_src": "text"
   },
   {
+   "di": 688,
+   "display": "Debbie Flack",
+   "text": "Named to the Golden Key International Honour Society at SUNY Canton, Apr 2024 (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/media/pdf/HonConv24.pdf",
+   "published": "2024-04-24",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Fall 2025 as a Health Care Management student (listed as Kayleigh Peets), Jan 2026 (SUNY Canton)",
@@ -660,6 +684,18 @@
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
    "place_src": "text"
+  },
+  {
+   "di": 578,
+   "display": "Marissa Carl",
+   "text": "Joined Boston University's Phonetics, Acquisition & Multilingualism Lab (PAMLab) as a summer lab member in summer 2022, as a rising senior at Mount Holyoke College double-majoring in Psychology and Spanish (Boston University)",
+   "source": "Boston University",
+   "url": "https://thepamlab.github.io/posts/2022/05/blog-post-3/",
+   "published": "2022-05-19",
+   "fresh": false,
+   "pid": "29.7604,-95.3698",
+   "place": "Houston, TX",
+   "place_src": "profile"
   },
   {
    "di": 617,
@@ -875,6 +911,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 633,
+   "display": "Thomas Quant",
+   "text": "Founded Potsdam-based Alltech Integrations Corporation with two partners around 2008 and served as its Operations Manager, growing it from 3 to 18 employees by Jan 2014 (Locksmith Ledger)",
+   "source": "Locksmith Ledger",
+   "url": "https://www.locksmithledger.com/home/news/11296871/lockshop-profits-by-partnering-with-integrator",
+   "published": "2014-01-20",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -8800,6 +8848,18 @@
   {
    "di": 717,
    "display": "Janelle Evans",
+   "text": "Recorded 8 goals and 9 assists for 17 points in 16 games through Clarkson's Nov 14, 2026 win over Brown (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 717,
+   "display": "Janelle Evans",
    "text": "Recorded an assist in Clarkson's 5-1 win over Providence, Oct 23, 2026 (Providence College Athletics)",
    "source": "Providence College Athletics",
    "url": "",
@@ -10433,6 +10493,18 @@
    "di": 721,
    "display": "Kaitlyn Mallette",
    "text": "Played two seasons for Team BC and, in her final season at RINK Hockey Academy Kelowna (2024-25), recorded eight goals and 14 assists in 30 games (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 721,
+   "display": "Kaitlyn Mallette",
+   "text": "Recorded 1 goal and 1 point in 16 games through Clarkson's Nov 14, 2026 win over Brown, with 17 shots, a +11 rating, and 5 blocked shots (Clarkson University Athletics)",
    "source": "Clarkson University Athletics",
    "url": "",
    "published": "",
@@ -13247,6 +13319,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 590,
+   "display": "Morgan Arquette",
+   "text": "Attended the \"Welcome Back Watertown\" school event at Watertown High School as a Program Coordinator alongside Sarah Martin, 2026 (Advancing Tobacco Free Communities)",
+   "source": "Advancing Tobacco Free Communities",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown",
    "place_src": "text"
   },
   {
