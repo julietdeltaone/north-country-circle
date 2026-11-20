@@ -2,347 +2,401 @@
  "date": "2026-11-19",
  "checked": [
   {
-   "name": "sf:raegan-grant",
-   "display": "Raegan Grant"
+   "name": "sf:hannah-whiteford",
+   "display": "Hannah Whiteford"
   },
   {
-   "name": "sf:victor-njoku",
-   "display": "Victor Njoku"
+   "name": "sf:marissa-carl",
+   "display": "Marissa Carl"
   },
   {
-   "name": "sf:amber-erwin",
-   "display": "Amber Erwin"
+   "name": "sf:beka-martin",
+   "display": "Beka Martin"
   },
   {
-   "name": "sf:catherine-m-thomas",
-   "display": "Catherine M Thomas"
+   "name": "sf:joseph-baxter",
+   "display": "Joseph Baxter"
   },
   {
-   "name": "sf:heather-ramsdell",
-   "display": "Heather Ramsdell"
+   "name": "sf:julianna-smith",
+   "display": "Julianna Smith"
   },
   {
-   "name": "ct:tim gault",
-   "display": "Tim Gault"
+   "name": "sf:maddy-cusworth",
+   "display": "Maddy Cusworth"
   },
   {
-   "name": "sf:james-gilchrist",
-   "display": "James Gilchrist"
+   "name": "sf:tracy-lynn-stowe",
+   "display": "Tracy Lynn Stowe"
   },
   {
-   "name": "sf:jenna-smellie",
-   "display": "Jenna Smellie"
+   "name": "sf:thomas-quant",
+   "display": "Thomas Quant"
   },
   {
-   "name": "sf:maddie-morgan",
-   "display": "Maddie Morgan"
+   "name": "ct:kyle deschaine",
+   "display": "Kyle Deschaine"
   },
   {
-   "name": "sf:joann-duclos",
-   "display": "Joann Duclos"
+   "name": "sf:kaitlyn-mallette",
+   "display": "Kaitlyn Mallette"
   },
   {
-   "name": "ct:ryleigh combs",
-   "display": "Ryleigh Combs"
+   "name": "sf:victoria-fitch",
+   "display": "Victoria Fitch"
   },
   {
-   "name": "sf:christine-sinicropi-anderson",
-   "display": "Christine Sinicropi Anderson"
+   "name": "sf:debbie-flack",
+   "display": "Debbie Flack"
   },
   {
-   "name": "ct:brian patraw",
-   "display": "Brian Patraw"
+   "name": "sf:grace-zehr-cassulis",
+   "display": "Grace Zehr Cassulis"
   },
   {
-   "name": "sf:jesse-braun",
-   "display": "Jesse Braun"
+   "name": "ct:julie mcormond",
+   "display": "Julie McOrmond"
   },
   {
-   "name": "fdb:silas_smith",
-   "display": "Silas Smith"
+   "name": "ct:mark dehoff",
+   "display": "Mark Dehoff"
   },
   {
-   "name": "ct:destiny snyder",
-   "display": "Destiny Snyder"
+   "name": "sf:james-harmer",
+   "display": "James Harmer"
   },
   {
-   "name": "ct:danielle mcpherson",
-   "display": "Danielle McPherson"
+   "name": "sf:kelsey-wilbur",
+   "display": "Kelsey Wilbur"
   },
   {
-   "name": "sf:kayleigh-clary",
-   "display": "Kayleigh Clary"
+   "name": "sf:alicia-taillon",
+   "display": "Alicia Taillon"
   },
   {
-   "name": "sf:patrick-tombs",
-   "display": "Patrick Tombs"
+   "name": "ct:maggie thibodeau",
+   "display": "Maggie Thibodeau"
   },
   {
-   "name": "ct:jack kessler",
-   "display": "Jack Kessler"
+   "name": "ct:wayne lougheed",
+   "display": "Wayne Lougheed"
   },
   {
-   "name": "sf:conor-miller-lynch",
-   "display": "Conor Miller-Lynch"
+   "name": "sf:morgan-arquette",
+   "display": "Morgan Arquette"
   },
   {
-   "name": "ct:bryan noble",
-   "display": "Bryan Noble"
+   "name": "sf:bob-blewett",
+   "display": "Bob Blewett"
   },
   {
-   "name": "ct:justin cardinal",
-   "display": "Justin Cardinal"
+   "name": "sf:nicholas-matott",
+   "display": "Nicholas Matott"
   },
   {
-   "name": "ct:meg howard",
-   "display": "Meg Howard"
+   "name": "ct:justin daniels",
+   "display": "Justin Daniels"
   },
   {
-   "name": "ct:destiny ingram",
-   "display": "Destiny Ingram"
+   "name": "ct:angie canales",
+   "display": "Angie Canales"
   },
   {
-   "name": "sf:hunter-woodrow",
-   "display": "Hunter Woodrow"
+   "name": "sf:nicholas-oddey",
+   "display": "Nicholas Oddey"
   },
   {
-   "name": "sf:caleb-dollinger",
-   "display": "Caleb Dollinger"
+   "name": "ct:zenna dale",
+   "display": "Zenna Dale"
   },
   {
-   "name": "sf:courtney-kelly",
-   "display": "Courtney Kelly"
+   "name": "sf:nelson-dane",
+   "display": "Nelson Dane"
   },
   {
-   "name": "fdb:esther_brown",
-   "display": "Esther Brown"
+   "name": "sf:taylynn-britton",
+   "display": "Taylynn Britton"
   },
   {
-   "name": "ct:andrew haas",
-   "display": "Andrew Haas"
+   "name": "sf:lexi-kennedy-labombard",
+   "display": "Lexi Kennedy LaBombard"
   },
   {
-   "name": "sf:brianna-brothers",
-   "display": "Brianna Brothers"
+   "name": "ct:tim parker",
+   "display": "Tim Parker"
   },
   {
-   "name": "sf:eli-larson",
-   "display": "Eli Larson"
+   "name": "sf:joelle-kowalka",
+   "display": "Joelle Kowalka"
   },
   {
-   "name": "sf:ellen-m-miller",
-   "display": "Ellen M Miller"
+   "name": "sf:sara-badeau",
+   "display": "Sara Badeau"
   },
   {
-   "name": "sf:carol-fox",
-   "display": "Carol Fox"
+   "name": "sf:danica-dunphey",
+   "display": "Danica Dunphey"
   },
   {
-   "name": "sf:stephy-michele",
-   "display": "Stephy Michele"
+   "name": "sf:devon-sutton",
+   "display": "Devon Sutton"
   },
   {
-   "name": "sf:tasha-bernard",
-   "display": "Tasha Bernard"
+   "name": "ct:ana miller",
+   "display": "Ana Miller"
   },
   {
-   "name": "sf:kailee paige",
-   "display": "Kailee Paige"
+   "name": "sf:ian-conner",
+   "display": "Ian Conner"
   },
   {
-   "name": "sf:rosie-hoover",
-   "display": "Rosie Hoover"
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet"
   },
   {
-   "name": "sf:mark-cornett",
-   "display": "Mark Cornett"
+   "name": "ct:richard tacchino",
+   "display": "Richard Tacchino"
   },
   {
-   "name": "ct:mike coventry",
-   "display": "Mike Coventry"
+   "name": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley"
   },
   {
-   "name": "ct:azlyn richardson",
-   "display": "Azlyn Richardson"
+   "name": "sf:mel-zeallor",
+   "display": "Mel Zeallor"
   },
   {
-   "name": "sf:joe-charlebois",
-   "display": "Joe Charlebois"
+   "name": "sf:zalika-ajamu",
+   "display": "Zalika Ajamu"
   },
   {
-   "name": "ct:william dunphey",
-   "display": "William Dunphey"
+   "name": "sf:carson-hayes-ryan",
+   "display": "Carson Hayes Ryan"
   },
   {
-   "name": "sf:jim-wing",
-   "display": "Jim Wing"
+   "name": "ct:sarah darabon",
+   "display": "Sarah Darabon"
   },
   {
-   "name": "sf:savannah-gabriella",
-   "display": "Savannah Gabriella"
+   "name": "sf:ann-parow-mackey",
+   "display": "Ann Parow Mackey"
   },
   {
-   "name": "ct:danny wangerin",
-   "display": "Danny Wangerin"
+   "name": "sf:jackie-card",
+   "display": "Jackie Card"
   },
   {
-   "name": "sf:ben-roberts",
-   "display": "Ben Roberts"
+   "name": "sf:janelle-evans",
+   "display": "Janelle Evans"
   },
   {
-   "name": "ct:michaela hosmer",
-   "display": "Michaela Hosmer"
+   "name": "sf:tim-lashomb",
+   "display": "Tim Lashomb"
   },
   {
-   "name": "sf:scott-hanlin",
-   "display": "Scott Hanlin"
+   "name": "sf:shari-smith",
+   "display": "Shari Smith"
   },
   {
-   "name": "sf:ian-wilson",
-   "display": "Ian Wilson"
+   "name": "sf:renee-dale",
+   "display": "Renee Dale"
   },
   {
-   "name": "sf:donovan-patraw",
-   "display": "Donovan Patraw"
+   "name": "sf:breanne-sapp",
+   "display": "Breanne Sapp"
   },
   {
-   "name": "sf:michelle-tolar",
-   "display": "Michelle Tolar"
+   "name": "sf:tom-allan-green",
+   "display": "Tom Allan Green"
   },
   {
-   "name": "sf:heather-marie",
-   "display": "Heather Marie"
+   "name": "sf:rebecca-guldan",
+   "display": "Rebecca Guldan"
   },
   {
-   "name": "sf:ilene-lashomb",
-   "display": "Ilene Lashomb"
+   "name": "sf:wisdom",
+   "display": "Rojanni Wisdom"
   },
   {
-   "name": "ct:katelyn tomford",
-   "display": "Katelyn Tomford"
+   "name": "sf:cristian-ruiz-marquez",
+   "display": "Cristian Ruiz-Marquez"
   },
   {
-   "name": "sf:andrew-fox",
-   "display": "Andrew Fox"
+   "name": "ct:sarah garber",
+   "display": "Sarah Garber"
   },
   {
-   "name": "ct:jon mart",
-   "display": "Jon Mart"
+   "name": "ct:timothy kunkle",
+   "display": "Timothy Kunkle"
   },
   {
-   "name": "sf:erik-lamay",
-   "display": "Erik LaMay"
+   "name": "sf:merria-figueiredo",
+   "display": "Merria Figueiredo"
   },
   {
-   "name": "sf:rachel-kushner",
-   "display": "Rachel Kushner"
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin"
   },
   {
-   "name": "sf:peter-michael",
-   "display": "Peter Michael"
+   "name": "sf:katie-wolstenholme",
+   "display": "Katie Wolstenholme"
   },
   {
-   "name": "sf:kyle-davis",
-   "display": "Kyle Davis"
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath"
   },
   {
-   "name": "sf:liana-sinclair",
-   "display": "Liana Hull"
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe"
   },
   {
-   "name": "sf:jim-holt",
-   "display": "Jim Holt"
+   "name": "ct:cayden stickney",
+   "display": "Cayden Stickney"
   },
   {
-   "name": "ct:mike tomford",
-   "display": "Mike Tomford"
+   "name": "sf:salako-gbenga-oladoyin",
+   "display": "Salako Gbenga Oladoyin"
   },
   {
-   "name": "sf:kayla-watkins",
-   "display": "Kayla Watkins"
+   "name": "sf:paige-davis",
+   "display": "Paige Davis"
   },
   {
-   "name": "sf:david-irving",
-   "display": "David Perry"
+   "name": "sf:jared-thibodeau",
+   "display": "Jared Thibodeau"
   },
   {
-   "name": "sf:nicholas-dailey",
-   "display": "Nicholas Dailey"
+   "name": "ct:james fortunato",
+   "display": "James Fortunato"
   },
   {
-   "name": "ct:ben hull",
-   "display": "Ben Hull"
+   "name": "ct:kathy eggleson",
+   "display": "Kathy Eggleson"
   },
   {
-   "name": "sf:matthew-hazen",
-   "display": "Matthew Hazen"
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda"
   },
   {
-   "name": "sf:kyle-prescott",
-   "display": "Kyle Prescott"
+   "name": "sf:courtney letiecq",
+   "display": "Courtney Letiecq"
   },
   {
-   "name": "sf:stephanie-reasoner",
-   "display": "Stephanie Reasoner"
+   "name": "sf:bartlomiej-brodzki",
+   "display": "Bartlomiej Brodzki"
   },
   {
-   "name": "sf:peyton-mussaw",
-   "display": "Peyton Mussaw"
+   "name": "sf:pete-molinero",
+   "display": "Pete Molinero"
   },
   {
-   "name": "sf:indira-quintana-lala",
-   "display": "Indira Quintana"
+   "name": "sf:maggie-tibs",
+   "display": "Maggie Tibs"
   },
   {
-   "name": "ct:ethan ryan",
-   "display": "Ethan Ryan"
+   "name": "ct:grace ockrin",
+   "display": "Grace Ockrin"
   },
   {
-   "name": "sf:alycia-miller-lynch",
-   "display": "Alycia Miller-Lynch"
+   "name": "ct:emilee mcadoo",
+   "display": "Emilee McAdoo"
   }
  ],
  "filed": [
   {
-   "name": "ct:bryan noble",
-   "display": "Bryan Noble",
+   "name": "sf:nelson-dane",
+   "display": "Nelson Dane",
    "facts": [
     {
-     "text": "Took part in a Brooklyn fish-market inspection that found 11 undersized porgies unlawfully offered for sale in Kings County, Feb 2025",
-     "source": "New York State Department of Environmental Conservation",
-     "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    },
-    {
-     "text": "Presented to about 50 youth and their parents at a public outreach event at the Zimmer Club on Staten Island, Feb 2025",
-     "source": "New York State Department of Environmental Conservation",
-     "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    },
-    {
-     "text": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
-     "source": "New York State Department of Environmental Conservation",
-     "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/3e64a31",
-     "novelty": "new",
-     "published": "2025-06-23",
+     "text": "Released fennel_invest_api version 2.1.0 on PyPI, Nov 17, 2026",
+     "source": "PyPI",
+     "url": "https://pypi.org/project/fennel-invest-api/",
+     "novelty": "expands",
+     "published": "2026-11-17",
      "fresh": false
     }
    ]
   },
   {
-   "name": "sf:donovan-patraw",
-   "display": "Donovan Patraw",
+   "name": "sf:marissa-carl",
+   "display": "Marissa Carl",
    "facts": [
     {
-     "text": "Graduated from SUNY Canton in spring 2020 with a Bachelor of Technology in Criminal Investigation",
+     "text": "Joined Boston University's Phonetics, Acquisition & Multilingualism Lab (PAMLab) as a summer lab member in summer 2022, as a rising senior at Mount Holyoke College double-majoring in Psychology and Spanish",
+     "source": "Boston University",
+     "url": "https://thepamlab.github.io/posts/2022/05/blog-post-3/",
+     "novelty": "new",
+     "published": "2022-05-19",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:thomas-quant",
+   "display": "Thomas Quant",
+   "facts": [
+    {
+     "text": "Founded Potsdam-based Alltech Integrations Corporation with two partners around 2008 and served as its Operations Manager, growing it from 3 to 18 employees by Jan 2014",
+     "source": "Locksmith Ledger",
+     "url": "https://www.locksmithledger.com/home/news/11296871/lockshop-profits-by-partnering-with-integrator",
+     "novelty": "new",
+     "published": "2014-01-20",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:debbie-flack",
+   "display": "Debbie Flack",
+   "facts": [
+    {
+     "text": "Named to the Golden Key International Honour Society at SUNY Canton, Apr 2024",
      "source": "SUNY Canton",
-     "url": "https://canton.edu/news/2020/graduates2020.php",
+     "url": "https://www.canton.edu/media/pdf/HonConv24.pdf",
+     "novelty": "new",
+     "published": "2024-04-24",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:janelle-evans",
+   "display": "Janelle Evans",
+   "facts": [
+    {
+     "text": "Recorded 8 goals and 9 assists for 17 points in 16 games through Clarkson's Nov 14, 2026 win over Brown",
+     "source": "Clarkson University Athletics",
+     "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats/2026-27?path=whock",
      "novelty": "expands",
-     "published": "2020-06-18",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:kaitlyn-mallette",
+   "display": "Kaitlyn Mallette",
+   "facts": [
+    {
+     "text": "Recorded 1 goal and 1 point in 16 games through Clarkson's Nov 14, 2026 win over Brown, with 17 shots, a +11 rating, and 5 blocked shots",
+     "source": "Clarkson University Athletics",
+     "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats/2026-27?path=whock",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:morgan-arquette",
+   "display": "Morgan Arquette",
+   "facts": [
+    {
+     "text": "Attended the \"Welcome Back Watertown\" school event at Watertown High School as a Program Coordinator alongside Sarah Martin, 2026",
+     "source": "Advancing Tobacco Free Communities",
+     "url": "https://app.smore.com/n/n0dy3-advancing-tobacco-free-communities",
+     "novelty": "expands",
+     "published": "",
      "fresh": false
     }
    ]
@@ -355,44 +409,44 @@
  },
  "next_up": [
   {
-   "name": "sf:alicia-taillon",
-   "display": "Alicia Taillon"
+   "name": "sf:acacia-white",
+   "display": "Acacia White"
   },
   {
-   "name": "ct:ana miller",
-   "display": "Ana Miller"
+   "name": "sf:alexander-hacker",
+   "display": "Alexander Hacker"
   },
   {
-   "name": "ct:angie canales",
-   "display": "Angie Canales"
+   "name": "sf:alisha-ohl",
+   "display": "Alisha Ohl"
   },
   {
-   "name": "sf:ann-parow-mackey",
-   "display": "Ann Parow Mackey"
+   "name": "fdb:amber_ingram",
+   "display": "Amber Ingram"
   },
   {
-   "name": "sf:beka-martin",
-   "display": "Beka Martin"
+   "name": "ct:annabelle boudreau",
+   "display": "Annabelle Boudreau"
   },
   {
-   "name": "sf:bob-blewett",
-   "display": "Bob Blewett"
+   "name": "sf:annika-greco",
+   "display": "Annika Greco"
   },
   {
-   "name": "sf:breanne-sapp",
-   "display": "Breanne Sapp"
+   "name": "fdb:b._ryan_dunphey",
+   "display": "B. Ryan Dunphey"
   },
   {
-   "name": "sf:carson-hayes-ryan",
-   "display": "Carson Hayes Ryan"
+   "name": "sf:ben-newton",
+   "display": "Ben Newton"
   },
   {
-   "name": "sf:charlie-sharon-sweet",
-   "display": "Charlie-Sharon Sweet"
+   "name": "ct:blake burr",
+   "display": "Blake Burr"
   },
   {
-   "name": "sf:danica-dunphey",
-   "display": "Danica Dunphey"
+   "name": "sf:bob-dale",
+   "display": "Bob Dale"
   }
  ],
  "unchecked_remaining": 0,
@@ -402,8 +456,8 @@
   "d90": 0,
   "older": 0,
   "never": 0,
-  "oldest": "2026-11-14"
+  "oldest": "2026-11-15"
  },
  "hot": [],
- "note": "AM run. Checked 75 people (all from the 2026-11-14 tier; 51 of that tier remain for the PM run) and filed 4 bullets across 2 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: none found \u2014 a dedicated Oct 29 to Nov 19 sweep across North Country Now, NCPR, NNY360, WWNY, ClickNNY, the four colleges' news and athletics, honors announcements, and health-system news found the only in-window, anchor-tied directory items (Mark C Walczyk's Nov 4 re-election win and Michelle Johnston's Oct 30 Shaffer Award) already on file, and Zvi Szafran's Nov 5 scholarship-drive quote was a known-role mention only; all three fresh slots were left empty rather than stretched. Filed: Bryan Noble took part in three DEC patrol actions in 2025 \u2014 a Brooklyn fish-market inspection that found 11 undersized porgies (Feb 2), a youth outreach presentation at the Zimmer Club on Staten Island (Feb 15), and crewing the DEC vessel that escorted the USS New York into New York Harbor for Fleet Week (May 21) \u2014 each parent-verified on the DEC pages, with the DEC roster confirming exactly one ECO Noble, B. Noble of Region 2's NYC Marine Waters, matching his on-file Dec 2024 Basic School graduation from Canton; and Donovan Patraw graduated from SUNY Canton in spring 2020 with a Bachelor of Technology in Criminal Investigation, which also filled his blank Degrees field. Logged, not filed: Jenna Smellie's zero-point appearances in Clarkson's Nov 7 and Nov 14 box scores (minor stat lines; the same pattern is already on file for her October games); the SUNY Potsdam instructor-certification item a batch first tied to Brian Patraw, which on opening belongs to his brother Donovan and is already filed on Donovan's profile \u2014 the conflation his profile already warns about; Jim Holt's and Meg Howard's absences from current listings (absence proves nothing); and Allan Robinson keeping Ben Hull's old District 8 seat in the November election (the succession is already on file, and the election is Robinson's fact, not Hull's). Bryan Noble's Companies field still reads St. Lawrence County Sheriff's Office while every DEC source since his graduation shows him as an ECO \u2014 structured fields are never overwritten, so it is noted here only. 6 candidates added to Research Command (ledger 669): identity holds for Kailee Paige (a 2022 AMVETS scholarship whose Rochester plan conflicts with her SUNY Potsdam record), Michaela Hosmer (a first-name-only bridal story), and Jack Kessler (a detailing site naming only a Jack); a family hold for Carol Fox (the CFC newsletter page would not open, so it is also unverified); and two claims that failed checking, kept visible as misses \u2014 Rachel Kushner's UROP Blue Ribbon claim (she is not on Michigan's winners page) and Conor Miller-Lynch's TFRRS Twilight-meet line (no date on the page, 200m lines unreadable). 0 of JD's console 'file' decision points reconciled into changes.json. Photo leads flagged by JD, still unharvested: Christine Sutter (UConn Today); Emily Criscitello (Tulum dive operator); Jale - (Jale's Turkish Delights); Joann Duclos (Army.mil); Joe Charlebois (Hockey records); Jon Cyphers (Jesus Freak Hideout); Katelyn Tomford (Zola); Kayla Hettel (Puget Sound Birth Center); Max Ferran (Bold.org); Megan Converse (Merit Pages). Inbox: 4 appended; 0 suppressed (none)."
+ "note": "PM run. Checked 75 people (the 51 remaining from the 2026-11-14 tier plus 24 from the 2026-11-15 tier) and filed 7 bullets across 7 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: none found — a dedicated Oct 29 to Nov 19 sweep across North Country Now, NCPR, NNY360, WWNY, ClickNNY, the four colleges' news and athletics, honors announcements, and health-system news found every in-window, anchor-tied directory item already on file (the Nov 13-14 Clarkson women's hockey scoring, Walczyk's Nov 4 re-election win, Johnston's Oct 30 Shaffer Award); all three fresh slots were left empty rather than stretched. Filed: Nelson Dane released fennel_invest_api version 2.1.0 on PyPI on Nov 17, 2026; Marissa Carl joined Boston University's PAMLab as a summer lab member in summer 2022 as a Mount Holyoke rising senior; Thomas Quant founded Potsdam-based Alltech Integrations around 2008 and grew it to 18 employees by Jan 2014; Debbie Flack was named to SUNY Canton's Golden Key International Honour Society in Apr 2024 (found independently by both the rotation and the compounding lane, filed once); Janelle Evans reached 8 goals and 9 assists for 17 points in 16 games through Nov 14; Kaitlyn Mallette's line through Nov 14 stands at 1 goal in 16 games with a +11 rating; Morgan Arquette attended the Welcome Back Watertown school event as a Program Coordinator in 2026. Logged, not filed: Victoria Fitch's Shusda Classroom dedication appearance and her Reunion 2024/2025 virtual-tour leads (the lane counted both as corroboration of facts already on file, and the dedication caption's '19 & '24 class years are a single-page outlier against two SUNY Potsdam pages and her record, which agree on '19 & '23); Debbie Flack's People Like Me details (Ogdensburg origin against Canton on file, and seven grandchildren — family detail, not filed); Breanne Sapp's GovSalaries Deputy Sheriff listing (single aggregator source); Zalika Ajamu's 369th Sustainment Brigade SARC item (mirror source only, and the role is already on file); Hannah Whiteford's Hermon street-directory listing and Joseph Baxter's Classmates alumni years (aggregator and self-registered listings with no second anchor). 2 candidates added to Research Command (ledger 671): an identity hold for Maddy Cusworth (SUNY Canton Dean's List for Fall 2023 and Spring 2024 under the name Madison Cusworth, with no Massena tie on the pages) and a verification hold for Tim Parker (CFC Global Finance Team Deacon service since fall 2024 — the newsletter page would not open, so the claim could not be double-checked). 5 of JD's console 'file' decision points reconciled into changes.json. Photo leads flagged by JD, still unharvested: Christine Sutter (UConn Today); Emily Criscitello (Tulum dive operator); Jale - (Jale's Turkish Delights); Joann Duclos (Army.mil); Joe Charlebois (Hockey records); Jon Cyphers (Jesus Freak Hideout); Katelyn Tomford (Zola); Kayla Hettel (Puget Sound Birth Center); Max Ferran (Bold.org); Megan Converse (Merit Pages). Inbox: 4 appended; 3 suppressed (read pattern / near-duplicate — Dane, Evans, and Mallette milestone entries, patterns JD has already marked read for them). Lane: 5 compounded; 1 new fact filed; 0 candidates; 0 corrections flagged; 13 loop closures; 15 discards."
 }
