@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1480,
+  "total": 1489,
   "dated": 72,
-  "undated": 1408,
-  "placed": 1326,
+  "undated": 1417,
+  "placed": 1335,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -4636,6 +4636,18 @@
   {
    "di": 690,
    "display": "Conor Miller-Lynch",
+   "text": "Competed for Clarkson University in the men's 400 metres at the St. Lawrence University Twilight meet, finishing ninth in 59.88 (TFRRS)",
+   "source": "TFRRS",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 690,
+   "display": "Conor Miller-Lynch",
    "text": "Gave a final report on 'Towards 3D Contactless Fingerprint and Face Matching' at the CITeR Fall 2026 Program Review in Charlotte, Oct 2026 (Center for Identification Technology Research)",
    "source": "Center for Identification Technology Research",
    "url": "",
@@ -4944,6 +4956,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
+  },
+  {
+   "di": 475,
+   "display": "Dale Fournier",
+   "text": "Named in the list of 2024 reviewers for Rheumatology Advances in Practice (Rheumatology Advances in Practice)",
+   "source": "Rheumatology Advances in Practice",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 475,
@@ -7360,6 +7384,18 @@
   {
    "di": 509,
    "display": "Hudson Brown",
+   "text": "Promoted to Loan Originator at North Country Savings Bank (North Country Savings Bank)",
+   "source": "North Country Savings Bank",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 509,
+   "display": "Hudson Brown",
    "text": "Still plays viola at church, in small chamber music ensembles and in pit orchestras for musicals, and teaches music lessons to local students while working at North Country Savings Bank (North Country Savings Bank)",
    "source": "North Country Savings Bank",
    "url": "",
@@ -9388,6 +9424,18 @@
   {
    "di": 531,
    "display": "Jessica Osypiewski",
+   "text": "Finished 14th in the women's 30-39 division at the 2021 Wilson Hill Turtle Trot in 41:25.3, listed from Chase Mills, New York (North Country Races)",
+   "source": "North Country Races",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.7169,-75.0653",
+   "place": "Chase Mills, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 531,
+   "display": "Jessica Osypiewski",
    "text": "Hometown Madrid, New York (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -10403,6 +10451,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 545,
+   "display": "Kailee Paige",
+   "text": "Won a $1,000 AMVETS Massena Ladies Auxiliary 4 scholarship as a Massena Central senior, May 2022 (Empire AMVET)",
+   "source": "Empire AMVET",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena",
    "place_src": "text"
   },
   {
@@ -12443,6 +12503,30 @@
    "fresh": false,
    "pid": "44.9281,-74.8919",
    "place": "Massena, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 573,
+   "display": "Maddy Cusworth",
+   "text": "Named to SUNY Canton's Dean's List for Fall 2023 as an Individual Studies student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 573,
+   "display": "Maddy Cusworth",
+   "text": "Named to SUNY Canton's Dean's List for Spring 2024 as an Individual Studies student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
@@ -14488,6 +14572,18 @@
   {
    "di": 604,
    "display": "Rachel Kushner",
+   "text": "Named a Blue Ribbon Winner at the University of Michigan UROP Summer 2020 Symposium for her Boston Universal Prekindergarten research (University of Michigan LSA UROP)",
+   "source": "University of Michigan LSA UROP",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "42.2808,-83.7430",
+   "place": "Ann Arbor, MI",
+   "place_src": "profile"
+  },
+  {
+   "di": 604,
+   "display": "Rachel Kushner",
    "text": "Served on the University of Michigan research team for the Boston Public Schools Universal Prekindergarten study, 2021 (University of Michigan Ford School)",
    "source": "University of Michigan Ford School",
    "url": "",
@@ -15876,6 +15972,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 685,
+   "display": "Sarah Diederich",
+   "text": "Earned a further SUNY Potsdam credential in 2025 (SUNY Potsdam)",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
+   "place_src": "text"
   },
   {
    "di": 685,
