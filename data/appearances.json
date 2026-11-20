@@ -1,30 +1,18 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1476,
-  "dated": 76,
-  "undated": 1400,
-  "placed": 1322,
+  "total": 1480,
+  "dated": 72,
+  "undated": 1408,
+  "placed": 1326,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 33,
+  "brief_attached": 29,
   "brief_standalone": 43,
   "brief_unresolved": 1
  },
  "items": [
-  {
-   "di": 687,
-   "display": "Nelson Dane",
-   "text": "Released fennel_invest_api version 2.1.0 on PyPI, Nov 17, 2026 (PyPI)",
-   "source": "PyPI",
-   "url": "https://pypi.org/project/fennel-invest-api/",
-   "published": "2026-11-17",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
   {
    "di": 717,
    "display": "Janelle Evans",
@@ -566,18 +554,6 @@
    "place_src": "text"
   },
   {
-   "di": 688,
-   "display": "Debbie Flack",
-   "text": "Named to the Golden Key International Honour Society at SUNY Canton, Apr 2024 (SUNY Canton)",
-   "source": "SUNY Canton",
-   "url": "https://www.canton.edu/media/pdf/HonConv24.pdf",
-   "published": "2024-04-24",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
-   "place_src": "text"
-  },
-  {
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Fall 2025 as a Health Care Management student (listed as Kayleigh Peets), Jan 2026 (SUNY Canton)",
@@ -684,18 +660,6 @@
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
    "place_src": "text"
-  },
-  {
-   "di": 578,
-   "display": "Marissa Carl",
-   "text": "Joined Boston University's Phonetics, Acquisition & Multilingualism Lab (PAMLab) as a summer lab member in summer 2022, as a rising senior at Mount Holyoke College double-majoring in Psychology and Spanish (Boston University)",
-   "source": "Boston University",
-   "url": "https://thepamlab.github.io/posts/2022/05/blog-post-3/",
-   "published": "2022-05-19",
-   "fresh": false,
-   "pid": "29.7604,-95.3698",
-   "place": "Houston, TX",
-   "place_src": "profile"
   },
   {
    "di": 617,
@@ -911,18 +875,6 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
-   "di": 633,
-   "display": "Thomas Quant",
-   "text": "Founded Potsdam-based Alltech Integrations Corporation with two partners around 2008 and served as its Operations Manager, growing it from 3 to 18 employees by Jan 2014 (Locksmith Ledger)",
-   "source": "Locksmith Ledger",
-   "url": "https://www.locksmithledger.com/home/news/11296871/lockshop-profits-by-partnering-with-integrator",
-   "published": "2014-01-20",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -1830,6 +1782,18 @@
    "display": "Annika Greco",
    "text": "Authored 'Would my bank manager know that I'm a Christian from looking at my statements?' for Stewardship, Jan 2026 (Stewardship)",
    "source": "Stewardship",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "53.4084,-2.9916",
+   "place": "Liverpool, England",
+   "place_src": "profile"
+  },
+  {
+   "di": 431,
+   "display": "Annika Greco",
+   "text": "Authored a Pentecost reflection on generosity for the Diocese of Chester's Wholehearted magazine, Issue 2, 2026 (Diocese of Chester)",
+   "source": "Diocese of Chester",
    "url": "",
    "published": "",
    "fresh": false,
@@ -5464,6 +5428,18 @@
   {
    "di": 688,
    "display": "Debbie Flack",
+   "text": "Named to the Golden Key International Honour Society at SUNY Canton, Apr 2024 (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 688,
+   "display": "Debbie Flack",
    "text": "Received SUNY Canton's President's Meritorious Service Award in 2026, jointly with Sandy Walker (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
@@ -8512,6 +8488,18 @@
   {
    "di": 520,
    "display": "Jaime Bicknell",
+   "text": "Candidate for ACAPT Nominating Committee Member, 2025 (American Council of Academic Physical Therapy)",
+   "source": "American Council of Academic Physical Therapy",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 520,
+   "display": "Jaime Bicknell",
    "text": "Clarkson University's PT Director of Clinical Education since September 2018; earned the ABPTS women's health specialist certification (2020) and CAPP-Pelvic certification (2021); founded You First Women's Health Physical Therapy (2022); published a peer-reviewed case report in the International Journal of Childbirth (2022); office 2214 Clarkson Hall (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -8555,6 +8543,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 520,
+   "display": "Jaime Bicknell",
+   "text": "Lead coordinator, Potsdam Town and Country Club Ladies Golf League, Summer 2023 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
    "place_src": "text"
   },
   {
@@ -9431,6 +9431,18 @@
    "fresh": false,
    "pid": "39.0639,-108.5506",
    "place": "Grand Junction",
+   "place_src": "text"
+  },
+  {
+   "di": 532,
+   "display": "Jillian Chapman",
+   "text": "Received a $1,000 Massena Hospital Auxiliary scholarship in 2020 and entered Daemen College's Physician Assistant program (Rochester Regional Health)",
+   "source": "Rochester Regional Health",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena",
    "place_src": "text"
   },
   {
@@ -12676,6 +12688,18 @@
   {
    "di": 578,
    "display": "Marissa Carl",
+   "text": "Joined Boston University's Phonetics, Acquisition & Multilingualism Lab (PAMLab) as a summer lab member in summer 2022, as a rising senior at Mount Holyoke College double-majoring in Psychology and Spanish (Boston University)",
+   "source": "Boston University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "29.7604,-95.3698",
+   "place": "Houston, TX",
+   "place_src": "profile"
+  },
+  {
+   "di": 578,
+   "display": "Marissa Carl",
    "text": "Marissa Chelan Carl earned a Bachelor of Arts from Mount Holyoke College in 2023, graduating magna cum laude. (Mount Holyoke College)",
    "source": "Mount Holyoke College",
    "url": "",
@@ -13626,6 +13650,18 @@
    "display": "Nelson Dane",
    "text": "Part of the Christian Fellowship Academy youth circle in the Dane family threads, 2017–2018 (Email, 2018)",
    "source": "Email, 2018",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 687,
+   "display": "Nelson Dane",
+   "text": "Released fennel_invest_api version 2.1.0 on PyPI, Nov 17, 2026 (PyPI)",
+   "source": "PyPI",
    "url": "",
    "published": "",
    "fresh": false,
@@ -16728,6 +16764,18 @@
    "pid": "44.7472,-74.9900",
    "place": "Norwood, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 633,
+   "display": "Thomas Quant",
+   "text": "Founded Potsdam-based Alltech Integrations Corporation with two partners around 2008 and served as its Operations Manager, growing it from 3 to 18 employees by Jan 2014 (Locksmith Ledger)",
+   "source": "Locksmith Ledger",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
+   "place_src": "text"
   },
   {
    "di": 633,
