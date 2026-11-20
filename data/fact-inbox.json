@@ -6419,6 +6419,58 @@
    "pattern": "new_credential",
    "source": "SUNY Canton",
    "url": "https://canton.edu/news/2020/graduates2020.php"
+  },
+  {
+   "anchor": "Mount Holyoke College \u00b7 Boston University PAMLab",
+   "batch": "PM run \u2014 Nov 19, 2026",
+   "display": "Marissa Carl",
+   "fact": "Joined Boston University's Phonetics, Acquisition & Multilingualism Lab (PAMLab) as a summer lab member in summer 2022, as a rising senior at Mount Holyoke College double-majoring in Psychology and Spanish",
+   "id": "fi-20261119-marissa-carl-pamlab-summer-2022",
+   "key": "sf:marissa-carl",
+   "learned": "2026-11-19",
+   "name": "sf:marissa-carl",
+   "pattern": "milestone",
+   "source": "Boston University",
+   "url": "https://thepamlab.github.io/posts/2022/05/blog-post-3/"
+  },
+  {
+   "anchor": "Alltech Integrations \u00b7 Potsdam",
+   "batch": "PM run \u2014 Nov 19, 2026",
+   "display": "Thomas Quant",
+   "fact": "Founded Potsdam-based Alltech Integrations Corporation with two partners around 2008 and served as its Operations Manager, growing it from 3 to 18 employees by Jan 2014",
+   "id": "fi-20261119-thomas-quant-founded-alltech-integrations",
+   "key": "sf:thomas-quant",
+   "learned": "2026-11-19",
+   "name": "sf:thomas-quant",
+   "pattern": "milestone",
+   "source": "Locksmith Ledger",
+   "url": "https://www.locksmithledger.com/home/news/11296871/lockshop-profits-by-partnering-with-integrator"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Technological Communications",
+   "batch": "PM run + compounding lane \u2014 Nov 19, 2026",
+   "display": "Debbie Flack",
+   "fact": "Named to the Golden Key International Honour Society at SUNY Canton, Apr 2024",
+   "id": "fi-20261119-debbie-flack-golden-key-apr-2024",
+   "key": "sf:debbie-flack",
+   "learned": "2026-11-19",
+   "name": "sf:debbie-flack",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/media/pdf/HonConv24.pdf"
+  },
+  {
+   "anchor": "Seaway Valley Prevention Council \u00b7 Potsdam",
+   "batch": "PM run \u2014 Nov 19, 2026",
+   "display": "Morgan Arquette",
+   "fact": "Attended the \"Welcome Back Watertown\" school event at Watertown High School as a Program Coordinator alongside Sarah Martin, 2026",
+   "id": "fi-20261119-morgan-arquette-welcome-back-watertown-2026",
+   "key": "sf:morgan-arquette",
+   "learned": "2026-11-19",
+   "name": "sf:morgan-arquette",
+   "pattern": "milestone",
+   "source": "Advancing Tobacco Free Communities",
+   "url": "https://app.smore.com/n/n0dy3-advancing-tobacco-free-communities"
   }
  ],
  "patterns": {
