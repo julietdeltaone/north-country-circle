@@ -6284,6 +6284,10 @@
    "name": "ig:charlie_garrelts",
    "pattern": "milestone",
    "source": "ClickNNY",
+   "state": {
+    "at": "2026-11-20T13:50:44.641Z",
+    "status": "read"
+   },
    "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz"
   },
   {
@@ -6297,6 +6301,10 @@
    "name": "sf:tori-brunet",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-20T13:50:45.841Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2023/honorsf22.php"
   },
   {
@@ -6310,6 +6318,10 @@
    "name": "ig:summerdorrphoto",
    "pattern": "new_credential",
    "source": "Alfred State College",
+   "state": {
+    "at": "2026-11-20T13:50:46.782Z",
+    "status": "read"
+   },
    "url": "https://coursedog-pdfs-public-prod.s3.us-east-2.amazonaws.com/suny_alfredstate_banner_ethos-catalog-1758122498873.pdf"
   },
   {
@@ -6323,6 +6335,10 @@
    "name": "ig:sarah.ellabb",
    "pattern": "milestone",
    "source": "Leone Timing and Results Services",
+   "state": {
+    "at": "2026-11-20T13:50:48.799Z",
+    "status": "read"
+   },
    "url": "https://www.leonetiming.com/2025/Outdoor/States/Day2StartLists.htm"
   },
   {
@@ -6353,6 +6369,10 @@
    "name": "sf:alan-k-daniels",
    "pattern": "employer_change",
    "source": "Christian Fellowship Center",
+   "state": {
+    "at": "2026-11-20T13:50:40.370Z",
+    "status": "read"
+   },
    "url": "https://us2.campaign-archive.com/?u=a662b588b426076a9576affca&id=5b065747a7"
   },
   {
@@ -6366,6 +6386,10 @@
    "name": "ct:christine sutter",
    "pattern": "milestone",
    "source": "Inner Lakes Therapy",
+   "state": {
+    "at": "2026-11-20T13:50:42.378Z",
+    "status": "read"
+   },
    "url": "https://www.innerlakestherapy.com/innerlakes-therapists"
   },
   {
@@ -6379,6 +6403,10 @@
    "name": "ct:bryan noble",
    "pattern": "milestone",
    "source": "New York State Department of Environmental Conservation",
+   "state": {
+    "at": "2026-11-20T13:50:32.735Z",
+    "status": "read"
+   },
    "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol"
   },
   {
@@ -6392,6 +6420,10 @@
    "name": "ct:bryan noble",
    "pattern": "milestone",
    "source": "New York State Department of Environmental Conservation",
+   "state": {
+    "at": "2026-11-20T13:50:32.735Z",
+    "status": "read"
+   },
    "url": "https://dec.ny.gov/news/press-releases/2025/3/environmental-conservation-police-on-patrol"
   },
   {
@@ -6405,6 +6437,10 @@
    "name": "ct:bryan noble",
    "pattern": "milestone",
    "source": "New York State Department of Environmental Conservation",
+   "state": {
+    "at": "2026-11-20T13:50:32.735Z",
+    "status": "read"
+   },
    "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/3e64a31"
   },
   {
@@ -6418,6 +6454,10 @@
    "name": "sf:donovan-patraw",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-20T13:50:33.853Z",
+    "status": "read"
+   },
    "url": "https://canton.edu/news/2020/graduates2020.php"
   },
   {
@@ -6431,6 +6471,10 @@
    "name": "sf:marissa-carl",
    "pattern": "milestone",
    "source": "Boston University",
+   "state": {
+    "at": "2026-11-20T13:50:35.351Z",
+    "status": "read"
+   },
    "url": "https://thepamlab.github.io/posts/2022/05/blog-post-3/"
   },
   {
@@ -6444,6 +6488,10 @@
    "name": "sf:thomas-quant",
    "pattern": "milestone",
    "source": "Locksmith Ledger",
+   "state": {
+    "at": "2026-11-20T13:50:35.563Z",
+    "status": "read"
+   },
    "url": "https://www.locksmithledger.com/home/news/11296871/lockshop-profits-by-partnering-with-integrator"
   },
   {
@@ -6457,6 +6505,10 @@
    "name": "sf:debbie-flack",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-20T13:50:36.716Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/media/pdf/HonConv24.pdf"
   },
   {
@@ -6470,6 +6522,10 @@
    "name": "sf:morgan-arquette",
    "pattern": "milestone",
    "source": "Advancing Tobacco Free Communities",
+   "state": {
+    "at": "2026-11-20T13:50:38.283Z",
+    "status": "read"
+   },
    "url": "https://app.smore.com/n/n0dy3-advancing-tobacco-free-communities"
   },
   {
@@ -6483,6 +6539,10 @@
    "name": "sf:jillian-chapman",
    "pattern": "new_credential",
    "source": "Rochester Regional Health",
+   "state": {
+    "at": "2026-11-20T13:50:30.992Z",
+    "status": "read"
+   },
    "url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/files/slh/mh-2020-auxiliary-report.pdf"
   }
  ],
