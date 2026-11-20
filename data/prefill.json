@@ -4,6 +4,14 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "sf:jillian-chapman",
+   "display": "Jillian Chapman",
+   "field": "companies",
+   "value": "Rochester Regional Health",
+   "conf": 74,
+   "id": "pf-fceae92259"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -36,7 +44,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 12,
+   "tentative_floor": 11,
    "shelved": 2
   },
   "items": [
@@ -126,16 +134,6 @@
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-5b6da55f7a",
-    "key": "ct:susan buckley",
-    "display": "Susan Buckley",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
