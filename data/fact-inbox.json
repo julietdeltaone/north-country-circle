@@ -6556,6 +6556,10 @@
    "name": "sammace11",
    "pattern": "milestone",
    "source": "SUNY Potsdam Athletics",
+   "state": {
+    "at": "2026-11-21T16:13:24.886Z",
+    "status": "read"
+   },
    "url": "https://potsdambears.com/story.aspx?filename=wih-102-suny-potsdam-athletes-named-to-sunyac-commissioners-honor-roll&file_date=6-21-2017"
   },
   {
@@ -6569,6 +6573,10 @@
    "name": "sammace11",
    "pattern": "milestone",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-21T16:13:24.886Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/offices/finance-office/capital-instructions"
   },
   {
@@ -6582,6 +6590,10 @@
    "name": "kevindaniels7",
    "pattern": "milestone",
    "source": "Cornell Cooperative Extension of St. Lawrence County",
+   "state": {
+    "at": "2026-11-21T16:13:26.201Z",
+    "status": "read"
+   },
    "url": "https://stlawrence.cce.cornell.edu/resources/2025-annual-report"
   }
  ],
