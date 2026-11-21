@@ -37832,8 +37832,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 4,
-   "new": 0,
+   "todo": 7,
+   "new": 3,
    "cleared_at": null
   }
  },
@@ -41635,7 +41635,25 @@
    "added": "2026-11-15",
    "class": "new",
    "source": "Photo filed"
+  },
+  "ryleigh combs": {
+   "first_seen": "2026-11-21T16:58:00Z",
+   "added": "2026-11-21",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "michelle tolar": {
+   "first_seen": "2026-11-21T16:58:00Z",
+   "added": "2026-11-21",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "matthew merria": {
+   "first_seen": "2026-11-21T16:58:00Z",
+   "added": "2026-11-21",
+   "class": "new",
+   "source": "Photo filed"
   }
  },
- "updated": "2026-11-21T16:50:00Z"
+ "updated": "2026-11-21T16:58:00Z"
 }
