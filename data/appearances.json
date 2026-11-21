@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1494,
+  "total": 1496,
   "dated": 77,
-  "undated": 1417,
-  "placed": 1340,
+  "undated": 1419,
+  "placed": 1342,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -13048,6 +13048,18 @@
   {
    "di": 714,
    "display": "Matthew Merria",
+   "text": "Named as a defendant in Lawrence v. St. Lawrence County, a federal civil-rights case in which a Jan 29, 2026 order let a deliberate-indifference claim naming Merria proceed (U.S. District Court, Northern District of New York (via Justia))",
+   "source": "",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 714,
+   "display": "Matthew Merria",
    "text": "Recognized for outstanding service by the St. Lawrence County Sheriff (St. Lawrence County Board of Legislators, May 2022)",
    "source": "St. Lawrence County Board of Legislators, May 2022",
    "url": "",
@@ -13127,6 +13139,18 @@
    "fresh": false,
    "pid": "44.5956,-75.1691",
    "place": "Canton, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 583,
+   "display": "Megan Eurto",
+   "text": "Still serving as Village Clerk for the Village of Canton at the Mar 18, 2026 board meeting, listed as Megan Mousaw (Village of Canton)",
+   "source": "Village of Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
    "place_src": "text"
   },
   {
