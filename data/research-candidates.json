@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-20",
+ "updated": "2026-11-21",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -17787,6 +17787,89 @@
    "fields": {},
    "published": "2013-04-03",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261121-hannah-braun-elected-to-the-iets-morulas-board-of",
+   "name": "hnnbraun",
+   "display": "Hannah Braun",
+   "run_date": "2026-11-21",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The International Embryo Technology Society's 2025 business meeting minutes say Hannah Braun from Colorado State University was elected to the Morulas Board of Governors for the 2025\u20132027 term.",
+   "file_text": "Elected to the IETS Morulas Board of Governors for the 2025\u20132027 term, Jan 2025",
+   "source": "International Embryo Technology Society",
+   "url": "https://www.iets.org/Portals/0/Documents/Public/Meetings/2026/2025 Business Meeting Minutes.pdf?ver=unT5-y6MjNtgsp6BZAOuZQ%3d%3d",
+   "anchors": [
+    "Colorado State University, the school on her record",
+    "Her full name"
+   ],
+   "quote": "de la Fuente-Lara reported on the 2025-2027 election process, announcing that Hannah Braun from Colorado State University and Soledad Martinez-Pelaez were elected.",
+   "missing_gate": "The minutes name a Hannah Braun at Colorado State University, but nothing on them ties her to the Barfield Lab or her embryo research.",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 24,
+    "detail": 16
+   },
+   "fields": {
+    "highlights": "IETS Morulas Board of Governors (2025\u20132027)"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261121-delany-durant-started-as-clubhouse-coordinator-at",
+   "name": "delany._.durant",
+   "display": "Delany Durant",
+   "run_date": "2026-11-21",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Seaway Valley Prevention Council's Horizons October newsletter says Delany joined the Horizons Youth Clubhouse team in October 2026, working with Dominic and Nicole.",
+   "file_text": "Started as Clubhouse Coordinator at the Horizons Youth Clubhouse in Massena, Oct 2026",
+   "source": "Seaway Valley Prevention Council",
+   "url": "https://app.smore.com/n/smfu1-horizons-october-newsletter",
+   "anchors": [
+    "Horizons Youth Clubhouse in Massena, her workplace on file",
+    "Seaway Valley Prevention Council, her employer on file"
+   ],
+   "quote": "We welcomed Dominic and Nicole in September and Delany joined them in October. We are all so excited to be a part of Seaway Valley Prevention Council and working closely with our communities' youth at Horizons Youth Clubhouse!",
+   "missing_gate": "The newsletter names her by first name only, so I cannot be sure the Delany who joined in October is Delany Durant.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261121-joye-levendusky-did-not-compete-at-the-2026-bill-far",
+   "name": "jlevens18",
+   "display": "Joye Levendusky",
+   "run_date": "2026-11-21",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A Bill Farrell results tracker says Joye Levendusky was on USA Wrestling's entry list at 76 kg for the Nov 6, 2026 tournament but was not in the draw and did not compete.",
+   "file_text": "Did not compete at the 2026 Bill Farrell Memorial International at 76 kg despite being on the entry list, Nov 2026",
+   "source": "Baschamania",
+   "url": "https://www.baschamania.com/bill-farrell/",
+   "anchors": [
+    "Her full name",
+    "The Bill Farrell 76 kg entry already on her record"
+   ],
+   "quote": "Did not compete. On USA Wrestling's entry list but not in the 76 kg bracket, and never took the mat.",
+   "missing_gate": "I could not double-check this against an official USA Wrestling results source, so it is recorded here only.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
   }
  ]
 }
