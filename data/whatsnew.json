@@ -3,6 +3,30 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-21",
+   "kind": "hot",
+   "display": "Raedyn Spademan",
+   "text": "Scored an empty-net goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/news/2026/11/21/womens-ice-hockey-womens-weekend-wraparound-11-17-11-22.aspx"
+  },
+  {
+   "date": "2026-11-21",
+   "kind": "hot",
+   "display": "Janelle Evans",
+   "text": "Recorded an assist on Jessie Pellerin's tying goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/boxscore.aspx?id=7ltyipP022aUJKmSgYVs3wXi7up73ghniwD5ElWyd07J7BNseBaMQePf0fY%2f3yUPbk54xYMAaA%2fUdDsMKd4EmNdTXfUobWCrQlqMste5aggq0sNRjaLwrl4DBwnNwcQXFjZT4h6fjkErAcwddvtQ3z5LrG0bFCdbp%2f7qnXT8nXg%3d&path=whockey"
+  },
+  {
+   "date": "2026-11-21",
+   "kind": "filed",
+   "display": "Micah McCulley",
+   "text": "Placed 24th in the men's 8K (25:49.7) at the Empire 8 Cross Country Championships as a SUNY Geneseo senior, Oct 2026",
+   "source": "TFRRS",
+   "url": "https://www.tfrrs.org/results/xc/24624"
+  },
+  {
    "date": "2026-11-20",
    "kind": "filed",
    "display": "Megan Eddy",
@@ -2375,30 +2399,6 @@
    "kind": "filed",
    "display": "ig:lena_musiienko",
    "text": "Seeded 2 calendar contact entries (2026-05-14 to 2026-05-28) from JD's calendars, per his Nov 12, 2026 rulings (David = David Zufall, Lydia = Lydia Martin, sets over 12 batched by year).",
-   "source": "Google Calendar",
-   "url": ""
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "sf:vanessa-bevilacqua",
-   "text": "Seeded 1 calendar contact entry (2021-12-10 to 2021-12-10) from JD's calendars, per his Nov 12, 2026 rulings (David = David Zufall, Lydia = Lydia Martin, sets over 12 batched by year).",
-   "source": "Google Calendar",
-   "url": ""
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "ig:daniveteree",
-   "text": "Seeded 1 calendar contact entry (2021-12-10 to 2021-12-10) from JD's calendars, per his Nov 12, 2026 rulings (David = David Zufall, Lydia = Lydia Martin, sets over 12 batched by year).",
-   "source": "Google Calendar",
-   "url": ""
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "sf:lisa-criscitello",
-   "text": "Seeded 1 calendar contact entry (2021-07-10 to 2021-07-10) from JD's calendars, per his Nov 12, 2026 rulings (David = David Zufall, Lydia = Lydia Martin, sets over 12 batched by year).",
    "source": "Google Calendar",
    "url": ""
   }
