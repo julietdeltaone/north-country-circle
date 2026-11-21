@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1489,
-  "dated": 72,
+  "total": 1492,
+  "dated": 75,
   "undated": 1417,
-  "placed": 1335,
+  "placed": 1338,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 29,
-  "brief_standalone": 43,
+  "brief_attached": 31,
+  "brief_standalone": 45,
   "brief_unresolved": 1
  },
  "items": [
@@ -506,6 +506,18 @@
    "place_src": "text"
   },
   {
+   "di": 582,
+   "display": "Megan Eddy",
+   "text": "Earned Dean's List honors at SUNY Canton for the Spring 2024 semester as a Bachelor of Science in Nursing student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2024/honors-spring24.php",
+   "published": "2024-06-17",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
@@ -772,6 +784,18 @@
   {
    "di": 291,
    "display": "Sam Mace",
+   "text": "Named to the SUNYAC Commissioner's Academic Honor Roll for 2016-17 as a freshman SUNY Potsdam women's lacrosse player from Canton, New York, listed with a Mathematics major",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/story.aspx?filename=wih-102-suny-potsdam-athletes-named-to-sunyac-commissioners-honor-roll&file_date=6-21-2017",
+   "published": "2020-06-17",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 291,
+   "display": "Sam Mace",
    "text": "Shared SUNY Potsdam women's lacrosse team MVP honors with the senior class in 2020, after returning from an injury that had cost her the 2019 season",
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/news/2020/5/13/seniors-team-share-womens-lacrosse-awards051320.aspx",
@@ -875,6 +899,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 409,
+   "display": "Susan Buckley",
+   "text": "Named as a Criminal Investigation Associate Professor at SUNY Canton in Jul 2012",
+   "source": "SUNY Canton",
+   "url": "http://readme.readmedia.com/SUNY-Canton-Criminal-Investigation-Major-Eli-Max-of-Freeport-N-Y-11520-Wins-Wins-Award-From-SUNY-Police/4511157/print",
+   "published": "2012-07-02",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
