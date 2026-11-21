@@ -6544,6 +6544,45 @@
     "status": "read"
    },
    "url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/files/slh/mh-2020-auxiliary-report.pdf"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Women's Lacrosse",
+   "batch": "PM run \u2014 Nov 20, 2026",
+   "display": "Sam Mace",
+   "fact": "Named to the SUNYAC Commissioner's Academic Honor Roll for 2016-17 as a freshman SUNY Potsdam women's lacrosse player from Canton, New York, listed with a Mathematics major",
+   "id": "fi-20261120-sam-mace-named-to-the-sunyac-commission",
+   "key": "sammace11",
+   "learned": "2026-11-20",
+   "name": "sammace11",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/story.aspx?filename=wih-102-suny-potsdam-athletes-named-to-sunyac-commissioners-honor-roll&file_date=6-21-2017"
+  },
+  {
+   "anchor": "St. Lawrence University \u00b7 Finance Office",
+   "batch": "PM run \u2014 Nov 20, 2026",
+   "display": "Sam Mace",
+   "fact": "Serves as St. Lawrence University's contact for questions about its capital budgeting process and capital budget requests",
+   "id": "fi-20261120-sam-mace-serves-as-st-lawrence-universi",
+   "key": "sammace11",
+   "learned": "2026-11-20",
+   "name": "sammace11",
+   "pattern": "milestone",
+   "source": "St. Lawrence University",
+   "url": "https://www.stlawu.edu/offices/finance-office/capital-instructions"
+  },
+  {
+   "anchor": "Kevin Daniels Agency \u00b7 Potsdam",
+   "batch": "PM run \u2014 Nov 20, 2026",
+   "display": "Kevin Daniels",
+   "fact": "The Kevin Daniels Agency was listed among the supporters whose underwriting made Cornell Cooperative Extension of St. Lawrence County's manure-pit rescue training for first responders possible in Apr 2025",
+   "id": "fi-20261120-kevin-daniels-the-kevin-daniels-agency-was-l",
+   "key": "kevindaniels7",
+   "learned": "2026-11-20",
+   "name": "kevindaniels7",
+   "pattern": "milestone",
+   "source": "Cornell Cooperative Extension of St. Lawrence County",
+   "url": "https://stlawrence.cce.cornell.edu/resources/2025-annual-report"
   }
  ],
  "patterns": {
