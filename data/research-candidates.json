@@ -17494,6 +17494,299 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-matthew-merria-named-as-a-defendant-in-lawrence-v-s",
+   "name": "sf:matthew-merria",
+   "display": "Matthew Merria",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A January 29, 2026 court order in Lawrence v. St. Lawrence County (Northern District of New York, case 8:24-cv-00656) dismissed Counts One, Two and Four and let Count Three proceed; Count Three names a defendant 'Merria' among St. Lawrence County Correctional Facility staff accused of deliberate indifference to an inmate's medical needs. A payroll listing from the compounding lane is a second source for the same man: it names a Matthew T. Merria as a St. Lawrence County deputy sheriff from 2019 to 2026.",
+   "file_text": "Named as a defendant in Lawrence v. St. Lawrence County, a federal civil-rights case in which a Jan 29, 2026 order let a deliberate-indifference claim naming Merria proceed",
+   "source": "U.S. District Court, Northern District of New York (via Justia)",
+   "url": "https://law.Justia.com/cases/federal/district-courts/new-york/nyndce/8:2024cv00656/143695/42/",
+   "anchors": [
+    "His last name, Merria, which is uncommon",
+    "The St. Lawrence County Sheriff's Office and Correctional Facility, where he works as a deputy"
+   ],
+   "quote": "Count Three alleges that Defendants Yerdon, Tate, Merria, Bundette, Anderson, Shattick, and Bigwarfe were deliberately indifferent to Plaintiff's medical needs, in violation of the Fourteenth Amendment, by failing to obtain medical attention after Plaintiff experienced hallucinations.",
+   "missing_gate": "The court order uses only the last name Merria, with no first name, so I cannot be fully sure it is Matthew.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2026-01-29",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-megan-eurto-still-serving-as-village-clerk-for-t",
+   "name": "sf:megan-eurto",
+   "display": "Megan Eurto",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The Village of Canton board minutes for March 18, 2026 list Megan Mousaw as Village Clerk, and she signs the minutes in that role.",
+   "file_text": "Still serving as Village Clerk for the Village of Canton at the Mar 18, 2026 board meeting, listed as Megan Mousaw",
+   "source": "Village of Canton",
+   "url": "https://cantonny.gov/2026 3 18  Village Board Meeting Minutes.pdf?t=202604211238060",
+   "anchors": [
+    "Her first name, Megan",
+    "The Village Clerk job in Canton, the job on her record under the name Mousaw"
+   ],
+   "quote": "Megan Mousaw Village Clerk",
+   "missing_gate": "The minutes name Megan Mousaw, and no page I opened ties the name Eurto to Mousaw.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 24,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2026-03-18",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261120-samarah-martin-received-the-mike-and-karen-stuart-s",
+   "name": "ct:samarah martin",
+   "display": "Samarah Martin",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Citrus Industry Magazine article from March 14, 2024 says a Samarah Martin received the Mike and Karen Stuart Scholarship as a Florida International University junior studying biology and environmental studies.",
+   "file_text": "Received the Mike and Karen Stuart Scholarship as a Florida International University junior studying biology and environmental studies, 2023",
+   "source": "Citrus Industry Magazine",
+   "url": "https://citrusindustry.net/2024/03/14/stuart-scholarship-applications-due-april-15-2/",
+   "anchors": [
+    "Her full name only"
+   ],
+   "quote": "Martin is a junior at Florida International University studying biology and environmental studies. She hopes to work at the U.S. Department of Agriculture following her graduation in 2024 and focus on crop pest management and sustainability.",
+   "missing_gate": "The article names a Samarah Martin in Florida, but nothing on it ties her to Canton or SUNY Canton.",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2024-03-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-heidi-jo-levendusky-daughter-audrey-levendusky-wrestles",
+   "name": "hjlevendusky",
+   "display": "Heidi Jo Levendusky",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "An American Women's Wrestling article written by her husband Derek says their daughter Audrey Levendusky wrestles, like her older sisters Joye and Esther, and thanks a brother, Reese Levendusky; Audrey and Reese are not among the children named on Heidi's record.",
+   "file_text": "Daughter Audrey Levendusky wrestles, like her older sisters Joye and Esther; a brother, Reese Levendusky, is also named in the family",
+   "source": "American Women's Wrestling",
+   "url": "https://www.americanwomenswrestling.com/news/audreys-story-the-dark-path",
+   "anchors": [
+    "Her husband Derek, who wrote the article",
+    "Her daughters Joye and Esther, already on her record"
+   ],
+   "quote": "For those of you that don't know her, that's my daughter, Audrey Levendusky. You may know her older sisters, Joye and Esther. They both wrestle, too.",
+   "missing_gate": "This is about Heidi's family, so I always check with you first.",
+   "confidence": 81,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2023-04-06",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-heidi-jo-levendusky-daughter-audrey-levendusky-was-named",
+   "name": "hjlevendusky",
+   "display": "Heidi Jo Levendusky",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "USA Wrestling's April 15, 2026 list of Tricia Saunders High School Excellence Award state winners names Audrey Levendusky of Montgomery Central High School, Clarksville, for Tennessee, with King University.",
+   "file_text": "Daughter Audrey Levendusky was named Tennessee's 2026 Tricia Saunders High School Excellence Award state winner, listed with Montgomery Central High School and King University",
+   "source": "USA Wrestling",
+   "url": "https://www.themat.com/news/2026/april/15/national-wrestling-hall-of-fame-announces-tricia-saunders-high-school-excellence-award-state-winners",
+   "anchors": [
+    "Montgomery Central High School, the school where Heidi coaches",
+    "The Levendusky family name"
+   ],
+   "quote": "Tennessee - Audrey Levendusky, Montgomery Central High School, Clarksville, King University",
+   "missing_gate": "This is about Heidi's family, so I always check with you first.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2026-04-15",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-jennifer-trelease-daughter-eleora-trelease-received-a",
+   "name": "wholehearted_wife",
+   "display": "Jennifer Trelease",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "The Northern New York Community Foundation's 2025 scholarship page lists Eleora Trelease of Potsdam, a homeschooled student, among its scholarship recipients; Eleora is Jennifer's daughter on her record.",
+   "file_text": "Daughter Eleora Trelease received a Northern New York Community Foundation scholarship in 2025, listed as a homeschooled student from Potsdam",
+   "source": "Northern New York Community Foundation",
+   "url": "https://nnycf.org/2025-scholarship-awards/",
+   "anchors": [
+    "Her daughter Eleora Trelease, already named on her record",
+    "Potsdam, the family's home"
+   ],
+   "quote": "Homeschooled, Eleora Trelease (Potsdam)",
+   "missing_gate": "This is about Jennifer's family, so I always check with you first.",
+   "confidence": 77,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-michelle-daniels-honored-as-a-2021-new-york-state-sen",
+   "name": "michelledaniels9",
+   "display": "Michelle Daniels",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The New York State Senate's Women of Distinction page honors a Michelle Daniels who founded the Frederick Douglass Club at School #12 in Rochester in 2007.",
+   "file_text": "Honored as a 2021 New York State Senate Woman of Distinction for founding the Frederick Douglass Club at School #12 in 2007",
+   "source": "New York State Senate",
+   "url": "https://www.nysenate.gov/honorees?page=69",
+   "anchors": [
+    "Her full name only"
+   ],
+   "quote": "Michelle Daniels founded the Frederick Douglass home-site marker at School #12 in 2007. With the absence of Douglass programming, and the lack of after-school activities, she started the Frederick Douglass Club (FDC).",
+   "missing_gate": "The page names a Michelle Daniels in Rochester, but nothing on it ties her to Potsdam or her church and family here.",
+   "confidence": 49,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 26,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-caleb-bresett-continued-as-a-massena-police-patrol",
+   "name": "cbresett20",
+   "display": "Caleb Bresett",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "GovSalaries lists a 'Matthew Bresett C' as a Massena Police Patrol Officer from 2023 to 2026, with a 2026 salary of $77,307.",
+   "file_text": "Continued as a Massena Police Patrol Officer through 2026, listed in payroll records as Matthew Bresett C with a 2026 salary of $77,307",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/bresett-matthew-c-224309411",
+   "anchors": [
+    "The last name Bresett",
+    "Massena and the Police Patrol Officer job, both on his record"
+   ],
+   "quote": "Matthew Bresett C in 2026 was employed at Massena and had an annual salary of $77,307, according to public records.",
+   "missing_gate": "The payroll page never uses the name Caleb, so I cannot be sure Matthew Bresett C is him.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261120-dimitri-damon-finished-14th-in-the-2019-run-for-re",
+   "name": "nahhhhhhh.hhh",
+   "display": "Dimitri Damon",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Albany Running Exchange results for the 2019 Run for Recovery 5K list a Dimitri Damon, age 18, of Evans Mills, New York, finishing 14th in 27:49.",
+   "file_text": "Finished 14th in the 2019 Run for Recovery 5K in 27:49, listed as an 18-year-old from Evans Mills, New York",
+   "source": "Albany Running Exchange",
+   "url": "https://www.albanyrunningexchange.org/results/search.php?ID=7973",
+   "anchors": [
+    "His full name only"
+   ],
+   "quote": "| 14 | 27:49 | 8:58 | 399 | Dimitri Damon | 18 | M | Evans Mills | NY |",
+   "missing_gate": "The results name a Dimitri Damon in Evans Mills, but nothing on the page ties him to Potsdam or Ogdensburg.",
+   "confidence": 49,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 18,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-olivia-grant-profiled-by-her-campus-at-queen-s-un",
+   "name": "oliviamariegrant",
+   "display": "Olivia Grant",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Her Campus at Queen's University profile from March 17, 2017 names an Olivia Grant, a fourth-year Stage and Screen student from Adams, New York, who hoped to perform and compete in pageants.",
+   "file_text": "Profiled by Her Campus at Queen's University as a fourth-year Stage and Screen student from Adams, New York, in 2017",
+   "source": "Her Campus at Queen's University",
+   "url": "https://www.hercampus.com/school/queens-u/campus-cutie-olivia-grant/",
+   "anchors": [
+    "Her full name only"
+   ],
+   "quote": "Name: Olivia Grant / Program: Stage and Screen / Year: 4th / Hometown: Adams, New York",
+   "missing_gate": "The page names an Olivia Grant at Queen's, but nothing on it ties her to the Crane School or Potsdam.",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 14,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2017-03-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261120-sam-mace-listed-as-a-st-lawrence-thunder-play",
+   "name": "sammace11",
+   "display": "Sam Mace",
+   "run_date": "2026-11-20",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A USA Hockey nationals game sheet from April 3, 2013 for the St. Lawrence Thunder girls' 14U team lists a Samantha Mace taking a hooking minor.",
+   "file_text": "Listed as a St. Lawrence Thunder player in a USA Hockey Tier II Girls 14U nationals game on Apr 3, 2013",
+   "source": "USA Hockey",
+   "url": "https://nationals.usahockey.com/game/game_sheet/4974459",
+   "anchors": [
+    "Her full name, Samantha Mace",
+    "A St. Lawrence regional team"
+   ],
+   "quote": "3:19 | St Lawrence Thunder (NY) | Samantha Mace: Hooking - Minor (0:0)",
+   "missing_gate": "The game sheet names a Samantha Mace, but gives no town or school to tie her to Canton.",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 24,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2013-04-03",
+   "novelty": "new"
   }
  ]
 }
