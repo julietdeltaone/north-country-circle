@@ -1,18 +1,42 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1492,
-  "dated": 75,
+  "total": 1494,
+  "dated": 77,
   "undated": 1417,
-  "placed": 1338,
+  "placed": 1340,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 31,
+  "brief_attached": 33,
   "brief_standalone": 45,
   "brief_unresolved": 1
  },
  "items": [
+  {
+   "di": 719,
+   "display": "Raedyn Spademan",
+   "text": "Scored an empty-net goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026 (ECAC Hockey)",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/news/2026/11/21/womens-ice-hockey-womens-weekend-wraparound-11-17-11-22.aspx",
+   "published": "2026-11-21",
+   "fresh": true,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 717,
+   "display": "Janelle Evans",
+   "text": "Recorded an assist on Jessie Pellerin's tying goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026 (ECAC Hockey)",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/boxscore.aspx?id=7ltyipP022aUJKmSgYVs3wXi7up73ghniwD5ElWyd07J7BNseBaMQePf0fY%2f3yUPbk54xYMAaA%2fUdDsMKd4EmNdTXfUobWCrQlqMste5aggq0sNRjaLwrl4DBwnNwcQXFjZT4h6fjkErAcwddvtQ3z5LrG0bFCdbp%2f7qnXT8nXg%3d&path=whockey",
+   "published": "2026-11-20",
+   "fresh": true,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
   {
    "di": 717,
    "display": "Janelle Evans",
