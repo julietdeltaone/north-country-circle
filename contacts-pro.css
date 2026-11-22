@@ -7474,3 +7474,101 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
   .gm-ctlayout{grid-template-columns:1fr}
   .gm-ctside{max-height:none}
 }
+
+/* ============================================================
+   TABLET PASS V4.17.3 (2026-11-22) — mini-tablet band.
+   JD's unfolded foldable is iPad-mini class (~744-900px wide):
+   a phone shell with destinations missing is not enough there.
+   1) From 700px up the app uses the FULL desktop shell — the
+      rail with every destination (Stats, Merge Studio, Danger
+      Zone, Settings included) — instead of the bottom tab bar,
+      which only carries the nine everyday items. The phone
+      shell below 700px is untouched, as are focus mode and the
+      Sandbox tool's own frame.
+   2) From 1023px down, every audit / review / staging action
+      control is a big touch target (>=48px) and every text
+      input renders at 16px (no iOS focus zoom, labels stay
+      put), so a long audit queue can be worked one-handed.
+   Presentation only: no markup, behavior, or data changes.
+   ============================================================ */
+
+/* ---- 1) full shell, 700-1023px ---- */
+@media (min-width:700px) and (max-width:1023px){
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #app{display:grid;grid-template-columns:204px minmax(0,1fr);padding-bottom:0}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail{display:flex}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #tabs{display:none}
+  #toasts{bottom:20px}
+  #top{flex-wrap:wrap}
+  .netwrap,.fspace{height:calc(100dvh - 245px)}
+  #view{padding:20px 20px 28px}
+  /* top bar returns to its desktop voice: the phone pass had
+     shrunk the sync pill to a bare dot and hidden the redo
+     button and the search shortcut hint */
+  .syncp{font-size:12.5px;padding:0 12px;gap:7px}
+  .syncp i{margin:0}
+  #top .hide-s{display:inline-flex}
+  .gsearch kbd{display:inline-block}
+}
+/* the photo audit desk keeps its queue + stage side by side in
+   the upper band instead of a 372px queue squeezing the stage */
+@media (min-width:900px) and (max-width:1023px){
+  .pha{grid-template-columns:300px minmax(0,1fr)}
+}
+
+/* ---- 2) big audit targets + 16px inputs, <=1023px ---- */
+@media (max-width:1023px){
+  /* Photos page: "Possible photos" Validate / Reject */
+  .ph-poss-act{display:flex;gap:8px;margin-top:8px}
+  .ph-poss-act .btn{flex:1 1 0;min-height:48px;font-size:14.5px}
+  /* Research Review queue: File it / Dismiss / Photo lead */
+  .rc-actions{gap:8px}
+  .rc-actions .btn{min-height:48px}
+  /* Prefill desk: Back / Skip / Deny / Approve decision bar */
+  .pfq-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .pfq-acts .btn{flex:1 1 40%;min-height:52px;font-size:15px}
+  .pfq-acts .btn kbd{display:none}
+  .pf-phead .btn{min-height:48px}
+  /* Photo audit desk: queue rows, verdict buttons, reason chips */
+  .pha-item{min-height:48px;padding:10px 12px;font-size:13.5px}
+  .pha .btn{min-height:48px}
+  .pha-rchip{min-height:40px;padding:8px 12px;font-size:12.5px}
+  /* Audit staging cards: mode tabs, gap chips, category buttons,
+     option picks, card foot actions, the toast's Undo */
+  .aud-modes button{min-height:48px;padding:0 16px}
+  .aud-pick{min-height:48px}
+  .aud-gchip{min-height:40px;padding:8px 13px}
+  .aud-catbtn{min-height:44px;padding:10px 14px;font-size:12px}
+  .aud-skip,.aud-later{min-height:48px;padding:10px 14px;font-size:14px}
+  .aud-modebar .btn{min-height:48px}
+  .aud-card .btn{min-height:48px}
+  .aud-toast-u{min-height:44px;padding:10px 12px}
+  /* Section editors on a profile (incl. the Lima Charlie note
+     editor): Save / Cancel are full-size while a card is open */
+  .card.editing .btn{min-height:48px}
+  .sheet .btn{min-height:48px}
+  /* Lima Charlie staging: deck bar + fit-view dock actions */
+  .lc-deckbar .btn{min-height:48px}
+  .lc-dock .btn{min-height:48px}
+  /* Photos filter rail: rows tall enough to hit quickly */
+  .ph-fbtn{min-height:44px;padding:9px 10px;font-size:13.5px}
+  .ph-side input{height:48px}
+  /* Inputs: 16px text (stops iOS focus zoom), taller boxes;
+     checkboxes, radios and range sliders keep their own size */
+  #view input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  #view select,#view textarea,
+  .sheet input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .sheet select,.sheet textarea,
+  #top .gsearch input{font-size:16px}
+  #view input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  #view select{min-height:48px}
+  #view textarea{min-height:56px}
+  .lc-dock textarea{font-size:16px;min-height:56px}
+  /* Lima Charlie profile columns: two readable columns instead
+     of three squeezed ones; the wide third column wraps under */
+  .lc-cols{grid-template-columns:1fr 1fr}
+  .lc-cols .lc-col:last-child{grid-column:1 / -1}
+}
+@media (max-width:560px){
+  .lc-cols{grid-template-columns:1fr}
+  .lc-cols .lc-col:last-child{grid-column:auto}
+}
