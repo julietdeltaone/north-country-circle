@@ -7497,6 +7497,16 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
   html:not([data-focus="1"]) body:not([data-view="sandbox"]) #app{display:grid;grid-template-columns:204px minmax(0,1fr);padding-bottom:0}
   html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail{display:flex}
   html:not([data-focus="1"]) body:not([data-view="sandbox"]) #tabs{display:none}
+  /* The legacy band above collapses this rail to a 64px icon strip
+     and hides every .nv span — which also hides the icon glyphs
+     (they live inside spans), leaving blank, unlabeled rows. The
+     tablet pass restores the full labeled rail instead. */
+  :root{--rail:204px}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail{padding:16px 12px}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail .nv{justify-content:flex-start;padding:0 8px;white-space:normal}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail .nv span{display:inline;font-size:13px;white-space:nowrap}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail .nv .nv-gl{display:inline-block}
+  html:not([data-focus="1"]) body:not([data-view="sandbox"]) #rail .nv-kdot{display:block}
   #toasts{bottom:20px}
   #top{flex-wrap:wrap}
   .netwrap,.fspace{height:calc(100dvh - 245px)}
