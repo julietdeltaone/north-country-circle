@@ -6595,6 +6595,32 @@
     "status": "read"
    },
    "url": "https://stlawrence.cce.cornell.edu/resources/2025-annual-report"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Physical Therapy",
+   "batch": "PM run + compounding lane \u2014 Nov 21, 2026",
+   "display": "David DiSalvo",
+   "fact": "The Clarkson University joint-hypermobility study David DiSalvo researches on is a long-term study that may last 10 years or more, with IRB approval 26-36 valid until Feb 17, 2027.",
+   "id": "fi-20261121-david-disalvo-hypermobility-study-10-years",
+   "key": "sf:david-disalvo",
+   "learned": "2026-11-21",
+   "name": "sf:david-disalvo",
+   "pattern": "milestone",
+   "source": "ClinicalTrials.gov",
+   "url": "https://cdn.clinicaltrials.gov/large-docs/07/NCT07657507/ICF_000.pdf"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Occupational Therapy",
+   "batch": "PM run + compounding lane \u2014 Nov 21, 2026",
+   "display": "Karen Hoover",
+   "fact": "Karen Hoover's Clarkson-hosted CV dates her Seton Hall University Director of Clinical Education role to 2011\u20132015, first as Instructor and then as Assistant Professor, with Assistant Professor continuing 2015\u20132022; her record had carried the Director of Clinical Education title across the full 2011\u20132022 span.",
+   "id": "fi-20261121-karen-hoover-seton-hall-dce-dates-corrected",
+   "key": "sf:karen-hoover",
+   "learned": "2026-11-21",
+   "name": "sf:karen-hoover",
+   "pattern": "correction",
+   "source": "Clarkson University",
+   "url": "https://clarkson.us/sites/default/files/2024-02/Karen Hoover.pdf"
   }
  ],
  "patterns": {
