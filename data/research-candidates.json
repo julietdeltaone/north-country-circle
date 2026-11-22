@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -17945,6 +17945,296 @@
     "identity": 45,
     "source": 12,
     "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-jamiesinclair-jamie-sinclair-responded-to-a-facebo",
+   "name": "jamiesinclair",
+   "display": "Jamie Sinclair",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Jamie Sinclair responded to a Facebook page calling the Canton Christian Fellowship Center a cult, calling the page somewhat childish, in the Cult Education Institute's report.",
+   "file_text": "Jamie Sinclair responded to a Facebook page calling the Canton Christian Fellowship Center a cult, calling the page somewhat childish",
+   "source": "Cult Education Institute",
+   "url": "https://culteducation.com/group/1289-general-information/34738-facebook-group-claims-canton-christian-fellowship-center-a-cult.html",
+   "quote": "Jamie Sinclair, Canton CFC pastor, said the Facebook page seems \u201csomewhat childish\u201d and he doesn\u2019t want to stoop to name-calling.",
+   "anchors": [
+    "Jamie Sinclair",
+    "Canton",
+    "Christian Fellowship Center pastor"
+   ],
+   "missing_gate": "This is about a sensitive claim against Jamie's church, so I always check with you first.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-lydia-rose-martin-named-cciw-goalkeeper-of-the-year-fo",
+   "name": "lydia_rose_martin",
+   "display": "Lydia Martin",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Wheaton College Athletics named a Lydia Martin the CCIW Goalkeeper of the Year for women's soccer in October 2026, after she transferred from the University of San Francisco.",
+   "file_text": "Named CCIW Goalkeeper of the Year for Wheaton College women's soccer, Oct 2026",
+   "source": "Wheaton College Athletics",
+   "url": "https://athletics.wheaton.edu/news/2026/10/30/womens-soccer-lydia-martin-is-named-the-cciw-goalkeeper-of-the-year-as-three-thunder-players-earn-all-conference-honors.aspx",
+   "quote": "Martin transferred to Wheaton earlier this year from Division I program University of San Francisco and made an immediate impact in her first campaign with the women's soccer team.",
+   "anchors": [
+    "Lydia Martin (name only)"
+   ],
+   "missing_gate": "The page names a Lydia Martin who transferred from San Francisco, but nothing on it ties her to the SUNY Canton business graduate on file.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-10-30",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-callindsey-preached-a-fall-revival-series-as-an",
+   "name": "callindsey",
+   "display": "Caleb Lindsey",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A YouTube church video says an evangelist named Caleb Lindsey preached a Fall Revival series.",
+   "file_text": "Preached a Fall Revival series as an evangelist, 2026",
+   "source": "YouTube",
+   "url": "https://www.youtube.com/watch?v=Fp8vt7wybU4",
+   "quote": "Evangelist Bro. Caleb Lindsey preaches this years Fall Revival, and we cant wait to see what the Lord has for us this week.",
+   "anchors": [
+    "Caleb Lindsey (name only)"
+   ],
+   "missing_gate": "The page names a Caleb Lindsey, but nothing on it ties him to the Awakening Church on his record.",
+   "confidence": 30,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 10,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-amotwinsmom-listed-as-a-member-of-the-board-of-d",
+   "name": "amotwinsmom",
+   "display": "Rachelle Amo",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "OneChild lists a Rachelle Amo as a Member of its Board of Directors.",
+   "file_text": "Listed as a Member of the Board of Directors of OneChild",
+   "source": "OneChild",
+   "url": "https://onechild.org/about/leadership/",
+   "quote": "Scott Todd, President, Laura Fisher, Treasurer, Yupin Lee, Secretary, Stephen J. Komanapalli, Member, Rachelle Amo, Member, Michelle Tolentino, Member",
+   "anchors": [
+    "Rachelle Amo (name only)"
+   ],
+   "missing_gate": "The page names a Rachelle Amo, but nothing on it ties her to Ogdensburg or the BOCES literacy job on her record.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2019-08-28",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-awretchlikebri-brianna-mccarthy-illustrated-the-chi",
+   "name": "awretchlikebri",
+   "display": "Brianna McCarthy",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Publishers Weekly says a fine artist named Brianna McCarthy illustrated the children's book 'If Dominican Were a Color' by Sili Recio.",
+   "file_text": "Brianna McCarthy illustrated the children's book 'If Dominican Were a Color' by Sili Recio",
+   "source": "Publishers Weekly",
+   "url": "https://www.publishersweekly.com/pw/by-topic/childrens/childrens-industry-news/article/93772-inclusive-children-s-book-publishers.html",
+   "quote": "Brianna McCarthy was a fine artist I\u2019d drooled over on Instagram.",
+   "anchors": [
+    "Brianna McCarthy (name only)"
+   ],
+   "missing_gate": "The page names a Brianna McCarthy, but nothing on it ties her to Massena or the schools on her record.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2023-11-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-kdusky-keila-levendusky-s-husband-ben-serve",
+   "name": "kdusky",
+   "display": "Keila Levendusky",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Religion News Service reports that Keila Levendusky's husband Ben, a Christian Fellowship Center pastor, met with a church member at the Madrid location in spring 2015 about her marriage.",
+   "file_text": "Keila Levendusky's husband Ben served as a Christian Fellowship Center pastor at the Madrid location",
+   "source": "Religion News Service",
+   "url": "https://religionnews.com/2022/08/25/an-insular-quiverfull-church-in-new-yorks-north-country-faces-a-reckoning/",
+   "quote": "At CFC pastor Ben Levendusky\u2019s request, she met with him at the Madrid location in spring 2015.",
+   "anchors": [
+    "Ben Levendusky (husband)",
+    "Christian Fellowship Center, Madrid"
+   ],
+   "missing_gate": "This is about Keila's family and a sensitive church matter, so I always check with you first.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 25,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2022-08-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-katiie-huestis-katie-huestis-was-listed-among-the-p",
+   "name": "katiie.huestis",
+   "display": "Katie Huestis",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "An Anaconda, Montana school board packet lists a Katie Huestis among the mentors and mentees in a Western Governors University apprenticeship program.",
+   "file_text": "Katie Huestis was listed among the participating mentors and mentees in the Western Governor's Apprenticeship (WGU) program in the Anaconda School District board packet",
+   "source": "Anaconda School District",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/1820/Asd/321c4968-7dd9-43a3-94e1-a2889ecefd2a/November-Board-Packet.pdf?disposition=inline",
+   "quote": "The following are the participating mentors  and mentees: Ashlee Hurlburt and Diane Williams; Andrea Daly & Ashley Reel and Chelsie Smith; and Brianna Eamon and Katie Huestis.",
+   "anchors": [
+    "Katie Huestis (name only)"
+   ],
+   "missing_gate": "The page names a Katie Huestis in Montana, but nothing on it ties her to the Potsdam Spanish teacher on file.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 6,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-oliviasandra04-olivia-smith-works-as-a-nail-technic",
+   "name": "oliviasandra04",
+   "display": "Olivia Smith",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A claim that Olivia Smith works at Northern Roots Salon and Spa in Norfolk could not be checked: the salon's own page opened during this run does not name her at all.",
+   "file_text": "Olivia Smith works as a nail technician and hair stylist at Northern Roots Salon and Spa in Norfolk, New York",
+   "source": "Northern Roots Salon and Spa",
+   "url": "https://northernrootssalonandspa.glossgenius.com/",
+   "quote": "Northern Roots Salon and Spa, 4A N Main St, Norfolk, NY 13667.",
+   "anchors": [
+    "Northern Roots Salon and Spa"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 28,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 15,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-liammillerlynch-st-lawrence-lost-its-2026-football-s",
+   "name": "liammillerlynch",
+   "display": "Liam Miller-Lynch",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A claim that Liam Miller-Lynch played in St. Lawrence's 14-6 loss at Rochester on November 14, 2026 could not be checked: neither the Rochester recap nor its box score names him.",
+   "file_text": "St. Lawrence lost its 2026 football season finale 14-6 at Rochester on November 14, 2026",
+   "source": "University of Rochester Athletics",
+   "url": "https://uofrathletics.com/news/2026/11/14/football-urochester-earns-senior-day-victory-over-st-lawrence.aspx",
+   "quote": "University of Rochester football wrapped up the 2026 season on a high note, defeating the St. Lawrence University Saints, 14-6, in its Senior Day matchup on Saturday at Edwin Fauver Stadium.",
+   "anchors": [
+    "St. Lawrence University football"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 25,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "2026-11-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-carolinaxxmedina-carolina-medina-was-listed-among-the",
+   "name": "carolinaxxmedina",
+   "display": "Carolina Medina",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A SUNY Potsdam concert program from November 3, 2017 lists a Carolina Medina among the Phoenix Club singers at Helen M. Hosmer Hall.",
+   "file_text": "Carolina Medina was listed among the Phoenix Club singers for a November 3, 2017 concert at Helen M. Hosmer Hall in Potsdam",
+   "source": "SUNY Potsdam",
+   "url": "http://potsdam.edu/sites/default/files/Phoenix%20Club%20Hosmer%20Choir%20Concert%20Choir%2011%203%2017.pdf",
+   "quote": "Kimberly Casey  Carolina Medina",
+   "anchors": [
+    "Carolina Medina (name)",
+    "SUNY Potsdam concert program"
+   ],
+   "missing_gate": "The program names a Carolina Medina at Potsdam, but it does not say she is the soprano and Vocal Performance student on file.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 25,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-marblehilldesigns-a-friend-named-angie-at-marble-hill-",
+   "name": "marblehilldesigns",
+   "display": "Angela Quant",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Too Cool T-shirt Quilts' FAQ says they have a friend named Angie at Marble Hill Designs who can help with embroidery.",
+   "file_text": "A friend named Angie at Marble Hill Designs can help with embroidery",
+   "source": "Too Cool T-shirt Quilts",
+   "url": "https://www.toocooltshirtquilts.com/faq",
+   "quote": "They have a friend named Angie at Marble Hill Designs who can help with embroidery.",
+   "anchors": [
+    "Marble Hill Designs"
+   ],
+   "missing_gate": "The page names only a first name, Angie, at her business, but nothing on it ties her to Angela Quant's full name or Norwood record.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 15,
+    "detail": 10
    },
    "fields": {},
    "published": "",
