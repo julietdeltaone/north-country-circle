@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1501,
-  "dated": 78,
+  "total": 1507,
+  "dated": 84,
   "undated": 1423,
-  "placed": 1347,
+  "placed": 1353,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 34,
-  "brief_standalone": 45,
+  "brief_attached": 35,
+  "brief_standalone": 50,
   "brief_unresolved": 1
  },
  "items": [
@@ -86,6 +86,18 @@
    "place_src": "text"
   },
   {
+   "di": 322,
+   "display": "Mark C Walczyk",
+   "text": "Co-sponsored the War Dog Memorial Highway dedication on State Route 28 in Herkimer and joined its unveiling, Nov 2026",
+   "source": "Utica Phoenix",
+   "url": "https://uticaphoenix.net/assemblymembers-buttenschon-smullen-together-with-senator-walczyk-and-herkimer-county-legislator-brezinski-unveil-war-dog-memorial-highway/",
+   "published": "2026-11-13",
+   "fresh": false,
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 717,
    "display": "Janelle Evans",
    "text": "Won the faceoff that set up Kennedy Sisson's game-winning goal in Clarkson's 2-1 win over Yale, Nov 13, 2026 (Clarkson University Athletics)",
@@ -149,6 +161,18 @@
    "di": 58,
    "display": "Charlie Garrelts",
    "text": "Reported in Nov 2026 that Ogdensburg International Airport travelers are expected to be able to connect through Raleigh-Durham to Las Vegas beginning in June 2027, with an evening arrival in Las Vegas and an overnight return",
+   "source": "ClickNNY",
+   "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
+   "published": "2026-11-02",
+   "fresh": false,
+   "pid": "44.6942,-75.4863",
+   "place": "Ogdensburg",
+   "place_src": "text"
+  },
+  {
+   "di": 58,
+   "display": "Charlie Garrelts",
+   "text": "Reported in November 2026 that Breeze Airways' Orlando service at Ogdensburg International Airport is expected to return in February, with the booking window open when airport officials discussed the plans",
    "source": "ClickNNY",
    "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
    "published": "2026-11-02",
@@ -314,6 +338,18 @@
    "place_src": "text"
   },
   {
+   "di": 12,
+   "display": "Alex Hammond",
+   "text": "His awards include the Army Commendation Medal and the Army Achievement Medal",
+   "source": "New York State Division of Military and Naval Affairs",
+   "url": "http://dmna.ny.gov/pressroom/?id=1789500731",
+   "published": "2026-08-22",
+   "fresh": false,
+   "pid": "44.8639,-75.2043",
+   "place": "Waddington, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 468,
    "display": "Colin Mackey",
    "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
@@ -446,6 +482,18 @@
    "place_src": "profile"
   },
   {
+   "di": 649,
+   "display": "Zvi Szafran",
+   "text": "As SUNY Canton president, he led the college into a partnership with Carthage Area Hospital's Rural Healthcare Employment and Advancement Program (RHEAP), named in a $5 million, 5-year state HELP grant, with SUNY Canton slated to receive approximately $1 million over the five-year award period (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://canton.meritpages.com/news/suny-canton-partners-with-carthage-area-hospital-s-rural-healthcare-employment-program/55248",
+   "published": "2025-10-22",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
    "di": 375,
    "display": "Bryan Noble",
    "text": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
@@ -504,6 +552,18 @@
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
    "place_src": "text"
+  },
+  {
+   "di": 166,
+   "display": "Jon Cyphers",
+   "text": "Featured on the NCS Collective debut album 'All Shall Be Well', released Nov 1, 2024",
+   "source": "Louder Than The Music",
+   "url": "https://www.louderthanthemusic.com/document.php?id=15251",
+   "published": "2024-11-07",
+   "fresh": false,
+   "pid": "36.1627,-86.7816",
+   "place": "Nashville, TN",
+   "place_src": "profile"
   },
   {
    "di": 92,
@@ -863,6 +923,18 @@
    "fresh": false,
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 295,
+   "display": "Sarah Haller",
+   "text": "Placed 10th in the discus (26.40 m) and 17th in the hammer throw (22.96) for SUNY Potsdam at the Ice Breaker Open, Apr 2019",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/news/2019/4/8/general-suny-potsdam-weekly-sports-recap-april-1-7-2019.aspx",
+   "published": "2019-04-08",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
    "place_src": "text"
   },
   {
