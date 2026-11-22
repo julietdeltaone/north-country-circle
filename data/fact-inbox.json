@@ -6621,6 +6621,32 @@
    "pattern": "correction",
    "source": "Clarkson University",
    "url": "https://clarkson.us/sites/default/files/2024-02/Karen Hoover.pdf"
+  },
+  {
+   "anchor": "NY Army National Guard \u00b7 Army Congressional Fellow",
+   "batch": "AM run \u2014 Nov 22, 2026",
+   "display": "Alex Hammond",
+   "fact": "His awards include the Army Commendation Medal and the Army Achievement Medal",
+   "id": "fi-20261122-alexfornyassembly-his-awards-include-the-army-",
+   "key": "alexfornyassembly_",
+   "learned": "2026-11-22",
+   "name": "alexfornyassembly_",
+   "pattern": "new_credential",
+   "source": "New York State Division of Military and Naval Affairs",
+   "url": "http://dmna.ny.gov/pressroom/?id=1789500731"
+  },
+  {
+   "anchor": "SUNY Potsdam Crane School of Music \u00b7 Harp",
+   "batch": "AM run \u2014 Nov 22, 2026",
+   "display": "Shannon Boyle",
+   "fact": "Shannon Boyle used a Lyon & Healy 100 harp during her undergraduate and graduate studies at Crane, provided free through the Strand Program rather than purchased",
+   "id": "fi-20261122-the-harpist-shannon-boyle-used-a-lyon-he",
+   "key": "the_harpist",
+   "learned": "2026-11-22",
+   "name": "the_harpist",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle"
   }
  ],
  "patterns": {
@@ -6631,6 +6657,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "version": 1
 }
