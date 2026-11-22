@@ -5,6 +5,38 @@
   {
    "date": "2026-11-22",
    "kind": "filed",
+   "display": "Catherine Green",
+   "text": "Online contact (2026-11-21, iMessage): exchanged messages",
+   "source": "iMessage Contacts Report",
+   "url": ""
+  },
+  {
+   "date": "2026-11-22",
+   "kind": "filed",
+   "display": "Elisa Meyers",
+   "text": "Online contact (2026-11-21, iMessage): exchanged messages",
+   "source": "iMessage Contacts Report",
+   "url": ""
+  },
+  {
+   "date": "2026-11-22",
+   "kind": "filed",
+   "display": "Ellie Criscitello",
+   "text": "Online contact (2026-11-21, iMessage): exchanged messages",
+   "source": "iMessage Contacts Report",
+   "url": ""
+  },
+  {
+   "date": "2026-11-22",
+   "kind": "filed",
+   "display": "Nabil El-labban",
+   "text": "Online contact (2026-11-22, Instagram): exchanged messages",
+   "source": "Instagram",
+   "url": ""
+  },
+  {
+   "date": "2026-11-22",
+   "kind": "filed",
    "display": "Mark C Walczyk",
    "text": "Co-sponsored the War Dog Memorial Highway dedication on State Route 28 in Herkimer and joined its unveiling, Nov 2026",
    "source": "Utica Phoenix",
@@ -2369,38 +2401,6 @@
    "text": "Named to Roberts Wesleyan University's Dean's List for Fall 2023",
    "source": "Roberts Wesleyan University",
    "url": "https://www.ROBERTS.EDU/news?id=7884"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "Tim Swyka",
-   "text": "Was a named member of the Clarkson Electric Knights team that converted a 2008 Polaris 600RR to a fully electric snowmobile for the 2009 SAE Clean Snowmobile Competition",
-   "source": "SAE International / Michigan Tech Keweenaw Research Center",
-   "url": "http://www.mtukrc.org/download/clarkson/clarkson_ze_design_paper_2009.pdf"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "Charlie Garrelts",
-   "text": "Breeze Airways took over Essential Air Service at Ogdensburg International Airport under a new three-year U.S. Department of Transportation contract beginning Oct 2026, with daily service to Raleigh-Durham and flights to Dulles ended",
-   "source": "ClickNNY",
-   "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "Corey Delisa",
-   "text": "DoorBit also won the Shipley Center's Greatest Commercialization Potential special prize at the North Country Regional Business Plan Competition",
-   "source": "Clarkson University",
-   "url": "https://www.clarkson.edu/news-events/nine-north-country-student-teams-advance-semi-final-round-new-york-business-plan-competition"
-  },
-  {
-   "date": "2026-11-12",
-   "kind": "filed",
-   "display": "Cory Williams",
-   "text": "The Orchestra of Northern New York thanked Railroad Productions, Molly and Cory Williams, for support and assistance with its Holiday Concert, broadcast on WPBS on Dec 19, 2020",
-   "source": "Orchestra of Northern New York",
-   "url": "https://onny.org/sites/default/files/2020_ONNY_Holiday_Concert_Program_web.pdf"
   }
  ]
 }
