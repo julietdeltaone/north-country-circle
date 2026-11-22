@@ -1,14 +1,14 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1496,
-  "dated": 77,
-  "undated": 1419,
-  "placed": 1342,
+  "total": 1501,
+  "dated": 78,
+  "undated": 1423,
+  "placed": 1347,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 33,
+  "brief_attached": 34,
   "brief_standalone": 45,
   "brief_unresolved": 1
  },
@@ -19,6 +19,18 @@
    "text": "Scored an empty-net goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026 (ECAC Hockey)",
    "source": "ECAC Hockey",
    "url": "https://ecachockey.com/news/2026/11/21/womens-ice-hockey-womens-weekend-wraparound-11-17-11-22.aspx",
+   "published": "2026-11-21",
+   "fresh": true,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 720,
+   "display": "Isa Goettl",
+   "text": "Recorded an assist on Sara Manness's third-period goal in Clarkson's 3-0 win over No. 6 Quinnipiac, Nov 21, 2026 (ECAC Hockey)",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/boxscore.aspx?id=7ltyipP022aUJKmSgYVs3wXi7up73ghniwD5ElWyd07J7BNseBaMQePf0fY%2f3yUPbk54xYMAaA%2fUdDsMKd4EmNdTXfUobWCrQlqMste5aggq0sNRjaLwrl4DBwnNwcQXtgxKGDYBlcW%2fjAZaIS0G5KjC9508qAc31RoLaE0VMoY%3d&path=whockey",
    "published": "2026-11-21",
    "fresh": true,
    "pid": "44.6698,-74.9818",
@@ -5262,6 +5274,18 @@
    "display": "David DiSalvo",
    "text": "Serves on Clarkson University's Human Research Ethics Board for protocol IRB 26-36 (IRBNet)",
    "source": "IRBNet",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 476,
+   "display": "David DiSalvo",
+   "text": "The Clarkson University joint-hypermobility study he researches on is a long-term study that may last 10 years or more, with IRB approval 26-36 valid until Feb 17, 2027 (ClinicalTrials.gov)",
+   "source": "ClinicalTrials.gov",
    "url": "",
    "published": "",
    "fresh": false,
@@ -10672,6 +10696,18 @@
   {
    "di": 547,
    "display": "Karen Hoover",
+   "text": "Chairs Clarkson University's Occupational Therapy Department Simulation Committee and serves on its Professional Development Committee, 2023 to present, per her Clarkson-hosted CV (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
    "text": "Clarkson CV lists Seton Hall service as Director of Clinical Education and Assistant Professor (2011–2022) and earlier posts at Kean University and Union County College; joined Clarkson in 2023 as Clinical Assistant Professor and has since been promoted; office 3202 Clarkson Hall (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -10716,6 +10752,30 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
+   "text": "Held two Seton Hall University Opportunity Meets Innovation Challenge Grants in 2022-2023: $14,542.70 for pediatric assessment and intervention planning in special education settings, and $15,000 for interdisciplinary related services for children with autism, per her Clarkson-hosted CV (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
+   "text": "Her Clarkson-hosted CV dates her Seton Hall University Director of Clinical Education role to 2011-2015, first as Instructor and then as Assistant Professor, with Assistant Professor continuing 2015-2022 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
   },
   {
    "di": 547,
