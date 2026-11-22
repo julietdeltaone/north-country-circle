@@ -17870,6 +17870,85 @@
    "fields": {},
    "published": "",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261121-david-tulloch-finished-16th-in-mpo-at-the-eastern",
+   "name": "david.tulloch.10",
+   "display": "David Tulloch",
+   "run_date": "2026-11-21",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The PDGA lists a David Tulloch of Norwood, New York, PDGA #120771, Professional, who finished 16th in MPO at the Eastern Canadian Amateur National disc golf event.",
+   "file_text": "Finished 16th in MPO at the Eastern Canadian Amateur National disc golf event",
+   "source": "PDGA",
+   "url": "https://www.pdga.com/tour/event/67080",
+   "anchors": [
+    "Norwood, New York is next to Potsdam and Canton, the towns on his record"
+   ],
+   "quote": "David Tulloch #120771 / Professional / Norwood, New York, United States \u2014 results table: | 16 | 50.00 | David Tulloch | 120771 | 941 | +10 |",
+   "missing_gate": "The page names a David Tulloch in Norwood, but nothing on it ties him to the church and school facts already on file.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261121-sandra-mills-tallo-named-as-a-surviving-niece-of-esther",
+   "name": "sandytallo",
+   "display": "Sandra Mills Tallo",
+   "run_date": "2026-11-21",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Roberts Wesleyan University's August 2026 alumni notes, reprinting Esther (Betty) E. (Mills) Williams's obituary, name a Sandra Tallo among her eight surviving nieces and nephews.",
+   "file_text": "Named as a surviving niece of Esther (Betty) E. (Mills) Williams",
+   "source": "Roberts Wesleyan University",
+   "url": "https://www.roberts.edu/blog/alumni-notes-august-2026/",
+   "anchors": [
+    "The name Mills matches her middle name only"
+   ],
+   "quote": "She loved children and was very much a part of the early lives of 11 nieces and nephews, 8 of whom survive, Sandra Tallo, Kelly Walsh, Sarah Nowach, Kim Hutchings, David Mills, Allen Mills, Keith Mills and Sally Mills.",
+   "missing_gate": "This is about Sandra's family, so I always check with you first.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261121-karen-hoover-reviewer-of-conference-proposals-for",
+   "name": "sf:karen-hoover",
+   "display": "Karen Hoover",
+   "run_date": "2026-11-21",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "Karen Hoover's Clarkson-hosted CV lists her as a reviewer of conference proposals for the American Occupational Therapy Association, 2019 to present.",
+   "file_text": "Reviewer of conference proposals for the American Occupational Therapy Association, 2019 to present",
+   "source": "Clarkson University",
+   "url": "https://clarkson.us/sites/default/files/2024-02/Karen Hoover.pdf",
+   "anchors": [
+    "Clarkson University occupational therapy",
+    "Chatham University OTD 2012"
+   ],
+   "quote": "2019 to Present: Reviewer  - AOTA  Conference Proposal Reviewer",
+   "missing_gate": "This follows from something already on Karen's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 73,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
