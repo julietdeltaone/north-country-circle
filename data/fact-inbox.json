@@ -6607,6 +6607,10 @@
    "name": "sf:david-disalvo",
    "pattern": "milestone",
    "source": "ClinicalTrials.gov",
+   "state": {
+    "at": "2026-11-23T04:11:29.514Z",
+    "status": "read"
+   },
    "url": "https://cdn.clinicaltrials.gov/large-docs/07/NCT07657507/ICF_000.pdf"
   },
   {
@@ -6620,6 +6624,10 @@
    "name": "sf:karen-hoover",
    "pattern": "correction",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-23T04:11:31.146Z",
+    "status": "read"
+   },
    "url": "https://clarkson.us/sites/default/files/2024-02/Karen Hoover.pdf"
   },
   {
@@ -6633,6 +6641,10 @@
    "name": "alexfornyassembly_",
    "pattern": "new_credential",
    "source": "New York State Division of Military and Naval Affairs",
+   "state": {
+    "at": "2026-11-23T04:10:58.340Z",
+    "status": "read"
+   },
    "url": "http://dmna.ny.gov/pressroom/?id=1789500731"
   },
   {
@@ -6646,6 +6658,10 @@
    "name": "the_harpist",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-23T04:10:59.310Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle"
   },
   {
@@ -6659,6 +6675,10 @@
    "name": "adria.t18",
    "pattern": "new_credential",
    "source": "University of New England Athletics",
+   "state": {
+    "at": "2026-11-23T04:11:03.996Z",
+    "status": "read"
+   },
    "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118"
   },
   {
@@ -6672,6 +6692,10 @@
    "name": "adria.t18",
    "pattern": "correction",
    "source": "University of New England Athletics",
+   "state": {
+    "at": "2026-11-23T04:11:03.996Z",
+    "status": "read"
+   },
    "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118"
   },
   {
@@ -6685,6 +6709,10 @@
    "name": "anastasiasbakery",
    "pattern": "milestone",
    "source": "FMCSA SAFER",
+   "state": {
+    "at": "2026-11-23T04:11:30.365Z",
+    "status": "read"
+   },
    "url": "https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3176639&original_query_string=ANASTASIA%27S+BAKERY+LLC"
   }
  ],
