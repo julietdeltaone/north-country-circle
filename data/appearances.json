@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1507,
-  "dated": 84,
-  "undated": 1423,
-  "placed": 1353,
+  "total": 1511,
+  "dated": 82,
+  "undated": 1429,
+  "placed": 1357,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 35,
-  "brief_standalone": 50,
+  "brief_attached": 34,
+  "brief_standalone": 49,
   "brief_unresolved": 1
  },
  "items": [
@@ -74,6 +74,18 @@
    "place_src": "text"
   },
   {
+   "di": 7,
+   "display": "Adria Tebo",
+   "text": "Supplied two blocked shots in the University of New England's 1-0 win over Roger Williams, Nov 14, 2026",
+   "source": "University of New England Athletics",
+   "url": "https://athletics.une.edu/news/2026/11/14/w-ice-hockey-forziatis-goal-puts-une-past-rwu-1-0.aspx",
+   "published": "2026-11-14",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 719,
    "display": "Raedyn Spademan",
    "text": "Scored on a redirect of Ciara Lang's shot to tie the game in Clarkson's 2-1 win over Yale, Nov 13, 2026 (Clarkson University Athletics)",
@@ -84,18 +96,6 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
-  },
-  {
-   "di": 322,
-   "display": "Mark C Walczyk",
-   "text": "Co-sponsored the War Dog Memorial Highway dedication on State Route 28 in Herkimer and joined its unveiling, Nov 2026",
-   "source": "Utica Phoenix",
-   "url": "https://uticaphoenix.net/assemblymembers-buttenschon-smullen-together-with-senator-walczyk-and-herkimer-county-legislator-brezinski-unveil-war-dog-memorial-highway/",
-   "published": "2026-11-13",
-   "fresh": false,
-   "pid": "43.9747,-75.9107",
-   "place": "Watertown, NY",
-   "place_src": "profile"
   },
   {
    "di": 717,
@@ -161,18 +161,6 @@
    "di": 58,
    "display": "Charlie Garrelts",
    "text": "Reported in Nov 2026 that Ogdensburg International Airport travelers are expected to be able to connect through Raleigh-Durham to Las Vegas beginning in June 2027, with an evening arrival in Las Vegas and an overnight return",
-   "source": "ClickNNY",
-   "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
-   "published": "2026-11-02",
-   "fresh": false,
-   "pid": "44.6942,-75.4863",
-   "place": "Ogdensburg",
-   "place_src": "text"
-  },
-  {
-   "di": 58,
-   "display": "Charlie Garrelts",
-   "text": "Reported in November 2026 that Breeze Airways' Orlando service at Ogdensburg International Airport is expected to return in February, with the booking window open when airport officials discussed the plans",
    "source": "ClickNNY",
    "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
    "published": "2026-11-02",
@@ -338,18 +326,6 @@
    "place_src": "text"
   },
   {
-   "di": 12,
-   "display": "Alex Hammond",
-   "text": "His awards include the Army Commendation Medal and the Army Achievement Medal",
-   "source": "New York State Division of Military and Naval Affairs",
-   "url": "http://dmna.ny.gov/pressroom/?id=1789500731",
-   "published": "2026-08-22",
-   "fresh": false,
-   "pid": "44.8639,-75.2043",
-   "place": "Waddington, NY",
-   "place_src": "profile"
-  },
-  {
    "di": 468,
    "display": "Colin Mackey",
    "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
@@ -434,6 +410,18 @@
    "place_src": "text"
   },
   {
+   "di": 327,
+   "display": "Lydia Bartlett",
+   "text": "Attended her first March for Life in Washington, D.C. as a high school senior in January 2013, traveling by bus with other Pro-Life Rhode Islanders",
+   "source": "Rhode Island Catholic",
+   "url": "https://www.thericatholic.com/stories/from-the-classroom-to-the-capital-young-catholics-stand-up-for-life,15223",
+   "published": "2026-01-15",
+   "fresh": false,
+   "pid": "38.9072,-77.0369",
+   "place": "Washington",
+   "place_src": "text"
+  },
+  {
    "di": 168,
    "display": "Jocelyn Daniels",
    "text": "Named to SUNY Canton's President's List for the Fall 2025 semester as an Individual Studies student, Jan 2026",
@@ -482,16 +470,16 @@
    "place_src": "profile"
   },
   {
-   "di": 649,
-   "display": "Zvi Szafran",
-   "text": "As SUNY Canton president, he led the college into a partnership with Carthage Area Hospital's Rural Healthcare Employment and Advancement Program (RHEAP), named in a $5 million, 5-year state HELP grant, with SUNY Canton slated to receive approximately $1 million over the five-year award period (SUNY Canton)",
-   "source": "SUNY Canton",
-   "url": "https://canton.meritpages.com/news/suny-canton-partners-with-carthage-area-hospital-s-rural-healthcare-employment-program/55248",
-   "published": "2025-10-22",
+   "di": 327,
+   "display": "Lydia Bartlett",
+   "text": "Appeared as a guest on Life Matters TV on October 12, 2025 as Director of Services for Rhode Island Right to Life, explaining the committee's services and its 3,675 client visits in 2025",
+   "source": "Life Matters TV",
+   "url": "https://www.lifematterstv.com/viewshows.html",
+   "published": "2025-10-12",
    "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
-   "place_src": "text"
+   "pid": "41.8685,-71.5208",
+   "place": "Smithfield, RI",
+   "place_src": "profile"
   },
   {
    "di": 375,
@@ -552,18 +540,6 @@
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
    "place_src": "text"
-  },
-  {
-   "di": 166,
-   "display": "Jon Cyphers",
-   "text": "Featured on the NCS Collective debut album 'All Shall Be Well', released Nov 1, 2024",
-   "source": "Louder Than The Music",
-   "url": "https://www.louderthanthemusic.com/document.php?id=15251",
-   "published": "2024-11-07",
-   "fresh": false,
-   "pid": "36.1627,-86.7816",
-   "place": "Nashville, TN",
-   "place_src": "profile"
   },
   {
    "di": 92,
@@ -926,12 +902,12 @@
    "place_src": "text"
   },
   {
-   "di": 295,
-   "display": "Sarah Haller",
-   "text": "Placed 10th in the discus (26.40 m) and 17th in the hammer throw (22.96) for SUNY Potsdam at the Ice Breaker Open, Apr 2019",
+   "di": 52,
+   "display": "Cashlynn Colbert",
+   "text": "Named to the SUNYAC Commissioner's Academic Honor Roll for the 2018-19 academic year as a senior women's volleyball player at SUNY Potsdam",
    "source": "SUNY Potsdam Athletics",
-   "url": "https://potsdambears.com/news/2019/4/8/general-suny-potsdam-weekly-sports-recap-april-1-7-2019.aspx",
-   "published": "2019-04-08",
+   "url": "https://potsdambears.com/news/2019/6/18/golf-102-potsdam-athletes-named-to-sunyac-commissioners-honor-roll061819.aspx",
+   "published": "2019-06-18",
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
@@ -15820,6 +15796,18 @@
   {
    "di": 615,
    "display": "Samantha Marocco",
+   "text": "Became a Feitelberg Scholarship Steward at Clarkson University in Fall 2023 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
    "text": "Became a journal article reviewer for the Journal of Physical Therapy Education in 2024. (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -15880,6 +15868,18 @@
   {
    "di": 615,
    "display": "Samantha Marocco",
+   "text": "Co-presented two dietary-supplement presentations at the Institute for the Study of Integrative Healthcare Conference in Utica, Sep 2025 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
    "text": "Completed a BS in Physical Therapy and DPT at Russell Sage College, an MS in Basic Science at Clarkson University, and an EdD in Health Professions Education at Logan University (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -15905,6 +15905,30 @@
    "di": 615,
    "display": "Samantha Marocco",
    "text": "Founding member of the Lewis School of Health Sciences Media Club Committee, Aug 2025 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
+   "text": "Joined Clarkson University's DPT Curriculum Committee as a member in March 2025 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
+   "text": "Joined Clarkson University's DPT Research Committee as a member in 2025 (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
    "published": "",
@@ -15983,6 +16007,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
+   "text": "Presented a poster on the impact of an integrated clinical experience on physical therapy students' self-assessed clinical reasoning skills at the APTA New York 2025 Conference in Albany, Jun 2025 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "42.6526,-73.7562",
+   "place": "Albany",
    "place_src": "text"
   },
   {
@@ -17933,6 +17969,18 @@
    "di": 649,
    "display": "Zvi Szafran",
    "text": "As SUNY Canton president, he announced the college's participation in the SUNY Reconnect initiative, offering free associate degrees to eligible adult learners, in June 2026. (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 649,
+   "display": "Zvi Szafran",
+   "text": "As SUNY Canton president, he led the college into a partnership with Carthage Area Hospital's Rural Healthcare Employment and Advancement Program (RHEAP), named in a $5 million, 5-year state HELP grant, with SUNY Canton slated to receive approximately $1 million over the five-year award period (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
    "published": "",
