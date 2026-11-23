@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-22",
+ "updated": "2026-11-23",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -242,7 +242,7 @@
     "detail": 15
    },
    "fields": {
-    "degrees": "Business Administration — SUNY Potsdam (2024)",
+    "degrees": "Business Administration \u2014 SUNY Potsdam (2024)",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -413,7 +413,7 @@
    },
    "fields": {
     "highlights": [
-     "Section X Athlete of Distinction — Girls Soccer (Potsdam)"
+     "Section X Athlete of Distinction \u2014 Girls Soccer (Potsdam)"
     ]
    },
    "published": "",
@@ -444,7 +444,7 @@
    },
    "fields": {
     "companies": "Joint Council for Economic Opportunity",
-    "degrees": "B.A. Speech Communications — SUNY Potsdam",
+    "degrees": "B.A. Speech Communications \u2014 SUNY Potsdam",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -457,7 +457,7 @@
    "run_date": "2026-10-20",
    "run_label": "Special 100-check run",
    "category": "conflict",
-   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program — but the program lists an Abigail Stiles under the Nursing A.A.S.",
+   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program \u2014 but the program lists an Abigail Stiles under the Nursing A.A.S.",
    "file_text": "Graduated summa cum laude from SUNY Canton in the Class of 2026",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/media/pdf/Commencement-Program2026.pdf",
@@ -660,7 +660,7 @@
     "detail": 17
    },
    "fields": {
-    "degrees": "B.S. Emergency Management — SUNY Canton (2024)",
+    "degrees": "B.S. Emergency Management \u2014 SUNY Canton (2024)",
     "universities": "SUNY Canton"
    },
    "published": "2024",
@@ -740,7 +740,7 @@
     "detail": 14
    },
    "fields": {
-    "degrees": "A.A.S. Individual Studies — SUNY Canton (2021)",
+    "degrees": "A.A.S. Individual Studies \u2014 SUNY Canton (2021)",
     "universities": "SUNY Canton"
    },
    "published": "2021",
@@ -1452,7 +1452,7 @@
    "source": "Kansas local coverage",
    "url": "https://socialstudiesforkids.com/articles/currentevents/pancakerace2019.htm",
    "anchors": [
-    "Name only — zero anchors tie the Kansas person to this profile"
+    "Name only \u2014 zero anchors tie the Kansas person to this profile"
    ],
    "missing_gate": "Nothing ties the Kansas teacher to Maggie, and she is almost certainly a namesake.",
    "confidence": 26,
@@ -1630,9 +1630,9 @@
    "source": "Publisher / author records",
    "url": "https://en.wikipedia.org/wiki/Rachel_Kushner",
    "anchors": [
-    "Name match only — every biographical anchor conflicts"
+    "Name match only \u2014 every biographical anchor conflicts"
    ],
-   "missing_gate": "This is a different Rachel Kushner — the one on file went to the University of Michigan and Trenton High School.",
+   "missing_gate": "This is a different Rachel Kushner \u2014 the one on file went to the University of Michigan and Trenton High School.",
    "confidence": 5,
    "confidence_parts": {
     "identity": 2,
@@ -1906,8 +1906,8 @@
    "run_date": "2026-10-30",
    "run_label": "Daily rotation (PM)",
    "category": "sensitive",
-   "claim": "Emma Bortnick said she met her fiancé while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
-   "file_text": "Planned an August 2023 wedding to a fiancé she met while working as a supervisor at the SUNY Canton Fitness Center",
+   "claim": "Emma Bortnick said she met her fianc\u00e9 while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
+   "file_text": "Planned an August 2023 wedding to a fianc\u00e9 she met while working as a supervisor at the SUNY Canton Fitness Center",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/plm/name-90294-en.html",
    "anchors": [
@@ -2013,7 +2013,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-06-07 to 2020-06-15"
    ],
-   "missing_gate": "All she said was 'school at pdam' — no school is named, so I can't tell which school this means.",
+   "missing_gate": "All she said was 'school at pdam' \u2014 no school is named, so I can't tell which school this means.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 45,
@@ -2123,7 +2123,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-06-24 to 2017-10-15"
    ],
-   "missing_gate": "Joel never gave an exact date — he only tied his birthday to the last day of Camp Overlook, so I can't pin it down.",
+   "missing_gate": "Joel never gave an exact date \u2014 he only tied his birthday to the last day of Camp Overlook, so I can't pin it down.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 40,
@@ -2145,7 +2145,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-06-24 to 2017-10-15"
    ],
-   "missing_gate": "Joel only asked about the youth group and made going depend on a ride — he never confirmed he actually attended.",
+   "missing_gate": "Joel only asked about the youth group and made going depend on a ride \u2014 he never confirmed he actually attended.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 35,
@@ -2211,7 +2211,7 @@
    "anchors": [
     "Messenger thread with JD, 2012-05-24 to 2020-09-28"
    ],
-   "missing_gate": "He only asked for the CFC Potsdam wifi password and planned to be there once — he never said he attends or belongs there.",
+   "missing_gate": "He only asked for the CFC Potsdam wifi password and planned to be there once \u2014 he never said he attends or belongs there.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 40,
@@ -2299,7 +2299,7 @@
    "anchors": [
     "Messenger thread with JD, 2016-11-17 to 2021-09-08"
    ],
-   "missing_gate": "This only appears in a payroll snapshot — her messages never mention working for Massena Central Schools.",
+   "missing_gate": "This only appears in a payroll snapshot \u2014 her messages never mention working for Massena Central Schools.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 40,
@@ -2365,7 +2365,7 @@
    "anchors": [
     "Messenger thread with JD, 2011-06-29 to 2019-09-23"
    ],
-   "missing_gate": "He never states his birth date — the July timing is only a guess from birthday greetings.",
+   "missing_gate": "He never states his birth date \u2014 the July timing is only a guess from birthday greetings.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 45,
@@ -2453,7 +2453,7 @@
    "anchors": [
     "Messenger thread with JD, 2021-01-11 to 2024-06-18"
    ],
-   "missing_gate": "This date is only guessed from a shift-cover request — he never stated his wife's birthday.",
+   "missing_gate": "This date is only guessed from a shift-cover request \u2014 he never stated his wife's birthday.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 45,
@@ -3073,7 +3073,7 @@
    "category": "identity",
    "claim": "Christian Tomford, called CJ, is a youth-circle friend of JD's who exchanged about 620 direct Messenger messages with JD from April 10, 2014 to July 23, 2017, and stayed active in group threads through 2019. He said he was born on September 1 and had repeated kindergarten, expecting to finish high school a year early. He was in the Iolanthe cast in May 2015, and in summer 2018 he co-founded and hosted a Wednesday Bible study at his Potsdam apartment with Silas Smith, ending in mid-August 2018 when the household moved out. This comes from JD's Facebook Messenger messages.",
    "file_text": "Youth-circle friend of JD's, called CJ, in 1:1 Messenger contact from April 10, 2014 to July 23, 2017 (about 620 messages) and active in group threads through 2019",
-   "source": "Facebook export — Christian Tomford (1:1) / Bible Study @ CJ's / IOLANTHE",
+   "source": "Facebook export \u2014 Christian Tomford (1:1) / Bible Study @ CJ's / IOLANTHE",
    "url": "",
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
@@ -3098,12 +3098,12 @@
    "category": "identity",
    "claim": "As 'Pat Vil,' Pat was the Christian Fellowship Center Potsdam media coordinator who scheduled JD's volunteer media work from October 2011 through January 2018, set up the CFCP tech mailing list, worked on a weather-balloon and space-capsule project that sent a capsule up in April 2011, and had coached a FIRST Lego League team before 2008. Pat also said much of his family was from Watkins Glen, and this comes from a 393-message one-to-one thread in JD's Facebook Messenger export.",
    "file_text": "As 'Pat Vil' he was the Christian Fellowship Center Potsdam media coordinator who scheduled JD's volunteer media work from October 2011 through January 2018 (393-message 1:1), set up the CFCP tech mailing list, worked on a weather-balloon/space-capsule project that sent a capsule up in April 2011, had coached a FIRST Lego League team before 2008, and said much of his family was from Watkins Glen.",
-   "source": "Facebook export — Pat Vil (1:1)",
+   "source": "Facebook export \u2014 Pat Vil (1:1)",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "I'm not sure Pat's last name is Wilbur — the thread only calls him 'Pat Vil,' so I want you to confirm the last name first.",
+   "missing_gate": "I'm not sure Pat's last name is Wilbur \u2014 the thread only calls him 'Pat Vil,' so I want you to confirm the last name first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 33,
@@ -3123,7 +3123,7 @@
    "category": "identity",
    "claim": "Lea Wangerin was a close friend in JD's Wangerin and Christian Fellowship Center circle, with one-to-one Messenger contact from September 22, 2015 to May 31, 2017, and Philip Wangerin said in November 2019 that Lea worked at a bakery, according to a Facebook Messenger export. JD recalled visiting Lea's house in May 2017 while Liz Wangerin was there.",
    "file_text": "Close friend in JD's Wangerin / Christian Fellowship Center circle, in 1:1 Messenger contact from September 22, 2015 to May 31, 2017 (about 1,089 messages)",
-   "source": "Facebook export — Lea Wangerin (1:1) / unnamed 2019-2020 group thread (Philip Wangerin message, Nov 11, 2019)",
+   "source": "Facebook export \u2014 Lea Wangerin (1:1) / unnamed 2019-2020 group thread (Philip Wangerin message, Nov 11, 2019)",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger export from March 2026"
@@ -3148,7 +3148,7 @@
    "category": "identity",
    "claim": "Molly Waite modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before. This comes from her Facebook Messenger chat.",
    "file_text": "She modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before.",
-   "source": "Facebook export — Molly Waite (1:1)",
+   "source": "Facebook export \u2014 Molly Waite (1:1)",
    "url": "",
    "anchors": [
     "Her Facebook Messenger chat from the March 2026 export"
@@ -3173,7 +3173,7 @@
    "category": "identity",
    "claim": "A March 4, 2017 group message shows Molly Waite had a skating coach in 2017 and referred to the coach's posts. That comes from JD's Facebook records.",
    "file_text": "She had a skating coach in 2017, referring to the coach's posts in a March 4, 2017 group-thread message.",
-   "source": "Facebook export — Ok (group thread)",
+   "source": "Facebook export \u2014 Ok (group thread)",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
@@ -3198,7 +3198,7 @@
    "category": "identity",
    "claim": "The last message in Molly Waite's one-on-one Messenger thread was a 'happy Birthday' greeting sent on April 14, 2018, so her birthday likely falls on or near April 14, according to your Facebook export.",
    "file_text": "Her birthday falls on or near April 14: the final message of her 1:1 thread is JD's 'happy Birthday' greeting sent on April 14, 2018.",
-   "source": "Facebook export — Molly Waite (1:1)",
+   "source": "Facebook export \u2014 Molly Waite (1:1)",
    "url": "",
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
@@ -3223,7 +3223,7 @@
    "category": "sensitive",
    "claim": "In a February 28, 2017 group message, Molly Waite described herself as Italian and joked about her large family. That comes from JD's Facebook records.",
    "file_text": "In a February 28, 2017 group message she described herself as Italian and joked about her large family.",
-   "source": "Facebook export — Ok (group thread)",
+   "source": "Facebook export \u2014 Ok (group thread)",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
@@ -3248,7 +3248,7 @@
    "category": "sensitive",
    "claim": "Katie Venette was a workplace contact of JD's in 2023 and 2024, according to a Facebook export of their messages. She worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 she said she held four jobs in total, two of them paying and two volunteer.",
    "file_text": "A workplace contact of JD's in 2023-2024: she worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 she said she held four jobs in total, two of them paying and two volunteer",
-   "source": "Facebook export — Katie Venette (1:1)",
+   "source": "Facebook export \u2014 Katie Venette (1:1)",
    "url": "",
    "anchors": [
     "This came from a Facebook Messenger export from March 2026"
@@ -3273,7 +3273,7 @@
    "category": "identity",
    "claim": "Rafa Romo exchanged 261 messages with JD's family in summer 2011, from July 14 to August 31, 2011, in Spanish, according to your Facebook export. Rafa was learning piano and greeted JD's sisters Ellie and Catherine ('Cathy') by name.",
    "file_text": "A Spanish-speaking correspondent of JD's family in summer 2011 (261 messages, July 14 to August 31, 2011), who was learning piano and greeted JD's sisters Ellie and Catherine ('Cathy') by name",
-   "source": "Facebook export — Rafa Romo (1:1)",
+   "source": "Facebook export \u2014 Rafa Romo (1:1)",
    "url": "",
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
@@ -3298,7 +3298,7 @@
    "category": "identity",
    "claim": "A surprise party was held for Aspen Isabelle Fregoe on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing Aspen to the venue, according to a Facebook message export.",
    "file_text": "A surprise party was held for her on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing her to the venue",
-   "source": "Facebook export — Aspens surprise party",
+   "source": "Facebook export \u2014 Aspens surprise party",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger export from March 2026"
@@ -3323,7 +3323,7 @@
    "category": "identity",
    "claim": "Ethan James was a Legacy conference board member again in 2016, planning that year's conference in a July to September 2016 board thread with Merrick Sinclair, Ellie Criscitello and JD Meyers, and he played violin in a youth covers music project whose final concert was July 9, 2016. That comes from JD's Facebook records.",
    "file_text": "He was a Legacy conference board member again in 2016, planning that year's conference in a July-September 2016 board thread with Merrick Sinclair, Ellie Criscitello and JD Meyers, and he played violin in a youth covers music project whose final concert was July 9, 2016.",
-   "source": "Facebook export — Legacy / Savage covers",
+   "source": "Facebook export \u2014 Legacy / Savage covers",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
@@ -3348,7 +3348,7 @@
    "category": "identity",
    "claim": "Ems Santos Cortez and Marcos Santos were visiting members of JD's youth circle, and the group held a farewell celebration for them at youth night on May 11, 2015, before they left that Wednesday. This comes from JD's Facebook Messenger messages.",
    "file_text": "She and Marcos Santos were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
-   "source": "Facebook export — End of visit celebration: Ems and Marcos",
+   "source": "Facebook export \u2014 End of visit celebration: Ems and Marcos",
    "url": "",
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
@@ -3373,7 +3373,7 @@
    "category": "identity",
    "claim": "Marcos Santos and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015, and the group held a farewell celebration for them at youth night on May 11, 2015, before they left that Wednesday. That comes from JD's Facebook records.",
    "file_text": "He and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
-   "source": "Facebook export — End of visit celebration: Ems and Marcos",
+   "source": "Facebook export \u2014 End of visit celebration: Ems and Marcos",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
@@ -3398,7 +3398,7 @@
    "category": "identity",
    "claim": "Marcos Santos exchanged 75 messages with you on Messenger from March 26 to April 30, 2015, mostly in Spanish with voice and video calls, including a 404-minute call on March 26, 2015, according to your Facebook export. He also mentioned he had spoken with your brother.",
    "file_text": "Exchanged 75 messages on Messenger from March 26 to April 30, 2015, mostly in Spanish with voice and video calls, including a 404-minute call on March 26, 2015; he had also spoken with JD's brother",
-   "source": "Facebook export — Marcos Santos (1:1)",
+   "source": "Facebook export \u2014 Marcos Santos (1:1)",
    "url": "",
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
@@ -3423,7 +3423,7 @@
    "category": "identity",
    "claim": "In a group Messenger thread on May 16, 2015, Ethan James said he had just finished umpiring a baseball game, which suggests he worked as a youth baseball umpire around that time, according to your Facebook export.",
    "file_text": "In the Bros_3 group thread on May 16, 2015, Ethan James said he had just finished umpiring a baseball game",
-   "source": "Facebook export — Bros_3",
+   "source": "Facebook export \u2014 Bros_3",
    "url": "",
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
@@ -3448,7 +3448,7 @@
    "category": "identity",
    "claim": "Joshua Loughren is an airsoft enthusiast who advised JD on airsoft gun purchases in 68 direct Messenger messages from April 23, 2013 to August 27, 2014. This comes from JD's Facebook Messenger messages.",
    "file_text": "Airsoft enthusiast in a 68-message 1:1 Messenger thread with JD (April 23, 2013 to August 27, 2014) who advised JD on airsoft gun purchases, recommending specific rifles, magazines, and gear (including Airsoft GI product links) in April-May 2013 and April 2014.",
-   "source": "Facebook export — Joshua Loughren (1:1)",
+   "source": "Facebook export \u2014 Joshua Loughren (1:1)",
    "url": "",
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
@@ -3473,12 +3473,12 @@
    "category": "identity",
    "claim": "In a one-to-one Messenger thread with 56 messages from May 29, 2013 to November 30, 2014, JD called this person 'Josiah,' and a November 30, 2014 exchange places Josiah at a Christian Fellowship Center Potsdam service that day, talking about the service order with JD, Merrick Sinclair, and Liz Wangerin. That comes from JD's Facebook Messenger export.",
    "file_text": "In his one-to-one Messenger thread (56 messages, May 29, 2013 to November 30, 2014), JD addressed him by the first name 'Josiah,' and the November 30, 2014 exchange places him at a Christian Fellowship Center Potsdam service that day, discussing the service order with JD, Merrick Sinclair, and Liz Wangerin",
-   "source": "Facebook export — Jsahio Dvdia (1:1)",
+   "source": "Facebook export \u2014 Jsahio Dvdia (1:1)",
    "url": "",
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "I'm not sure of this person's full name — JD called him Josiah, but no last name is given and 'Dvdia' looks scrambled.",
+   "missing_gate": "I'm not sure of this person's full name \u2014 JD called him Josiah, but no last name is given and 'Dvdia' looks scrambled.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3498,7 +3498,7 @@
    "category": "identity",
    "claim": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyles' also appears), indicating his middle name is Edward.",
    "file_text": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyle",
-   "source": "Facebook export — Luke (group thread)",
+   "source": "Facebook export \u2014 Luke (group thread)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3523,7 +3523,7 @@
    "category": "identity",
    "claim": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle, according to a Facebook export about the party. Afterward, from May 21 to 23, 2015, Morgan Morse organized a signed matted frame with a group cast photo for her, and JD and Josiah (Jsahio Dvdia) had filmed her walking in.",
    "file_text": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle; afterward (May 21-23, 2015) Morgan Morse organized a signed matted frame with a group cast photo for her, and JD and Josiah (Jsahio Dvdia) had filmed her walking in",
-   "source": "Facebook export — Laura's surprise party",
+   "source": "Facebook export \u2014 Laura's surprise party",
    "url": "",
    "anchors": [
     "This came from a Facebook Messenger export from March 2026"
@@ -3546,14 +3546,14 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "RESOLVED IN PART during the Oct 31 continuation run: JD's Ashleigh Graveline is the Clarkson University occupational-therapy professor — her official Clarkson people page matches JD's profile anchors exactly (Utica College and Chatham degrees; Claxton Hepburn Medical Center; St. Lawrence Psychiatric Center), and her Salmon River Central School District and United Helpers roles, Car-Fit/SBIRT/Physical Agent Modalities credentials, and 2023 Kennedy Elementary Tourette Syndrome presentations were filed from that page. What remains open: a SUNY Potsdam alumni spotlight describes an Ashleigh Graveline '10 who is NYC-based and serves on the SUNY Potsdam Alumni Association Board of Directors; her education record on the Clarkson page shows no SUNY Potsdam degree, so that spotlight is treated as a likely different person and was NOT filed.",
+   "claim": "RESOLVED IN PART during the Oct 31 continuation run: JD's Ashleigh Graveline is the Clarkson University occupational-therapy professor \u2014 her official Clarkson people page matches JD's profile anchors exactly (Utica College and Chatham degrees; Claxton Hepburn Medical Center; St. Lawrence Psychiatric Center), and her Salmon River Central School District and United Helpers roles, Car-Fit/SBIRT/Physical Agent Modalities credentials, and 2023 Kennedy Elementary Tourette Syndrome presentations were filed from that page. What remains open: a SUNY Potsdam alumni spotlight describes an Ashleigh Graveline '10 who is NYC-based and serves on the SUNY Potsdam Alumni Association Board of Directors; her education record on the Clarkson page shows no SUNY Potsdam degree, so that spotlight is treated as a likely different person and was NOT filed.",
    "file_text": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the S",
    "source": "SUNY Potsdam alumni spotlight; Clarkson University appointment release (readMedia, Sep 20, 2018); Clarkson University people page",
    "url": "",
    "anchors": [
     "JD's existing profile seeds (occupation/university anchors)"
    ],
-   "missing_gate": "I still can't confirm the SUNY Potsdam alumni spotlight is her — its details conflict with the Clarkson professor's education on file.",
+   "missing_gate": "I still can't confirm the SUNY Potsdam alumni spotlight is her \u2014 its details conflict with the Clarkson professor's education on file.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 21,
@@ -3571,7 +3571,7 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "RESOLVED during the Oct 31 continuation run: JD's Kwadwo Appiah-Kubi is the Clarkson University physical-therapy professor — JD's profile anchors match Clarkson's tenure/promotion announcement (Gait Sensory Interaction Test, three NIH Loan Repayment Program awards, adjunct appointment at the University of Health and Allied Sciences in Ghana), and his Neuromuscular Physical Therapy specialty plus editorial-board and APTA/ISPGR/Society for Neuroscience memberships were filed from that announcement. A Care.com Potsdam profile describing a software engineer and Math/CS tutor under the same name does not match his documented record and was NOT filed.",
+   "claim": "RESOLVED during the Oct 31 continuation run: JD's Kwadwo Appiah-Kubi is the Clarkson University physical-therapy professor \u2014 JD's profile anchors match Clarkson's tenure/promotion announcement (Gait Sensory Interaction Test, three NIH Loan Repayment Program awards, adjunct appointment at the University of Health and Allied Sciences in Ghana), and his Neuromuscular Physical Therapy specialty plus editorial-board and APTA/ISPGR/Society for Neuroscience memberships were filed from that announcement. A Care.com Potsdam profile describing a software engineer and Math/CS tutor under the same name does not match his documented record and was NOT filed.",
    "file_text": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait",
    "source": "Care.com Potsdam tutor profile; ORCID 0000-0001-6566-9758; Clarkson University news",
    "url": "",
@@ -3629,7 +3629,7 @@
     "Potsdam, NY",
     "Clarkson University"
    ],
-   "missing_gate": "I could not double-check this — the council document was not retrieved, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the council document was not retrieved, so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -3655,7 +3655,7 @@
     "Floral Park, NY",
     "armwrestling ('Magic Vinnie the Armwrestler')"
    ],
-   "missing_gate": "I could not double-check this — the rankings page would not load for me, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the rankings page would not load for me, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 38,
@@ -3703,7 +3703,7 @@
    "anchors": [
     "Brasher Falls, NY"
    ],
-   "missing_gate": "Only her Brasher Falls hometown matches — the item doesn't mention St. Lawrence Central or her nursing work, so I can't be sure it's her.",
+   "missing_gate": "Only her Brasher Falls hometown matches \u2014 the item doesn't mention St. Lawrence Central or her nursing work, so I can't be sure it's her.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 32,
@@ -3728,7 +3728,7 @@
    "anchors": [
     "Norwood, NY"
    ],
-   "missing_gate": "Only her Norwood hometown matches — the item doesn't mention her Houghton lacrosse record, so I can't be sure it's the same person.",
+   "missing_gate": "Only her Norwood hometown matches \u2014 the item doesn't mention her Houghton lacrosse record, so I can't be sure it's the same person.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 30,
@@ -3778,7 +3778,7 @@
    "anchors": [
     "Canton, NY"
    ],
-   "missing_gate": "Only her Canton hometown matches — the law records don't mention her Seattle home or nursing background, so I can't be sure it's her.",
+   "missing_gate": "Only her Canton hometown matches \u2014 the law records don't mention her Seattle home or nursing background, so I can't be sure it's her.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 28,
@@ -3926,7 +3926,7 @@
    "anchors": [
     "Massena, NY"
    ],
-   "missing_gate": "Only her Massena hometown matches — the 4-H records don't mention Potsdam or the Akwesasne Mohawk Casino, so I can't be sure it's her.",
+   "missing_gate": "Only her Massena hometown matches \u2014 the 4-H records don't mention Potsdam or the Akwesasne Mohawk Casino, so I can't be sure it's her.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 26,
@@ -4018,7 +4018,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation",
    "category": "conflict",
-   "claim": "SUNY Potsdam's men's lacrosse roster lists a Gavin Matthews, a midfielder from Mexico, New York (Mexico Academy) who previously attended SUNY Oswego — a different person from this profile's Canton-based Bjorn Fitness coach, whose school on file is SUNY Canton.",
+   "claim": "SUNY Potsdam's men's lacrosse roster lists a Gavin Matthews, a midfielder from Mexico, New York (Mexico Academy) who previously attended SUNY Oswego \u2014 a different person from this profile's Canton-based Bjorn Fitness coach, whose school on file is SUNY Canton.",
    "file_text": "Played men's lacrosse at SUNY Potsdam as a midfielder from Mexico, New York",
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/sports/mens-lacrosse/roster/gavin-matthews/6252",
@@ -4077,7 +4077,7 @@
     "SUNY Canton",
     "Canton, NY area"
    ],
-   "missing_gate": "I could not double-check this — the donor report link no longer opens, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the donor report link no longer opens, so I want you to decide.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 40,
@@ -4234,7 +4234,7 @@
     "Gouverneur High School",
     "SUNY Canton"
    ],
-   "missing_gate": "I could not double-check this — the provider page redirects to the homepage, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the provider page redirects to the homepage, so I want you to decide.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 44,
@@ -4242,7 +4242,7 @@
     "detail": 15
    },
    "fields": {
-    "Degrees": "Master of Science in Nursing, Family Nurse Practitioner — Utica University (2024)"
+    "Degrees": "Master of Science in Nursing, Family Nurse Practitioner \u2014 Utica University (2024)"
    },
    "published": "",
    "novelty": "new"
@@ -4332,7 +4332,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "source",
-   "claim": "His Thumbtack listing for Window Cleaning Plus – Holiday Lighting in Littleton, CO shows Top Pro status for 2025, 2024 and 2023, 'Hired 553 times,' 3 employees, 4 years in business, and a 4.94/5 rating from 284 reviews.",
+   "claim": "His Thumbtack listing for Window Cleaning Plus \u2013 Holiday Lighting in Littleton, CO shows Top Pro status for 2025, 2024 and 2023, 'Hired 553 times,' 3 employees, 4 years in business, and a 4.94/5 rating from 284 reviews.",
    "file_text": "Window Cleaning Plus earned Thumbtack Top Pro status in 2023, 2024 and 2025",
    "source": "Thumbtack",
    "url": "https://www.thumbtack.com/co/littleton/window-cleaners/window-cleaning-plus-holiday-lighting/service/462764240087769097",
@@ -4358,7 +4358,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "close",
-   "claim": "A St. Lawrence County Youth Bureau Youth Committee meeting agenda for May 19, 2021 lists 'Hannah Hughes — Youth, Potsdam High' among invited Youth Committee members.",
+   "claim": "A St. Lawrence County Youth Bureau Youth Committee meeting agenda for May 19, 2021 lists 'Hannah Hughes \u2014 Youth, Potsdam High' among invited Youth Committee members.",
    "file_text": "Listed as a Potsdam High youth representative on the St. Lawrence County Youth Bureau's Youth Committee in May 2021",
    "source": "St. Lawrence County",
    "url": "https://www.stlawco.gov/sites/default/files/YouthBureau/5.19.2021%20Youth%20Committee%20Agenda.doc.pdf",
@@ -4409,7 +4409,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "identity",
-   "claim": "A VoyageKC Magazine interview with 'Renée Kc' of the Kansas City metro area says she founded LUVA, a creative brand (merchandise/fashion, photography, videography, creative direction, events).",
+   "claim": "A VoyageKC Magazine interview with 'Ren\u00e9e Kc' of the Kansas City metro area says she founded LUVA, a creative brand (merchandise/fashion, photography, videography, creative direction, events).",
    "file_text": "Founded LUVA, a creative brand in the Kansas City metro area",
    "source": "VoyageKC Magazine",
    "url": "https://voyagekc.com/interview/life-values-legacy-our-chat-with-renee-kc-of-kansas-city-metro-area-highlight/",
@@ -4663,7 +4663,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "conflict",
-   "claim": "A personalized Southern New Hampshire University 'Year In Review' page for a 'Kari' celebrates a President's List — Winter 2024, 53 completed assignments, and membership in a 'BA.HSE program' with a first SNHU course around Jan 2024; the page gives no surname and no location.",
+   "claim": "A personalized Southern New Hampshire University 'Year In Review' page for a 'Kari' celebrates a President's List \u2014 Winter 2024, 53 completed assignments, and membership in a 'BA.HSE program' with a first SNHU course around Jan 2024; the page gives no surname and no location.",
    "file_text": "Named to Southern New Hampshire University's President's List for Winter 2024",
    "source": "Southern New Hampshire University",
    "url": "https://cloud.dream.snhu.edu/SNHU-Year-In-Review?sfid=0033l0000359UZQAA2",
@@ -4790,7 +4790,7 @@
    "run_date": "2026-11-01",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "A Dr. Nicole Seward, PT, DPT, authors a running blog for ROOTS Physical Therapy (posts through Oct 12, 2026); her Feb 2, 2026 post says 'Over these five years at ROOTS…'",
+   "claim": "A Dr. Nicole Seward, PT, DPT, authors a running blog for ROOTS Physical Therapy (posts through Oct 12, 2026); her Feb 2, 2026 post says 'Over these five years at ROOTS\u2026'",
    "file_text": "Physical therapist blogging for ROOTS Physical Therapy, 2026",
    "source": "ROOTS Physical Therapy",
    "url": "https://www.rootspt.com/blog/",
@@ -5070,7 +5070,7 @@
    "run_date": "2026-11-01",
    "run_label": "Daily rotation",
    "category": "verification",
-   "claim": "Her Clarkson bio lists 'APTA Fellowship in Higher Education Leadership – July 2025–July 2026' while the biography text still says she is 'currently completing' the fellowship, so completion in July 2026 is inferable from the end date but never stated.",
+   "claim": "Her Clarkson bio lists 'APTA Fellowship in Higher Education Leadership \u2013 July 2025\u2013July 2026' while the biography text still says she is 'currently completing' the fellowship, so completion in July 2026 is inferable from the end date but never stated.",
    "file_text": "Completed the APTA Fellowship in Higher Education Leadership, Jul 2026",
    "source": "Clarkson University",
    "url": "https://www.clarkson.edu/people/samantha-marocco",
@@ -5424,7 +5424,7 @@
    "run_label": "Daily rotation",
    "category": "source",
    "claim": "The same Bold.pro profile lists Cross Utilized Supervisor, Unifi, Harrisburg, PA, Jan-Jul 2024.",
-   "file_text": "Worked as Cross Utilized Supervisor at Unifi Aviation in Harrisburg, Jan 2024–Jul 2024",
+   "file_text": "Worked as Cross Utilized Supervisor at Unifi Aviation in Harrisburg, Jan 2024\u2013Jul 2024",
    "source": "Bold.pro",
    "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
    "anchors": [
@@ -5453,7 +5453,7 @@
    "run_label": "Daily rotation",
    "category": "source",
    "claim": "The same Bold.pro profile lists Ramp Supervisor, Piedmont Airlines, Harrisburg, PA, Sep 2022-Jun 2023.",
-   "file_text": "Worked as Ramp Supervisor at Piedmont Airlines in Harrisburg, Sep 2022–Jun 2023",
+   "file_text": "Worked as Ramp Supervisor at Piedmont Airlines in Harrisburg, Sep 2022\u2013Jun 2023",
    "source": "Bold.pro",
    "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
    "anchors": [
@@ -5489,7 +5489,7 @@
     "MG Tree LLC",
     "Potsdam, NY"
    ],
-   "missing_gate": "This record never names Martin — his link to the LLC rests only on a Facebook-sourced note on his record, so I can't be sure.",
+   "missing_gate": "This record never names Martin \u2014 his link to the LLC rests only on a Facebook-sourced note on his record, so I can't be sure.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 25,
@@ -5569,7 +5569,7 @@
     "Puget Sound Birth Center (employer)",
     "Washington (location on file)"
    ],
-   "missing_gate": "This is about Kayla's family — she's the oldest of seven children — from her own bio, so I always check with you first.",
+   "missing_gate": "This is about Kayla's family \u2014 she's the oldest of seven children \u2014 from her own bio, so I always check with you first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 40,
@@ -5699,7 +5699,7 @@
    "anchors": [
     "Malyssa Shenko (exact distinctive name)"
    ],
-   "missing_gate": "Only her exact name appears — no Canton or SUNY Canton detail — so I can't be sure it's the same person.",
+   "missing_gate": "Only her exact name appears \u2014 no Canton or SUNY Canton detail \u2014 so I can't be sure it's the same person.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 38,
@@ -5746,13 +5746,13 @@
    "category": "verification",
    "claim": "Clarkson announced Spring 2026 Presidential Scholars on Jun 4, 2026 via Merit Pages, but the student roster did not render on the opened page, so Aidan Daniels's inclusion could not be read directly.",
    "file_text": "Named a Clarkson University Presidential Scholar for Spring 2026",
-   "source": "Clarkson University · Merit Pages",
+   "source": "Clarkson University \u00b7 Merit Pages",
    "url": "https://clarkson.meritpages.com/achievements/Students-Named-Clarkson-University-Presidential-Scholars/203152",
    "anchors": [
     "Clarkson University",
     "Four consecutive Presidential Scholar semesters already on file"
    ],
-   "missing_gate": "I could not double-check this — the roster didn't load on the page, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the roster didn't load on the page, so I want you to decide.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 22,
@@ -5856,7 +5856,7 @@
     "Adepegba surname",
     "New York National Guard"
    ],
-   "missing_gate": "This is about Diahann Adepegba, not Ray — the page never names him, and their relationship is only guessed, so I always check with you first.",
+   "missing_gate": "This is about Diahann Adepegba, not Ray \u2014 the page never names him, and their relationship is only guessed, so I always check with you first.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 20,
@@ -5882,7 +5882,7 @@
     "Janel Colbert (exact name)",
     "Norwood-Norfolk Central Schools (employer on file)"
    ],
-   "missing_gate": "I could not double-check this — she doesn't appear on the page I opened, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 she doesn't appear on the page I opened, so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 35,
@@ -6016,7 +6016,7 @@
     "Esther's Coffee House (business on file)",
     "Massena, NY"
    ],
-   "missing_gate": "This article never names Justin — it only ties the coffee house opening to AEDC help, so I want you to decide.",
+   "missing_gate": "This article never names Justin \u2014 it only ties the coffee house opening to AEDC help, so I want you to decide.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 25,
@@ -6125,7 +6125,7 @@
     "Tequesta, FL",
     "Sweet Life Consulting, Inc."
    ],
-   "missing_gate": "This is about Charlie and Sharon's family — 49 years married, four children, thirteen grandchildren — so I always check with you first.",
+   "missing_gate": "This is about Charlie and Sharon's family \u2014 49 years married, four children, thirteen grandchildren \u2014 so I always check with you first.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 45,
@@ -6177,7 +6177,7 @@
     "Margaret T. Thibodeau (name)",
     "Physician Assistant (claim already on file)"
    ],
-   "missing_gate": "Only her name and PA job match — Ogdensburg isn't on her record and nothing ties this to the Christian Fellowship Center Maggie.",
+   "missing_gate": "Only her name and PA job match \u2014 Ogdensburg isn't on her record and nothing ties this to the Christian Fellowship Center Maggie.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 20,
@@ -6386,7 +6386,7 @@
    "run_date": "2026-11-02",
    "run_label": "Daily rotation (PM)",
    "category": "close",
-   "claim": "The Aug 2026 paper 'Generation of Synthetic Fingerphotos with GANs' lists Conor Miller-Lynch as lead author with a UNC Charlotte affiliation (cmillerl@charlotte.edu), and the Jan 2026 IET Biometrics paper likewise lists him under UNC Charlotte's CS department, while his co-authors carry Clarkson affiliations — reading as a Clarkson to UNC Charlotte move (likely graduate study/research).",
+   "claim": "The Aug 2026 paper 'Generation of Synthetic Fingerphotos with GANs' lists Conor Miller-Lynch as lead author with a UNC Charlotte affiliation (cmillerl@charlotte.edu), and the Jan 2026 IET Biometrics paper likewise lists him under UNC Charlotte's CS department, while his co-authors carry Clarkson affiliations \u2014 reading as a Clarkson to UNC Charlotte move (likely graduate study/research).",
    "file_text": "Lead author of 'Generation of Synthetic Fingerphotos with GANs' as a UNC Charlotte researcher, Aug 2026",
    "source": "CatalyzeX",
    "url": "https://www.CatalyzeX.com/author/Syed%20Konain%20Abbas",
@@ -6395,7 +6395,7 @@
     "Clarkson biometrics co-author group (Abbas, Hussain, Dey, Schuckers)",
     "Synthetic fingerprint research topic"
    ],
-   "missing_gate": "This one is your call: no single source states he moved from Clarkson to UNC Charlotte — it's pieced together across papers.",
+   "missing_gate": "This one is your call: no single source states he moved from Clarkson to UNC Charlotte \u2014 it's pieced together across papers.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 38,
@@ -6446,7 +6446,7 @@
    "anchors": [
     "Azlyn Richardson (name only)"
    ],
-   "missing_gate": "This is a name-only match — nothing on the page mentions Clarkson, Potsdam, or Michels Power, so I can't be sure it's her.",
+   "missing_gate": "This is a name-only match \u2014 nothing on the page mentions Clarkson, Potsdam, or Michels Power, so I can't be sure it's her.",
    "confidence": 30,
    "confidence_parts": {
     "identity": 12,
@@ -6525,7 +6525,7 @@
    "anchors": [
     "Olivia Huntly (name only)"
    ],
-   "missing_gate": "This is a namesake in York, UK — her career timeline conflicts with this Olivia's May 2025 SUNY Potsdam graduation.",
+   "missing_gate": "This is a namesake in York, UK \u2014 her career timeline conflicts with this Olivia's May 2025 SUNY Potsdam graduation.",
    "confidence": 25,
    "confidence_parts": {
     "identity": 5,
@@ -6721,7 +6721,7 @@
    "run_date": "2026-11-02",
    "run_label": "Daily rotation (PM)",
    "category": "close",
-   "claim": "Northern New York Community Foundation scholarship coverage (Sep 8, 2025) lists 'Homeschooled — Eleora Trelease (Potsdam)' among its 2025 St. Lawrence County scholarship recipients for post-secondary studies.",
+   "claim": "Northern New York Community Foundation scholarship coverage (Sep 8, 2025) lists 'Homeschooled \u2014 Eleora Trelease (Potsdam)' among its 2025 St. Lawrence County scholarship recipients for post-secondary studies.",
    "file_text": "Received a Northern New York Community Foundation scholarship for post-secondary studies, 2025",
    "source": "NBC Watertown / Northern New York Community Foundation",
    "url": "http://www.nbcwatertown.com/2025/09/08/545635/community-foundation-partners-to-award-1-157-scholarships-supporting-post-secondary-education",
@@ -6775,8 +6775,8 @@
    "run_date": "2026-11-02",
    "run_label": "Daily rotation (PM)",
    "category": "conflict",
-   "claim": "A WayUp profile for Colleen Cheney says SUNY Canton Class of 2024 (Graphic Design, Aug 2021-Apr 2024, Potsdam, NY) and lists a job as a Cleaner at Health Services of Northern New York, Potsdam, Apr-Aug 2021 — dates that conflict with SUNY Canton's own records showing her on the President's List in Spring 2025 and in the 2025 graduating class.",
-   "file_text": "Worked as a Cleaner at Health Services of Northern New York in Potsdam, Apr–Aug 2021",
+   "claim": "A WayUp profile for Colleen Cheney says SUNY Canton Class of 2024 (Graphic Design, Aug 2021-Apr 2024, Potsdam, NY) and lists a job as a Cleaner at Health Services of Northern New York, Potsdam, Apr-Aug 2021 \u2014 dates that conflict with SUNY Canton's own records showing her on the President's List in Spring 2025 and in the 2025 graduating class.",
+   "file_text": "Worked as a Cleaner at Health Services of Northern New York in Potsdam, Apr\u2013Aug 2021",
    "source": "WayUp",
    "url": "https://www.wayup.com/profile/Colleen-Cheney-7060556bd7/",
    "anchors": [
@@ -6812,7 +6812,7 @@
     "NOCO Homestead LLC (profile employer)",
     "Potsdam, NY (profile location)"
    ],
-   "missing_gate": "I could not double-check this — it's a search result only and the listing page wasn't opened, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 it's a search result only and the listing page wasn't opened, so I want you to decide.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 42,
@@ -6830,7 +6830,7 @@
    "run_date": "2026-11-02",
    "run_label": "Daily rotation (PM)",
    "category": "close",
-   "claim": "SUNY Canton's Fall 2024 honors page (published Jan 8, 2025) and Spring 2025 honors page (published May 30, 2025) both list Colleen Cheney, Graphic and Multimedia Design, in the President's List section — both parent-verified on the opened pages this run (Fall 2024: https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo ; Spring 2025: http://www.canton.edu/news/2025/honors-sp25.php).",
+   "claim": "SUNY Canton's Fall 2024 honors page (published Jan 8, 2025) and Spring 2025 honors page (published May 30, 2025) both list Colleen Cheney, Graphic and Multimedia Design, in the President's List section \u2014 both parent-verified on the opened pages this run (Fall 2024: https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo ; Spring 2025: http://www.canton.edu/news/2025/honors-sp25.php).",
    "file_text": "Named to the President's List at SUNY Canton for the Fall 2024 and Spring 2025 semesters as a Graphic and Multimedia Design student",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/news/2025/honorsf24.php?sfnsn=mo",
@@ -6856,7 +6856,7 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "The NYS DEC press release on the 24th Basic School for Environmental Conservation Police Officers (graduated Dec 2024 in Syracuse after a six-month academy in Pulaski) lists 'Bryan Noble – Canton, St. Lawrence County' among the 26 graduates; later DEC patrol bulletins show an ECO Noble on patrol in 2025.",
+   "claim": "The NYS DEC press release on the 24th Basic School for Environmental Conservation Police Officers (graduated Dec 2024 in Syracuse after a six-month academy in Pulaski) lists 'Bryan Noble \u2013 Canton, St. Lawrence County' among the 26 graduates; later DEC patrol bulletins show an ECO Noble on patrol in 2025.",
    "file_text": "Graduated from the New York State DEC's 24th Basic School for Environmental Conservation Police Officers, Dec 2024",
    "source": "New York State Department of Environmental Conservation",
    "url": "https://dec.ny.gov/news/press-releases/2024/12/dec-announces-graduation-of-26-new-york-state-environmental-conservation-police-officers",
@@ -7042,7 +7042,7 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "source",
-   "claim": "ZoomInfo lists Nathan Tomford as Contracts Coordinator at Atlantic Testing Laboratories, Canton, NY — the same role his profile carries from his own LinkedIn.",
+   "claim": "ZoomInfo lists Nathan Tomford as Contracts Coordinator at Atlantic Testing Laboratories, Canton, NY \u2014 the same role his profile carries from his own LinkedIn.",
    "file_text": "Works as Contracts Coordinator at Atlantic Testing Laboratories in Canton, New York",
    "source": "ZoomInfo",
    "url": "https://www.zoominfo.com/p/Nathan-Tomford/6012724849",
@@ -7068,14 +7068,14 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "conflict",
-   "claim": "A SUNY Canton readMedia release dated May 16, 2026, 'Kallie Belleau of Massena Earns Bachelor's in Nursing at SUNY Canton,' naming Rochester Regional Health – St. Lawrence Region, was reported opened by one researcher; a second researcher's exhaustive exact-name searches found no trace of her, and the parent's re-open of the URL failed with a network error.",
+   "claim": "A SUNY Canton readMedia release dated May 16, 2026, 'Kallie Belleau of Massena Earns Bachelor's in Nursing at SUNY Canton,' naming Rochester Regional Health \u2013 St. Lawrence Region, was reported opened by one researcher; a second researcher's exhaustive exact-name searches found no trace of her, and the parent's re-open of the URL failed with a network error.",
    "file_text": "Earned a Bachelor of Science in Nursing at SUNY Canton, May 16, 2026",
    "source": "SUNY Canton",
    "url": "https://readme.readmedia.com/Kallie-Belleau-of-Massena-Earns-Bachelors-in-Nursing-at-SUNY-Canton/print",
    "anchors": [
     "Massena, NY",
     "SUNY Canton nursing",
-    "Rochester Regional Health – St. Lawrence Region"
+    "Rochester Regional Health \u2013 St. Lawrence Region"
    ],
    "missing_gate": "Two reports about this release disagree and it couldn't be re-opened to check, so it's your call.",
    "confidence": 68,
@@ -7095,7 +7095,7 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "conflict",
-   "claim": "An NPI record for Emily Murphy, Speech-Language Pathologist (NPI 1184460875, enumerated Jul 2, 2024), was opened by two researchers at the same DataLabs Health mirror, but they read contradictory practice locations from it — Madrid-Waddington / Syracuse, NY in one read, Las Vegas, NV in the other.",
+   "claim": "An NPI record for Emily Murphy, Speech-Language Pathologist (NPI 1184460875, enumerated Jul 2, 2024), was opened by two researchers at the same DataLabs Health mirror, but they read contradictory practice locations from it \u2014 Madrid-Waddington / Syracuse, NY in one read, Las Vegas, NV in the other.",
    "file_text": "Works as a Speech-Language Pathologist at Madrid-Waddington Central School District in Madrid, New York",
    "source": "DataLabs Health",
    "url": "https://www.datalabs.health/medical_billing/coding/national_provider_identifier/codes/npi_1184460875.pdf",
@@ -7171,7 +7171,7 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "verification",
-   "claim": "A Jun 6, 2025 Adirondack Park Agency cover memo from Megan Phillips to Ken Lynch presents the Proposed Final Adirondack Park State Land Master Plan Amendments — the same package as the filed Sep 2025 adoption item.",
+   "claim": "A Jun 6, 2025 Adirondack Park Agency cover memo from Megan Phillips to Ken Lynch presents the Proposed Final Adirondack Park State Land Master Plan Amendments \u2014 the same package as the filed Sep 2025 adoption item.",
    "file_text": "Presented the proposed final Adirondack Park State Land Master Plan amendments to the Adirondack Park Agency board, Jun 2025",
    "source": "Adirondack Park Agency",
    "url": "https://apa.ny.gov/meeting/2025/06/files/state-lands/01ProposedFinal%20APSLMPAmendmentsCoverMemo.pdf",
@@ -7179,7 +7179,7 @@
     "Adirondack Park Agency",
     "Deputy Director for Planning"
    ],
-   "missing_gate": "I could not double-check this — the memo surfaced in search but wasn't opened, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the memo surfaced in search but wasn't opened, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 44,
@@ -7256,7 +7256,7 @@
     "Carnegie Young Leaders cohort (already on her profile)",
     "Distinctive full name"
    ],
-   "missing_gate": "Only her name matches beyond the Bronx project — the page gives no Army or Syracuse tie, so I can't be sure it's the same person.",
+   "missing_gate": "Only her name matches beyond the Bronx project \u2014 the page gives no Army or Syracuse tie, so I can't be sure it's the same person.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 36,
@@ -7402,14 +7402,14 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "Massena Central School District's Board of Education Update (Oct 29, 2021) recapping the 'Rocktober' concert at New Testament Church lists 'Techs: Jason Sweet — Audio/Lighting.'",
+   "claim": "Massena Central School District's Board of Education Update (Oct 29, 2021) recapping the 'Rocktober' concert at New Testament Church lists 'Techs: Jason Sweet \u2014 Audio/Lighting.'",
    "file_text": "Served as audio/lighting tech for the Rocktober concert at New Testament Church, Oct 2021",
    "source": "Massena Central School District",
    "url": "https://4.files.edl.io/0715/11/02/21/174733-3d2de7dc-0345-490c-9fd1-550eda328ef2.pdf",
    "anchors": [
     "New Testament Church"
    ],
-   "missing_gate": "Only his name matches — the document doesn't mention St. Lawrence University or Canton, and Jason Sweet is a common name.",
+   "missing_gate": "Only his name matches \u2014 the document doesn't mention St. Lawrence University or Canton, and Jason Sweet is a common name.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 18,
@@ -7427,7 +7427,7 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "conflict",
-   "claim": "Provider directories list Sunday Wright Smith, Nurse Practitioner, at 515 S Canton Rd, Potsdam, NY 13676 — a different practice address from the 34 Lawrence Ave / 121 Market St addresses on file (WebMD listing seen as a search result).",
+   "claim": "Provider directories list Sunday Wright Smith, Nurse Practitioner, at 515 S Canton Rd, Potsdam, NY 13676 \u2014 a different practice address from the 34 Lawrence Ave / 121 Market St addresses on file (WebMD listing seen as a search result).",
    "file_text": "Listed as a nurse practitioner at 515 S Canton Rd, Potsdam",
    "source": "WebMD",
    "url": "https://doctor.webmd.com/providers/specialty/nurse-practitioner/new-york/potsdam?pagenumber=2",
@@ -7479,14 +7479,14 @@
    "run_date": "2026-11-03",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "A certificate page in the name 'Danielle Guimond,' dated January 13, 2026, on The AMM (American Marriage Ministries) ministers site renders only the name and date — no credential text, location, or other detail.",
+   "claim": "A certificate page in the name 'Danielle Guimond,' dated January 13, 2026, on The AMM (American Marriage Ministries) ministers site renders only the name and date \u2014 no credential text, location, or other detail.",
    "file_text": "Ordained as a minister, Jan 2026",
    "source": "The AMM",
    "url": "https://theamm.org/ministers/1613132/certificate.pdf",
    "anchors": [
     "Exact name only"
    ],
-   "missing_gate": "This page shows only her name and a date — no Ogdensburg, nursing, or school detail — so I can't be sure it's the same person.",
+   "missing_gate": "This page shows only her name and a date \u2014 no Ogdensburg, nursing, or school detail \u2014 so I can't be sure it's the same person.",
    "confidence": 20,
    "confidence_parts": {
     "identity": 8,
@@ -7747,7 +7747,7 @@
     "Natalie's record already lists Malone, NY as her hometown",
     "The Health Occupations track is the training track for a medic before service"
    ],
-   "missing_gate": "I could not double-check this against a second source — it matches her Malone hometown and health training from before her Army service.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it matches her Malone hometown and health training from before her Army service.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 34,
@@ -7773,7 +7773,7 @@
     "Nina's record already lists ServiceMaster Apple Valley",
     "Nina is named alongside Isa Criscitello of the same team"
    ],
-   "missing_gate": "I could not double-check this against a second source — it comes from one franchise news page only.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from one franchise news page only.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 40,
@@ -7901,7 +7901,7 @@
     "Canton residence on file",
     "Named in the NCPR photo caption"
    ],
-   "missing_gate": "I could not double-check this — it rests on one 2012 news photo caption naming Canton parent Kim Sisk.",
+   "missing_gate": "I could not double-check this \u2014 it rests on one 2012 news photo caption naming Canton parent Kim Sisk.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 38,
@@ -8211,7 +8211,7 @@
     "Jason's record already lists Canton, NY, the same town as his St. Lawrence University job",
     "Jason's Information Technology field matches his St. Lawrence University IT role"
    ],
-   "missing_gate": "I could not double-check this against a second source — the honors lists match his town and IT field but don't name his employer.",
+   "missing_gate": "I could not double-check this against a second source \u2014 the honors lists match his town and IT field but don't name his employer.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 32,
@@ -8263,7 +8263,7 @@
     "Her record lists trumpet and Medina Mustang Band",
     "Her record lists enrollment at SUNY Potsdam"
    ],
-   "missing_gate": "I could not double-check this against a second source — it comes from one concert program only.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from one concert program only.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 38,
@@ -8288,7 +8288,7 @@
    "anchors": [
     "Jamal's record already lists Wayne School of Engineering"
    ],
-   "missing_gate": "I could not double-check this against a second source — there's only one 2013 news story, though it matches the school on his record.",
+   "missing_gate": "I could not double-check this against a second source \u2014 there's only one 2013 news story, though it matches the school on his record.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 36,
@@ -8314,7 +8314,7 @@
     "Danica's record already lists the Dunphey family and Christian Fellowship Center circle",
     "The blog content is about Madrid and Potsdam, NY"
    ],
-   "missing_gate": "I could not double-check this against a second source — the blog uses her name and area, but it is her own blog.",
+   "missing_gate": "I could not double-check this against a second source \u2014 the blog uses her name and area, but it is her own blog.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 38,
@@ -8340,7 +8340,7 @@
     "Danica's record already lists the Madrid, NY area",
     "Danica is named as a meal deliverer on the Meal Train lists"
    ],
-   "missing_gate": "I could not double-check this against a second source — her name appears only on the Meal Train lists.",
+   "missing_gate": "I could not double-check this against a second source \u2014 her name appears only on the Meal Train lists.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 36,
@@ -8392,7 +8392,7 @@
     "Gouverneur, NY on file",
     "Named MileSplit athlete profile for Gouverneur"
    ],
-   "missing_gate": "I could not double-check this — it comes from one athlete-profile source (MileSplit) only, so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 it comes from one athlete-profile source (MileSplit) only, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 40,
@@ -8470,7 +8470,7 @@
     "Her record lists Jefferson Community College",
     "The official PrestoSports game records list her"
    ],
-   "missing_gate": "I could not double-check this against a second source — it comes from game records only.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from game records only.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 42,
@@ -9173,7 +9173,7 @@
     "Kaylee's record already lists Edwards, NY",
     "Kaylee's record already lists RN work in the Emergency Department and as a SWAT RN at Upstate Medical University"
    ],
-   "missing_gate": "This is about Kaylee's family — she's a stepdaughter of John Calvin Clarke Jr. — from his obituary, so I always check with you first.",
+   "missing_gate": "This is about Kaylee's family \u2014 she's a stepdaughter of John Calvin Clarke Jr. \u2014 from his obituary, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -9910,7 +9910,7 @@
    "run_label": "Sweep 250",
    "category": "source",
    "claim": "Lydia Bartlett served as an AmeriCorps Education Fellow in Central Falls, RI from September 2017 to June 2018 and as a youth counselor at the Smithfield YMCA from 2014 to 2015. This comes from Lydia's profile on WayUp.",
-   "file_text": "Served as an AmeriCorps Education Fellow in Central Falls, RI (September 2017–June 2018) and as a youth counselor at the Smithfield YMCA (2014–2015)",
+   "file_text": "Served as an AmeriCorps Education Fellow in Central Falls, RI (September 2017\u2013June 2018) and as a youth counselor at the Smithfield YMCA (2014\u20132015)",
    "source": "WayUp",
    "url": "https://www.wayup.com/profile/Lydia-Bartlett-7e0b5bab47/",
    "anchors": [
@@ -10592,7 +10592,7 @@
     "Her record lists Malone, New York",
     "Her record lists North Country Community College"
    ],
-   "missing_gate": "This is about Maggie's family — her brother and sister — from her mother's obituary, so I always check with you first.",
+   "missing_gate": "This is about Maggie's family \u2014 her brother and sister \u2014 from her mother's obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10644,7 +10644,7 @@
     "Phyllis's record already lists Pittsburgh, PA",
     "Phyllis was named as a surviving sister in the Huber obituaries from White Oak, PA"
    ],
-   "missing_gate": "This is about Phyllis's family — her marriage — from an obituary, so I always check with you first.",
+   "missing_gate": "This is about Phyllis's family \u2014 her marriage \u2014 from an obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10670,7 +10670,7 @@
     "Phyllis's record already lists Pittsburgh, PA",
     "Phyllis is listed as a surviving sister in the Huber obituaries, in White Oak, PA"
    ],
-   "missing_gate": "This is about Phyllis's family — her parents — from her father's obituary, so I always check with you first.",
+   "missing_gate": "This is about Phyllis's family \u2014 her parents \u2014 from her father's obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10742,7 +10742,7 @@
    "category": "conflict",
    "claim": "Clarkson University's official Merit pages list Max Ferran's major as civil engineering.",
    "file_text": "Civil Engineering major at Clarkson University",
-   "source": "Clarkson University · Merit Pages",
+   "source": "Clarkson University \u00b7 Merit Pages",
    "url": "https://meritpages.com/Max-Rocco-Ferran/9515616",
    "anchors": [
     "He is at Clarkson University, has an Ignite Presidential Fellowship, and is in the class of 2029"
@@ -10874,7 +10874,7 @@
    "source": "Brasher Falls Central School District",
    "url": "https://5il.co/25ewx",
    "anchors": [
-    "Name only — her record is blank"
+    "Name only \u2014 her record is blank"
    ],
    "missing_gate": "The minutes name a Savannah Adams in Brasher Falls, but her record has nothing on file to tie her to, so I cannot be sure it is her.",
    "confidence": 60,
@@ -11180,13 +11180,13 @@
    "run_date": "2026-11-03",
    "run_label": "Compounding lane",
    "category": "conflict",
-   "claim": "Seven Days says Ian Bailey started Vivid Coffee Roasters in Winooski, Vermont, in 2015, roasting at Scout & Co. there, and opened the Burlington café and roastery in November 2020.",
-   "file_text": "Founded Vivid Coffee Roasters in Winooski, Vermont, in 2015; opened the Burlington café and roastery in Nov 2020",
+   "claim": "Seven Days says Ian Bailey started Vivid Coffee Roasters in Winooski, Vermont, in 2015, roasting at Scout & Co. there, and opened the Burlington caf\u00e9 and roastery in November 2020.",
+   "file_text": "Founded Vivid Coffee Roasters in Winooski, Vermont, in 2015; opened the Burlington caf\u00e9 and roastery in Nov 2020",
    "source": "Seven Days",
    "url": "https://www.sevendaysvt.com/food-drink/vivid-coffee-to-open-cafe-and-roastery-in-new-moon-space-in-burlington-31485364/",
    "anchors": [
     "Vivid Coffee founder (already on file)",
-    "Burlington café (already on file)"
+    "Burlington caf\u00e9 (already on file)"
    ],
    "missing_gate": "Ian's record says he founded Vivid Coffee in Burlington, but Seven Days says he started it in Winooski in 2015, so it's your call.",
    "confidence": 88,
@@ -11302,7 +11302,7 @@
    "fields": {},
    "published": "2025-01-22",
    "novelty": "expands",
-   "quote": "19—OGDENSBURG — Breeze Airways has a 97% flight completion rate so far, Ogdensburg Airport Manager Charlie Garrelts reported to the Ogdensburg Bridge and Port Authority board at its January monthly meeting."
+   "quote": "19\u2014OGDENSBURG \u2014 Breeze Airways has a 97% flight completion rate so far, Ogdensburg Airport Manager Charlie Garrelts reported to the Ogdensburg Bridge and Port Authority board at its January monthly meeting."
   },
   {
    "id": "lr-20261104-charlie-garrelts-reported-record-july-2026-passenger-",
@@ -11368,7 +11368,7 @@
    "url": "https://cardiopt.memberclicks.net/clinical-practice-guidelines",
    "anchors": [
     "Name match",
-    "Cardiopulmonary physical therapy — his Clarkson teaching area (already on file)"
+    "Cardiopulmonary physical therapy \u2014 his Clarkson teaching area (already on file)"
    ],
    "missing_gate": "I found this on one website only, so I want you to decide.",
    "confidence": 78,
@@ -11441,7 +11441,7 @@
    "run_date": "2026-11-04",
    "run_label": "Daily rotation",
    "category": "close",
-   "claim": "A September 2024 Faith Charities Forum page lists Annika Greco Thompson as a relationship manager for philanthropy services at Stewardship — an earlier title than the Growth and Relationships Manager title in her 2026 magazine bio, which this run filed.",
+   "claim": "A September 2024 Faith Charities Forum page lists Annika Greco Thompson as a relationship manager for philanthropy services at Stewardship \u2014 an earlier title than the Growth and Relationships Manager title in her 2026 magazine bio, which this run filed.",
    "file_text": "Worked as Relationship Manager (Philanthropy Services) at Stewardship, Sep 2024",
    "source": "Civil Society",
    "url": "https://www.civilsociety.co.uk/events/faith-charities-forum-2024.html",
@@ -11501,7 +11501,7 @@
    "anchors": [
     "Clarkson University women's hockey (already on file)"
    ],
-   "missing_gate": "I could not double-check this — the assist shows only in a box-score search result with no source page — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the assist shows only in a box-score search result with no source page \u2014 so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -11552,7 +11552,7 @@
     "Vivid Coffee (already on file)",
     "Burlington, Vermont (already on file)"
    ],
-   "missing_gate": "I could not double-check this — I could not find or open the episode page — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 I could not find or open the episode page \u2014 so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 45,
@@ -11656,7 +11656,7 @@
     "Roberts Wesleyan University (already on file)",
     "Potsdam, NY (already on file)"
    ],
-   "missing_gate": "I could not double-check this — the letter would not open for me — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the letter would not open for me \u2014 so I want you to decide.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 40,
@@ -11811,7 +11811,7 @@
     "Clarkson University (already on file)",
     "IRB 26-36 study (already on file)"
    ],
-   "missing_gate": "I could not double-check this — the board page opens as a general IRBNet page for me — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the board page opens as a general IRBNet page for me \u2014 so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 45,
@@ -11906,7 +11906,7 @@
    "run_date": "2026-11-04",
    "run_label": "Daily rotation (PM)",
    "category": "verification",
-   "claim": "Watertown Daily Times coverage of Christian Fellowship Center's Canton campus describes a zoning fight with the Village of Canton — a July 2025 decision against the church, a state Supreme Court ruling for the village, an appeal by the church, and an October 2025 court date — and names Jamie Sinclair as the fellowship's Canton campus pastor.",
+   "claim": "Watertown Daily Times coverage of Christian Fellowship Center's Canton campus describes a zoning fight with the Village of Canton \u2014 a July 2025 decision against the church, a state Supreme Court ruling for the village, an appeal by the church, and an October 2025 court date \u2014 and names Jamie Sinclair as the fellowship's Canton campus pastor.",
    "file_text": "Led Christian Fellowship Center's Canton campus through its 2025 zoning fight with the Village of Canton",
    "source": "Watertown Daily Times",
    "url": "",
@@ -12069,7 +12069,7 @@
     "Saranac Lake (already on file)",
     "Name match"
    ],
-   "missing_gate": "I could not double-check this — the awards page does not name him — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the awards page does not name him \u2014 so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 40,
@@ -12329,7 +12329,7 @@
    "anchors": [
     "Clarkson University women's hockey (already on file)"
    ],
-   "missing_gate": "I could not double-check this — no such game or recap could be found — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 no such game or recap could be found \u2014 so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 40,
@@ -12620,7 +12620,7 @@
     "SUNY Canton nursing student",
     "wife Courtney, a 2007 SUNY Canton graduate"
    ],
-   "quote": "Judson Foote of Hermon decided to become a nurse because people told him he couldn’t. The 36-year-old father of four has been a commercial truck driver, is an ordained minister and a private pilot.",
+   "quote": "Judson Foote of Hermon decided to become a nurse because people told him he couldn\u2019t. The 36-year-old father of four has been a commercial truck driver, is an ordained minister and a private pilot.",
    "missing_gate": "This is about Judson's family, so I always check with you first.",
    "confidence": 90,
    "confidence_parts": {
@@ -12646,7 +12646,7 @@
    "anchors": [
     "the name Dianalyn Finn Martin"
    ],
-   "quote": "The accident happened July 27 on Route 3 in Franklin County, New York. “We didn’t know if she was alive,” said Dianalyn Finn Martin, a passerby who saw the accident and stopped to help.",
+   "quote": "The accident happened July 27 on Route 3 in Franklin County, New York. \u201cWe didn\u2019t know if she was alive,\u201d said Dianalyn Finn Martin, a passerby who saw the accident and stopped to help.",
    "missing_gate": "The page names a Dianalyn Finn Martin in Franklin County, but nothing on it ties her to Farmingville or Suffolk County Community College.",
    "confidence": 69,
    "confidence_parts": {
@@ -12753,7 +12753,7 @@
     "his breast-cancer proteomics research",
     "the poster is his sister"
    ],
-   "quote": "My brother presented his research, “Quantitative Serum Proteomics in Breast Cancer Identifies Blood Coagulation Factors as Dysregulated,” and won the Overall Best Presenter Award in the Graduate Category",
+   "quote": "My brother presented his research, \u201cQuantitative Serum Proteomics in Breast Cancer Identifies Blood Coagulation Factors as Dysregulated,\u201d and won the Overall Best Presenter Award in the Graduate Category",
    "missing_gate": "I found this on one website only, so I want you to decide.",
    "confidence": 63,
    "confidence_parts": {
@@ -12862,7 +12862,7 @@
     "the Tallo surname",
     "Scottsville is near her hometown of Rush, NY"
    ],
-   "quote": "Meal Train® for Tallo Family!",
+   "quote": "Meal Train\u00ae for Tallo Family!",
    "missing_gate": "The page names a Tallo family in Scottsville, but nothing on it ties her to Maria or Colby.",
    "confidence": 40,
    "confidence_parts": {
@@ -13047,7 +13047,7 @@
    "anchors": [
     "Music and theater, her work on file at the Academy and church"
    ],
-   "quote": "In addition, the show's ensemble features Allison Andre, Lydianna Soleil Burnett, Abby DeCastro, Sarah Diederich ’02 & ’25, Julia Ellison '28",
+   "quote": "In addition, the show's ensemble features Allison Andre, Lydianna Soleil Burnett, Abby DeCastro, Sarah Diederich \u201902 & \u201925, Julia Ellison '28",
    "missing_gate": "The page names a Sarah Diederich from the class of 2002, but nothing on it ties her to Christian Fellowship Center.",
    "confidence": 58,
    "confidence_parts": {
@@ -13552,7 +13552,7 @@
    "run_label": "Daily rotation",
    "category": "source",
    "claim": "Emily Bouchard's Bold.pro resume page says she worked as an assistant manager at The Dirty Gringo Mexican Restaurant in Ogdensburg from June 2016 to March 2019. The same page says she worked in food service at Claxton Hepburn Medical Center in Ogdensburg from April 2014 to June 2016. It also says she was general manager for Unifi in Duluth, Minnesota, from March to September 2022.",
-   "file_text": "Worked as Assistant Manager at The Dirty Gringo Mexican Restaurant in Ogdensburg, NY, Jun 2016–Mar 2019 ;; Worked in Food Service at Claxton Hepburn Medical Center in Ogdensburg, NY, Apr 2014–Jun 2016 ;; Was General Manager for Unifi in Duluth, MN, Mar 2022–Sep 2022",
+   "file_text": "Worked as Assistant Manager at The Dirty Gringo Mexican Restaurant in Ogdensburg, NY, Jun 2016\u2013Mar 2019 ;; Worked in Food Service at Claxton Hepburn Medical Center in Ogdensburg, NY, Apr 2014\u2013Jun 2016 ;; Was General Manager for Unifi in Duluth, MN, Mar 2022\u2013Sep 2022",
    "source": "Bold.pro",
    "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
    "anchors": [
@@ -13586,7 +13586,7 @@
     "Her own blog, which is on file",
     "Her children, who appear in her family record"
    ],
-   "quote": "And Jameson finished high school. What a special moment to applaud the young man he has become as he has walked with a humble heart before us and before God. ;; Winifred Lee, May 28, 2023, 12:57am, 9lb 15oz, 22″",
+   "quote": "And Jameson finished high school. What a special moment to applaud the young man he has become as he has walked with a humble heart before us and before God. ;; Winifred Lee, May 28, 2023, 12:57am, 9lb 15oz, 22\u2033",
    "missing_gate": "This is about Danica's family, so I always check with you first.",
    "confidence": 75,
    "confidence_parts": {
@@ -13746,7 +13746,7 @@
     "Louisville, New York, his hometown on file",
     "Christian Fellowship Center, his church connection on file"
    ],
-   "quote": "She was also blessed with seven grandchildren, Gabriel (wife Kristan), Zachary (wife Fiona), Ethan (fiancée Yvonne Grant), Marcus (wife Ashleigh) and Myles Laramay, and Nolan and Natalie Hurlbut.",
+   "quote": "She was also blessed with seven grandchildren, Gabriel (wife Kristan), Zachary (wife Fiona), Ethan (fianc\u00e9e Yvonne Grant), Marcus (wife Ashleigh) and Myles Laramay, and Nolan and Natalie Hurlbut.",
    "missing_gate": "This is about Myles's family, so I always check with you first.",
    "confidence": 85,
    "confidence_parts": {
@@ -13877,7 +13877,7 @@
    "anchors": [
     "St. Lawrence Central School, where her Drama Club co-advisor role is already on file"
    ],
-   "quote": "Savannah Adams – Teacher Aide position increases from .42 to 1.0 FTE",
+   "quote": "Savannah Adams \u2013 Teacher Aide position increases from .42 to 1.0 FTE",
    "missing_gate": "The minutes name a Savannah Adams at her school, but nothing else on the page ties her to New Testament Church.",
    "confidence": 73,
    "confidence_parts": {
@@ -13961,7 +13961,7 @@
     "Clarkson University co-authors Neddo, Blasingame, and Liu",
     "His mathematics and machine learning research area on file"
    ],
-   "quote": "Richard E. Neddo¹, Emmanuel Atindama², Zander W. Blasingame¹,³*, and Chen Liu¹,* — ¹Clarkson University, ²University of Toledo",
+   "quote": "Richard E. Neddo\u00b9, Emmanuel Atindama\u00b2, Zander W. Blasingame\u00b9,\u00b3*, and Chen Liu\u00b9,* \u2014 \u00b9Clarkson University, \u00b2University of Toledo",
    "missing_gate": "This follows from Emmanuel's Clarkson research circle, but one preprint line has not confirmed a move or job on its own yet.",
    "confidence": 73,
    "confidence_parts": {
@@ -14485,7 +14485,7 @@
     "Ogdensburg International Airport, his workplace on file",
     "Ogdensburg Bridge and Port Authority, his employer on file"
    ],
-   "quote": "Posted 9/4/26 OGDENSBURG – The growth in passenger traffic at Ogdensburg International Airport is contributing to the local economy, with 35 employees now working at the airport, according to Airport Manager",
+   "quote": "Posted 9/4/26 OGDENSBURG \u2013 The growth in passenger traffic at Ogdensburg International Airport is contributing to the local economy, with 35 employees now working at the airport, according to Airport Manager",
    "missing_gate": "I could not double-check this, so I want you to decide.",
    "confidence": 72,
    "confidence_parts": {
@@ -15028,7 +15028,7 @@
    "anchors": [
     "The name Olga Lindsey only"
    ],
-   "quote": "My name is Olga Lindsey, and I am from Mexico. After 28 years as an EFL teacher in public schools, I moved to the United States. I have two bachelor's degrees—one in teaching and another in computer science—and a master's in bilingual education and educational technology.",
+   "quote": "My name is Olga Lindsey, and I am from Mexico. After 28 years as an EFL teacher in public schools, I moved to the United States. I have two bachelor's degrees\u2014one in teaching and another in computer science\u2014and a master's in bilingual education and educational technology.",
    "missing_gate": "The page names an Olga Lindsey in San Antonio, but nothing on it ties her to Bridgewater State or Rhode Island.",
    "confidence": 34,
    "confidence_parts": {
@@ -15083,7 +15083,7 @@
     "Syracuse University iSchool (her degree on file)"
    ],
    "quote": "",
-   "missing_gate": "I could not double-check this — the page showed nothing about her — so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the page showed nothing about her \u2014 so I want you to decide.",
    "confidence": 34,
    "confidence_parts": {
     "identity": 18,
@@ -15214,7 +15214,7 @@
    "run_date": "2026-11-12",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "A poster in the NYC Women in Computing 2021 final program lists “Emma Morse, Undergraduate, SUNY Potsdam” as a co-author of “Get Girls Coding: Why Early Adolescent Exposure to Computer Science MATTERS.”",
+   "claim": "A poster in the NYC Women in Computing 2021 final program lists \u201cEmma Morse, Undergraduate, SUNY Potsdam\u201d as a co-author of \u201cGet Girls Coding: Why Early Adolescent Exposure to Computer Science MATTERS.\u201d",
    "file_text": "Was listed as a co-author on the poster 'Get Girls Coding: Why Early Adolescent Exposure to Computer Science MATTERS' at NYC Women in Computing 2021",
    "source": "NYC Women in Computing",
    "url": "https://static1.squarespace.com/static/63fe0ef7f01c6b7845bfa071/t/641a1445bc4ca743c8e27082/1679430725817/NYCWiC+2021+Final+Program.pdf",
@@ -15316,7 +15316,7 @@
    "run_date": "2026-11-12",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "The Amherst Indy reported on July 18, 2025 that a student named Ethan Flamand spoke at the “Good Trouble Lives On” rally on Amherst Town Common on July 17, 2025, reading from “A Declaration for the Restoration of the Republic,” which he authored.",
+   "claim": "The Amherst Indy reported on July 18, 2025 that a student named Ethan Flamand spoke at the \u201cGood Trouble Lives On\u201d rally on Amherst Town Common on July 17, 2025, reading from \u201cA Declaration for the Restoration of the Republic,\u201d which he authored.",
    "file_text": "Spoke at the 'Good Trouble Lives On' rally in Amherst, Massachusetts, on Jul 17, 2025, reading from 'A Declaration for the Restoration of the Republic,' which he authored",
    "source": "Amherst Indy",
    "url": "https://www.amherstindy.org/2025/07/18/youth-leaders-shine-as-good-trouble-lives-on-in-amherst/",
@@ -15428,7 +15428,7 @@
    "url": "https://erinmariephoto.com/stables-at-windy-point-summer-wedding/",
    "anchors": [
     "Julie McOrmond (distinctive name match)",
-    "Potsdam-area wedding — The Stables at Windy Point, Eternity Bridal Potsdam"
+    "Potsdam-area wedding \u2014 The Stables at Windy Point, Eternity Bridal Potsdam"
    ],
    "missing_gate": "The cake-vendor credit gives her name and a Potsdam-area venue, but nothing else on the page ties it to the Julie McOrmond on file.",
    "confidence": 68,
@@ -16050,7 +16050,7 @@
    "source": "The Org",
    "url": "https://theorg.com/org/corning-inc/org-chart/richard-gilchrist",
    "anchors": [
-    "name only — the page shows none of his schools or his Fredericksburg home"
+    "name only \u2014 the page shows none of his schools or his Fredericksburg home"
    ],
    "missing_gate": "The page shows none of his schools and not his Fredericksburg home, and the name is common, so this is likely a different Richard Gilchrist.",
    "confidence": 43,
@@ -16100,7 +16100,7 @@
    "source": "Donaldson Funeral Home obituary (mirrored on AlumniClass)",
    "url": "https://www.alumniclass.com/norwood-norfolk-high-school-flyers-ny/in-memory-view/?p=148282",
    "anchors": [
-    "hometown Norwood, New York — Chase Mills is in the Norwood area",
+    "hometown Norwood, New York \u2014 Chase Mills is in the Norwood area",
     "Norwood Norfolk Central School"
    ],
    "missing_gate": "This is about Thea Krywanczyk's family, so I always check with you first.",
@@ -16335,7 +16335,7 @@
     "Katy, Texas (her hometown on her softball record)",
     "Softball, class of 2028 (her sport and year on file)"
    ],
-   "quote": "10. Katy (Texas) … Notable returners: Nevaeh Phillips, Haley Schmitt, Evie Willemssen",
+   "quote": "10. Katy (Texas) \u2026 Notable returners: Nevaeh Phillips, Haley Schmitt, Evie Willemssen",
    "missing_gate": "The page names a Nevaeh Phillips at Katy High School, but nothing on it ties her to the Impact Gold Jazz team on file.",
    "confidence": 55,
    "confidence_parts": {
@@ -16413,7 +16413,7 @@
    "url": "https://www.hammillfh.com/obituaries/robert-powell",
    "anchors": [
     "Winthrop, NY, where Donovan lives",
-    "The Patraw family of Winthrop — the obituary also names Wayne Patraw and Stephanie A. Patraw"
+    "The Patraw family of Winthrop \u2014 the obituary also names Wayne Patraw and Stephanie A. Patraw"
    ],
    "quote": "Donovan Patraw and his fiance Cheyenne Myers",
    "missing_gate": "This is about Donovan's family, so I always check with you first.",
@@ -16439,7 +16439,7 @@
    "source": "New York State Department of Environmental Conservation",
    "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/400c354",
    "anchors": [
-    "He is an ECO — he graduated from the DEC basic school for Environmental Conservation Officers in Dec 2024"
+    "He is an ECO \u2014 he graduated from the DEC basic school for Environmental Conservation Officers in Dec 2024"
    ],
    "quote": "then led ECOs Noble and Toomey, who were both staged nearby in uniform, to the hidden fish. ECOs issued six tickets to anglers for keeping undersized fish, along with other violations.",
    "missing_gate": "The bulletin gives only the last name Noble, and nothing on the page ties him to Canton or St. Lawrence County.",
@@ -16465,7 +16465,7 @@
    "source": "The Margaret Home",
    "url": "https://themargarethome.org/wp-content/uploads/2026/09/The-Margaret-Home-2025-Annual-Report.pdf",
    "anchors": [
-    "Name only — nothing else on the page matches what is on her record"
+    "Name only \u2014 nothing else on the page matches what is on her record"
    ],
    "quote": "Cara Camden | Katelyn Tomford | Ted and Anne Smith",
    "missing_gate": "The report lists only her name, with nothing tying it to Clarkson or her work, so I cannot tell it is her.",
@@ -16494,7 +16494,7 @@
     "SUNY Potsdam University Police, the employer on Brian's record",
     "Donovan Patraw, Brian's brother"
    ],
-   "quote": "- Donovan Patraw — SUNY Potsdam University Police",
+   "quote": "- Donovan Patraw \u2014 SUNY Potsdam University Police",
    "missing_gate": "Brian's record lists SUNY Potsdam University Police as his job, but the college names his brother Donovan in that role.",
    "confidence": 62,
    "confidence_parts": {
@@ -16733,7 +16733,7 @@
    "anchors": [
     "St. Lawrence County, where he lives in Lisbon and runs a photography business"
    ],
-   "quote": "David Zufall, Patty Davis, Amy Sands (Fine Arts & Fine Crafts – Section DB)",
+   "quote": "David Zufall, Patty Davis, Amy Sands (Fine Arts & Fine Crafts \u2013 Section DB)",
    "missing_gate": "The newspaper names a David Zufall in St. Lawrence County, but nothing on the page ties him to Lisbon, his farm, or his photography.",
    "confidence": 66,
    "confidence_parts": {
@@ -16841,7 +16841,7 @@
     "Christian songwriting",
     "The article links to his cyphersmusic artist page"
    ],
-   "quote": "Grace Graber wrote “More Than A Miracle” with Tyler Moody and Jonathan Cyphers.",
+   "quote": "Grace Graber wrote \u201cMore Than A Miracle\u201d with Tyler Moody and Jonathan Cyphers.",
    "missing_gate": "The page names a Jonathan Cyphers as a songwriter, but nothing on it ties him to Nashville or St. Lawrence County.",
    "confidence": 65,
    "confidence_parts": {
@@ -16893,7 +16893,7 @@
    "anchors": [
     "St. Lawrence County, where her hometown North Lawrence is, in the St. Lawrence Central district"
    ],
-   "quote": "St. Lawrence Central School — Daisy Bissonette, Hannah Crump, Leah Francis, Jacinta Gomes, Sidney Guerard, Aleea Larock, Margarita Miner, Kolby Perkins",
+   "quote": "St. Lawrence Central School \u2014 Daisy Bissonette, Hannah Crump, Leah Francis, Jacinta Gomes, Sidney Guerard, Aleea Larock, Margarita Miner, Kolby Perkins",
    "missing_gate": "The page names a Jacinta Gomes in St. Lawrence County, but nothing on it ties her to SUNY Plattsburgh or nursing.",
    "confidence": 65,
    "confidence_parts": {
@@ -16946,7 +16946,7 @@
     "The Pittsburgh area (Penn Hills); she lives in the Pittsburgh area on file",
     "A husband, matching her marriage on file"
    ],
-   "quote": "Phyllis Paladin 2019-09-05 — A little over a year ago my husband and I knew it was time to sell our four bedroom two story home and buy a smaller home… They listed our Penn Hills. It sold in six days!",
+   "quote": "Phyllis Paladin 2019-09-05 \u2014 A little over a year ago my husband and I knew it was time to sell our four bedroom two story home and buy a smaller home\u2026 They listed our Penn Hills. It sold in six days!",
    "missing_gate": "The review names a Phyllis Paladin in the Pittsburgh area, but it does not name her husband, so I cannot be sure it is her.",
    "confidence": 46,
    "confidence_parts": {
@@ -16973,7 +16973,7 @@
     "Clarkson University, on file",
     "Mechanical Engineering, on file"
    ],
-   "quote": "Beyond STEM, I am the author of Blue Dominion, an 80,000-word dystopian novel in progress since 2021, weaving themes of technology, friendship, and endurance—much like my own journey. Two years ago, I used what resources I could to launch ClearThePath.org, a nonprofit that offered free and discreet tutoring to teenagers who, like me, came from cluttered and chaotic homes.",
+   "quote": "Beyond STEM, I am the author of Blue Dominion, an 80,000-word dystopian novel in progress since 2021, weaving themes of technology, friendship, and endurance\u2014much like my own journey. Two years ago, I used what resources I could to launch ClearThePath.org, a nonprofit that offered free and discreet tutoring to teenagers who, like me, came from cluttered and chaotic homes.",
    "missing_gate": "I found this on one website only, so I want you to decide.",
    "confidence": 64,
    "confidence_parts": {
@@ -17150,7 +17150,7 @@
    "run_date": "2026-11-18",
    "run_label": "Daily rotation (PM)",
    "category": "verification",
-   "claim": "SUNY Potsdam's Cinderella page lists her as 'Sarah Diederich ’02 & ’25,' which could suggest a further Potsdam credential in 2025, but the college's own 2025 Something Rotten! page lists her as ’02 & ’08, matching her record, so the ’25 could not be confirmed.",
+   "claim": "SUNY Potsdam's Cinderella page lists her as 'Sarah Diederich \u201902 & \u201925,' which could suggest a further Potsdam credential in 2025, but the college's own 2025 Something Rotten! page lists her as \u201902 & \u201908, matching her record, so the \u201925 could not be confirmed.",
    "file_text": "Earned a further SUNY Potsdam credential in 2025",
    "source": "SUNY Potsdam",
    "url": "",
@@ -17211,7 +17211,7 @@
     "Her full name, Kailee Olivia Paige, is on her record",
     "Massena, the town on her record"
    ],
-   "quote": "This year Kailee Olivia Paige won the award of $1,000.00. She is an eighteen-yearold Massena Central Senior who will be studying for a Bachelor’s Degree in Neuroscience at the University of Rochester in the Fall.",
+   "quote": "This year Kailee Olivia Paige won the award of $1,000.00. She is an eighteen-yearold Massena Central Senior who will be studying for a Bachelor\u2019s Degree in Neuroscience at the University of Rochester in the Fall.",
    "missing_gate": "The page names a Kailee Olivia Paige in Massena, but says she planned to study in Rochester; her record shows SUNY Potsdam.",
    "confidence": 69,
    "confidence_parts": {
@@ -17238,7 +17238,7 @@
     "The first name Michaela only",
     "New York and the Saint Lawrence River area"
    ],
-   "quote": "Michaela and her husband said “I Do” at Saint Mary’s Church in New York last July.",
+   "quote": "Michaela and her husband said \u201cI Do\u201d at Saint Mary\u2019s Church in New York last July.",
    "missing_gate": "The page names only a Michaela, with no last name and nothing tying her to Clarkson University.",
    "confidence": 48,
    "confidence_parts": {
@@ -17795,8 +17795,8 @@
    "run_date": "2026-11-21",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "The International Embryo Technology Society's 2025 business meeting minutes say Hannah Braun from Colorado State University was elected to the Morulas Board of Governors for the 2025–2027 term.",
-   "file_text": "Elected to the IETS Morulas Board of Governors for the 2025–2027 term, Jan 2025",
+   "claim": "The International Embryo Technology Society's 2025 business meeting minutes say Hannah Braun from Colorado State University was elected to the Morulas Board of Governors for the 2025\u20132027 term.",
+   "file_text": "Elected to the IETS Morulas Board of Governors for the 2025\u20132027 term, Jan 2025",
    "source": "International Embryo Technology Society",
    "url": "https://www.iets.org/Portals/0/Documents/Public/Meetings/2026/2025 Business Meeting Minutes.pdf?ver=unT5-y6MjNtgsp6BZAOuZQ%3d%3d",
    "anchors": [
@@ -17812,7 +17812,7 @@
     "detail": 16
    },
    "fields": {
-    "highlights": "IETS Morulas Board of Governors (2025–2027)"
+    "highlights": "IETS Morulas Board of Governors (2025\u20132027)"
    },
    "published": "",
    "novelty": "new"
@@ -17885,7 +17885,7 @@
    "anchors": [
     "Norwood, New York is next to Potsdam and Canton, the towns on his record"
    ],
-   "quote": "David Tulloch #120771 / Professional / Norwood, New York, United States — results table: | 16 | 50.00 | David Tulloch | 120771 | 941 | +10 |",
+   "quote": "David Tulloch #120771 / Professional / Norwood, New York, United States \u2014 results table: | 16 | 50.00 | David Tulloch | 120771 | 941 | +10 |",
    "missing_gate": "The page names a David Tulloch in Norwood, but nothing on it ties him to the church and school facts already on file.",
    "confidence": 55,
    "confidence_parts": {
@@ -17961,7 +17961,7 @@
    "file_text": "Jamie Sinclair responded to a Facebook page calling the Canton Christian Fellowship Center a cult, calling the page somewhat childish",
    "source": "Cult Education Institute",
    "url": "https://culteducation.com/group/1289-general-information/34738-facebook-group-claims-canton-christian-fellowship-center-a-cult.html",
-   "quote": "Jamie Sinclair, Canton CFC pastor, said the Facebook page seems “somewhat childish” and he doesn’t want to stoop to name-calling.",
+   "quote": "Jamie Sinclair, Canton CFC pastor, said the Facebook page seems \u201csomewhat childish\u201d and he doesn\u2019t want to stoop to name-calling.",
    "anchors": [
     "Jamie Sinclair",
     "Canton",
@@ -18067,7 +18067,7 @@
    "file_text": "Brianna McCarthy illustrated the children's book 'If Dominican Were a Color' by Sili Recio",
    "source": "Publishers Weekly",
    "url": "https://www.publishersweekly.com/pw/by-topic/childrens/childrens-industry-news/article/93772-inclusive-children-s-book-publishers.html",
-   "quote": "Brianna McCarthy was a fine artist I’d drooled over on Instagram.",
+   "quote": "Brianna McCarthy was a fine artist I\u2019d drooled over on Instagram.",
    "anchors": [
     "Brianna McCarthy (name only)"
    ],
@@ -18093,7 +18093,7 @@
    "file_text": "Keila Levendusky's husband Ben served as a Christian Fellowship Center pastor at the Madrid location",
    "source": "Religion News Service",
    "url": "https://religionnews.com/2022/08/25/an-insular-quiverfull-church-in-new-yorks-north-country-faces-a-reckoning/",
-   "quote": "At CFC pastor Ben Levendusky’s request, she met with him at the Madrid location in spring 2015.",
+   "quote": "At CFC pastor Ben Levendusky\u2019s request, she met with him at the Madrid location in spring 2015.",
    "anchors": [
     "Ben Levendusky (husband)",
     "Christian Fellowship Center, Madrid"
@@ -18406,6 +18406,33 @@
    "fields": {},
    "published": false,
    "novelty": ""
+  },
+  {
+   "id": "lr-20261123-ct-julia-sinclair-song-my-queen-on-god-forbid-is-a-tri",
+   "name": "ct:julia sinclair",
+   "display": "Julia Sinclair",
+   "run_date": "2026-11-23",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A September 2025 blog profile of the Nashville artist Sinclair says her God Forbid song 'My Queen' is a tribute to her wife of 11 years, Natalie, and that she recently played two shows at the Bluebird Cafe.",
+   "file_text": "Song 'My Queen' on God Forbid is a tribute to her wife Natalie, Sep 2025",
+   "source": "Bethany Writes",
+   "url": "http://bethanybowman.com/2025/09/22/sinclair-releases-god-forbid/",
+   "quote": "And of course, the record would not be complete without a tribute to Sinclair's wife of 11 years, Natalie.",
+   "anchors": [
+    "God Forbid album, released Oct 2024",
+    "classical and jazz guitar roots"
+   ],
+   "missing_gate": "This is about Julia's family, so I always check with you first.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2025-09-22",
+   "novelty": "new"
   }
  ]
 }
