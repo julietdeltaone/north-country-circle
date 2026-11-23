@@ -18239,6 +18239,113 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-joshcparker-considered-a-run-for-congress-in-ny",
+   "name": "joshcparker_",
+   "display": "Josh Parker",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "North Country Public Radio reported on November 17, 2025 that St. Lawrence County businessman Josh Parker decided not to run for the Republican nomination in New York's 21st Congressional District.",
+   "file_text": "Considered a run for Congress in NY-21 and decided not to run, Nov 2025",
+   "source": "North Country Public Radio",
+   "url": "https://www.northcountrypublicradio.org/news/story/52651/20251117/stefanik-is-running-for-governor-what-was-her-impact-on-ny-21",
+   "quote": "St. Lawrence County businessman Josh Parker has decided not to run, according to WWNY.",
+   "anchors": [
+    "St. Lawrence County, New York"
+   ],
+   "missing_gate": "The page calls him a St. Lawrence County businessman but never names Parker's Real Maple, so I am not sure it is this Josh Parker.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 24,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-11-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-katelynmatthews10-named-to-suny-canton-s-dean-s-list-f",
+   "name": "katelynmatthews10",
+   "display": "Katelyn Matthews",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "SUNY Canton's official Fall 2022 honors list names a Katelyn Matthews on the Dean's List in Individual Studies.",
+   "file_text": "Named to SUNY Canton's Dean's List for the Fall 2022 semester in Individual Studies",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/honorsf22.php",
+   "quote": "- Katelyn Matthews, Individual Studies",
+   "anchors": [
+    "SUNY Canton"
+   ],
+   "missing_gate": "The page gives no hometown or program tie, and Individual Studies is not a program on her record, so I am not sure it is her.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2023-01-06",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-sf-samantha-marocco-scheduled-to-perform-with-backwoods",
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco",
+   "run_date": "2026-11-22",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Lake Placid events page lists Samantha Marocco as one of five players in Backwoods Brass, a brass group scheduled to perform at Arts Center Lake Placid on December 19, 2026, alongside Joe Marocco.",
+   "file_text": "Scheduled to perform with Backwoods Brass at Arts Center Lake Placid, Dec 2026",
+   "source": "Lake Placid",
+   "url": "https://www.lakeplacid.com/events/local-music-night-backwoods-brass",
+   "quote": "Since 2022, five of the area's finest brass players have brought sweet harmonies and jazz influences to everything you love about brass. John Harshey, Keith Kogut, Samantha Marocco, Joe Marocco, and Jon Dallas bring jubilance and fire to performances that are as lively and celebratory as they are musically rich",
+   "anchors": [
+    "horn and brass performance",
+    "Saranac Lake area"
+   ],
+   "missing_gate": "The page names her with a same-surname bandmate in the Adirondacks but ties her to nothing else on her record, so I want you to confirm it is her.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261122-ig-anastasiasbakery-anastasia-s-bakery-llc-s-carrier-reg",
+   "name": "ig:anastasiasbakery",
+   "display": "Anastasia Cote",
+   "run_date": "2026-11-22",
+   "run_label": "Compounding lane",
+   "category": "identity",
+   "claim": "Federal motor carrier records dated November 17, 2026 show Anastasia's Bakery LLC still active, on a form filed July 30, 2025, with the same phone number as the one on her record.",
+   "file_text": "Anastasia's Bakery LLC's carrier registration remained active in federal records as of Nov 17, 2026, on a form filed Jul 30, 2025",
+   "source": "FMCSA SAFER",
+   "url": "https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3176639&original_query_string=ANASTASIA%27S+BAKERY+LLC",
+   "quote": "USDOT Status: ACTIVE",
+   "anchors": [
+    "Anastasia's Bakery LLC",
+    "Norwood, New York address",
+    "phone number on her record"
+   ],
+   "missing_gate": "The federal page is about her company and never names Anastasia herself, so I want you to decide whether it belongs on her record.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
   }
  ]
 }
