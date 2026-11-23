@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1513,
-  "dated": 82,
-  "undated": 1431,
-  "placed": 1359,
+  "total": 1512,
+  "dated": 80,
+  "undated": 1432,
+  "placed": 1358,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 34,
-  "brief_standalone": 49,
+  "brief_standalone": 47,
   "brief_unresolved": 1
  },
  "items": [
@@ -19,18 +19,6 @@
    "text": "Scored an empty-net goal in Clarkson's 3-1 win over Princeton, Nov 20, 2026 (ECAC Hockey)",
    "source": "ECAC Hockey",
    "url": "https://ecachockey.com/news/2026/11/21/womens-ice-hockey-womens-weekend-wraparound-11-17-11-22.aspx",
-   "published": "2026-11-21",
-   "fresh": true,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 720,
-   "display": "Isa Goettl",
-   "text": "Recorded an assist on Sara Manness's third-period goal in Clarkson's 3-0 win over No. 6 Quinnipiac, Nov 21, 2026 (ECAC Hockey)",
-   "source": "ECAC Hockey",
-   "url": "https://ecachockey.com/boxscore.aspx?id=7ltyipP022aUJKmSgYVs3wXi7up73ghniwD5ElWyd07J7BNseBaMQePf0fY%2f3yUPbk54xYMAaA%2fUdDsMKd4EmNdTXfUobWCrQlqMste5aggq0sNRjaLwrl4DBwnNwcQXtgxKGDYBlcW%2fjAZaIS0G5KjC9508qAc31RoLaE0VMoY%3d&path=whockey",
    "published": "2026-11-21",
    "fresh": true,
    "pid": "44.6698,-74.9818",
@@ -72,18 +60,6 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
-  },
-  {
-   "di": 7,
-   "display": "Adria Tebo",
-   "text": "Supplied two blocked shots in the University of New England's 1-0 win over Roger Williams, Nov 14, 2026",
-   "source": "University of New England Athletics",
-   "url": "https://athletics.une.edu/news/2026/11/14/w-ice-hockey-forziatis-goal-puts-une-past-rwu-1-0.aspx",
-   "published": "2026-11-14",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "Canton, NY",
-   "place_src": "profile"
   },
   {
    "di": 719,
@@ -326,6 +302,18 @@
    "place_src": "text"
   },
   {
+   "di": 97,
+   "display": "Ethan Flamand",
+   "text": "Began considering carbon capture and CO2 mineralization as a research area after his spring 2026 Global Business Program trip, Sep 2026",
+   "source": "Clarkson University",
+   "url": "https://diy.clarkson.edu/apply-to-clarkson/clarkson-honors-students-find-new-perspectives-abroad/",
+   "published": "2026-09-18",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 468,
    "display": "Colin Mackey",
    "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
@@ -410,18 +398,6 @@
    "place_src": "text"
   },
   {
-   "di": 327,
-   "display": "Lydia Bartlett",
-   "text": "Attended her first March for Life in Washington, D.C. as a high school senior in January 2013, traveling by bus with other Pro-Life Rhode Islanders",
-   "source": "Rhode Island Catholic",
-   "url": "https://www.thericatholic.com/stories/from-the-classroom-to-the-capital-young-catholics-stand-up-for-life,15223",
-   "published": "2026-01-15",
-   "fresh": false,
-   "pid": "38.9072,-77.0369",
-   "place": "Washington",
-   "place_src": "text"
-  },
-  {
    "di": 168,
    "display": "Jocelyn Daniels",
    "text": "Named to SUNY Canton's President's List for the Fall 2025 semester as an Individual Studies student, Jan 2026",
@@ -467,18 +443,6 @@
    "fresh": false,
    "pid": "44.9281,-74.8919",
    "place": "Massena, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 327,
-   "display": "Lydia Bartlett",
-   "text": "Appeared as a guest on Life Matters TV on October 12, 2025 as Director of Services for Rhode Island Right to Life, explaining the committee's services and its 3,675 client visits in 2025",
-   "source": "Life Matters TV",
-   "url": "https://www.lifematterstv.com/viewshows.html",
-   "published": "2025-10-12",
-   "fresh": false,
-   "pid": "41.8685,-71.5208",
-   "place": "Smithfield, RI",
    "place_src": "profile"
   },
   {
@@ -734,6 +698,18 @@
    "place_src": "text"
   },
   {
+   "di": 496,
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "text": "Co-authored a 2022 PLOS ONE paper modeling optimal COVID-19 reopening strategies, Nov 2022 (PubMed Central)",
+   "source": "PubMed Central",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9645599/",
+   "published": "2022-11-09",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Spring 2022 semester as a Criminal Investigation major",
@@ -902,18 +878,6 @@
    "place_src": "text"
   },
   {
-   "di": 52,
-   "display": "Cashlynn Colbert",
-   "text": "Named to the SUNYAC Commissioner's Academic Honor Roll for the 2018-19 academic year as a senior women's volleyball player at SUNY Potsdam",
-   "source": "SUNY Potsdam Athletics",
-   "url": "https://potsdambears.com/news/2019/6/18/golf-102-potsdam-athletes-named-to-sunyac-commissioners-honor-roll061819.aspx",
-   "published": "2019-06-18",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
    "di": 118,
    "display": "Julia Fulton",
    "text": "Was a French and political science major at Hope College",
@@ -948,6 +912,18 @@
    "pid": "44.5531,-74.9394",
    "place": "Colton, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 337,
+   "display": "Danielle Guimond",
+   "text": "Appointed as a substitute teaching assistant in the Ogdensburg City School District for the 2017-2018 school year, Aug 2017",
+   "source": "Ogdensburg City School District",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3130/Ocsd/68e29f63-ec73-4ee2-b6db-1308c2329729/BOE_Minutes_08-28-17.pdf?disposition=inline",
+   "published": "2017-08-28",
+   "fresh": false,
+   "pid": "44.6942,-75.4863",
+   "place": "Ogdensburg",
+   "place_src": "text"
   },
   {
    "di": 276,
@@ -8136,6 +8112,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
+  },
+  {
+   "di": 720,
+   "display": "Isa Goettl",
+   "text": "Recorded an assist on Sara Manness's third-period goal in Clarkson's 3-0 win over No. 6 Quinnipiac, Nov 21, 2026 (ECAC Hockey)",
+   "source": "ECAC Hockey",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 515,
