@@ -18386,6 +18386,26 @@
    "fields": {},
    "published": false,
    "novelty": ""
+  },
+  {
+   "id": "lr-20261122-fb-natalia-boyle-identity",
+   "name": "Natalia Boyle",
+   "display": "Natalia Boyle",
+   "run_date": "2026-11-22",
+   "run_label": "Social Tracker alias mapping",
+   "category": "identity",
+   "claim": "Natalia Boyle of Madrid, NY was identified by JD on Nov 22, 2026 as the deactivated Facebook account behind the 62-message Messenger thread of Feb 2016 to Oct 2018.",
+   "file_text": "Natalia Boyle (born Aug 31, 1991; lives in Madrid, New York; married David Boyle in June 2019) is the person behind the deactivated 'Facebook user' Messenger thread of 62 messages, Feb 9, 2016 to Oct 26, 2018: a CFC lifegroup insider who warned JD about a girl in Feb 2016 and resurfaced in Oct 2018 negotiating wedding photography with him ahead of her June 2019 wedding, a thread that ends with JD asking who it was. JD identified her on Nov 22, 2026 from her current Facebook profile (natalia.boyle.1683); she has no directory profile and no named presence in the export.",
+   "source": "facebook-export via Social Tracker sheet; JD identification Nov 22, 2026",
+   "url": "",
+   "quote": "",
+   "anchors": [],
+   "missing_gate": "",
+   "confidence": "high",
+   "confidence_parts": {},
+   "fields": {},
+   "published": false,
+   "novelty": ""
   }
  ]
 }
