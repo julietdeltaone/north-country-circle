@@ -6647,6 +6647,45 @@
    "pattern": "milestone",
    "source": "SUNY Potsdam",
    "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle"
+  },
+  {
+   "anchor": "University of New England \u00b7 Women's ice hockey",
+   "batch": "PM run + compounding lane \u2014 Nov 22, 2026",
+   "display": "Adria Tebo",
+   "fact": "Adria Tebo is a member of the Chi Alpha Sigma National College Athlete Honor Society at the University of New England",
+   "id": "fi-20261122-adria-t18-adria-tebo-is-a-member-of-the",
+   "key": "adria.t18",
+   "learned": "2026-11-22",
+   "name": "adria.t18",
+   "pattern": "new_credential",
+   "source": "University of New England Athletics",
+   "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118"
+  },
+  {
+   "anchor": "University of New England \u00b7 Women's ice hockey",
+   "batch": "PM run + compounding lane \u2014 Nov 22, 2026",
+   "display": "Adria Tebo",
+   "fact": "Adria Tebo is majoring in health sciences at the University of New England, with minors in coaching and nutrition, not athletic training as her record said",
+   "id": "fi-20261122-adria-t18-adria-tebo-is-majoring-in-heal",
+   "key": "adria.t18",
+   "learned": "2026-11-22",
+   "name": "adria.t18",
+   "pattern": "correction",
+   "source": "University of New England Athletics",
+   "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118"
+  },
+  {
+   "anchor": "Anastasia's Bakery LLC \u00b7 Norwood, NY",
+   "batch": "PM run + compounding lane \u2014 Nov 22, 2026",
+   "display": "Anastasia Cote",
+   "fact": "Anastasia's Bakery LLC's carrier registration remained active in federal records as of November 17, 2026, on a form filed July 30, 2025",
+   "id": "fi-20261122-anastasiasbakery-anastasia-s-bakery-llc-s-carri",
+   "key": "anastasiasbakery",
+   "learned": "2026-11-22",
+   "name": "anastasiasbakery",
+   "pattern": "milestone",
+   "source": "FMCSA SAFER",
+   "url": "https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3176639&original_query_string=ANASTASIA%27S+BAKERY+LLC"
   }
  ],
  "patterns": {
