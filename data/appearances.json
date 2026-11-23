@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1511,
+  "total": 1513,
   "dated": 82,
-  "undated": 1429,
-  "placed": 1357,
+  "undated": 1431,
+  "placed": 1359,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -10852,6 +10852,18 @@
   {
    "di": 547,
    "display": "Karen Hoover",
+   "text": "Reviewer of conference proposals for the American Occupational Therapy Association, 2019 to present (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
    "text": "Serves from 2023 to present as an Adaptive Ski Instructor with STRIDE Adaptive Sports (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -16055,6 +16067,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
+   "text": "Scheduled to perform with Backwoods Brass at Arts Center Lake Placid, Dec 2026 (Lake Placid)",
+   "source": "Lake Placid",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.2795,-73.9799",
+   "place": "Lake Placid",
    "place_src": "text"
   },
   {
