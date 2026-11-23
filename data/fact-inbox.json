@@ -6714,6 +6714,45 @@
     "status": "read"
    },
    "url": "https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3176639&original_query_string=ANASTASIA%27S+BAKERY+LLC"
+  },
+  {
+   "anchor": "Liberal, Kansas \u00b7 teacher and Pancake Day race winner",
+   "batch": "AM run \u2014 Nov 23, 2026",
+   "display": "Maggie Lapinski",
+   "fact": "Maggie Lapinski taught at Cottonwood Intermediate School in Liberal, Kansas, in 2017",
+   "id": "fi-20261123-ct-maggie-lapinski-maggie-lapinski-taught-at-cott",
+   "key": "ct:maggie lapinski",
+   "learned": "2026-11-23",
+   "name": "ct:maggie lapinski",
+   "pattern": "milestone",
+   "source": "U.S. Senator Jerry Moran",
+   "url": "https://www.moran.senate.gov/public/index.cfm/newsletter?ID=F6B0E10B-E2C0-410B-A5D6-FF45DE6967D3"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Mathematics",
+   "batch": "AM run \u2014 Nov 23, 2026",
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "fact": "Frederick Laud Amoah-Darko Jr. co-authored a 2022 PLOS ONE paper modeling optimal COVID-19 reopening strategies",
+   "id": "fi-20261123-sf-frederick-laud-amoah-darko-jr-frederick-laud-amoah-darko-jr",
+   "key": "sf:frederick-laud-amoah-darko-jr",
+   "learned": "2026-11-23",
+   "name": "sf:frederick-laud-amoah-darko-jr",
+   "pattern": "milestone",
+   "source": "PubMed Central",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9645599/"
+  },
+  {
+   "anchor": "Ogdensburg, New York \u00b7 substitute teaching assistant",
+   "batch": "AM run \u2014 Nov 23, 2026",
+   "display": "Danielle Guimond",
+   "fact": "Danielle Guimond was appointed as a substitute teaching assistant in the Ogdensburg City School District for the 2017-2018 school year",
+   "id": "fi-20261123-ct-danielle-guimond-danielle-guimond-was-appointed",
+   "key": "ct:danielle guimond",
+   "learned": "2026-11-23",
+   "name": "ct:danielle guimond",
+   "pattern": "milestone",
+   "source": "Ogdensburg City School District",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3130/Ocsd/68e29f63-ec73-4ee2-b6db-1308c2329729/BOE_Minutes_08-28-17.pdf?disposition=inline"
   }
  ],
  "patterns": {
