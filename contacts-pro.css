@@ -6303,7 +6303,7 @@ a.fi-nm:hover{color:var(--acc2)}
 }
 html[data-mode="dark"]{
   --pv-bg:#0b0e13; --pv-panel:#12161e; --pv-panel2:#171c26; --pv-line:rgba(255,255,255,.08); --pv-line2:rgba(255,255,255,.14);
-  --pv-text:#e8ecf1; --pv-mut:#9aa3b2; --pv-dim:#6b7484;
+  --pv-text:#e8ecf1; --pv-mut:#9aa3b2; --pv-dim:#828c9c;
   --pv-blue:#6ea8d8; --pv-blue-bg:rgba(110,168,216,.12); --pv-gold:#c9a86a; --pv-gold-bg:rgba(201,168,106,.12);
   --pv-green:#5fb878; --pv-amber:#d9a441; --pv-red:#e0766f; --pv-maroon:#7a3049;
   --pv-railbg:rgba(18,22,30,.62); --pv-nav:#c6cdd8; --pv-hover:rgba(255,255,255,.05); --pv-on:rgba(255,255,255,.08);
