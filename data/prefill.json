@@ -36,7 +36,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 11,
+   "tentative_floor": 12,
    "shelved": 2
   },
   "items": [
@@ -54,6 +54,16 @@
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
     "display": "Chiara",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-316cf540f7",
+    "key": "eli.e.thomas",
+    "display": "Eli Thomas",
     "field": "location_on_file",
     "value": "Potsdam, NY",
     "rules": [
