@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-23",
+ "updated": "2026-11-24",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -18432,6 +18432,138 @@
    },
    "fields": {},
    "published": "2025-09-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261124-sf-brittany-fountain-sharlow-grandmother-patricia-patti-bory-of-w",
+   "name": "sf:brittany-fountain-sharlow",
+   "display": "Brittany Fountain Sharlow",
+   "run_date": "2026-11-24",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Brittany's grandmother, Patricia 'Patti' Bory of Winthrop, died on November 6, 2026. Her obituary at Hammill Funeral Home names 'Brittany (Jared) Sharlow' as one of her four grandchildren.",
+   "file_text": "Grandmother Patricia 'Patti' Bory of Winthrop died on Nov 6, 2026",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/patricia-bory",
+   "quote": "She had four grandchildren, Danielle (Thomas) Emburey, Brittany (Jared) Sharlow, Kevin (Skyler) Susice, and Jenna Susice, as well as three great-grandchildren, Violet, Natalie, and Jack.",
+   "anchors": [
+    "married name Brittany Sharlow, with her husband Jared named the same way",
+    "Winthrop, in her home area"
+   ],
+   "missing_gate": "This is about Brittany's family, so I always check with you first.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261124-sf-g-c-jaggs-worked-at-massena-central-schools-in",
+   "name": "sf:g-c-jaggs",
+   "display": "G.C. Jaggs",
+   "run_date": "2026-11-24",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A public-pay website lists a 'Gideon C. Jaggers' who worked at Massena Central Schools in 2022 and 2023, and a 2020 NYSSMA program lists a Gideon Jaggers singing tenor for Massena High School. G.C.'s record has him at Massena Central High School, but no page found uses the name 'Jaggs' for this person.",
+   "file_text": "Worked at Massena Central Schools in 2022 and 2023 (listed as Gideon C. Jaggers)",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/jaggers-gideon-c-169000944",
+   "quote": "Gideon Jaggers C in 2023 was employed at Massena Central Schools and had a reported pay of $471, according to public records.",
+   "anchors": [
+    "Massena Central High School",
+    "initials G.C. matching 'Gideon C.'"
+   ],
+   "missing_gate": "The pages name a Gideon Jaggers in Massena, but nothing ties him to the Jaggs spelling or the other facts on G.C.'s record.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261124-sf-ethan-hackett-senior-designer-at-clearbit",
+   "name": "sf:ethan-hackett",
+   "display": "Ethan Hackett",
+   "run_date": "2026-11-24",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Clearbit's own report page names an Ethan Hackett as a senior designer at Clearbit. Ethan's record is design and frontend work (Cotap, Nextstepu.com, Apple Store), but the Clearbit page names none of those places.",
+   "file_text": "Senior designer at Clearbit",
+   "source": "Clearbit",
+   "url": "https://clearbit.com/resources/reports/product-led-growth-companies",
+   "quote": "Here's Ethan Hackett, senior designer at Clearbit:",
+   "anchors": [
+    "design and frontend work"
+   ],
+   "missing_gate": "The page names an Ethan Hackett in design work, but nothing on it ties him to Cotap, Nextstepu, or the other facts on Ethan's record.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261124-sf-willow-rosemarie-signed-with-colgate-university-softb",
+   "name": "sf:willow-rosemarie",
+   "display": "Willow Edwards",
+   "run_date": "2026-11-24",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Colgate announced a Willow Edwards, a pitcher from Rye, New York, in its softball Class of 2029. The Willow Edwards on record is a U.S. Army 42A from Hopkins, South Carolina, so the Colgate player does not match her record and nothing was filed.",
+   "file_text": "Signed with Colgate University softball as a Class of 2029 pitcher from Rye, New York",
+   "source": "Colgate University Athletics",
+   "url": "https://colgateathletics.com/news/2024/11/14/softball-signs-five-in-class-of-2029.aspx",
+   "quote": "#7 Willow Edwards - P - 5-6 - Rye, N.Y.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "This is a different person with the same name, so nothing was filed.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 2,
+    "source": 25,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2024-11-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261124-sf-ben-roberts-joined-cfp-board-as-managing-directo",
+   "name": "sf:ben-roberts",
+   "display": "Ben Roberts",
+   "run_date": "2026-11-24",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "CFP Board's staff page says a Ben Roberts joined as Managing Director of Program Development in January 2026, with degrees from West Virginia University and the University of Tennessee. Ben's record is SUNY Potsdam and Conway, New Hampshire, so this man does not match his record and nothing was filed.",
+   "file_text": "Joined CFP Board as Managing Director of Program Development in Jan 2026",
+   "source": "CFP Board",
+   "url": "https://www.cfp.net/about-cfp-board/leadership-and-staff/ben-roberts",
+   "quote": "Ben Roberts, CPTD, SHRM-SCP joined CFP Board as Managing Director of Program Development in January 2026.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "This is a different person with the same name, so nothing was filed.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 2,
+    "source": 25,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
    "novelty": "new"
   }
  ]
