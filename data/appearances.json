@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1513,
+  "total": 1515,
   "dated": 79,
-  "undated": 1434,
-  "placed": 1359,
+  "undated": 1436,
+  "placed": 1361,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -3508,6 +3508,18 @@
   {
    "di": 452,
    "display": "Brittany Fountain Sharlow",
+   "text": "Grandmother Patricia 'Patti' Bory of Winthrop died on Nov 6, 2026 (Hammill Funeral Home)",
+   "source": "Hammill Funeral Home",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.7194,-74.8553",
+   "place": "Winthrop",
+   "place_src": "text"
+  },
+  {
+   "di": 452,
+   "display": "Brittany Fountain Sharlow",
    "text": "Plant Administrator at Potters Industries; previously Oncology Practice Coordinator, Oncology Intake Specialist, and Patient Representative with Rochester Regional Health, St. Lawrence Region; also a teaching assistant at Potsdam Central School and a waitress and bartender at Deer Valley Trails (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -6803,6 +6815,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 497,
+   "display": "G.C. Jaggs",
+   "text": "Worked at Massena Central Schools in 2022 and 2023 (listed as Gideon C. Jaggers) (GovSalaries)",
+   "source": "GovSalaries",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.9281,-74.8919",
+   "place": "Massena",
    "place_src": "text"
   },
   {
