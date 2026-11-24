@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1512,
-  "dated": 80,
-  "undated": 1432,
-  "placed": 1358,
+  "total": 1513,
+  "dated": 79,
+  "undated": 1434,
+  "placed": 1359,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 34,
-  "brief_standalone": 47,
+  "brief_attached": 35,
+  "brief_standalone": 45,
   "brief_unresolved": 1
  },
  "items": [
@@ -302,16 +302,16 @@
    "place_src": "text"
   },
   {
-   "di": 97,
-   "display": "Ethan Flamand",
-   "text": "Began considering carbon capture and CO2 mineralization as a research area after his spring 2026 Global Business Program trip, Sep 2026",
-   "source": "Clarkson University",
-   "url": "https://diy.clarkson.edu/apply-to-clarkson/clarkson-honors-students-find-new-perspectives-abroad/",
+   "di": 468,
+   "display": "Colin Mackey",
+   "text": "Holds a bachelor's degree in Business from St. Bonaventure University and a Master of Science in Teaching, Elementary Education from SUNY Potsdam (Utica Phoenix)",
+   "source": "Utica Phoenix",
+   "url": "https://uticaphoenix.net/mvcc-announces-new-hires/",
    "published": "2026-09-18",
    "fresh": false,
    "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
-   "place_src": "profile"
+   "place": "SUNY Potsdam",
+   "place_src": "text"
   },
   {
    "di": 468,
@@ -480,6 +480,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
+   "text": "Co-presented 'Development, Reliability and Validity of the Occupational Therapy Self-Efficacy of Clinical Competence (OT-SECC) Assessment' at Seton Hall University's 2025 Interprofessional Health Sciences Research Symposium, Apr 2025 (Seton Hall University)",
+   "source": "Seton Hall University",
+   "url": "https://www13.shu.edu/documents/petersheim-2025-ihs-research-symposium-agenda.pdf",
+   "published": "2025-04-30",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 582,
@@ -698,18 +710,6 @@
    "place_src": "text"
   },
   {
-   "di": 496,
-   "display": "Frederick Laud Amoah-Darko Jr.",
-   "text": "Co-authored a 2022 PLOS ONE paper modeling optimal COVID-19 reopening strategies, Nov 2022 (PubMed Central)",
-   "source": "PubMed Central",
-   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9645599/",
-   "published": "2022-11-09",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
-   "place_src": "profile"
-  },
-  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Spring 2022 semester as a Criminal Investigation major",
@@ -912,18 +912,6 @@
    "pid": "44.5531,-74.9394",
    "place": "Colton, NY",
    "place_src": "profile"
-  },
-  {
-   "di": 337,
-   "display": "Danielle Guimond",
-   "text": "Appointed as a substitute teaching assistant in the Ogdensburg City School District for the 2017-2018 school year, Aug 2017",
-   "source": "Ogdensburg City School District",
-   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3130/Ocsd/68e29f63-ec73-4ee2-b6db-1308c2329729/BOE_Minutes_08-28-17.pdf?disposition=inline",
-   "published": "2017-08-28",
-   "fresh": false,
-   "pid": "44.6942,-75.4863",
-   "place": "Ogdensburg",
-   "place_src": "text"
   },
   {
    "di": 276,
@@ -6724,6 +6712,18 @@
   {
    "di": 496,
    "display": "Frederick Laud Amoah-Darko Jr.",
+   "text": "Co-authored a 2022 PLOS ONE paper modeling optimal COVID-19 reopening strategies, Nov 2022 (PubMed Central)",
+   "source": "PubMed Central",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 496,
+   "display": "Frederick Laud Amoah-Darko Jr.",
    "text": "Earned a PhD in Mathematics from Clarkson University in August 2023 (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
@@ -9000,6 +9000,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 717,
+   "display": "Janelle Evans",
+   "text": "Recorded 8 goals and 10 assists for 18 points in 18 games through Clarkson's 3-0 win over Quinnipiac, Nov 21, 2026 (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
   },
   {
    "di": 717,
