@@ -6765,6 +6765,58 @@
     "status": "read"
    },
    "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3130/Ocsd/68e29f63-ec73-4ee2-b6db-1308c2329729/BOE_Minutes_08-28-17.pdf?disposition=inline"
+  },
+  {
+   "anchor": "Seton Hall University \u00b7 Occupational Therapy",
+   "batch": "AM run \u2014 Nov 24, 2026",
+   "display": "Karen Hoover",
+   "fact": "Karen Hoover co-presented the OT-SECC Assessment study at Seton Hall University's 2025 Interprofessional Health Sciences Research Symposium",
+   "id": "fi-20261124-sf-karen-hoover-karen-hoover-co-presented-the",
+   "key": "sf:karen-hoover",
+   "learned": "2026-11-24",
+   "name": "sf:karen-hoover",
+   "pattern": "milestone",
+   "source": "Seton Hall University",
+   "url": "https://www13.shu.edu/documents/petersheim-2025-ihs-research-symposium-agenda.pdf"
+  },
+  {
+   "anchor": "St. Bonaventure University \u00b7 SUNY Potsdam",
+   "batch": "AM run \u2014 Nov 24, 2026",
+   "display": "Colin Mackey",
+   "fact": "Colin Mackey holds a bachelor's degree in Business from St. Bonaventure University and a Master of Science in Teaching, Elementary Education from SUNY Potsdam",
+   "id": "fi-20261124-sf-colin-mackey-colin-mackey-holds-a-bachelor",
+   "key": "sf:colin-mackey",
+   "learned": "2026-11-24",
+   "name": "sf:colin-mackey",
+   "pattern": "milestone",
+   "source": "Utica Phoenix",
+   "url": "https://uticaphoenix.net/mvcc-announces-new-hires/"
+  },
+  {
+   "anchor": "Avon, New York \u00b7 Monroe Community College",
+   "batch": "AM run \u2014 Nov 24, 2026",
+   "display": "Grace Serene",
+   "fact": "Grace Serene (as Grace Levendusky) won the public vote to sing the national anthem at the 2016 Great New York State Fair",
+   "id": "fi-20261124-grace-serene-grace-serene-as-grace-levendus",
+   "key": "grace.serene",
+   "learned": "2026-11-24",
+   "name": "grace.serene",
+   "pattern": "milestone",
+   "source": "New York State Department of Agriculture and Markets",
+   "url": "https://agriculture.ny.gov/news/performers-across-new-york-state-will-sing-national-anthem-2016-great-new-york-state-fair"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 women's hockey #17",
+   "batch": "AM run \u2014 Nov 24, 2026",
+   "display": "Janelle Evans",
+   "fact": "Janelle Evans recorded 8 goals and 10 assists for 18 points in 18 games through Clarkson's Nov 21, 2026 win over Quinnipiac",
+   "id": "fi-20261124-sf-janelle-evans-janelle-evans-recorded-8-goals",
+   "key": "sf:janelle-evans",
+   "learned": "2026-11-24",
+   "name": "sf:janelle-evans",
+   "pattern": "milestone",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats"
   }
  ],
  "patterns": {
