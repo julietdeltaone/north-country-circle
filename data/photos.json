@@ -2180,12 +2180,13 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "No source links on file.",
+   "added": "2026-11-24",
+   "evidence": "Crop on Eliza Sullivan from an engagement photo in the gallery of the couple's own Zola wedding site (Eliza Sullivan and Tyler Weller, married November 8, 2025, Winthrop NY). The site's wedding-party page names her as the Bride, and its story page matches her on-file engagement details (Emmanuel Baptist Church, the dam at Brasher Community Center). She is the woman dancing with Tyler Weller in the gallery photo; the crop shows her face clearly.",
    "name": "Eliza Sullivan",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "photos/eliza-sullivan.jpg",
+   "source_page": "https://www.zola.com/wedding/tylerloveseliza/photo",
+   "status": "likely",
+   "type": "Engagement photo (cropped from couple photo on wedding site)"
   },
   {
    "added": "2026-11-02",
@@ -7850,5 +7851,5 @@
   }
  ],
  "total": 703,
- "updated": "2026-11-21"
+ "updated": "2026-11-24"
 }
