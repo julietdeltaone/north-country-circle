@@ -4,12 +4,36 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "sf:christopher-towler",
+   "display": "Christopher Towler",
+   "field": "universities",
+   "value": "SUNY Canton",
+   "conf": 92,
+   "id": "pf-44ffeec2c7"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:raedyn-spademan",
+   "display": "Raedyn Spademan",
+   "field": "universities",
+   "value": "Syracuse University",
+   "conf": 74,
+   "id": "pf-9af8dc77da"
+  },
+  {
+   "key": "sf:isa-goettl",
+   "display": "Isa Goettl",
+   "field": "universities",
+   "value": "Syracuse University",
+   "conf": 74,
+   "id": "pf-51b4dabe86"
   }
  ],
  "shelved": [
