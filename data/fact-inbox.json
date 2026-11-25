@@ -7077,6 +7077,19 @@
    "pattern": "milestone",
    "source": "PubMed Central",
    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614740/"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 women's hockey #20",
+   "batch": "AM run \u2014 Nov 25, 2026",
+   "display": "Jenna Smellie",
+   "fact": "Jenna Smellie recorded a four-point game (one goal, three assists) in Clarkson's program-record 15-0 win over Saint Michael's on Jan 2, 2026",
+   "id": "fi-20261125-sf-jenna-smellie-jenna-smellie-recorded-a-four",
+   "key": "sf:jenna-smellie",
+   "learned": "2026-11-25",
+   "name": "sf:jenna-smellie",
+   "pattern": "milestone",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/news/2026/1/2/womens-hockey-clarkson-returns-from-break-with-record-day-in-15-0-win-over-saint-michael-s.aspx"
   }
  ],
  "patterns": {
