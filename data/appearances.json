@@ -1,11 +1,11 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1534,
+  "total": 1540,
   "dated": 83,
-  "undated": 1451,
-  "placed": 1382,
-  "unplaced": 152,
+  "undated": 1457,
+  "placed": 1387,
+  "unplaced": 153,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 38,
@@ -5054,6 +5054,18 @@
    "place_src": ""
   },
   {
+   "di": 675,
+   "display": "Cristian Ruiz-Marquez",
+   "text": "Helped lead a Citizen Preparedness Corps training for the Town of Smithtown, Mar 23, 2026 (listed as Cristiam Ruiz Marquez) (Town of Smithtown)",
+   "source": "Town of Smithtown",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
    "di": 475,
    "display": "Dale Fournier",
    "text": "Co-authored \"Spatiotemporal changes in imaging features associated with diffuse idiopathic skeletal hyperostosis (DISH)\" (RMD Open, 2024) with Michele C. Battié and Cheryle A. Séguin, affiliated with the University of Western Ontario (JoVE Visualize)",
@@ -9628,6 +9640,30 @@
   {
    "di": 529,
    "display": "Jesse Braun",
+   "text": "Hoped in 2020 to go to law school to study Environmental Law (Premier Select Sires)",
+   "source": "Premier Select Sires",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "40.7128,-74.0060",
+   "place": "New York, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 529,
+   "display": "Jesse Braun",
+   "text": "Is the son of Peter and Michelle Braun of Woodcrest Dairy in Lisbon, NY (Premier Select Sires)",
+   "source": "Premier Select Sires",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.7247,-75.3183",
+   "place": "Lisbon, NY",
+   "place_src": "text"
+  },
+  {
+   "di": 529,
+   "display": "Jesse Braun",
    "text": "Lives in New York, New York; hometown Ogdensburg, New York (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -9948,6 +9984,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 535,
+   "display": "Joe Charlebois",
+   "text": "Celebrated at Rochester Red Wings Stroke Awareness Night while recovering from a stroke, May 2025 (Rochester Red Wings)",
+   "source": "Rochester Red Wings",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.1566,-77.6088",
+   "place": "Rochester",
+   "place_src": "text"
   },
   {
    "di": 535,
@@ -13182,6 +13230,18 @@
    "display": "Marissa Carl",
    "text": "Educated at Mount Holyoke College (Facebook)",
    "source": "Facebook",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "29.7604,-95.3698",
+   "place": "Houston, TX",
+   "place_src": "profile"
+  },
+  {
+   "di": 578,
+   "display": "Marissa Carl",
+   "text": "Grandfather Dr. LeRoy Stanwood Roemer died on May 7, 2023 (Tharp Funeral Home & Crematory)",
+   "source": "Tharp Funeral Home & Crematory",
    "url": "",
    "published": "",
    "fresh": false,
@@ -17886,6 +17946,18 @@
    "display": "Victor Njoku",
    "text": "His Clarkson GSA profile identifies him as a PhD student in the Chemistry & Biochemistry Department and GSA Secretary (Clarkson University)",
    "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 643,
+   "display": "Victor Njoku",
+   "text": "Presented poster MP 034, 'Quantitative Serum Proteomics in Breast Cancer Identifies Blood Coagulation Factors as Dysregulated,' at the 74th ASMS Conference in San Diego, Jun 2026 (Darie Lab (Clarkson University))",
+   "source": "",
    "url": "",
    "published": "",
    "fresh": false,
