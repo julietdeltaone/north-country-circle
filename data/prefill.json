@@ -4,6 +4,22 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "sf:jim-holt",
+   "display": "Jim Holt",
+   "field": "universities",
+   "value": "SUNY Canton",
+   "conf": 74,
+   "id": "pf-1aa5ab614a"
+  },
+  {
+   "key": "sf:lennart-johns",
+   "display": "Lennart Johns",
+   "field": "specialty",
+   "value": "Emergency Medical Technician",
+   "conf": 90,
+   "id": "pf-5e741881f5"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
