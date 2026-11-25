@@ -1,18 +1,54 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1528,
-  "dated": 85,
-  "undated": 1443,
-  "placed": 1370,
-  "unplaced": 158,
+  "total": 1534,
+  "dated": 83,
+  "undated": 1451,
+  "placed": 1377,
+  "unplaced": 157,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 39,
-  "brief_standalone": 47,
+  "brief_attached": 38,
+  "brief_standalone": 46,
   "brief_unresolved": 1
  },
  "items": [
+  {
+   "di": 719,
+   "display": "Raedyn Spademan",
+   "text": "Recorded an assist on Isabelle Goettl's game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
+   "source": "Syracuse University Athletics",
+   "url": "https://cuse.com/news/2026/11/24/ice-hockey-orange-fall-to-clarkson-tuesday-night",
+   "published": "2026-11-24",
+   "fresh": true,
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse",
+   "place_src": "text"
+  },
+  {
+   "di": 720,
+   "display": "Isa Goettl",
+   "text": "Scored the game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
+   "source": "Syracuse University Athletics",
+   "url": "https://cuse.com/news/2026/11/24/ice-hockey-orange-fall-to-clarkson-tuesday-night",
+   "published": "2026-11-24",
+   "fresh": true,
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse",
+   "place_src": "text"
+  },
+  {
+   "di": 7,
+   "display": "Adria Tebo",
+   "text": "Scored a first-period goal in the University of New England's 4-3 overtime loss to Bowdoin, Nov 24, 2026",
+   "source": "Bowdoin College Athletics",
+   "url": "https://athletics.bowdoin.edu/news/2026/11/24/womens-ice-hockey-womens-hockey-completes-comeback-in-overtime-at-une.aspx",
+   "published": "2026-11-24",
+   "fresh": true,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton, NY",
+   "place_src": "profile"
+  },
   {
    "di": 719,
    "display": "Raedyn Spademan",
@@ -398,6 +434,18 @@
    "place_src": "text"
   },
   {
+   "di": 718,
+   "display": "Jenna Smellie",
+   "text": "Recorded a four-point game (one goal, three assists) in Clarkson's program-record 15-0 win over Saint Michael's, Jan 2, 2026 (Clarkson University Athletics)",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/news/2026/1/2/womens-hockey-clarkson-returns-from-break-with-record-day-in-15-0-win-over-saint-michael-s.aspx",
+   "published": "2026-01-02",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
    "di": 671,
    "display": "Jordyn Hill",
    "text": "Lost his opening match by fall in 5:27 to Oneonta's Tristan Hinchcliff in the 125 lb Freshman/Sophomore Division at the New York State Collegiate Wrestling Championships, Nov 2025 (SUNY Oneonta Athletics)",
@@ -434,30 +482,6 @@
    "place_src": "profile"
   },
   {
-   "di": 167,
-   "display": "Joye Levendusky",
-   "text": "Named a three-time national finalist in King University's hiring announcement, Oct 2025",
-   "source": "King University Athletics",
-   "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
-   "published": "2025-10-07",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
-   "di": 167,
-   "display": "Joye Levendusky",
-   "text": "Was still pursuing her MBA as of King University's Oct 2025 hiring announcement, which described the degree as in progress rather than completed",
-   "source": "King University Athletics",
-   "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
-   "published": "2025-10-07",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
    "di": 375,
    "display": "Bryan Noble",
    "text": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
@@ -492,6 +516,30 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 684,
+   "display": "Mark Cornett",
+   "text": "Listed as Head of U.S. Sales and Operations at Precise Biometrics, Mar 2025, representing the company at ISC West in Las Vegas (Nasdaq)",
+   "source": "Nasdaq",
+   "url": "https://attachment.news.eu.nasdaq.com/ad226d6d44882519c835b16e35a0a4b7b",
+   "published": "2025-03-12",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 711,
+   "display": "Eli Larson",
+   "text": "Named a SUNY Canton Athlete of the Week, Jan 27, 2025, after averaging 13.0 points and 10.7 rebounds in a 2-1 SUNYAC week for the Roos, including his fifth double-double of the season (SUNY Canton Athletics)",
+   "source": "SUNY Canton Athletics",
+   "url": "https://rooathletics.com/awards.aspx?aow=991&page=10",
+   "published": "2025-01-27",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
   },
   {
    "di": 582,
@@ -710,18 +758,6 @@
    "place_src": "text"
   },
   {
-   "di": 477,
-   "display": "David Perry",
-   "text": "Uses Melio for client bill pay at Latitude Bookkeeping, cutting the time to pay 10 bills per client from 40 minutes to 1.5 hours down to 5 to 10 minutes (Melio)",
-   "source": "Melio",
-   "url": "https://melio.com/blog/why-you-should-offer-ap-ar-services-to-your-clients/",
-   "published": "2022-07-06",
-   "fresh": false,
-   "pid": "44.6995,-73.4529",
-   "place": "Plattsburgh, NY",
-   "place_src": "profile"
-  },
-  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Spring 2022 semester as a Criminal Investigation major",
@@ -806,18 +842,6 @@
    "place_src": "profile"
   },
   {
-   "di": 479,
-   "display": "Devon Sutton",
-   "text": "Represented LC Drives at the Potsdam Town Planning Board public hearing on Apr 6, 2021, saying the company was not yet ready for the full Route 56 expansion and the approved 30,000-square-foot building would be a transition space toward a 150,000-square-foot hub (Pumps & Systems)",
-   "source": "Pumps & Systems",
-   "url": "https://www.pumpsandsystems.com/lc-drives-construct-new-manufacturing-facility/",
-   "published": "2021-04-14",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam",
-   "place_src": "text"
-  },
-  {
    "di": 76,
    "display": "Daniel Manor",
    "text": "Named to the St. Lawrence-Lewis BOCES Seaway Career and Technical Center second-quarter honor roll for 2020-2021 in Building Trades 1, listed as Daniel Manor III",
@@ -890,18 +914,6 @@
    "place_src": "profile"
   },
   {
-   "di": 479,
-   "display": "Devon Sutton",
-   "text": "Applied for and was awarded a $50,000 FuzeHub Manufacturing Grant in 2018 to install powder-coating equipment in Damon Hall for LC Drives (FuzeHub)",
-   "source": "FuzeHub",
-   "url": "https://fuzehub.com/manufacturing-blog/success-story-lc-drives/",
-   "published": "2020-04-08",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
    "di": 444,
    "display": "Benjamin Horner",
    "text": "Named to SUNY Canton's President's List for the Fall 2019 semester as a Criminal Justice student (SUNY Canton)",
@@ -911,18 +923,6 @@
    "fresh": false,
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
-   "place_src": "text"
-  },
-  {
-   "di": 496,
-   "display": "Frederick Laud Amoah-Darko Jr.",
-   "text": "Presented his continuous model of microtubule dynamic instability with pausing at the MCCNNY 2018 conference at Clarkson University, Oct 27, 2018, advised by Diana White (Clarkson University)",
-   "source": "Clarkson University",
-   "url": "https://lin-web.clarkson.edu/~gyao/MCCNNY/MCCNNY2018ConferenceAbstract.pdf",
-   "published": "2018-10-27",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -995,30 +995,6 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
-   "di": 533,
-   "display": "Jim Holt",
-   "text": "Elected Lead Pastor of New Hope Community Church on Apr 11, 2015, by a vote of 55 to 1 after a year as an Elder, and formally installed Jul 11-12, 2015, during the church's 45th anniversary weekend (New Hope Community Church Annual Report 2015-2016)",
-   "source": "New Hope Community Church Annual Report 2015-2016",
-   "url": "https://silo.tips/download/new-hope-community-church-annual-report",
-   "published": "2016-04-01",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 533,
-   "display": "Jim Holt",
-   "text": "Led college outreach to SUNY Canton students and served as a 2015 Encounter Youth Group leader, when the group raised $2,438.03 in World Vision's 30 Hour Famine on Apr 24-25, 2015 (New Hope Community Church Annual Report 2015-2016)",
-   "source": "New Hope Community Church Annual Report 2015-2016",
-   "url": "https://silo.tips/download/new-hope-community-church-annual-report",
-   "published": "2016-04-01",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
@@ -4432,6 +4408,18 @@
   {
    "di": 464,
    "display": "Christopher Towler",
+   "text": "Began a three-year term on SUNY Canton's Health and Fitness Promotion advisory board on Jun 1, 2024, serving as a Clarkson University Associate Clinical Professor of Physical Therapy (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 464,
+   "display": "Christopher Towler",
    "text": "Co-author of the Laboratory Manual for Clinical Kinesiology and Anatomy, 5th Edition (F.A. Davis, 2023) (F.A. Davis)",
    "source": "F.A. Davis",
    "url": "",
@@ -5524,6 +5512,18 @@
   {
    "di": 477,
    "display": "David Perry",
+   "text": "Uses Melio for client bill pay at Latitude Bookkeeping, cutting the time to pay 10 bills per client from 40 minutes to 1.5 hours down to 5 to 10 minutes (Melio)",
+   "source": "Melio",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6995,-73.4529",
+   "place": "Plattsburgh, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 477,
+   "display": "David Perry",
    "text": "Work history includes Latitude Bookkeeping Services, Financial Manager at After Hours Imaging, worship and administration roles at Plattsburgh House of Prayer, Youth/Worship Pastor at Plattsburgh Church of the Nazarene, and AIS Math and high school math teacher at Champlain Valley Educational Services; also a track and field official with the NYS Track and Field Officials Association (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -5692,6 +5692,18 @@
   {
    "di": 479,
    "display": "Devon Sutton",
+   "text": "Applied for and was awarded a $50,000 FuzeHub Manufacturing Grant in 2018 to install powder-coating equipment in Damon Hall for LC Drives (FuzeHub)",
+   "source": "FuzeHub",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 479,
+   "display": "Devon Sutton",
    "text": "Educated at Clarkson University, The George Washington University, and John S. Burke Catholic High School (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -5724,6 +5736,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 479,
+   "display": "Devon Sutton",
+   "text": "Represented LC Drives at the Potsdam Town Planning Board public hearing on Apr 6, 2021, saying the company was not yet ready for the full Route 56 expansion and the approved 30,000-square-foot building would be a transition space toward a 150,000-square-foot hub (Pumps & Systems)",
+   "source": "Pumps & Systems",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
+   "place_src": "text"
   },
   {
    "di": 479,
@@ -6845,6 +6869,18 @@
    "di": 496,
    "display": "Frederick Laud Amoah-Darko Jr.",
    "text": "His Clarkson Mathematics thesis, on a continuous model for microtubule dynamic instability with pausing, was successfully defended in July 2023 (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 496,
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "text": "Presented his continuous model of microtubule dynamic instability with pausing at the MCCNNY 2018 conference at Clarkson University, Oct 27, 2018, advised by Diana White (Clarkson University)",
    "source": "Clarkson University",
    "url": "",
    "published": "",
@@ -9760,6 +9796,18 @@
   {
    "di": 533,
    "display": "Jim Holt",
+   "text": "Elected Lead Pastor of New Hope Community Church on Apr 11, 2015, by a vote of 55 to 1 after a year as an Elder, and formally installed Jul 11-12, 2015, during the church's 45th anniversary weekend (New Hope Community Church Annual Report 2015-2016)",
+   "source": "New Hope Community Church Annual Report 2015-2016",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 533,
+   "display": "Jim Holt",
    "text": "Holds an MA in Pastoral Counseling from Liberty University Online Programs and a Master of Divinity from Gordon-Conwell Theological Seminary; also educated at Roberts Wesleyan College and Elim Bible Institute (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -9768,6 +9816,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 533,
+   "display": "Jim Holt",
+   "text": "Led college outreach to SUNY Canton students and served as a 2015 Encounter Youth Group leader, when the group raised $2,438.03 in World Vision's 30 Hour Famine on Apr 24-25, 2015 (New Hope Community Church Annual Report 2015-2016)",
+   "source": "New Hope Community Church Annual Report 2015-2016",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
   },
   {
    "di": 533,
@@ -11982,6 +12042,18 @@
    "display": "Kyle Davis",
    "text": "Served as media contact for the 1st Battalion, 258th Field Artillery change of command at Camp Smith, Oct 2023 (New York State Division of Military and Naval Affairs)",
    "source": "New York State Division of Military and Naval Affairs",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 654,
+   "display": "Kyle Davis",
+   "text": "Served as the RSVP and offline-payment contact, as CPT Kyle Davis, for the 1st Battalion, 258th Field Artillery Saint Barbara's Day Ball on Dec 14, 2024 (Veteran Owned Businesses News)",
+   "source": "Veteran Owned Businesses News",
    "url": "",
    "published": "",
    "fresh": false,
