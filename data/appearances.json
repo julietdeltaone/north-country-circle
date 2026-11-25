@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1515,
-  "dated": 79,
-  "undated": 1436,
-  "placed": 1361,
-  "unplaced": 154,
+  "total": 1528,
+  "dated": 85,
+  "undated": 1443,
+  "placed": 1370,
+  "unplaced": 158,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 35,
-  "brief_standalone": 45,
+  "brief_attached": 39,
+  "brief_standalone": 47,
   "brief_unresolved": 1
  },
  "items": [
@@ -304,18 +304,6 @@
   {
    "di": 468,
    "display": "Colin Mackey",
-   "text": "Holds a bachelor's degree in Business from St. Bonaventure University and a Master of Science in Teaching, Elementary Education from SUNY Potsdam (Utica Phoenix)",
-   "source": "Utica Phoenix",
-   "url": "https://uticaphoenix.net/mvcc-announces-new-hires/",
-   "published": "2026-09-18",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
-   "di": 468,
-   "display": "Colin Mackey",
    "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
    "source": "Mohawk Valley Community College",
    "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf",
@@ -446,6 +434,30 @@
    "place_src": "profile"
   },
   {
+   "di": 167,
+   "display": "Joye Levendusky",
+   "text": "Named a three-time national finalist in King University's hiring announcement, Oct 2025",
+   "source": "King University Athletics",
+   "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
+   "published": "2025-10-07",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 167,
+   "display": "Joye Levendusky",
+   "text": "Was still pursuing her MBA as of King University's Oct 2025 hiring announcement, which described the degree as in progress rather than completed",
+   "source": "King University Athletics",
+   "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
+   "published": "2025-10-07",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
    "di": 375,
    "display": "Bryan Noble",
    "text": "Crewed a DEC vessel that escorted the USS New York into New York Harbor for the Fleet Week Parade of Ships, May 2025",
@@ -480,18 +492,6 @@
    "pid": "",
    "place": "",
    "place_src": ""
-  },
-  {
-   "di": 547,
-   "display": "Karen Hoover",
-   "text": "Co-presented 'Development, Reliability and Validity of the Occupational Therapy Self-Efficacy of Clinical Competence (OT-SECC) Assessment' at Seton Hall University's 2025 Interprofessional Health Sciences Research Symposium, Apr 2025 (Seton Hall University)",
-   "source": "Seton Hall University",
-   "url": "https://www13.shu.edu/documents/petersheim-2025-ihs-research-symposium-agenda.pdf",
-   "published": "2025-04-30",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
-   "place_src": "profile"
   },
   {
    "di": 582,
@@ -710,6 +710,18 @@
    "place_src": "text"
   },
   {
+   "di": 477,
+   "display": "David Perry",
+   "text": "Uses Melio for client bill pay at Latitude Bookkeeping, cutting the time to pay 10 bills per client from 40 minutes to 1.5 hours down to 5 to 10 minutes (Melio)",
+   "source": "Melio",
+   "url": "https://melio.com/blog/why-you-should-offer-ap-ar-services-to-your-clients/",
+   "published": "2022-07-06",
+   "fresh": false,
+   "pid": "44.6995,-73.4529",
+   "place": "Plattsburgh, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 69,
    "display": "Leslie Perri",
    "text": "Named to SUNY Canton's President's List for the Spring 2022 semester as a Criminal Investigation major",
@@ -794,6 +806,18 @@
    "place_src": "profile"
   },
   {
+   "di": 479,
+   "display": "Devon Sutton",
+   "text": "Represented LC Drives at the Potsdam Town Planning Board public hearing on Apr 6, 2021, saying the company was not yet ready for the full Route 56 expansion and the approved 30,000-square-foot building would be a transition space toward a 150,000-square-foot hub (Pumps & Systems)",
+   "source": "Pumps & Systems",
+   "url": "https://www.pumpsandsystems.com/lc-drives-construct-new-manufacturing-facility/",
+   "published": "2021-04-14",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
+   "place_src": "text"
+  },
+  {
    "di": 76,
    "display": "Daniel Manor",
    "text": "Named to the St. Lawrence-Lewis BOCES Seaway Career and Technical Center second-quarter honor roll for 2020-2021 in Building Trades 1, listed as Daniel Manor III",
@@ -866,6 +890,18 @@
    "place_src": "profile"
   },
   {
+   "di": 479,
+   "display": "Devon Sutton",
+   "text": "Applied for and was awarded a $50,000 FuzeHub Manufacturing Grant in 2018 to install powder-coating equipment in Damon Hall for LC Drives (FuzeHub)",
+   "source": "FuzeHub",
+   "url": "https://fuzehub.com/manufacturing-blog/success-story-lc-drives/",
+   "published": "2020-04-08",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
    "di": 444,
    "display": "Benjamin Horner",
    "text": "Named to SUNY Canton's President's List for the Fall 2019 semester as a Criminal Justice student (SUNY Canton)",
@@ -875,6 +911,18 @@
    "fresh": false,
    "pid": "44.5956,-75.1691",
    "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 496,
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "text": "Presented his continuous model of microtubule dynamic instability with pausing at the MCCNNY 2018 conference at Clarkson University, Oct 27, 2018, advised by Diana White (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "https://lin-web.clarkson.edu/~gyao/MCCNNY/MCCNNY2018ConferenceAbstract.pdf",
+   "published": "2018-10-27",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
    "place_src": "text"
   },
   {
@@ -947,6 +995,30 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 533,
+   "display": "Jim Holt",
+   "text": "Elected Lead Pastor of New Hope Community Church on Apr 11, 2015, by a vote of 55 to 1 after a year as an Elder, and formally installed Jul 11-12, 2015, during the church's 45th anniversary weekend (New Hope Community Church Annual Report 2015-2016)",
+   "source": "New Hope Community Church Annual Report 2015-2016",
+   "url": "https://silo.tips/download/new-hope-community-church-annual-report",
+   "published": "2016-04-01",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 533,
+   "display": "Jim Holt",
+   "text": "Led college outreach to SUNY Canton students and served as a 2015 Encounter Youth Group leader, when the group raised $2,438.03 in World Vision's 30 Hour Famine on Apr 24-25, 2015 (New Hope Community Church Annual Report 2015-2016)",
+   "source": "New Hope Community Church Annual Report 2015-2016",
+   "url": "https://silo.tips/download/new-hope-community-church-annual-report",
+   "published": "2016-04-01",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
@@ -4612,6 +4684,18 @@
   {
    "di": 468,
    "display": "Colin Mackey",
+   "text": "Holds a bachelor's degree in Business from St. Bonaventure University and a Master of Science in Teaching, Elementary Education from SUNY Potsdam (Utica Phoenix)",
+   "source": "Utica Phoenix",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 468,
+   "display": "Colin Mackey",
    "text": "Lives in Sauquoit, New York; hometown Norwood, New York (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -5411,6 +5495,18 @@
    "fresh": false,
    "pid": "44.6995,-73.4529",
    "place": "Plattsburgh, New York",
+   "place_src": "text"
+  },
+  {
+   "di": 477,
+   "display": "David Perry",
+   "text": "Served as a hole sponsor with Latitude Bookkeeping Services for the 5th Annual Schoolhouse Open disc golf tournament in Canton, NY, 2024 (Disc Golf Scene)",
+   "source": "Disc Golf Scene",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton, NY",
    "place_src": "text"
   },
   {
@@ -9472,6 +9568,18 @@
   {
    "di": 529,
    "display": "Jesse Braun",
+   "text": "Columbia roster bio lists his top times as 50 Free 22.87, 100 Free 51.19, 200 Free 1:52.46, 100 Breast 1:01.25, and 200 Breast 2:18.24, set in 2019-2020 (Columbia University Athletics)",
+   "source": "Columbia University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "40.7128,-74.0060",
+   "place": "New York, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 529,
+   "display": "Jesse Braun",
    "text": "Educated at Veritas Press Scholars Academy (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -10816,6 +10924,18 @@
   {
    "di": 547,
    "display": "Karen Hoover",
+   "text": "Co-presented 'Development, Reliability and Validity of the Occupational Therapy Self-Efficacy of Clinical Competence (OT-SECC) Assessment' at Seton Hall University's 2025 Interprofessional Health Sciences Research Symposium, Apr 2025 (Seton Hall University)",
+   "source": "Seton Hall University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 547,
+   "display": "Karen Hoover",
    "text": "Earned an MS in Occupational Therapy from Columbia University in 1994 and a clinical doctorate in OT from Chatham University; earlier earned a BS in Speech Pathology/Audiology from Ithaca College in 1985, graduating magna cum laude (JCC of Central NJ)",
    "source": "JCC of Central NJ",
    "url": "",
@@ -12004,6 +12124,18 @@
   {
    "di": 562,
    "display": "Lennart Johns",
+   "text": "Led Clarkson University to become a New York State Course Sponsor for EMS Educational Programs, offering EMS classes including EMT training (New York State Association for Rural Health)",
+   "source": "New York State Association for Rural Health",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 562,
+   "display": "Lennart Johns",
    "text": "Listed as a director of the New York State Association for Rural Health in its Rural Health Reimagined report, Jul 2025 (New York State Association for Rural Health)",
    "source": "New York State Association for Rural Health",
    "url": "",
@@ -12024,6 +12156,30 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 562,
+   "display": "Lennart Johns",
+   "text": "Received the New York State Association for Rural Health's Outstanding Rural Health Program of the Year Award among its 2022 Rural Health Award recipients (New York State Association for Rural Health)",
+   "source": "New York State Association for Rural Health",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 562,
+   "display": "Lennart Johns",
+   "text": "Serves as a board member of the North Area Health Education Center (Clarkson University)",
+   "source": "Clarkson University",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Clarkson University",
+   "place_src": "text"
   },
   {
    "di": 563,
