@@ -4,22 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "sf:jim-holt",
-   "display": "Jim Holt",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 74,
-   "id": "pf-1aa5ab614a"
-  },
-  {
-   "key": "sf:lennart-johns",
-   "display": "Lennart Johns",
-   "field": "specialty",
-   "value": "Emergency Medical Technician",
-   "conf": 90,
-   "id": "pf-5e741881f5"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -52,20 +36,10 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 12,
+   "tentative_floor": 11,
    "shelved": 2
   },
   "items": [
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
    {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
