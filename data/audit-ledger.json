@@ -37835,8 +37835,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 8,
-   "new": 4,
+   "todo": 4,
+   "new": 0,
    "cleared_at": null
   }
  },
@@ -41664,5 +41664,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-25T13:14:00Z"
+ "updated": "2026-11-25T13:33:00Z"
 }
