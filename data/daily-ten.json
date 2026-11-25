@@ -1,372 +1,139 @@
 {
  "date": "2026-11-24",
- "run_label": "Daily rotation",
+ "run_label": "Daily rotation (PM)",
  "checked": [
   {
-   "name": "sf:kaylee-gilbert",
-   "display": "Kaylee Gilbert"
+   "name": "ct:angie canales",
+   "display": "Angie Canales"
   },
   {
-   "name": "margaretnordberg",
-   "display": "Margaret Nordberg"
+   "name": "ct:justin cardinal",
+   "display": "Justin Cardinal"
   },
   {
-   "name": "sf:g-c-jaggs",
-   "display": "G.C. Jaggs"
+   "name": "ct:sarah darabon",
+   "display": "Sarah Darabon"
   },
   {
-   "name": "grace.serene",
-   "display": "Grace Serene"
+   "name": "ct:mark dehoff",
+   "display": "Mark Dehoff"
   },
   {
-   "name": "brookelynnmoore_",
-   "display": "Brooke Moore"
+   "name": "ct:sarah garber",
+   "display": "Sarah Garber"
   },
   {
-   "name": "sf:liz-wangerin",
-   "display": "Liz Wangerin"
+   "name": "ct:ben hull",
+   "display": "Ben Hull"
   },
   {
-   "name": "ct:alexis donnely",
-   "display": "Alexis Donnely"
+   "name": "ct:richard tacchino",
+   "display": "Richard Tacchino"
   },
   {
-   "name": "richard.haller",
-   "display": "Richard Haller"
+   "name": "ct:kyle deschaine",
+   "display": "Kyle Deschaine"
   },
   {
-   "name": "sf:martha-martin",
-   "display": "Martha Martin"
+   "name": "ct:destiny snyder",
+   "display": "Destiny Snyder"
   },
   {
-   "name": "sf:emily-kendall",
-   "display": "Emily Kendall"
+   "name": "ct:cayden stickney",
+   "display": "Cayden Stickney"
   },
   {
-   "name": "sf:colin-mackey",
-   "display": "Colin Mackey"
+   "name": "ct:destiny ingram",
+   "display": "Destiny Ingram"
   },
   {
-   "name": "sf:erin-dunham",
-   "display": "Erin Dunham"
+   "name": "ct:timothy kunkle",
+   "display": "Timothy Kunkle"
   },
   {
-   "name": "sf:anna-molinero",
-   "display": "Anna Molinero"
+   "name": "ct:ethan ryan",
+   "display": "Ethan Ryan"
   },
   {
-   "name": "ct:megan daniels",
-   "display": "Megan Daniels"
+   "name": "ct:jack kessler",
+   "display": "Jack Kessler"
   },
   {
-   "name": "hamiltonezra",
-   "display": "Ezra Hamilton"
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe"
   },
   {
-   "name": "ellie.jent",
-   "display": "Ellie Jent"
+   "name": "ct:mike coventry",
+   "display": "Mike Coventry"
   },
   {
-   "name": "sf:brittany-fountain-sharlow",
-   "display": "Brittany Fountain Sharlow"
+   "name": "ct:danny wangerin",
+   "display": "Danny Wangerin"
   },
   {
-   "name": "ct:natalie southworth",
-   "display": "Natalie Southworth"
+   "name": "ct:bryan noble",
+   "display": "Bryan Noble"
   },
   {
-   "name": "ct:susan brown",
-   "display": "Susan Brown"
+   "name": "ct:wayne lougheed",
+   "display": "Wayne Lougheed"
   },
   {
-   "name": "sf:rohallah-hakimvand",
-   "display": "Rohallah Hakimvand"
+   "name": "ct:ryleigh combs",
+   "display": "Ryleigh Combs"
   },
   {
-   "name": "sf:phyllis-paladin",
-   "display": "Phyllis Paladin"
+   "name": "ct:meg howard",
+   "display": "Meg Howard"
   },
   {
-   "name": "ct:timothy jenkins",
-   "display": "Timothy Jenkins"
+   "name": "ct:danielle mcpherson",
+   "display": "Danielle McPherson"
   },
   {
-   "name": "sf:heather-foster-barrigar",
-   "display": "Heather Foster-Barrigar"
+   "name": "ct:zenna dale",
+   "display": "Zenna Dale"
   },
   {
-   "name": "ct:noah marshall",
-   "display": "Noah Marshall"
+   "name": "ct:andrew haas",
+   "display": "Andrew Haas"
   },
   {
-   "name": "ct:colby criscitello",
-   "display": "Colby Criscitello"
+   "name": "ct:emilee mcadoo",
+   "display": "Emilee McAdoo"
   },
   {
-   "name": "sf:gabby-olivia",
-   "display": "Gabby Olivia"
+   "name": "ct:kathy eggleson",
+   "display": "Kathy Eggleson"
   },
   {
-   "name": "ct:olivia huntly",
-   "display": "Olivia Huntly"
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath"
   },
   {
-   "name": "sf:connor-caldwell",
-   "display": "Connor Caldwell"
+   "name": "ct:jon mart",
+   "display": "Jon Mart"
   },
   {
-   "name": "sf:kevin-lynch",
-   "display": "Kevin Lynch"
+   "name": "ct:julie mcormond",
+   "display": "Julie McOrmond"
   },
   {
-   "name": "sierra_damon",
-   "display": "Sierra Damon"
+   "name": "ct:tim parker",
+   "display": "Tim Parker"
   },
   {
-   "name": "ct:christine sutter",
-   "display": "Christine Sutter"
+   "name": "ct:ana miller",
+   "display": "Ana Miller"
   },
   {
-   "name": "jazmynkyara",
-   "display": "Jazmyn Villnave"
+   "name": "ct:william dunphey",
+   "display": "William Dunphey"
   },
   {
-   "name": "colleenhackett",
-   "display": "Colleen Hackett"
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford"
   },
-  {
-   "name": "sf:sian-miller",
-   "display": "Sian Miller"
-  },
-  {
-   "name": "debbiegordon7",
-   "display": "Debbie Gordon"
-  },
-  {
-   "name": "ct:brooke larrabee",
-   "display": "Brooke Larrabee"
-  },
-  {
-   "name": "sf:ethan-hackett",
-   "display": "Ethan Hackett"
-  },
-  {
-   "name": "sf:ashley-stdenis",
-   "display": "Ashley StDenis"
-  },
-  {
-   "name": "sf:benjamin-emmanuel",
-   "display": "Benjamin Emmanuel"
-  },
-  {
-   "name": "juliefelicianosec",
-   "display": "Julie Feliciano"
-  },
-  {
-   "name": "sf:carol-harris-huckle",
-   "display": "Carol Harris Huckle"
-  },
-  {
-   "name": "sf:briana-mcgrath",
-   "display": "Briana McGrath"
-  },
-  {
-   "name": "sf:karen-hoover",
-   "display": "Karen Hoover"
-  },
-  {
-   "name": "jamesphilipm",
-   "display": "James Meyers"
-  },
-  {
-   "name": "sf:molly-criscitello",
-   "display": "Molly Criscitello"
-  },
-  {
-   "name": "sf:willow-rosemarie",
-   "display": "Willow Edwards"
-  },
-  {
-   "name": "cadencolbert",
-   "display": "Caden Colbert"
-  },
-  {
-   "name": "anastasiasbakery",
-   "display": "Anastasia Cote"
-  },
-  {
-   "name": "sf:matthew-cote",
-   "display": "Matthew Cote"
-  },
-  {
-   "name": "kathy.moulton",
-   "display": "Kathy Moulton"
-  },
-  {
-   "name": "sf:lexi-kennedy-labombard",
-   "display": "Lexi Kennedy LaBombard"
-  },
-  {
-   "name": "sf:pete-molinero",
-   "display": "Pete Molinero"
-  },
-  {
-   "name": "ct:mike tomford",
-   "display": "Mike Tomford"
-  },
-  {
-   "name": "sf:kayleigh-clary",
-   "display": "Kayleigh Clary"
-  },
-  {
-   "name": "sf:morgan-arquette",
-   "display": "Morgan Arquette"
-  },
-  {
-   "name": "sf:ben-roberts",
-   "display": "Ben Roberts"
-  },
-  {
-   "name": "ct:james fortunato",
-   "display": "James Fortunato"
-  },
-  {
-   "name": "sf:bob-blewett",
-   "display": "Bob Blewett"
-  },
-  {
-   "name": "ct:grace ockrin",
-   "display": "Grace Ockrin"
-  },
-  {
-   "name": "sf:patrick-tombs",
-   "display": "Patrick Tombs"
-  },
-  {
-   "name": "sf:indira-quintana-lala",
-   "display": "Indira Quintana"
-  },
-  {
-   "name": "ct:justin daniels",
-   "display": "Justin Daniels"
-  },
-  {
-   "name": "sf:katie-wolstenholme",
-   "display": "Katie Wolstenholme"
-  },
-  {
-   "name": "sf:paige-davis",
-   "display": "Paige Davis"
-  },
-  {
-   "name": "ct:michaela hosmer",
-   "display": "Michaela Hosmer"
-  },
-  {
-   "name": "sf:janelle-evans",
-   "display": "Janelle Evans"
-  },
-  {
-   "name": "sf:brianna-brothers",
-   "display": "Brianna Brothers"
-  },
-  {
-   "name": "sf:joseph-baxter",
-   "display": "Joseph Baxter"
-  },
-  {
-   "name": "sf:amber-erwin",
-   "display": "Amber Erwin"
-  },
-  {
-   "name": "sf:erik-lamay",
-   "display": "Erik LaMay"
-  },
-  {
-   "name": "ct:brian patraw",
-   "display": "Brian Patraw"
-  },
-  {
-   "name": "sf:carol-fox",
-   "display": "Carol Fox"
-  },
-  {
-   "name": "ct:tim gault",
-   "display": "Tim Gault"
-  },
-  {
-   "name": "sf:kaitlyn-mallette",
-   "display": "Kaitlyn Mallette"
-  },
-  {
-   "name": "ct:maggie thibodeau",
-   "display": "Maggie Thibodeau"
-  }
- ],
- "filed": [
-  {
-   "name": "sf:karen-hoover",
-   "display": "Karen Hoover",
-   "facts": [
-    {
-     "text": "Co-presented 'Development, Reliability and Validity of the Occupational Therapy Self-Efficacy of Clinical Competence (OT-SECC) Assessment' at Seton Hall University's 2025 Interprofessional Health Sciences Research Symposium, Apr 2025",
-     "source": "Seton Hall University",
-     "url": "https://www13.shu.edu/documents/petersheim-2025-ihs-research-symposium-agenda.pdf",
-     "published": "2025-04-30",
-     "novelty": "new",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:colin-mackey",
-   "display": "Colin Mackey",
-   "facts": [
-    {
-     "text": "Holds a bachelor's degree in Business from St. Bonaventure University and a Master of Science in Teaching, Elementary Education from SUNY Potsdam",
-     "source": "Utica Phoenix",
-     "url": "https://uticaphoenix.net/mvcc-announces-new-hires/",
-     "published": "2026-09-18",
-     "novelty": "expands",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "grace.serene",
-   "display": "Grace Serene",
-   "facts": [
-    {
-     "text": "Won the public vote to sing the national anthem at the 2016 Great New York State Fair, performing Aug 25, 2016, while studying at Monroe Community College",
-     "source": "New York State Department of Agriculture and Markets",
-     "url": "https://agriculture.ny.gov/news/performers-across-new-york-state-will-sing-national-anthem-2016-great-new-york-state-fair",
-     "published": "",
-     "novelty": "new",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:janelle-evans",
-   "display": "Janelle Evans",
-   "facts": [
-    {
-     "text": "Recorded 8 goals and 10 assists for 18 points in 18 games through Clarkson's 3-0 win over Quinnipiac, Nov 21, 2026",
-     "source": "Clarkson University Athletics",
-     "url": "https://clarksonathletics.com/sports/womens-ice-hockey/stats",
-     "published": "",
-     "novelty": "expands",
-     "fresh": false
-    }
-   ]
-  }
- ],
- "coverage": {
-  "checked_total": 725,
-  "of": 725,
-  "window_days": 30
- },
- "next_up": [
   {
    "name": "sf:alex-koberda",
    "display": "Alex Koberda"
@@ -380,32 +147,399 @@
    "display": "Alycia Miller-Lynch"
   },
   {
-   "name": "ct:ana miller",
-   "display": "Ana Miller"
-  },
-  {
-   "name": "sf:andrew-fox",
-   "display": "Andrew Fox"
-  },
-  {
-   "name": "ct:andrew haas",
-   "display": "Andrew Haas"
-  },
-  {
-   "name": "ct:angie canales",
-   "display": "Angie Canales"
-  },
-  {
    "name": "sf:ann-parow-mackey",
    "display": "Ann Parow Mackey"
   },
   {
-   "name": "ct:azlyn richardson",
-   "display": "Azlyn Richardson"
+   "name": "sf:beka-martin",
+   "display": "Beka Martin"
   },
   {
-   "name": "sf:bartlomiej-brodzki",
-   "display": "Bartlomiej Brodzki"
+   "name": "sf:caleb-dollinger",
+   "display": "Caleb Dollinger"
+  },
+  {
+   "name": "sf:carson-hayes-ryan",
+   "display": "Carson Hayes Ryan"
+  },
+  {
+   "name": "sf:catherine-m-thomas",
+   "display": "Catherine M Thomas"
+  },
+  {
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet"
+  },
+  {
+   "name": "sf:christine-sinicropi-anderson",
+   "display": "Christine Sinicropi Anderson"
+  },
+  {
+   "name": "sf:courtney-kelly",
+   "display": "Courtney Kelly"
+  },
+  {
+   "name": "sf:courtney letiecq",
+   "display": "Courtney Letiecq"
+  },
+  {
+   "name": "sf:david-irving",
+   "display": "David Perry"
+  },
+  {
+   "name": "sf:devon-sutton",
+   "display": "Devon Sutton"
+  },
+  {
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin"
+  },
+  {
+   "name": "sf:ellen-m-miller",
+   "display": "Ellen M Miller"
+  },
+  {
+   "name": "fdb:esther_brown",
+   "display": "Esther Brown"
+  },
+  {
+   "name": "sf:grace-zehr-cassulis",
+   "display": "Grace Zehr Cassulis"
+  },
+  {
+   "name": "sf:heather-marie",
+   "display": "Heather Marie"
+  },
+  {
+   "name": "sf:heather-ramsdell",
+   "display": "Heather Ramsdell"
+  },
+  {
+   "name": "sf:hunter-woodrow",
+   "display": "Hunter Woodrow"
+  },
+  {
+   "name": "sf:ilene-lashomb",
+   "display": "Ilene Lashomb"
+  },
+  {
+   "name": "sf:james-gilchrist",
+   "display": "James Gilchrist"
+  },
+  {
+   "name": "sf:james-harmer",
+   "display": "James Harmer"
+  },
+  {
+   "name": "sf:jared-thibodeau",
+   "display": "Jared Thibodeau"
+  },
+  {
+   "name": "sf:jesse-braun",
+   "display": "Jesse Braun"
+  },
+  {
+   "name": "sf:jim-holt",
+   "display": "Jim Holt"
+  },
+  {
+   "name": "sf:jim-wing",
+   "display": "Jim Wing"
+  },
+  {
+   "name": "sf:joe-charlebois",
+   "display": "Joe Charlebois"
+  },
+  {
+   "name": "sf:joelle-kowalka",
+   "display": "Joelle Kowalka"
+  },
+  {
+   "name": "sf:kailee paige",
+   "display": "Kailee Paige"
+  },
+  {
+   "name": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley"
+  },
+  {
+   "name": "sf:kelsey-wilbur",
+   "display": "Kelsey Wilbur"
+  },
+  {
+   "name": "sf:kyle-prescott",
+   "display": "Kyle Prescott"
+  },
+  {
+   "name": "sf:maddie-morgan",
+   "display": "Maddie Morgan"
+  },
+  {
+   "name": "sf:maddy-cusworth",
+   "display": "Maddy Cusworth"
+  },
+  {
+   "name": "sf:maggie-tibs",
+   "display": "Maggie Tibs"
+  },
+  {
+   "name": "sf:marissa-carl",
+   "display": "Marissa Carl"
+  },
+  {
+   "name": "sf:mel-zeallor",
+   "display": "Mel Zeallor"
+  },
+  {
+   "name": "sf:merria-figueiredo",
+   "display": "Merria Figueiredo"
+  },
+  {
+   "name": "sf:peter-michael",
+   "display": "Peter Michael"
+  },
+  {
+   "name": "sf:rachel-kushner",
+   "display": "Rachel Kushner"
+  }
+ ],
+ "filed": [
+  {
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe",
+   "facts": [
+    {
+     "text": "Finished 6th in the 60m hurdles final (11.15) at the St. Lawrence Invitational, Jan 25, 2025",
+     "source": "Leone Timing and Results Services",
+     "url": "https://www.leonetiming.com/2025/Indoor/SaintsInvite/Results.pdf",
+     "published": "",
+     "novelty": "expands",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ct:bryan noble",
+   "display": "Bryan Noble",
+   "facts": [
+    {
+     "text": "Issued 20 tickets with ECO Barbera to anglers keeping striped bass outside the legal slot size off a Staten Island beach, May 15, 2026",
+     "source": "New York State Department of Environmental Conservation",
+     "url": "https://apps.cio.ny.gov/apps/mediacontact/public/view.cfm?parm=65979E9B-AC03-FE50-4CE8AD364C62A376",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:david-irving",
+   "display": "David Perry",
+   "facts": [
+    {
+     "text": "Uses Melio for client bill pay at Latitude Bookkeeping, cutting the time to pay 10 bills per client from 40 minutes to 1.5 hours down to 5 to 10 minutes",
+     "source": "Melio",
+     "url": "https://melio.com/blog/why-you-should-offer-ap-ar-services-to-your-clients/",
+     "published": "2022-07-06",
+     "novelty": "expands",
+     "fresh": false
+    },
+    {
+     "text": "Served as a hole sponsor with Latitude Bookkeeping Services for the 5th Annual Schoolhouse Open disc golf tournament in Canton, NY, 2024",
+     "source": "Disc Golf Scene",
+     "url": "https://www.discgolfscene.com/tournament/5th_Annual_Schoolhouse_Open_2024",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:devon-sutton",
+   "display": "Devon Sutton",
+   "facts": [
+    {
+     "text": "Applied for and was awarded a $50,000 FuzeHub Manufacturing Grant in 2018 to install powder-coating equipment in Damon Hall for LC Drives",
+     "source": "FuzeHub",
+     "url": "https://fuzehub.com/manufacturing-blog/success-story-lc-drives/",
+     "published": "2020-04-08",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Represented LC Drives at the Potsdam Town Planning Board public hearing on Apr 6, 2021, saying the company was not yet ready for the full Route 56 expansion and the approved 30,000-square-foot building would be a transition space toward a 150,000-square-foot hub",
+     "source": "Pumps & Systems",
+     "url": "https://www.pumpsandsystems.com/lc-drives-construct-new-manufacturing-facility/",
+     "published": "2021-04-14",
+     "novelty": "expands",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:jesse-braun",
+   "display": "Jesse Braun",
+   "facts": [
+    {
+     "text": "Columbia roster bio lists his top times as 50 Free 22.87, 100 Free 51.19, 200 Free 1:52.46, 100 Breast 1:01.25, and 200 Breast 2:18.24, set in 2019-2020",
+     "source": "Columbia University Athletics",
+     "url": "https://gocolumbialions.com/sports/mens-swimming-and-diving/roster/jesse-braun/17255",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:jim-holt",
+   "display": "Jim Holt",
+   "facts": [
+    {
+     "text": "Elected Lead Pastor of New Hope Community Church on Apr 11, 2015, by a vote of 55 to 1 after a year as an Elder, and formally installed Jul 11-12, 2015, during the church's 45th anniversary weekend",
+     "source": "New Hope Community Church Annual Report 2015-2016",
+     "url": "https://silo.tips/download/new-hope-community-church-annual-report",
+     "published": "2016-04-01",
+     "novelty": "expands",
+     "fresh": false
+    },
+    {
+     "text": "Led college outreach to SUNY Canton students and served as a 2015 Encounter Youth Group leader, when the group raised $2,438.03 in World Vision's 30 Hour Famine on Apr 24-25, 2015",
+     "source": "New Hope Community Church Annual Report 2015-2016",
+     "url": "https://silo.tips/download/new-hope-community-church-annual-report",
+     "published": "2016-04-01",
+     "novelty": "expands",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "jlevens18",
+   "display": "Joye Levendusky",
+   "facts": [
+    {
+     "text": "Is from Avon, New York",
+     "source": "Southern Oregon University Athletics",
+     "url": "https://souraiders.com/sports/womens-wrestling/roster/coaches/joye-levendusky/867",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Won the Cascade Conference championship and reached the NAIA final at 170 pounds in her lone season wrestling for Southern Oregon in 2022-23, finishing 28-2 as the program won its first national title",
+     "source": "Southern Oregon University Athletics",
+     "url": "https://souraiders.com/sports/womens-wrestling/roster/coaches/joye-levendusky/867",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Named a three-time national finalist in King University's hiring announcement, Oct 2025",
+     "source": "King University Athletics",
+     "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
+     "published": "2025-10-07",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Was still pursuing her MBA as of King University's Oct 2025 hiring announcement, which described the degree as in progress rather than completed",
+     "source": "King University Athletics",
+     "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
+     "published": "2025-10-07",
+     "novelty": "expands",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:lennart-johns",
+   "display": "Lennart Johns",
+   "facts": [
+    {
+     "text": "Serves as a board member of the North Area Health Education Center",
+     "source": "Clarkson University",
+     "url": "https://www.Clarkson.Edu/node/9830",
+     "published": "",
+     "novelty": "expands",
+     "fresh": false
+    },
+    {
+     "text": "Received the New York State Association for Rural Health's Outstanding Rural Health Program of the Year Award among its 2022 Rural Health Award recipients",
+     "source": "New York State Association for Rural Health",
+     "url": "https://nysarh.org/newsletters/nysarh-newsletter-winter-2023-print-version-2/",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Led Clarkson University to become a New York State Course Sponsor for EMS Educational Programs, offering EMS classes including EMT training",
+     "source": "New York State Association for Rural Health",
+     "url": "https://nysarh.org/newsletters/nysarh-newsletter-winter-2023-print-version-2/",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "sf:frederick-laud-amoah-darko-jr",
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "facts": [
+    {
+     "text": "Presented his continuous model of microtubule dynamic instability with pausing at the MCCNNY 2018 conference at Clarkson University, Oct 27, 2018, advised by Diana White",
+     "source": "Clarkson University",
+     "url": "https://lin-web.clarkson.edu/~gyao/MCCNNY/MCCNNY2018ConferenceAbstract.pdf",
+     "published": "2018-10-27",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  }
+ ],
+ "coverage": {
+  "checked_total": 725,
+  "of": 725,
+  "window_days": 30
+ },
+ "next_up": [
+  {
+   "name": "sf:rebecca-guldan",
+   "display": "Rebecca Guldan"
+  },
+  {
+   "name": "sf:renee-dale",
+   "display": "Renee Dale"
+  },
+  {
+   "name": "sf:salako-gbenga-oladoyin",
+   "display": "Salako Gbenga Oladoyin"
+  },
+  {
+   "name": "sf:sara-badeau",
+   "display": "Sara Badeau"
+  },
+  {
+   "name": "sf:savannah-gabriella",
+   "display": "Savannah Gabriella"
+  },
+  {
+   "name": "sf:scott-hanlin",
+   "display": "Scott Hanlin"
+  },
+  {
+   "name": "fdb:silas_smith",
+   "display": "Silas Smith"
+  },
+  {
+   "name": "sf:stephy-michele",
+   "display": "Stephy Michele"
+  },
+  {
+   "name": "sf:tasha-bernard",
+   "display": "Tasha Bernard"
+  },
+  {
+   "name": "sf:thomas-quant",
+   "display": "Thomas Quant"
   }
  ],
  "unchecked_remaining": 0,
@@ -418,5 +552,5 @@
   "oldest": "2026-11-19"
  },
  "hot": [],
- "note": "AM run. AM run; 75 from the oldest tiers (50 remaining from 2026-11-18 + 25 from 2026-11-19) \u2014 this also completes the checks the 2026-11-23 PM run researched but never recorded. 4 bullets across 4 people, each parent-verified on its source page and read back in the Sheet exactly once: Hoover (co-presented the OT-SECC Assessment study at Seton Hall's 2025 IHS Research Symposium, Apr 2025), Mackey (degree specifics \u2014 bachelor's in Business, St. Bonaventure; M.S. in Teaching, Elementary Education, SUNY Potsdam \u2014 from the Utica Phoenix MVCC announcement, pub. 2026-09-18; blank Degrees field filled), Serene (won the public vote to sing the national anthem at the 2016 Great New York State Fair while at Monroe Community College; blank universities field filled, highlights unioned), and Evans (cumulative line updated to 8 goals / 10 assists / 18 points in 18 games through the Nov 21 Quinnipiac win). Fresh sweep: none found (both apparent winners \u2014 Walczyk's Nov 4 re-election and Johnston's Shaffer Award \u2014 were already on file verbatim; the Nov 24 Clarkson-at-Syracuse game had not been played). Logged, not filed and not candidated under the Nov 4 rule: Kevin Lynch's NYSTA board listing (both names on the page sit inside the same SLIC Fiber / Nicholville Telephone cluster \u2014 one distinct anchor, and his CEO role is already on file), Kaitlyn Mallette's games-played increment (no new points; totals unchanged), Carol Huckle's Women of the Moose c/o listing (Potsdam anchor only, aggregator), her obituary lead (no openable page found this run), Brooke Moore's Zola registry (name only), Richard Haller's homeschooling (his own words in a student self-profile only), Martha Martin's store facts (her own business's site, already on file), and Ezra Hamilton's JCC phone-list line (one anchor, no new fact). 5 candidates added to Research Command (ledger 715: Sharlow sensitive hold \u2014 grandmother Patricia Bory's obituary; Jaggs and Hackett identity holds; Willow Edwards and Ben Roberts namesake records, filed as verification misses). 1 JD console filing points reconciled into changes.json. Photo leads flagged by JD still unharvested: Max Ferran (Bold.org), Megan Converse (Clarkson Merit Pages), Emily Criscitello (Precision Scuba Diving), Joe Charlebois (Elite Prospects), Joann Duclos (Army.mil), Kayla Hettel (Puget Sound Birth Center), Christine Sutter (UConn Today), Katelyn Tomford (Zola), Jon Cyphers (Jesus Freak Hideout), Jale (Jale's Turkish Delights). Coverage 725/725; unchecked_remaining 0; freshness d7 725, oldest 2026-11-19. Inbox: 4 appended; 0 suppressed."
+ "note": "PM run (second of the day, twice-daily cadence); 75 from the 2026-11-19 tier (50 of that tier remain); 17 bullets across 9 people, each parent-verified on its source page and read back in the Sheet exactly once: Trempe (6th, 60m hurdles final, St. Lawrence Invitational, Jan 2025), Noble (20 striped-bass tickets with ECO Barbera, Staten Island, May 2026), Perry x2 (Melio bill-pay workflow at Latitude Bookkeeping; 2024 Schoolhouse Open hole sponsor), Sutton x2 (2018 $50,000 FuzeHub grant for LC Drives; Apr 2021 Potsdam Planning Board hearing), Braun (Columbia roster top times, 2019-2020), Holt x2 (elected Lead Pastor Apr 11, 2015, 55-1, installed that July; SUNY Canton college outreach + 2015 Encounter 30 Hour Famine), plus compounding-lane filings Levendusky x4, Johns x3 (blank Companies filled with Clarkson University), Amoah-Darko (MCCNNY 2018 presentation). Fresh sweep: none found (the window's only directory-member honor, Liam Miller-Lynch's Nov 16 Liberty League All-Academic naming, is already on file; the Nov 24 Clarkson-at-Syracuse game was still in progress, no recap published). Lane correction merged: Levendusky's on-file 'completed an MBA' is contradicted by Southern Oregon in 2024 ('completing') and King in Oct 2025 ('currently pursuing') - a dated correction bullet was appended to her footprint and the Degrees field was left untouched. Demoted at parent verification, logged only: Charlie-Sharon Sweet's Jun 2026 Prophetic Soil workshop (the church's Instagram post alone; its leadership page confirms the couple's church role, not the workshop), Devon Sutton's stated 300-employee / $100M expectation (a 2020 projection, not an outcome), Julie McOrmond's NPI doula listing (single self-enumerated registry), Ben Hull's successor's Nov 3, 2026 election win (about Robinson, not Hull), and Kailee Paige's 2022 University of Rochester plan (superseded by her on-file SUNY Potsdam 2026 graduation). 9 candidates added to Research Command (ledger 724: Carl + Braun sensitive holds, Charlebois + Kessler identity holds, Carson Ryan + Heather Marie verification misses, 3 compounding-lane likely finds); 2 of JD's console 'file' decisions reconciled into changes.json (Sharlow, Jaggs - both facts already on their profiles). Photo leads flagged by JD still unharvested: Max Ferran (Bold.org), Megan Converse (Clarkson Merit Pages), Emily Criscitello (Precision Scuba Diving), Joe Charlebois (Elite Prospects), Joann Duclos (Army.mil), Kayla Hettel (Puget Sound Birth Center), Christine Sutter (UConn Today), Katelyn Tomford (Zola), Jon Cyphers (Jesus Freak Hideout), Jale (Jale's Turkish Delights). Coverage 725/725; unchecked_remaining 0; freshness d7 725, oldest 2026-11-19. Lane: 5 compounded; 8 new facts filed; 3 candidates; 1 correction flagged; 7 loop closures; 21 discards. Inbox: 20 appended; 0 suppressed (read pattern / near-duplicate)."
 }
