@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "sf:peter-johnson",
-   "display": "Peter Johnson",
-   "field": "groups",
-   "value": "U.S. Air Force",
-   "conf": 100,
-   "id": "pf-f361282ff1"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
