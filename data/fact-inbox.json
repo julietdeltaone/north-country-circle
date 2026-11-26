@@ -7190,6 +7190,84 @@
     "status": "read"
    },
    "url": "https://clarksonathletics.com/news/2026/1/2/womens-hockey-clarkson-returns-from-break-with-record-day-in-15-0-win-over-saint-michael-s.aspx"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Law Enforcement Academy",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Joe Mastro",
+   "fact": "Joe Mastro enrolled in the David Sullivan\u2013St. Lawrence County Law Enforcement Academy as a pre-employment student to complete his senior-level internship in April 2023",
+   "id": "fi-20261125-ct-joe-mastro-joe-mastro-enrolled-in-the-dav",
+   "key": "ct:joe mastro",
+   "learned": "2026-11-25",
+   "name": "ct:joe mastro",
+   "pattern": "milestone",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/academy.php"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Childhood/Early Childhood Education",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Haley Quinlan Keough",
+   "fact": "Haley Quinlan Keough was named to SUNY Potsdam's Dean's List for Fall 2016, where her major was Childhood/Early Childhood Education",
+   "id": "fi-20261125-sf-haley-quinlan-keough-haley-quinlan-keough-was-named",
+   "key": "sf:haley-quinlan-keough",
+   "learned": "2026-11-25",
+   "name": "sf:haley-quinlan-keough",
+   "pattern": "new_credential",
+   "source": "All WNY",
+   "url": "https://allwny.com/2017/01/02/local-students-named-to-potsdam-deans/"
+  },
+  {
+   "anchor": "U.S. Army \u00b7 42A Human Resources",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Kayla Ervin",
+   "fact": "Kayla Ervin was selected for promotion to Staff Sergeant as a 42A Human Resources Specialist, effective July 1, 2023, as a temporary promotion",
+   "id": "fi-20261125-sf-kayla-ervin-kayla-ervin-was-selected-for-p",
+   "key": "sf:kayla-ervin",
+   "learned": "2026-11-25",
+   "name": "sf:kayla-ervin",
+   "pattern": "milestone",
+   "source": "U.S. Army",
+   "url": "https://armyreup.s3.amazonaws.com/site/wp-content/uploads/2023/06/20184527/01-July-2023-By-Name-SSG.pdf"
+  },
+  {
+   "anchor": "Village of Canton \u00b7 Village Clerk",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Megan Eurto",
+   "fact": "Megan Eurto received a one-time payment of $10,000 from the Village of Canton for work performed outside her scope of work on January 17, 2024, listed as Megan Mousaw",
+   "id": "fi-20261125-sf-megan-eurto-megan-eurto-received-a-one-tim",
+   "key": "sf:megan-eurto",
+   "learned": "2026-11-25",
+   "name": "sf:megan-eurto",
+   "pattern": "milestone",
+   "source": "Village of Canton",
+   "url": "https://cms3.revize.com/revize/canton/2024 01 17  Village Board Meeting Minutes.pdf?t=202406141413020&t=202406141413020"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Graphic and Multimedia Design",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Lydia Dale",
+   "fact": "Lydia Dale began a three-year term on SUNY Canton's Graphic and Multimedia Design advisory board on June 1, 2018, listed as Intellectual Property Creative Coordinator for Guinness World Records Attractions",
+   "id": "fi-20261125-sf-lydia-d-m-lydia-dale-began-a-three-year",
+   "key": "sf:lydia-d-m",
+   "learned": "2026-11-25",
+   "name": "sf:lydia-d-m",
+   "pattern": "milestone",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/media/council/Advisory_Board_List_S18.pdf"
+  },
+  {
+   "anchor": "St. Mary's Regional Hospital \u00b7 Grand Junction, CO",
+   "batch": "PM run + compounding lane \u2014 Nov 25, 2026",
+   "display": "Jillian Chapman",
+   "fact": "Jillian Chapman practices as a physician assistant at St. Mary's Regional Hospital in Grand Junction, Colorado, part of Intermountain Health, with the medical group Colorado Surgical Affiliates",
+   "id": "fi-20261125-sf-jillian-chapman-jillian-chapman-practices-as-a",
+   "key": "sf:jillian-chapman",
+   "learned": "2026-11-25",
+   "name": "sf:jillian-chapman",
+   "pattern": "employer_change",
+   "source": "Dmand AI",
+   "url": "http://dmand.ai/hcp/co/physician-assistant/jillian-casey-chapman-pa-c-1225917826"
   }
  ],
  "patterns": {
