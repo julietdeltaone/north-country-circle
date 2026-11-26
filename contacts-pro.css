@@ -7582,3 +7582,58 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
   .lc-cols{grid-template-columns:1fr}
   .lc-cols .lc-col:last-child{grid-column:auto}
 }
+
+/* ================================================================
+   V4.18.0 (JD 2026-11-25) — Live Records + Overview consolidation
+   ================================================================ */
+/* Live Records: ONE header row — title block, tabs, Command
+   Center button — so content starts higher on every LR view. */
+.pv-vhead.lr-headrow{align-items:center;flex-wrap:wrap;gap:10px 18px;margin-bottom:12px}
+.lr-headrow .lr-titleblock{display:flex;align-items:baseline;gap:12px;min-width:0}
+.lr-headrow .lr-titleblock .pv-hsub{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-lrtabs.lr-inline{margin:0 0 0 auto}
+.lr-headrow .side{margin-left:0}
+@media(max-width:899px){.pv-lrtabs.lr-inline{margin-left:0;order:3}.lr-headrow .side{margin-left:auto}}
+/* Research Command head: one compact line + a slim legend row. */
+.rc-head.compact{padding:10px 16px;align-items:center;gap:8px 16px}
+.rc-head.compact h2{font-size:16px;margin:0}
+.rc-hstats{font-size:12.5px;color:var(--mut)}
+.rc-hstats b{color:var(--txt);font-size:14px}
+.rc-legend.slim{display:flex;gap:6px 14px;flex-wrap:wrap;padding:7px 16px;border-bottom:1px solid var(--line);font-size:11px}
+/* New Facts: feed left (single column), Activity right. */
+.fi-page .fi-layout{grid-template-columns:minmax(0,1fr) 370px;gap:18px}
+.fi-page .fi-feed{grid-template-columns:1fr}
+.fi-strip.fi-oneline{padding-top:2px;margin-bottom:10px;align-items:center}
+.fi-actcol{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:12px 14px;min-width:0}
+.fi-acthead{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.fi-acthead h2{font-size:15px;margin:0}
+.fi-acthead span{font-size:11.5px;color:var(--pv-mut)}
+.fi-actfeed{max-height:1150px;overflow:auto;scrollbar-width:thin}
+@media(max-width:1100px){.fi-page .fi-layout{grid-template-columns:1fr}.fi-actfeed{max-height:640px}}
+/* Flagged for review: badge + plain-words explanation. */
+.fi-flagbadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#161c24;background:var(--warn);border-radius:2px;padding:4px 9px}
+.fi-flagwhy{font-size:12.5px;color:var(--dim);line-height:1.55;margin:8px 0 10px}
+/* Overview: map half-left, info right; uniform cards. */
+.gm-band.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.gm-right{min-width:0;display:flex;flex-direction:column;gap:12px}
+.gm-right .gm-foot{grid-template-columns:1fr;margin-top:0;gap:12px}
+.gm-right .gm-mini{padding:14px 16px}
+.gm-mtools.slim{display:flex;gap:8px;justify-content:flex-end;padding:0 0 8px}
+@media(max-width:1100px){.gm-band.cols{grid-template-columns:1fr}}
+/* Push hero: big, color-coded by freshness. */
+.gm-pushhero{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--pv-line);border-radius:12px;overflow:hidden;background:var(--pv-panel)}
+.gm-pushhero .gm-ph-cell{padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+.gm-pushhero .gm-ph-cell + .gm-ph-cell{border-left:1px solid var(--pv-line)}
+.gm-pushhero .gm-ph-k{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pv-mut)}
+.gm-pushhero .gm-ph-cell b{font-size:24px;line-height:1.15;color:var(--pv-text)}
+.gm-pushhero .gm-ph-s{font-size:12px;color:var(--pv-mut)}
+.gm-pushhero.fresh{border-color:var(--pv-green);box-shadow:inset 4px 0 0 var(--pv-green)}
+.gm-pushhero.fresh .gm-ph-k{color:var(--pv-green)}
+.gm-pushhero.stale{border-color:var(--pv-amber);box-shadow:inset 4px 0 0 var(--pv-amber)}
+.gm-pushhero.stale .gm-ph-k{color:var(--pv-amber)}
+.gm-pushhero.none{box-shadow:inset 4px 0 0 var(--pv-line)}
+@media(max-width:560px){.gm-pushhero{grid-template-columns:1fr}.gm-pushhero .gm-ph-cell + .gm-ph-cell{border-left:0;border-top:1px solid var(--pv-line)}}
+/* Overview bottom: uniform two-card row, actions full width. */
+.pv-bottom{grid-template-columns:1fr 1fr}
+.pv-bottom .pv-actions{grid-column:1/-1}
+@media(max-width:1180px){.pv-bottom{grid-template-columns:1fr}}
