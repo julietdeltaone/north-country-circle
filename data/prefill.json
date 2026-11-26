@@ -6,10 +6,10 @@
   {
    "key": "sf:peter-johnson",
    "display": "Peter Johnson",
-   "field": "companies",
+   "field": "groups",
    "value": "U.S. Air Force",
-   "conf": 74,
-   "id": "pf-2f00f8d766"
+   "conf": 100,
+   "id": "pf-f361282ff1"
   },
   {
    "key": "sf:murray",
@@ -44,20 +44,10 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 12,
+   "tentative_floor": 11,
    "shelved": 2
   },
   "items": [
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
    {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
