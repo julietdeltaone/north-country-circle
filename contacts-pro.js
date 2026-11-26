@@ -7843,6 +7843,19 @@ function v4MRow(label, small, barCls, pct, val){
    photos as its caption — the quality read. Photo days run on
    photos.json `added` dates (an added_approx entry counts at
    its month's 1st, the shipped phIsNew convention). */
+/* A photo's effective filed date: the exact `added` date, else
+   added_approx at month precision (the 1st) — the same rule
+   phAddedTs ships, done on strings so no timezone shift creeps
+   in. added_approx arrives as "Oct 2026" or "2026-10". */
+function pvEffAdded(p){
+  if(p.added) return String(p.added).slice(0, 10);
+  var a = String(p.added_approx || '');
+  var m = /^(\d{4})-(\d{2})/.exec(a); if(m) return m[1] + '-' + m[2] + '-01';
+  var MN3 = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  var m2 = /([A-Za-z]{3,})\s+(\d{4})/.exec(a);
+  if(m2){ var mi = MN3.indexOf(m2[1].slice(0, 3).toLowerCase()); if(mi >= 0) return m2[2] + '-' + ('0' + (mi + 1)).slice(-2) + '-01'; }
+  return '';
+}
 function pvHeroStatHTML(){
   function isoOf(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   var today = new Date(); today.setHours(0, 0, 0, 0);
@@ -7858,7 +7871,7 @@ function pvHeroStatHTML(){
   var firstDay = days[0];
   if(typeof CH !== 'undefined' && CH && CH.entries) CH.entries.forEach(function(c){ if(c.filed && c.filed >= firstDay){ factsByDay[c.filed] = (factsByDay[c.filed] || 0) + 1; totF++; } });
   if(typeof PH !== 'undefined' && PH && PH.people) PH.people.forEach(function(p){
-    var ad = p.added || (p.added_approx ? String(p.added_approx).slice(0, 7) + '-01' : '');
+    var ad = pvEffAdded(p);
     if(ad && ad >= firstDay){ photosByDay[ad] = (photosByDay[ad] || 0) + 1; totP++; if(p.status === 'confirmed') confP++; }
   });
   days.forEach(function(k){ var s = (factsByDay[k] || 0) + (photosByDay[k] || 0); if(s > maxV) maxV = s; });
@@ -8415,8 +8428,10 @@ function hmHeroStatsHTML(){
   var d7 = isoDaysAgo(6), d30 = isoDaysAgo(29);
   var wkIp = {}, wkOn = {}, moIp = {}, moOn = {};
   var lastIp = null, lastOn = null, confirmed7 = 0;
-  people().forEach(function(e){
-    var nm = dispName(e), di = D.directory.indexOf(e);
+  /* people() returns directory INDEXES, not entries. */
+  people().forEach(function(di){
+    var e = D.directory[di];
+    var nm = dispName(e);
     (e.events || []).forEach(function(ev){
       if((ev.kind || ev.type) !== 'contact') return;
       var dt = String(ev.date || '').slice(0, 10);
@@ -9321,7 +9336,7 @@ function repaintForData(kind){
     return;
   }
   if(kind === 'ph'){
-    if(r === 'photos' || r === 'audit' || r === 'home') render();
+    if(r === 'photos' || r === 'audit' || r === 'home' || r === 'daily') render();   /* V4.19.0: daily too — Today cards show photos */
     else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
     else if(r === 'people' && $('#plist')) paintPeople();
     else if($('#p-hero')) repaintTop();
@@ -12527,7 +12542,7 @@ function lrActivityHTML(){
 }
 
 function viewDaily(v){
-  dtLoad(); chLoad(); rcLoad();
+  dtLoad(); chLoad(); rcLoad(); phLoad();   /* V4.19.0: phLoad — the Today fresh cards carry profile photos now */
   if(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox')){
     /* V4.3.0 (JD 2026-11-04): New facts is its own section of Live
        Records, not a group buried under the decision surface. */
@@ -13819,7 +13834,7 @@ function phWeekMeterHTML(){
   var byDay = {};
   days.forEach(function(k){ byDay[k] = { n:0, conf:0 }; });
   (PH.people || []).forEach(function(p){
-    var ad = p.added || (p.added_approx ? String(p.added_approx).slice(0, 7) + '-01' : '');
+    var ad = pvEffAdded(p);
     if(ad && byDay[ad]){ byDay[ad].n++; if(p.status === 'confirmed') byDay[ad].conf++; }
   });
   var segs = days.map(function(k){
