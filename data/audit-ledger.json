@@ -37783,24 +37783,56 @@
      "how": "dismissed"
     }
    }
+  },
+  "sf:caleb-froats": {
+   "tier": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-26T05:05:00Z",
+    "source": "New profile"
+   },
+   "loc": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-26T05:05:00Z",
+    "source": "New profile"
+   },
+   "rel": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-26T05:05:00Z",
+    "source": "New profile"
+   },
+   "phone": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-26T05:05:00Z",
+    "source": "New profile"
+   },
+   "skills": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-26T05:05:00Z",
+    "source": "New profile"
+   }
   }
  },
  "lanes": {
   "tier": {
-   "open": 1,
-   "new": 0,
+   "open": 2,
+   "new": 1,
    "regressed": 1,
    "cleared_at": null
   },
   "loc": {
-   "open": 0,
-   "new": 0,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T15:18:00Z"
   },
   "rel": {
-   "open": 0,
-   "new": 0,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
@@ -37817,8 +37849,8 @@
    "cleared_at": null
   },
   "phone": {
-   "open": 0,
-   "new": 0,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -37829,8 +37861,8 @@
    "cleared_at": "2026-11-05T02:52:00Z"
   },
   "skills": {
-   "open": 0,
-   "new": 0,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -41664,5 +41696,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-26T04:49:00Z"
+ "updated": "2026-11-26T05:05:00Z"
 }
