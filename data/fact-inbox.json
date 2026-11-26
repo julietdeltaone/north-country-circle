@@ -7288,6 +7288,19 @@
     "status": "read"
    },
    "url": "http://dmand.ai/hcp/co/physician-assistant/jillian-casey-chapman-pa-c-1225917826"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Crane School of Music",
+   "batch": "AM run \u2014 Nov 26, 2026",
+   "display": "Caleb Froats",
+   "fact": "Caleb Froats is a senior at SUNY Potsdam's Crane School of Music double-majoring in vocal performance and music business, in the Class of 2027",
+   "id": "fi-20261126-sf-caleb-froats-caleb-froats-is-a-senior-at-su",
+   "key": "sf:caleb-froats",
+   "learned": "2026-11-26",
+   "name": "sf:caleb-froats",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam",
+   "url": "https://potsdam.meritpages.com/news/first-look--crane-opera-ensemble-presents-a-double-bill-of-gossip--chaos---missed-connections/63179"
   }
  ],
  "patterns": {
