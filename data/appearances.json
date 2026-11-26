@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1549,
+  "total": 1553,
   "dated": 85,
-  "undated": 1464,
-  "placed": 1395,
+  "undated": 1468,
+  "placed": 1399,
   "unplaced": 154,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -7840,6 +7840,18 @@
   {
    "di": 511,
    "display": "Ian Bailey",
+   "text": "Launched Vivid Coffee's canned iced coffee line in May 2020, including a canned Maple Latte made with Vermont maple syrup (Hardtank)",
+   "source": "Hardtank",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.4372,-73.0685",
+   "place": "Williston, VT",
+   "place_src": "profile"
+  },
+  {
+   "di": 511,
+   "display": "Ian Bailey",
    "text": "Launched the T.A.G. Blend through Vivid Coffee in partnership with Treatment Action Group, with $6–$20 per bag donated to TAG (Treatment Action Group)",
    "source": "Treatment Action Group",
    "url": "",
@@ -7878,6 +7890,18 @@
    "display": "Ian Bailey",
    "text": "Owner and Roaster at Vivid Coffee (Facebook)",
    "source": "Facebook",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.4372,-73.0685",
+   "place": "Williston, VT",
+   "place_src": "profile"
+  },
+  {
+   "di": 511,
+   "display": "Ian Bailey",
+   "text": "Vended with the Burlington Farmers Market for six years before opening the Vivid Coffee café (BootstrapVT)",
+   "source": "BootstrapVT",
    "url": "",
    "published": "",
    "fresh": false,
@@ -14978,6 +15002,18 @@
    "place_src": "text"
   },
   {
+   "di": 600,
+   "display": "Peter Johnson",
+   "text": "Served as Principal Investigator for Ombra LLC's $1,249,913 USAF SBIR Phase II 'Face1st' award, Jun 2024 (SBIR.gov)",
+   "source": "SBIR.gov",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 601,
    "display": "Peter Michael",
    "text": "Lives in Madrid, New York; hometown Hammond, New York (Facebook)",
@@ -16860,6 +16896,18 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 681,
+   "display": "Shannon Zych",
+   "text": "Received all-league honorable mention for varsity girls volleyball at G. Ray Bodley High School in Fulton (Oswego County Today)",
+   "source": "Oswego County Today",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.4553,-76.5105",
+   "place": "Oswego",
+   "place_src": "text"
   },
   {
    "di": 700,
