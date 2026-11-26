@@ -7215,6 +7215,10 @@
    "name": "sf:haley-quinlan-keough",
    "pattern": "new_credential",
    "source": "All WNY",
+   "state": {
+    "at": "2026-11-26T05:00:04.233Z",
+    "status": "read"
+   },
    "url": "https://allwny.com/2017/01/02/local-students-named-to-potsdam-deans/"
   },
   {
@@ -7228,6 +7232,10 @@
    "name": "sf:kayla-ervin",
    "pattern": "milestone",
    "source": "U.S. Army",
+   "state": {
+    "at": "2026-11-26T05:00:06.293Z",
+    "status": "read"
+   },
    "url": "https://armyreup.s3.amazonaws.com/site/wp-content/uploads/2023/06/20184527/01-July-2023-By-Name-SSG.pdf"
   },
   {
@@ -7241,6 +7249,10 @@
    "name": "sf:megan-eurto",
    "pattern": "milestone",
    "source": "Village of Canton",
+   "state": {
+    "at": "2026-11-26T05:00:07.711Z",
+    "status": "read"
+   },
    "url": "https://cms3.revize.com/revize/canton/2024 01 17  Village Board Meeting Minutes.pdf?t=202406141413020&t=202406141413020"
   },
   {
@@ -7254,6 +7266,10 @@
    "name": "sf:lydia-d-m",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-26T05:00:09.256Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/media/council/Advisory_Board_List_S18.pdf"
   },
   {
@@ -7267,6 +7283,10 @@
    "name": "sf:jillian-chapman",
    "pattern": "employer_change",
    "source": "Dmand AI",
+   "state": {
+    "at": "2026-11-26T05:00:10.080Z",
+    "status": "read"
+   },
    "url": "http://dmand.ai/hcp/co/physician-assistant/jillian-casey-chapman-pa-c-1225917826"
   }
  ],
