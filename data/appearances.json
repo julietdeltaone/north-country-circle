@@ -1,10 +1,10 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1555,
+  "total": 1556,
   "dated": 78,
-  "undated": 1477,
-  "placed": 1400,
+  "undated": 1478,
+  "placed": 1401,
   "unplaced": 155,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
@@ -3767,6 +3767,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 726,
+   "display": "Caleb Froats",
+   "text": "Received the Jordan Walker Award for vocal performance in SUNY Potsdam's 2026 Departmental Scholars, Merit & Honors Awards (SUNY Potsdam)",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
    "place_src": "text"
   },
   {
