@@ -37792,10 +37792,13 @@
     "source": "New profile"
    },
    "loc": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-26T05:05:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-26T05:22:00Z",
+     "how": "filled"
+    }
    },
    "rel": {
     "state": "open",
@@ -37825,8 +37828,8 @@
    "cleared_at": null
   },
   "loc": {
-   "open": 1,
-   "new": 1,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T15:18:00Z"
   },
@@ -41696,5 +41699,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-26T05:05:00Z"
+ "updated": "2026-11-26T05:22:00Z"
 }
