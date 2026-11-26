@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.17.4';
+var APP_VERSION = '4.18.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -337,8 +337,8 @@ function textKind(t){
    assigned in Manage → Levels. Since V3.68.0 the level also gates
    display through the role control (see roleClears below). */
 function lvlChip(level){
-  if(level !== 'personal' && level !== 'private') return '';
-  return '<span class="lvl-chip lvl-' + level + '" data-level="' + level + '">' + level.toUpperCase() + '</span>';
+  /* V4.18.0: level chips are gone with the display-role feature. */
+  return '';
 }
 
 /* ============================================================
@@ -355,59 +355,16 @@ function lvlChip(level){
    ============================================================ */
 var ROLE_KEY = 'ncc_role_v1', ROLE_SNOOZE_KEY = 'ncc_role_snooze_v1', ROLE_REASK_MS = 7 * 864e5;
 var ROLES = ['open', 'personal', 'private'], ROLE_RANK = { open:0, personal:1, private:2 };
-function roleRec(){ try{ var r = JSON.parse(store(ROLE_KEY) || 'null'); return (r && ROLES.indexOf(r.role) >= 0 && r.ts) ? r : null; }catch(x){ return null; } }
-function roleCur(){ var r = roleRec(); return r ? r.role : 'private'; }
-function roleClears(level){ return ROLE_RANK[roleCur()] >= ROLE_RANK[level || 'open']; }
-function roleSet(role){
-  if(ROLES.indexOf(role) < 0) return;
-  store(ROLE_KEY, JSON.stringify({ role:role, ts:Date.now() }));
-  document.documentElement.setAttribute('data-role', role);
-  var w = $('#rolewall'); if(w) w.remove();
-  var st = $('#rolestrip'); if(st) st.remove();
-  /* Live update (JD 2026-11-03): the switch re-renders the CURRENT
-     view in place under the new role — every surface paints its
-     role-gated content from roleClears() at render time, so this
-     render() is the whole mechanism; render()'s same-route place-
-     keeping (V3.79.4) preserves the scroll position and the open
-     profile/tab, so the switch never reads as a reload. */
-  render();
-}
-function roleSegHTML(){
-  return '<div class="seg role-seg" role="group" aria-label="Display role" title="Display role — what this device shows. Open: Open content only. Personal: Open + Personal. Private: everything.">' +
-    ROLES.map(function(r){ return '<button type="button" data-act="role" data-v="' + r + '"' + (roleCur() === r ? ' class="on"' : '') + ' aria-pressed="' + (roleCur() === r) + '">' + r.charAt(0).toUpperCase() + r.slice(1) + '</button>'; }).join('') + '</div>';
-}
-function roleGateBoot(){
-  document.documentElement.setAttribute('data-role', roleCur());
-  var rec = roleRec();
-  if(!rec){ showRoleChooser(); return; }
-  var snooze = +(store(ROLE_SNOOZE_KEY) || 0);
-  if(Date.now() - rec.ts > ROLE_REASK_MS && Date.now() - snooze > 864e5) showRoleStrip(rec);
-}
-function showRoleChooser(){
-  if($('#rolewall')) return;
-  var d = document.createElement('div');
-  d.id = 'rolewall'; d.className = 'rolewall'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Choose your display role');
-  d.innerHTML = '<div class="rolecard"><div class="rolekick">Contacts Pro</div>' +
-    '<h2>Choose your display role</h2>' +
-    '<p>The role decides what this device shows, everywhere in the app — like selecting a role at sign-in. Sections above the role are hidden entirely. Switch any time from the top bar; you will not be asked on every load.</p>' +
-    '<div class="roleopts">' +
-    '<button type="button" data-act="role" data-v="open"><b>Open</b><span>Open content only. Personal and Private sections stay hidden.</span></button>' +
-    '<button type="button" data-act="role" data-v="personal"><b>Personal</b><span>Open + Personal — Family included. Private sections stay hidden.</span></button>' +
-    '<button type="button" data-act="role" data-v="private"><b>Private</b><span>Everything on file, including Private sections.</span></button>' +
-    '</div></div>';
-  document.body.appendChild(d);
-}
-function showRoleStrip(rec){
-  if($('#rolestrip') || !$('#col')) return;
-  var days = Math.max(7, Math.floor((Date.now() - rec.ts) / 864e5));
-  var d = document.createElement('div');
-  d.id = 'rolestrip'; d.className = 'rolestrip';
-  d.innerHTML = '<span>Display role is <b>' + esc(rec.role.charAt(0).toUpperCase() + rec.role.slice(1)) + '</b>, set ' + days + ' days ago. Still right?</span>' +
-    '<button type="button" class="btn sm primary" data-act="rolekeep">Keep ' + esc(rec.role.charAt(0).toUpperCase() + rec.role.slice(1)) + '</button>' +
-    ROLES.filter(function(r){ return r !== rec.role; }).map(function(r){ return '<button type="button" class="btn sm ghost" data-act="role" data-v="' + r + '">Switch to ' + r.charAt(0).toUpperCase() + r.slice(1) + '</button>'; }).join('') +
-    '<button type="button" class="ib sm" data-act="rolestripx" aria-label="Dismiss for now">' + ic('x', 14) + '</button>';
-  $('#col').insertBefore(d, $('#view'));
-}
+/* V4.18.0 (JD 2026-11-25): the Open / Personal / Private display
+   role is REMOVED — no chooser, no top-bar switch, no level gate.
+   Everything on file shows, always. roleCur / roleClears survive
+   as constant stubs so the many render-time callers keep working
+   with nothing gated; the Levels manager and level chips are gone
+   with the feature. */
+function roleRec(){ return null; }
+function roleCur(){ return 'private'; }
+function roleClears(level){ return true; }
+function roleGateBoot(){ document.documentElement.setAttribute('data-role', 'private'); }
 
 /* ---------- proximity helpers (V3.68.0) ----------
    A Proximity event is co-presence, not contact: {date,
@@ -2118,7 +2075,7 @@ function askEditKey(){ try{ poolClose(); }catch(x){}
    Reach-out lives inside People (By last contact); both inherit
    their host's notation plus their own per-element notation. */
 var NAV = [
-  { k:'home',    l:'Home',    ic:'home',    kind:'neutral' },
+  { k:'home',    l:'Overview', ic:'home',    kind:'neutral' },
   { k:'people',  l:'People',  ic:'people',  kind:'about' },
   { k:'audit',   l:'Audit',   ic:'target',  kind:'neutral' },
   { k:'daily',   l:'Live Records', ic:'sparkle', kind:'about' },
@@ -2186,7 +2143,7 @@ function renderChrome(){
   var top = $('#top');
   var syncLine = (typeof DT !== 'undefined' && DT && DT.date ? 'Last check ' + esc(DT.date) + ' \u00b7 ' : '') + 'Next sweep 6:54 PM ET';
   top.innerHTML =
-    '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
+    '<button type="button" class="ib homebtn" data-act="home" aria-label="Overview" title="Overview: where things stand, with search and filters cleared">' + ic('home', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topfwd"' + (navNext() ? '' : ' disabled') + ' aria-label="Forward" title="' + (navNext() ? 'Forward to ' + esc(navNext().label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search ' + (pplCt || '') + ' people \u2014 name, place, group, skill\u2026" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
@@ -2195,8 +2152,6 @@ function renderChrome(){
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="pool"></button>' +
-    '<span class="role-label">Show:</span>' +
-    roleSegHTML() +
     '<span class="sync-line">' + syncLine + '</span>' +
     '<a href="#/settings" class="gearbtn" aria-label="Settings">\u2699 Settings</a>' +
     '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
@@ -2388,7 +2343,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings', manage:'Manage', stats:'Stats' }[n] || 'Back';
+  return { home:'Overview', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings', manage:'Manage', stats:'Stats' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -7910,9 +7865,14 @@ function viewHome(v){
   people().forEach(function(di){ (D.directory[di].events || []).forEach(function(ev){ if((ev.kind === 'proximity') && ev.date >= weekAgo && ev.date <= today){ proxWeek[di] = 1; if(ev.venue) proxVenue = ev.venue; } }); });
   var proxN = Object.keys(proxWeek).length;
   function pct(n){ return N ? Math.round(n / N * 100) : 0; }
+  /* V4.18.0 (JD 2026-11-25): the page is just "Overview" — no
+     description paragraph under the title. The sweep status
+     (last run / next run) leaves this top strip and becomes the
+     big color-coded hero in the map band's right column
+     (hmPushHeroHTML); the Needs-you counts stay up here. */
   v.innerHTML = '<div class="v4p pv-view">' +
-    '<div class="pv-hero"><div><h1>Home</h1><p class="hsub">' + dateLine + ' \u00b7 Where things stand \u2014 your five questions, one screen, nothing else.</p></div>' +
-    '<div class="pulse"><b>Needs you:</b> <a class="lnk" href="#/daily/decide">' + rcN + ' to decide</a> \u00b7 <a class="lnk" href="#/photos">' + phN + ' photos to check</a> \u00b7 ' + (pfN ? pfN + ' prefill waiting' : 'Prefill clear') + '<br>' + lastCheck + ' &nbsp;<a class="lnk" href="#/daily">Open Live Records \u2192</a></div></div>' +
+    '<div class="pv-hero"><div><h1>Overview</h1></div>' +
+    '<div class="pulse"><b>Needs you:</b> <a class="lnk" href="#/daily/decide">' + rcN + ' to decide</a> \u00b7 <a class="lnk" href="#/photos">' + phN + ' photos to check</a> \u00b7 ' + (pfN ? pfN + ' prefill waiting' : 'Prefill clear') + ' &nbsp;<a class="lnk" href="#/daily">Open Live Records \u2192</a></div></div>' +
     hmBandHTML({ N:N, T:T, B:B, cy:cy, inTouch:inTouch, older:older, curFair:curFair, pct:pct, proxN:proxN, proxVenue:proxVenue, addedNames:addedNames, M:M }) +
     '<section class="pv-bottom">' +
     '<div class="pv-strip"><h3>Needs you today \u2014 counts are doors, not copies</h3><div class="pv-known">' +
@@ -8369,6 +8329,30 @@ function hmReadoutHTML(){
     '<p class="gm-hero-hint">Click a finding label or a place on the map, and its card opens right on the map.</p>' +
     '<div class="gm-gaps" id="hmGaps"></div></div>';
 }
+/* V4.18.0 (JD 2026-11-25): the sweep status as a big color-coded
+   hero — when the last update landed and when the next one is
+   due. It used to be one small line at the very top of the page;
+   JD moved it here, large, because it matters more than that.
+   Color: green when the latest brief is today's, amber when it
+   is older, grey when no brief has landed yet. (The data on file
+   is the twice-daily Live Records sweep — 6:54 AM and 6:54 PM
+   ET — which is also what pushes fresh data into this page.) */
+function hmPushHeroHTML(){
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var today = todayStr();
+  var last = (typeof DT !== 'undefined' && DT && DT.date) ? DT.date : null;
+  var lastTxt = 'No update yet', cls = 'none', lastSub = 'The first sweep has not landed.';
+  if(last){
+    var p = String(last).split('-');
+    var dstr = p.length === 3 ? MN[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0] : String(last);
+    if(last === today){ cls = 'fresh'; lastTxt = 'Today'; lastSub = dstr + ' — this page is current.'; }
+    else { cls = 'stale'; lastTxt = dstr; lastSub = 'Nothing newer has landed since.'; }
+  }
+  var now = new Date(), mins = now.getHours() * 60 + now.getMinutes();
+  var nextTxt = mins < (6 * 60 + 54) ? 'Today, 6:54 AM ET' : (mins < (18 * 60 + 54) ? 'Today, 6:54 PM ET' : 'Tomorrow, 6:54 AM ET');
+  return '<div class="gm-pushhero ' + cls + '"><div class="gm-ph-cell"><span class="gm-ph-k">Last update</span><b>' + esc(lastTxt) + '</b><span class="gm-ph-s">' + esc(lastSub) + '</span></div>' +
+    '<div class="gm-ph-cell"><span class="gm-ph-k">Next scheduled</span><b>' + nextTxt + '</b><span class="gm-ph-s">Sweeps run 6:54 AM and 6:54 PM ET.</span></div></div>';
+}
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
   function skpi(lab, val, sub){
@@ -8411,23 +8395,25 @@ function hmBandHTML(o){
      header, and ONE time control — the event stepper — docked
      directly under the map. No layer chips: the map shows web
      appearances and nothing else. */
+  /* V4.18.0 (JD 2026-11-25): the "Who's appearing in web search"
+     heading and its description paragraph are REMOVED — the map
+     speaks for itself and the space goes to content. Only the
+     two tool buttons remain, on a slim bar. */
   var center = '<div class="gm-mapcard" id="hmCard">' +
-    '<div class="gm-mhead"><div><h2>Who\u2019s appearing in web search</h2><p>Every finding from web searches, pinned where it happened — nothing else is on this map. Step through the dated findings one by one and watch them appear, or rest on all of them; a finding with no published date lives in All, and in its place\u2019s list.</p></div>' +
-    '<div class="gm-mtools">' +
+    '<div class="gm-mtools slim">' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
-    '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div></div>' +
+    '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div>' +
     '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Map of web search appearances"></div>' +
     '<div class="gm-mapnote" id="hmNote" hidden></div>' +
     '<div class="gm-hero gm-herodock" id="hmHero" hidden></div></div>' +
     '<div class="gm-step"><div class="gm-srow">' +
     '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
-    '<button type="button" class="btn primary sm" data-act="hmplay" id="hmPlayBtn">Play</button>' +
     '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmall">All appearances</button>' +
     '<div class="gm-evread" id="hmEvRead">—</div></div>' +
     '<input type="range" id="hmRange" min="0" max="0" value="0" step="1" aria-label="Step through the dated appearances, one stop per appearance">' +
     '<div class="gm-evmarks" id="hmEvMarks"></div>' +
-    '<div class="gm-scrubhint">Each stop is one dated appearance — no empty years to drag across. Drag, use the arrow keys on the slider, or step with the buttons. Play walks the appearances in order and lands back on All.</div></div>' +
+    '<div class="gm-scrubhint">Each stop is one dated appearance — no empty years to drag across. Drag, use the arrow keys on the slider, or step with the buttons.</div></div>' +
     '<div class="gm-astrip" id="hmAppsStrip"></div>' +
     '</div>';
   var foot = '<div class="gm-foot">' +
@@ -8448,7 +8434,10 @@ function hmBandHTML(o){
     v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
     '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
     '</div>';
-  return '<section class="gm-band">' + center + foot + '</section>';
+  /* V4.18.0 (JD 2026-11-25): the band is two half columns — the
+     map on the left, and on the right the push hero on top with
+     the readout cards stacked under it in one uniform column. */
+  return '<section class="gm-band cols"><div class="gm-left">' + center + '</div><div class="gm-right">' + hmPushHeroHTML() + foot + '</div></section>';
 }
 function hmGapsHTML(){
   var parts = [];
@@ -8882,26 +8871,12 @@ function hmFitDefault(){
   HM.map.setView([44.6698, -74.9818], 9);
 }
 function hmStopPlay(){
+  /* V4.18.0: no playback exists anymore; kept as a no-op so the
+     unmount paths that call it stay safe. */
   HM.playing = false;
   if(HM.timer){ clearInterval(HM.timer); HM.timer = null; }
-  var b = document.getElementById('hmPlayBtn'); if(b) b.textContent = 'Play';
 }
-function hmTick(){
-  if(!document.getElementById('hmMap')){ hmStopPlay(); return; }
-  var evs = hmEvents(), N = evs.length;
-  if(!N){ hmStopPlay(); return; }
-  if(HM.evIdx >= N - 1){
-    /* The walk ends where JD's model rests: back on All
-       appearances, fitted to the whole map. */
-    HM.evIdx = -1;
-    var r = document.getElementById('hmRange'); if(r) r.value = '0';
-    hmPaint();
-    hmStopPlay();
-    hmFitDefault();
-    return;
-  }
-  hmSetEv(HM.evIdx + 2, true);
-}
+/* V4.18.0: hmTick (the Play walker) removed with the Play feature. */
 /* If the basemap service itself fails (bad endpoint, outage),
    Leaflet still loads and the badges would float on a blank
    field — the exact failure that shipped silently in V4.14.0.
@@ -10349,11 +10324,14 @@ function rcConsoleHTML(){
     if(lastK !== null) bparts.push('</div>');
     body = bparts.join('');
   } else body = rowHtmls.join('');
+  /* V4.18.0 (JD 2026-11-25): the head is ONE compact line — title,
+     the four counts as inline chips, and the confidence legend
+     shrunk to a single small row. No stat boxes, no tall header:
+     the candidates start immediately below. */
   return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
-    '<div class="rc-head"><div>' + kindChip('about', true) +
-    '<h2>Research — unfiled candidates</h2></div>' +
-    '<div class="rc-legend">' + legend + '</div></div>' +
-    '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
+    '<div class="rc-head compact"><h2>Research — unfiled candidates</h2>' +
+    '<span class="rc-hstats"><b>' + counts.pending + '</b> awaiting your call &middot; <b>' + counts.close + '</b> close calls (70+) &middot; <b>' + counts.filed + '</b> filed / on file &middot; <b>' + counts.dismissed + '</b> dismissed</span></div>' +
+    '<div class="rc-legend slim">' + legend + '</div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
@@ -11005,7 +10983,7 @@ function fiDdPick(dd, v){
 }
 function fiAllGroups(){
   fiColsInit();
-  return [fiGroups(FI_COLS[0]), FI_COLS[1] === FI_COLS[0] ? [] : fiGroups(FI_COLS[1])];
+  return [fiGroups('all')]; /* V4.18.0: one column only */
 }
 function fiLocate(id){
   var cg = fiAllGroups();
@@ -11023,12 +11001,55 @@ var FI_PATTERNS = {
   discography:{ label:'DISCOGRAPHY', cls:'t-bad' }
 };
 var FI_PAT_ORDER = ['employer_change', 'title_change', 'correction', 'new_credential', 'milestone', 'discography'];
+/* V4.18.0 (JD 2026-11-25): New Facts is an ECHO of what was newly
+   established on record — it must never say the same thing twice.
+   Two display rules, applied to the in-memory feed only (the
+   filed records themselves are never altered):
+   (1) Dedupe at load: the same entry id, or the same person +
+   same fact text, keeps only its earliest-learned copy.
+   (2) Shown once, never again: the ids rendered on the New facts
+   view are remembered on this device (ncc_fi_shown_v1); a later
+   view's snapshot excludes everything already shown, so a fact
+   appears as "new" exactly once. Flagged facts are exempt — a
+   flag means JD wants to see it again (it also lives in the
+   Flagged panel below the feed). */
+var FI_SHOWN_KEY = 'ncc_fi_shown_v1', FI_SHOWN_SNAP = null;
+function fiShownStored(){
+  try { var v = JSON.parse(localStorage.getItem(FI_SHOWN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch(e){ return []; }
+}
+function fiShownSnap(){
+  if(FI_SHOWN_SNAP === null){ FI_SHOWN_SNAP = {}; fiShownStored().forEach(function(id){ FI_SHOWN_SNAP[id] = 1; }); }
+  return FI_SHOWN_SNAP;
+}
+function fiMarkShown(ids){
+  if(!ids || !ids.length) return;
+  var cur = fiShownStored(), seen = {};
+  cur.forEach(function(id){ seen[id] = 1; });
+  var changed = false;
+  ids.forEach(function(id){ if(id && !seen[id]){ seen[id] = 1; cur.push(id); changed = true; } });
+  if(changed){ try { localStorage.setItem(FI_SHOWN_KEY, JSON.stringify(cur)); } catch(e){} }
+}
+function fiIsEcho(e){
+  /* True when this fact has already been shown as new on a
+     previous view (and is not flagged). */
+  return !!fiShownSnap()[e.id] && fiStatus(e) !== 'flagged';
+}
+function fiDedupe(entries){
+  var byId = {}, byFact = {}, out = [];
+  (entries || []).slice().sort(function(a, b){ return String(a.learned || '').localeCompare(String(b.learned || '')); }).forEach(function(e){
+    if(!e || !e.id) return;
+    var fk = String(e.key || e.display || '').toLowerCase() + '|' + String(e.fact || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if(byId[e.id] || (fk !== '|' && byFact[fk])) return;
+    byId[e.id] = 1; byFact[fk] = 1; out.push(e);
+  });
+  return out;
+}
 function fiLoad(){
   if(FI || FI_LOADING) return;
   FI_LOADING = true;
   fetch('data/fact-inbox.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ FI = d; FI_LOADING = false; repaintForData('fi'); })
+    .then(function(d){ FI = d; if(FI && FI.entries) FI.entries = fiDedupe(FI.entries); FI_LOADING = false; repaintForData('fi'); })
     .catch(function(){ FI = { empty:true, entries:[] }; FI_LOADING = false; repaintForData('fi'); });
 }
 function fiProfLoad(){
@@ -11100,8 +11121,11 @@ function fiCounts(){
   var seen = {};
   es.forEach(function(e){
     var s = fiStatus(e);
-    if(s === 'read') c.read++; else if(s === 'flagged') c.flagged++; else c.unread++;
-    if(s !== 'read' && !seen[e.display]){ seen[e.display] = 1; c.people++; }
+    /* V4.18.0: "unread" means genuinely new — never read AND
+       never shown on an earlier view (fiIsEcho). The badge, the
+       tab count and the Home count all read this one number. */
+    if(s === 'read') c.read++; else if(s === 'flagged') c.flagged++; else if(!fiIsEcho(e)) c.unread++;
+    if(s !== 'read' && !fiIsEcho(e) && !seen[e.display]){ seen[e.display] = 1; c.people++; }
   });
   return c;
 }
@@ -11151,7 +11175,7 @@ function fiFmtDate(iso){
 }
 function fiPat(e){ return FI_PATTERNS[e.pattern] || { label: String(e.pattern || 'FACT').replace(/_/g, ' ').toUpperCase(), cls:'t-about' }; }
 function fiVisible(cat){
-  var list = ((FI && FI.entries) || []).filter(function(e){ return fiStatus(e) !== 'read'; });
+  var list = ((FI && FI.entries) || []).filter(function(e){ return fiStatus(e) !== 'read' && !fiIsEcho(e); });
   if(cat && cat !== 'all') list = list.filter(function(e){ return e.pattern === cat; });
   var byL = function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); };
   if(FI_SORT === 'new') list.sort(byL);
@@ -11232,11 +11256,26 @@ function fiSideHTML(){
 }
 function fiBelowHTML(){
   var es = (FI && FI.entries) || [];
-  var read = es.filter(function(e){ return fiStatus(e) === 'read'; }).sort(function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); });
+  var smap = fiStateMap();
+  /* V4.18.0 (JD 2026-11-25): the cleared (Read) list is capped —
+     only the 5 MOST RECENTLY cleared facts (by the time they
+     were marked read) carry an Undo button; anything older is
+     summed up in one line instead of a page of cleared rows. */
+  var read = es.filter(function(e){ return fiStatus(e) === 'read'; }).sort(function(a, b){
+    var ta = (smap[a.id] && smap[a.id].at) || a.learned || '', tb = (smap[b.id] && smap[b.id].at) || b.learned || '';
+    return String(tb).localeCompare(String(ta));
+  });
   var flagged = es.filter(function(e){ return fiStatus(e) === 'flagged'; });
   var h = '<div class="fi-below-panel"><div class="fi-side-h">Read <span class="fi-side-n">' + read.length + '</span></div>';
-  h += read.length ? read.map(function(e){ return '<div class="fi-mini"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span><button type="button" class="fi-undo" data-act="fi-undo" data-id="' + esc(e.id) + '">Undo</button></div>'; }).join('') : '<p class="fi-none">Nothing marked read yet.</p>';
-  h += '</div><div class="fi-below-panel"><div class="fi-side-h">Flagged for review <span class="fi-side-n">' + flagged.length + '</span></div>';
+  if(read.length){
+    h += read.slice(0, 5).map(function(e){ return '<div class="fi-mini"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span><button type="button" class="fi-undo" data-act="fi-undo" data-id="' + esc(e.id) + '">Undo</button></div>'; }).join('');
+    if(read.length > 5) h += '<p class="fi-none">+ ' + (read.length - 5) + ' more cleared earlier — only the last 5 can be undone.</p>';
+  } else h += '<p class="fi-none">Nothing marked read yet.</p>';
+  /* Flagged for review, explained in plain words (JD 2026-11-25):
+     a flagged fact is one JD doubted; Luna re-checks it. The
+     flag badge marks the section so it reads at a glance. */
+  h += '</div><div class="fi-below-panel fi-flagpanel"><div class="fi-side-h"><span class="fi-flagbadge">' + ic('flag', 12) + ' Flagged for review</span> <span class="fi-side-n">' + flagged.length + '</span></div>' +
+    '<p class="fi-flagwhy">Facts you flagged because something looks off. Luna re-checks each one against its source: if it is wrong it gets fixed or removed, if it checks out it stays. You do not need to do anything here — unflag a fact once you are satisfied it has been handled.</p>';
   h += flagged.length ? flagged.map(function(e){ return '<div class="fi-mini"><button type="button" class="fi-goto" data-act="fi-goto" data-id="' + esc(e.id) + '"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span></button><button type="button" class="fi-undo" data-act="fi-unflag" data-id="' + esc(e.id) + '">Unflag</button></div>'; }).join('') : '<p class="fi-none">Nothing flagged. Flag a fact and Luna will look at it.</p>';
   return h + '</div>';
 }
@@ -11300,14 +11339,19 @@ function lrChromeHTML(on, title, subHTML, subId){
   var pfN = (typeof PF !== 'undefined' && PF) ? pfPendingCount() : 0;
   var fiN = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0;
   var decN = rcN + pfN;
-  return '<div class="pv-vhead"><div><h1>Live Records</h1><p class="pv-hsub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
-    '<div class="side"><button type="button" class="pv-btn sm ghost" data-act="lrccopen">' + ic('sparkle', 14) + ' Command Center</button></div></div>' +
-    '<nav class="pv-lrtabs" aria-label="Live Records">' +
+  /* V4.18.0 (JD 2026-11-25): ONE consolidated header row — the
+     title, the tabs (Today / New facts / Needs a decision /
+     History) and the Command Center button all ride the same
+     row, so the working content starts higher on every Live
+     Records view. The Activity Feed tab is gone: the feed now
+     lives in the New facts right column (see fiPageHTML). */
+  return '<div class="pv-vhead lr-headrow"><div class="lr-titleblock"><h1>Live Records</h1><p class="pv-hsub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
+    '<nav class="pv-lrtabs lr-inline" aria-label="Live Records">' +
     '<a href="#/daily"' + (on === 'records' ? ' class="on"' : '') + '>Today</a>' +
     '<a href="#/daily/facts"' + (on === 'facts' ? ' class="on"' : '') + '>New facts <span class="n' + (fiN ? '' : ' zero') + '">(' + fiN + ')</span></a>' +
     '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (decN ? '' : ' zero') + '">(' + decN + ')</span></a>' +
-    '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a>' +
-    '<a href="#/daily/activity"' + (on === 'activity' ? ' class="on"' : '') + '>Activity Feed</a></nav>';
+    '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>' +
+    '<div class="side"><button type="button" class="pv-btn sm ghost" data-act="lrccopen">' + ic('sparkle', 14) + ' Command Center</button></div></div>';
 }
 /* V4.5.0 Today (JD, 2026-11-09): this tab is reserved for FRESH
    facts only — items the fresh sweep verified as published within
@@ -11426,7 +11470,12 @@ function lrBodyPaint(){
 function fiPageHTML(){
   var c = FI ? fiCounts() : { total: 0, unread: 0, read: 0, flagged: 0, people: 0 };
   var h = lrChromeHTML('facts', 'New facts', FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;', 'fi-sub');
-  return h + fiBodyHTML();
+  /* V4.18.0 (JD 2026-11-25): one layout — the facts feed in a
+     single left column, the Activity feed merged into the right
+     column (its standalone section is deleted). */
+  return h + '<div class="fi-layout"><div class="fi-main">' + fiBodyHTML() + '</div>' +
+    '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>What Luna filed, newest first</span></div>' +
+    '<div class="af-tl fi-actfeed" id="fi-actfeed">' + (typeof AF !== 'undefined' && AF ? afStreamHTML() : '<p class="dim">Loading the feed&hellip;</p>') + '</div></aside></div>';
 }
 /* The Fact Inbox body without the page chrome (V4 Phase 8a): the
    Decide view renders it as the New facts group under the shared
@@ -11440,13 +11489,10 @@ function fiBodyHTML(){
      F flags, Enter opens the profile. */
   var h = '';
   if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
-  /* V4.4.8: the category chips are gone from the top bar — each
-     column carries its own category select (fiColHTML), so two
-     categories run side by side. Sort stays global. */
-  h += '<div class="fi-controls">' +
-    '<div class="fi-sortwrap"><span>Sort</span>' + fiDdHTML('sort', null, FI_SORT, FI_SORT_LIST) + '</div>' +
-    '<span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
-  h += '<div class="fi-strip" id="fi-side">' + (FI ? fiSideHTML() : '') + '</div>';
+  /* V4.18.0 (JD 2026-11-25): no sort control, no category
+     pickers — one feed, newest first. The status strip is one
+     slim line so the facts start right under the header. */
+  h += '<div class="fi-strip fi-oneline" id="fi-side">' + (FI ? fiSideHTML() : '') + '<span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
   h += '<div class="fi-feed" id="fi-feed">' + fiFeedHTML() + '</div>';
   h += '<div class="fi-below" id="fi-below">' + (FI ? fiBelowHTML() : '') + '</div>';
   return h;
@@ -11455,21 +11501,16 @@ function fiFeedHTML(enterId){
   if(!FI) return '<div class="asskel" style="min-height:220px"></div>';
   if(!fiCounts().total) return '<div class="fi-zero"><b>No facts yet</b><p>New facts from Live Records research land here.</p></div>';
   if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
-  fiColsInit();
-  return fiColHTML(FI_COLS[0], 0, enterId) + fiColHTML(FI_COLS[1], 1, enterId);
+  /* V4.18.0: ONE column, all categories together, newest first —
+     the two-column category split is gone. */
+  return fiColHTML('all', 0, enterId);
 }
 function fiColHTML(cat, ci, enterId){
-  /* V4.4.8: one column of the feed — its own category select, its
-     own stack of per-person cards. When both columns sit on the
-     same category the right one says so instead of duplicating
-     every card. */
+  /* V4.18.0: the feed's single column — no category select, no
+     sort modes; per-person cards, newest first, all categories
+     together. */
   var vis = fiVisible(cat), gs = fiGroups(cat);
-  var head = '<div class="fi-colh"><div class="fi-sortwrap"><span>Category</span>' +
-    fiDdHTML('col', ci, cat, fiCatList()) + '</div>' +
-    '<span class="fi-coln">' + vis.length + ' fact' + (vis.length === 1 ? '' : 's') + ' &middot; ' + gs.length + ' ' + (gs.length === 1 ? 'person' : 'people') + '</span></div>';
-  if(ci === 1 && FI_COLS[0] === FI_COLS[1]){
-    return '<div class="fi-col">' + head + '<div class="fi-zero"><b>Same category as the other column</b><p>Pick a different category above to run two at once.</p></div></div>';
-  }
+  var head = '<div class="fi-colh"><span class="fi-coln">' + vis.length + ' fact' + (vis.length === 1 ? '' : 's') + ' &middot; ' + gs.length + ' ' + (gs.length === 1 ? 'person' : 'people') + '</span></div>';
   function cardFor(g){
     var html = fiCardHTML(g, false, ci);
     if(enterId && g.entries.some(function(e){ return e.id === enterId; })) html = html.replace('fi-card', 'fi-card entering');
@@ -11477,19 +11518,7 @@ function fiColHTML(cat, ci, enterId){
   }
   var body = '';
   if(!gs.length){
-    body = '<div class="fi-zero"><b>Nothing under this category</b><p>Switch the category to see more of the feed.</p></div>';
-  } else if(FI_SORT === 'cat' && cat === 'all'){
-    var patN = {};
-    vis.forEach(function(e){ patN[e.pattern] = (patN[e.pattern] || 0) + 1; });
-    var lastPat = null;
-    gs.forEach(function(g){
-      var pat = g.entries[0].pattern;
-      if(pat !== lastPat){
-        lastPat = pat;
-        body += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(g.entries[0]).cls + '">' + esc(fiPat(g.entries[0]).label) + '</span><span class="fi-groupn">' + patN[pat] + '</span></div>';
-      }
-      body += cardFor(g);
-    });
+    body = '<div class="fi-zero"><b>Nothing new</b><p>New facts land here as the sweeps file them.</p></div>';
   } else {
     body = gs.map(cardFor).join('');
   }
@@ -11545,10 +11574,14 @@ function fiPaint(enterId){
   var feed = document.getElementById('fi-feed'), side = document.getElementById('fi-side'), below = document.getElementById('fi-below'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
   if(FI) fiEnsureSel();
   if(feed) feed.innerHTML = fiFeedHTML(enterId);
+  /* V4.18.0: everything the feed just rendered is now "shown" —
+     it will not appear as new on a later view. The snapshot
+     taken at load keeps THIS view stable across repaints. */
+  if(feed && FI) fiMarkShown(fiVisible('all').map(function(e){ return e.id; }));
   if(side && FI) side.innerHTML = fiSideHTML();
   if(below && FI) below.innerHTML = fiBelowHTML();
   if(sub && FI){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
-  if(sh && FI){ fiColsInit(); var shown = fiVisible(FI_COLS[0]).length + (FI_COLS[1] === FI_COLS[0] ? 0 : fiVisible(FI_COLS[1]).length); sh.textContent = 'Showing ' + shown + ' of ' + fiCounts().total; }
+  if(sh && FI){ sh.textContent = 'Showing ' + fiVisible('all').length + ' of ' + fiCounts().total; }
   fiPaintNavBadge();
 }
 function fiPaintChrome(){
@@ -11562,7 +11595,7 @@ function fiPaintChrome(){
   if(side) side.innerHTML = fiSideHTML();
   if(below) below.innerHTML = fiBelowHTML();
   if(sub){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
-  if(sh){ fiColsInit(); var shown = fiVisible(FI_COLS[0]).length + (FI_COLS[1] === FI_COLS[0] ? 0 : fiVisible(FI_COLS[1]).length); sh.textContent = 'Showing ' + shown + ' of ' + fiCounts().total; }
+  if(sh){ sh.textContent = 'Showing ' + fiVisible('all').length + ' of ' + fiCounts().total; }
   fiPaintNavBadge();
   fiDdSync();
 }
@@ -11634,8 +11667,6 @@ function fiUndo(id){ if(fiSetStatus(id, null)) fiPaint(id); }
 function fiGoto(id){
   var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
   if(!e) return;
-  fiColsInit();
-  if(FI_COLS[0] !== 'all' && FI_COLS[1] !== 'all' && e.pattern !== FI_COLS[0] && e.pattern !== FI_COLS[1]){ FI_COLS[1] = e.pattern; fiSaveCols(); }
   fiPaint();
   setTimeout(function(){
     var card = document.querySelector('.fi-card[data-gkey="' + (e.key || e.id) + '"]') || document.querySelector('.fi-card[data-id="' + id + '"]');
@@ -11946,9 +11977,9 @@ function afLoad(){
   fetch('data/effective-feed.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){ AF_LOADING = false; AF = d || { items:[], counts:{} };
-      if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); })
+      var afc = document.getElementById('fi-actfeed'); if(afc) afc.innerHTML = afStreamHTML(); })
     .catch(function(){ AF_LOADING = false; AF = { items:[], counts:{} };
-      if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); });
+      var afc = document.getElementById('fi-actfeed'); if(afc) afc.innerHTML = afStreamHTML(); });
 }
 function afAvatarHTML(e, di, size){
   var e2 = di != null ? D.directory[di] : null;
@@ -12404,7 +12435,7 @@ function viewDaily(v){
   if(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox')){
     /* V4.3.0 (JD 2026-11-04): New facts is its own section of Live
        Records, not a group buried under the decision surface. */
-    fiLoad(); fiProfLoad(); pfLoad();
+    fiLoad(); fiProfLoad(); pfLoad(); afLoad();
     v.innerHTML = '<div class="page lr fi-page v4p" data-kind="about">' + fiPageHTML() + '</div>';
     fiPaint();
     return;
@@ -12430,18 +12461,16 @@ function viewDaily(v){
     v.innerHTML = '<div class="page lr dc-page v4p" data-kind="about">' +
       lrChromeHTML('decide', 'Needs a decision', dcSub) +
       '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2></div>' + rcConsoleHTML() + '</section>' +
-      '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Luna\u2019s inferred values for blank fields — approve or deny each one.</span></div><div id="pfwrap"></div></section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Inferred values for blank fields — approve or deny.</span></div><div id="pfwrap"></div></section>' +
       '</div>';
     pfRender();
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'activity'){
-    /* V4.9.0: Activity Feed, two views over the audited data —
-       the vertical timeline (#/daily/activity) and the
-       condensed calendar (#/daily/activity/calendar).
-       Read-only, like Filings. */
-    afLoad();
-    v.innerHTML = lrActivityHTML();
+    /* V4.18.0 (JD 2026-11-25): the standalone Activity Feed
+       section is deleted — the feed now rides the right column
+       of New facts. Old links land there instead. */
+    go('daily/facts');
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'filings'){
@@ -13788,9 +13817,7 @@ function viewSettings(v){
     '<label class="lab">Tidy prompt<small>Sent to Gemini with your draft when you press Tidy with AI.</small></label><textarea id="setprompt" rows="7" placeholder="Loading"></textarea>' +
     '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="API key" autocomplete="off">' +
     '<div class="row"><button type="button" class="btn primary sm" data-act="setsave">Save</button><button type="button" class="btn ghost sm" data-act="settest">Test</button><button type="button" class="btn ghost sm danger" data-act="setclear">Clear key</button><span id="setmsg" class="dim"></span></div></div></section>' +
-    '<div>' + mgLevelsHTML() + '</div>' +
-    '<section class="card"><header><h3>Role &amp; display defaults</h3></header><div class="cbody">' +
-    '<div class="pv-kv"><span class="k">Show (top bar)</span><span class="v">Open, Personal or Private \u2014 the role decides what renders, everywhere, and your pick is remembered for a week.</span></div>' +
+    '<section class="card"><header><h3>Display defaults</h3></header><div class="cbody">' +
     '<div class="pv-kv"><span class="k">Merged profiles \u2014 Restore</span><span class="v">Lives in <a class="lnk" href="#/merge">Merge Studio</a> \u2014 ' + merged.length + ' merge' + (merged.length === 1 ? '' : 's') + ' on record, all restorable.</span></div>' +
     '</div></section>' +
     '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section>' +
@@ -16641,16 +16668,15 @@ function onClick(ev){
       }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
       break;
     }
-    case 'role': roleSet(el.getAttribute('data-v')); break;
-    case 'rolekeep': roleSet(roleCur()); break;
-    case 'rolestripx': { store(ROLE_SNOOZE_KEY, String(Date.now())); var rs = $('#rolestrip'); if(rs) rs.remove(); break; }
+    /* V4.18.0: role / rolekeep / rolestripx handlers removed with
+       the display-role feature — no control emits them anymore. */
     /* Contact Timeline (Calendar, V3.78.0): filters, day selection,
        month nav, person highlight, and the editor sheet. Saves ride
        txn + queuePatch of the events JSON — the same path as the
        profile Timeline editor and Quick Add. */
     case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
     case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.gm-ctside'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
-    case 'hmplay': { if(HM.playing){ hmStopPlay(); } else { var evsP = hmEvents(); if(!evsP.length) break; if(HM.evIdx >= evsP.length - 1) HM.evIdx = -1; HM.playing = true; el.textContent = 'Pause'; if(HM.timer) clearInterval(HM.timer); HM.timer = setInterval(hmTick, 1500); hmTick(); } break; }
+    /* V4.18.0: 'hmplay' removed — the map is static; no Play control exists. */
     case 'hmprev': { hmStopPlay(); hmSetEv(HM.evIdx, true); break; }
     case 'hmnext': { hmStopPlay(); hmSetEv(HM.evIdx + 2, true); break; }
     case 'hmall': { hmStopPlay(); hmSetEv(0, false); hmFitDefault(); break; }
