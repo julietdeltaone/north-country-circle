@@ -1,54 +1,18 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1553,
-  "dated": 85,
-  "undated": 1468,
-  "placed": 1399,
-  "unplaced": 154,
+  "total": 1555,
+  "dated": 78,
+  "undated": 1477,
+  "placed": 1400,
+  "unplaced": 155,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 39,
-  "brief_standalone": 47,
+  "brief_attached": 34,
+  "brief_standalone": 45,
   "brief_unresolved": 1
  },
  "items": [
-  {
-   "di": 719,
-   "display": "Raedyn Spademan",
-   "text": "Recorded an assist on Isabelle Goettl's game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
-   "source": "Syracuse University Athletics",
-   "url": "https://cuse.com/news/2026/11/24/ice-hockey-orange-fall-to-clarkson-tuesday-night",
-   "published": "2026-11-24",
-   "fresh": true,
-   "pid": "43.0481,-76.1474",
-   "place": "Syracuse",
-   "place_src": "text"
-  },
-  {
-   "di": 720,
-   "display": "Isa Goettl",
-   "text": "Scored the game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
-   "source": "Syracuse University Athletics",
-   "url": "https://cuse.com/news/2026/11/24/ice-hockey-orange-fall-to-clarkson-tuesday-night",
-   "published": "2026-11-24",
-   "fresh": true,
-   "pid": "43.0481,-76.1474",
-   "place": "Syracuse",
-   "place_src": "text"
-  },
-  {
-   "di": 7,
-   "display": "Adria Tebo",
-   "text": "Scored a first-period goal in the University of New England's 4-3 overtime loss to Bowdoin, Nov 24, 2026",
-   "source": "Bowdoin College Athletics",
-   "url": "https://athletics.bowdoin.edu/news/2026/11/24/womens-ice-hockey-womens-hockey-completes-comeback-in-overtime-at-une.aspx",
-   "published": "2026-11-24",
-   "fresh": true,
-   "pid": "44.5956,-75.1691",
-   "place": "Canton, NY",
-   "place_src": "profile"
-  },
   {
    "di": 719,
    "display": "Raedyn Spademan",
@@ -132,6 +96,18 @@
    "pid": "44.5956,-75.1691",
    "place": "Canton, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 726,
+   "display": "Caleb Froats",
+   "text": "As of Nov 2026, a senior at SUNY Potsdam's Crane School of Music double-majoring in vocal performance and music business, in the Class of 2027 (SUNY Potsdam)",
+   "source": "SUNY Potsdam",
+   "url": "https://potsdam.meritpages.com/news/first-look--crane-opera-ensemble-presents-a-double-bill-of-gossip--chaos---missed-connections/63179",
+   "published": "2026-11-10",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
+   "place_src": "text"
   },
   {
    "di": 212,
@@ -347,18 +323,6 @@
    "fresh": false,
    "pid": "43.0019,-75.2731",
    "place": "Sauquoit, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 615,
-   "display": "Samantha Marocco",
-   "text": "Completed her APTA Fellowship in Higher Education Leadership capstone project on faculty development in teaching and learning for Clarkson's DPT program, Jul 2026 (APTA Academy of Education)",
-   "source": "APTA Academy of Education",
-   "url": "https://assets-002.noviams.com/novi-file-uploads/apta-aoe/FHEL/Project_Summeries/2026_FHEL_Project_Summaries.pdf",
-   "published": "2026-07-09",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
    "place_src": "profile"
   },
   {
@@ -638,18 +602,6 @@
    "place_src": "text"
   },
   {
-   "di": 583,
-   "display": "Megan Eurto",
-   "text": "Received a one-time payment of $10,000 from the Village of Canton for work performed outside her scope of work, Jan 17, 2024 (listed as Megan Mousaw) (Village of Canton)",
-   "source": "Village of Canton",
-   "url": "https://cms3.revize.com/revize/canton/2024 01 17  Village Board Meeting Minutes.pdf?t=202406141413020&t=202406141413020",
-   "published": "2024-01-17",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "Canton",
-   "place_src": "text"
-  },
-  {
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Fall 2025 as a Health Care Management student (listed as Kayleigh Peets), Jan 2026 (SUNY Canton)",
@@ -686,18 +638,6 @@
    "place_src": "profile"
   },
   {
-   "di": 653,
-   "display": "Kayla Ervin",
-   "text": "Selected for promotion to Staff Sergeant as a 42A Human Resources Specialist, effective Jul 1, 2023, as a temporary promotion (U.S. Army)",
-   "source": "U.S. Army",
-   "url": "https://armyreup.s3.amazonaws.com/site/wp-content/uploads/2023/06/20184527/01-July-2023-By-Name-SSG.pdf",
-   "published": "2023-06-20",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
    "di": 499,
    "display": "Grace Cicchinelli",
    "text": "Her work was featured in St. Lawrence University's Art & Music Video Installation, Apr 28, 2023 (St. Lawrence University)",
@@ -708,18 +648,6 @@
    "pid": "44.5956,-75.1691",
    "place": "St. Lawrence University",
    "place_src": "text"
-  },
-  {
-   "di": 410,
-   "display": "Joe Mastro",
-   "text": "Enrolled in the David Sullivan–St. Lawrence County Law Enforcement Academy as a pre-employment student to complete his senior-level internship, Apr 2023",
-   "source": "SUNY Canton",
-   "url": "https://www.canton.edu/news/2023/academy.php",
-   "published": "2023-04-07",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "Canton, NY",
-   "place_src": "profile"
   },
   {
    "di": 82,
@@ -1004,18 +932,6 @@
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/story.aspx?filename=wlaxvssjcli031217&file_date=3-12-2017",
    "published": "2017-03-12",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
-   "di": 505,
-   "display": "Haley Quinlan Keough",
-   "text": "Named to SUNY Potsdam's Dean's List for Fall 2016, where her major was Childhood/Early Childhood Education (All WNY)",
-   "source": "All WNY",
-   "url": "https://allwny.com/2017/01/02/local-students-named-to-potsdam-deans/",
-   "published": "2017-01-02",
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "SUNY Potsdam",
@@ -4612,6 +4528,30 @@
   {
    "di": 466,
    "display": "Cody Benham",
+   "text": "Tied for 31st in MA1 at the 2025 Syracuse Open in Liverpool, New York, in Sep 2025, shooting +9 (PDGA)",
+   "source": "PDGA",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse",
+   "place_src": "text"
+  },
+  {
+   "di": 466,
+   "display": "Cody Benham",
+   "text": "Tied for 6th in MA1 at the 2025 Van Buren SuperFlex in Aug 2025, shooting +1 (62) (PDGA)",
+   "source": "PDGA",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.9747,-75.9107",
+   "place": "Watertown, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 466,
+   "display": "Cody Benham",
    "text": "Tied for 7th in MA2 at the 2025 New York State Disc Golf Championships in Endicott, New York, Sep 6-7, 2025, shooting +12 (PDGA)",
    "source": "PDGA",
    "url": "",
@@ -7408,6 +7348,18 @@
   {
    "di": 505,
    "display": "Haley Quinlan Keough",
+   "text": "Named to SUNY Potsdam's Dean's List for Fall 2016, where her major was Childhood/Early Childhood Education (All WNY)",
+   "source": "All WNY",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 505,
+   "display": "Haley Quinlan Keough",
    "text": "Works at Miami Elementary School (Facebook)",
    "source": "Facebook",
    "url": "",
@@ -8352,6 +8304,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 720,
+   "display": "Isa Goettl",
+   "text": "Scored the game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
+   "source": "Syracuse University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse",
+   "place_src": "text"
   },
   {
    "di": 515,
@@ -11500,6 +11464,18 @@
   {
    "di": 653,
    "display": "Kayla Ervin",
+   "text": "Selected for promotion to Staff Sergeant as a 42A Human Resources Specialist, effective Jul 1, 2023, as a temporary promotion (U.S. Army)",
+   "source": "U.S. Army",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 653,
+   "display": "Kayla Ervin",
    "text": "Serves as a Personnel Administrative Sergeant with the U.S. Army in Bethesda; previously served as a Human Resource Specialist at Fort Drum and is pursuing a B.S. in Human Resource Management at Columbia Southern University (Bold.pro)",
    "source": "Bold.pro",
    "url": "",
@@ -13696,6 +13672,18 @@
   {
    "di": 583,
    "display": "Megan Eurto",
+   "text": "Received a one-time payment of $10,000 from the Village of Canton for work performed outside her scope of work, Jan 17, 2024 (listed as Megan Mousaw) (Village of Canton)",
+   "source": "Village of Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 583,
+   "display": "Megan Eurto",
    "text": "Still serving as Village Clerk for the Village of Canton at the Mar 18, 2026 board meeting, listed as Megan Mousaw (Village of Canton)",
    "source": "Village of Canton",
    "url": "",
@@ -14728,6 +14716,18 @@
   {
    "di": 596,
    "display": "Owen Kennedy",
+   "text": "Sold 124 Hayes Rd, Schuylerville, as seller's agent with Empire Real Estate Firm for $367,000, closed Mar 10, 2026 (Homes.com)",
+   "source": "Homes.com",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 596,
+   "display": "Owen Kennedy",
    "text": "Supervisor (Cross Utilized, Customer Service) for SkyWest Airlines at Ogdensburg station (OGS) in 2021 (Email, Jan 2021)",
    "source": "Email, Jan 2021",
    "url": "",
@@ -15324,6 +15324,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 719,
+   "display": "Raedyn Spademan",
+   "text": "Recorded an assist on Isabelle Goettl's game-winning goal in Clarkson's 7-1 win at Syracuse, Nov 24, 2026 (Syracuse University Athletics)",
+   "source": "Syracuse University Athletics",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "43.0481,-76.1474",
+   "place": "Syracuse",
+   "place_src": "text"
   },
   {
    "di": 719,
@@ -16344,6 +16356,18 @@
    "pid": "44.4281,-75.1547",
    "place": "Russell",
    "place_src": "text"
+  },
+  {
+   "di": 615,
+   "display": "Samantha Marocco",
+   "text": "Completed her APTA Fellowship in Higher Education Leadership capstone project on faculty development in teaching and learning for Clarkson's DPT program, Jul 2026 (APTA Academy of Education)",
+   "source": "APTA Academy of Education",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 615,
