@@ -10,6 +10,14 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:caleb-froats",
+   "display": "Caleb Froats",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "conf": 91,
+   "id": "pf-2218c799c5"
   }
  ],
  "shelved": [
