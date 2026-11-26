@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-25",
+ "updated": "2026-11-26",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -19147,6 +19147,220 @@
     "identity": 35,
     "source": 25,
     "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-cbresett20-received-a-2-000-alumni-association",
+   "name": "cbresett20",
+   "display": "Caleb Bresett",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Caleb Bresett at Watkins Glen High School in Schuyler County received a $2,000 Alumni Association scholarship given in memory of Judy Pearce.",
+   "file_text": "Received a $2,000 Alumni Association scholarship in memory of Judy Pearce as a Watkins Glen High School student",
+   "source": "The Odessa File",
+   "url": "https://www.odessafile.com/people.html?source=topnav",
+   "quote": "--Caleb Bresett, a $2,000 scholarship donated in the memory of Judy Pearce.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names a Caleb Bresett in Watkins Glen, but nothing on it ties him to Massena or the police work on Caleb's record.",
+   "confidence": 25,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 15,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-fdb-maggie-marceau-plays-for-the-wagon-wheel-team-in-th",
+   "name": "fdb:maggie_marceau",
+   "display": "Maggie Marceau",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The NCV Dart League player standings list a Maggie Marceau on the Wagon Wheel team.",
+   "file_text": "Plays for the Wagon Wheel team in the NCV Dart League",
+   "source": "LeagueLeader",
+   "url": "https://www.leagueleader.net/sharedreport.php?operatorid=1437&code=c76cf8be-9b6d-4c0e-86fb-8aea8f2e2607",
+   "quote": "| MAGGIE MARCEAU | Wagon Wheel | 1.81 | 126 | 32 | 35 |",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The standings name a Maggie Marceau, but nothing on them ties her to Malone or Bokie's Drive In on Maggie's record.",
+   "confidence": 32,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-sf-nina-criscitello-named-to-southington-high-school-s-g",
+   "name": "sf:nina-criscitello",
+   "display": "Nina Criscitello",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Southington High School's honor roll for the third quarter of the 2021-22 school year lists a Nina Criscitello in Grade 10, first honors.",
+   "file_text": "Named to Southington High School's Grade 10 first honors roll for the third quarter of 2021-22",
+   "source": "MyRecordJournal.com",
+   "url": "https://www.htpltd.com/1l915nya/southington-high-school-honor-roll-2021",
+   "quote": "Nina Criscitello, Victoria Dabrowski, Julianne Darling, Emily Delgado, Madison DeSouza",
+   "anchors": [
+    "Southington, the town of her employer on file"
+   ],
+   "missing_gate": "The list names a Nina Criscitello in Southington, but nothing on it ties her to ServiceMaster on Nina's record.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 15,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-sf-nanette-yervasi-holt-won-2026-green-eyeshade-awards-with",
+   "name": "sf:nanette-yervasi-holt",
+   "display": "Nanette Yervasi Holt",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The 2026 Green Eyeshade Awards list a Nanette Holt, with Natasha Holt, winning first place in Travel Reporting and second place in Light Feature Writing for American Essence Magazine.",
+   "file_text": "Won 2026 Green Eyeshade Awards with Natasha Holt for American Essence Magazine (first place, Travel Reporting; second place, Light Feature Writing)",
+   "source": "Green Eyeshade Awards",
+   "url": "https://www.greeneyeshade.org/2026-winners/",
+   "quote": "First Place: American Essence Magazine | Nanette Holt, Natasha Holt | Where Wild Ponies Swim and Dreams Come True",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names a Nanette Holt who writes for a magazine, but nothing on it ties her to Potsdam or InterVarsity on Nanette's record.",
+   "confidence": 33,
+   "confidence_parts": {
+    "identity": 3,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-taylor-rawson-promoted-to-growth-marketing-manager",
+   "name": "taylor_rawson_",
+   "display": "Taylor Rawson",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Roberts Wesleyan University says a Taylor Rawson from its Class of 2018 was promoted to Growth Marketing Manager at RxVantage in April 2024, after joining the company in 2022.",
+   "file_text": "Promoted to Growth Marketing Manager at RxVantage, Apr 2024",
+   "source": "Roberts Wesleyan University",
+   "url": "https://WWW.Roberts.edu/news/?id=7965",
+   "quote": "Taylor Rawson \u201818 (Communication) was recently promoted to Growth Marketing Manager at RxVantage. She has been with RxVantage since 2022.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names a Taylor Rawson in Rochester, but nothing on it ties her to Potsdam or the family on Taylor's record.",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 14,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {
+    "companies": "RxVantage"
+   },
+   "published": "2024-04-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-mlapins7-physical-therapist-at-advance-physic",
+   "name": "mlapins7",
+   "display": "Molly Lapinski",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A patient testimonial on Advance Physical Therapy's website praises a physical therapist named only Molly for finding the cause of neck pain and ending the patient's headaches.",
+   "file_text": "Physical therapist at Advance Physical Therapy, praised in a patient testimonial for neck-pain and headache treatment",
+   "source": "Advance Physical Therapy",
+   "url": "https://advance-physicaltherapy.com/testimonials/headache-and-fatigue-goals-exceeded-doubts-vanished/",
+   "quote": "Within 1 session, Molly identified the root of my neck pain, and after implementing the simple intervention she provided and using some of the techniques over the next few weeks, my pain had entirely disappeared within 1.5 months and hasn\u2019t come back since.",
+   "anchors": [
+    "first name and physical therapy work only"
+   ],
+   "missing_gate": "The page names only a Molly, with no last name, town, or school, so I cannot tell if she is Molly Lapinski.",
+   "confidence": 28,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {
+    "companies": "Advance Physical Therapy"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-ct-dr-kring-son-joseph-kring-participated-in-the",
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Morristown Central School's Class of 2026 leaders page says Lawrence Kring's son Joseph took part in the Clarkson Project Challenge, studying the engineering of smart devices.",
+   "file_text": "Son Joseph Kring participated in the Clarkson Project Challenge, studying the engineering of smart devices",
+   "source": "Morristown Central School",
+   "url": "https://www.greenrockets.org/apps/news/article/2203708?categoryId=17232",
+   "quote": "Joseph has participated in the Clarkson Project Challenge studying the engineering of smart devices.",
+   "anchors": [
+    "the page names Joseph as the son of Drs. Lawrence Kring, III and Jane Kring",
+    "Morristown Central School"
+   ],
+   "missing_gate": "This is about Lawrence's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261126-sf-caleb-froats-received-the-jordan-walker-award-for",
+   "name": "sf:caleb-froats",
+   "display": "Caleb Froats",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "SUNY Potsdam's 2026 Commencement program seems to list Caleb Froats under a Crane School of Music award, the Jordan Walker Award for vocal performance, but the program's table layout is scrambled and his name cannot be tied to that award for sure.",
+   "file_text": "Received the Jordan Walker Award for vocal performance in SUNY Potsdam's 2026 Departmental Scholars, Merit & Honors Awards",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "quote": "",
+   "anchors": [
+    "SUNY Potsdam",
+    "Crane School of Music"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 14,
+    "detail": 6
    },
    "fields": {},
    "published": "",
