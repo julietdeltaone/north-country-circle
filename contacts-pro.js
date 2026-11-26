@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.18.0';
+var APP_VERSION = '4.19.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2147,7 +2147,11 @@ function renderChrome(){
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topfwd"' + (navNext() ? '' : ' disabled') + ' aria-label="Forward" title="' + (navNext() ? 'Forward to ' + esc(navNext().label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search ' + (pplCt || '') + ' people \u2014 name, place, group, skill\u2026" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
-    '<button type="button" class="qadd" data-act="qadd" title="Quick add: log a contact, add a new person, or open the Up Next queue (shortcut: Q)">' + ic('plus', 15) + '<span>Quick add</span><kbd>Q</kbd></button>' +
+    /* V4.19.0 (JD): Quick Add leaves the top bar — "Log proximity
+       for today" takes its exact place, going to the Calendar,
+       where proximity for the day is logged. The Quick Add panel
+       itself still exists (Q shortcut, profile buttons). */
+    '<a class="qadd" href="#/calendar" title="Log proximity for today: record who you crossed paths with today">' + ic('pin', 15) + '<span>Log proximity for today</span></a>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
@@ -7829,6 +7833,48 @@ function v4MRow(label, small, barCls, pct, val){
   return '<div class="pv-mrow"><span class="ml">' + label + (small ? '<small>' + small + '</small>' : '') + '</span><span class="pv-bar ' + barCls + '"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></span><span class="mv">' + val + '</span></div>';
 }
 
+/* V4.19.0 (JD): the Overview header's right side — inside the
+   SAME hero footprint the old "Needs you" line occupied — now
+   carries (a) the filings-this-week stat (change-log entries
+   filed since Monday) and (b) the photos-and-facts graphic moved
+   here from the Stats page, widened to the last 14 days: one
+   slim column per day, facts (blue) beside photos (amber), with
+   the window totals and the confirmed share of the window's
+   photos as its caption — the quality read. Photo days run on
+   photos.json `added` dates (an added_approx entry counts at
+   its month's 1st, the shipped phIsNew convention). */
+function pvHeroStatHTML(){
+  function isoOf(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var mon = new Date(today); mon.setDate(mon.getDate() - ((today.getDay() + 6) % 7));
+  var monIso = isoOf(mon);
+  var filedWeek = null;
+  if(typeof CH !== 'undefined' && CH && CH.entries){
+    filedWeek = 0;
+    CH.entries.forEach(function(c){ if(c.filed && c.filed >= monIso) filedWeek++; });
+  }
+  var days = [], factsByDay = {}, photosByDay = {}, totF = 0, totP = 0, confP = 0, maxV = 1;
+  for(var i = 13; i >= 0; i--){ var d = new Date(today); d.setDate(d.getDate() - i); days.push(isoOf(d)); }
+  var firstDay = days[0];
+  if(typeof CH !== 'undefined' && CH && CH.entries) CH.entries.forEach(function(c){ if(c.filed && c.filed >= firstDay){ factsByDay[c.filed] = (factsByDay[c.filed] || 0) + 1; totF++; } });
+  if(typeof PH !== 'undefined' && PH && PH.people) PH.people.forEach(function(p){
+    var ad = p.added || (p.added_approx ? String(p.added_approx).slice(0, 7) + '-01' : '');
+    if(ad && ad >= firstDay){ photosByDay[ad] = (photosByDay[ad] || 0) + 1; totP++; if(p.status === 'confirmed') confP++; }
+  });
+  days.forEach(function(k){ var s = (factsByDay[k] || 0) + (photosByDay[k] || 0); if(s > maxV) maxV = s; });
+  var cols = days.map(function(k){
+    var f = factsByDay[k] || 0, p = photosByDay[k] || 0;
+    return '<span class="pv-hg-day" title="' + k + ' · ' + f + ' facts · ' + p + ' photos">' +
+      '<i class="f" style="height:' + Math.max(f ? 3 : 0, Math.round(f / maxV * 26)) + 'px"></i>' +
+      '<i class="p" style="height:' + Math.max(p ? 3 : 0, Math.round(p / maxV * 26)) + 'px"></i></span>';
+  }).join('');
+  var qual = totP ? Math.round(confP / totP * 100) + '% of photos confirmed' : 'no photos filed';
+  return '<div class="pv-herostat">' +
+    '<div class="pv-hs-file"><span class="pv-hs-k">Filings this week</span><b>' + (filedWeek == null ? '…' : filedWeek) + '</b></div>' +
+    '<div class="pv-hs-graph"><div class="pv-hg-cols">' + cols + '</div>' +
+    '<div class="pv-hg-cap">Last 14 days · <b>' + totF + '</b> facts · <b>' + totP + '</b> photos filed · ' + qual + '</div></div>' +
+    '</div>';
+}
 function viewHome(v){
   phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad(); rcLoad(); cnLoad(); apLoad();
   if(HMI) hmiClose(true);
@@ -7848,17 +7894,9 @@ function viewHome(v){
   var inTouch = M.lc.y0 + M.lc.y1, older = M.lc.y2324 + M.lc.y2122 + M.lc.yOld;
   var curFair = B.current + B.fairly;
   var lastCheck = (DT && DT.date) ? ('Last check run ' + (DT.date === today ? 'today' : MN[+DT.date.slice(5, 7) - 1] + ' ' + (+DT.date.slice(8, 10)) + ', ' + DT.date.slice(0, 4)) + ' \u00b7 next 6:54 PM ET') : 'Next sweep 6:54 PM ET';
-  /* council strip */
-  var cnHTML = '<span class="ok">\u2713 Gate clear.</span> No council pass on file yet.';
-  try{
-    if(typeof CN !== 'undefined' && CN){
-      var lr = cnLatestRun(CN), bud = CN.budget || {};
-      var gateOpen = (CN.flags || []).filter(function(f){ return f.state === 'open'; }).length;
-      cnHTML = (gateOpen ? '<b>' + gateOpen + ' flag' + (gateOpen === 1 ? '' : 's') + ' open.</b>' : '<span class="ok">\u2713 Gate clear.</span>') +
-        (lr ? ' <b>' + esc(lr.run.title || 'Council') + '</b> ran last \u2014 ' + esc(cnFmtDate(lr.date)) + '.' : '') +
-        (bud.used_pct != null ? '<br><b>Resource:</b> ' + esc(String(bud.used_pct)) + '% of the week used' + (bud.week_resets ? ', resets ' + esc(cnFmtDate(cnParseDate(bud.week_resets))) : '') + '.' : '');
-    }
-  }catch(x){}
+  /* V4.19.0: the Council strip that used this block is removed
+     from the Overview (item H) — the Council page keeps its own
+     rendering of the same data. */
   /* proximity this week, for the last-contact panel footnote */
   var proxWeek = {}, proxVenue = '';
   var weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
@@ -7872,16 +7910,14 @@ function viewHome(v){
      (hmPushHeroHTML); the Needs-you counts stay up here. */
   v.innerHTML = '<div class="v4p pv-view">' +
     '<div class="pv-hero"><div><h1>Overview</h1></div>' +
-    '<div class="pulse"><b>Needs you:</b> <a class="lnk" href="#/daily/decide">' + rcN + ' to decide</a> \u00b7 <a class="lnk" href="#/photos">' + phN + ' photos to check</a> \u00b7 ' + (pfN ? pfN + ' prefill waiting' : 'Prefill clear') + ' &nbsp;<a class="lnk" href="#/daily">Open Live Records \u2192</a></div></div>' +
+    /* V4.19.0 (JD): "Needs you" leaves the header — filings this
+       week + the 14-day photos/facts graphic take its place,
+       inside the same footprint (pvHeroStatHTML). */
+    pvHeroStatHTML() + '</div>' +
     hmBandHTML({ N:N, T:T, B:B, cy:cy, inTouch:inTouch, older:older, curFair:curFair, pct:pct, proxN:proxN, proxVenue:proxVenue, addedNames:addedNames, M:M }) +
+    /* V4.19.0 (JD): the "Needs you today" strip and the Council
+       strip are removed from the Overview; the actions row stays. */
     '<section class="pv-bottom">' +
-    '<div class="pv-strip"><h3>Needs you today \u2014 counts are doors, not copies</h3><div class="pv-known">' +
-    '<div><b>' + rcN + '</b><span><a class="lnk" href="#/daily/decide">Items to decide</a>' + (rcPeople ? ' \u00b7 ' + rcPeople + ' people' : '') + '</span></div>' +
-    '<div><b>' + fiN + '</b><span><a class="lnk" href="#/daily/decide">New facts to read</a> \u00b7 Fact Inbox</span></div>' +
-    '<div><b>' + phN + '</b><span><a class="lnk" href="#/photos">Photos to check</a> \u00b7 possible or likely</span></div>' +
-    '<div><b>' + pfN + '</b><span>' + (pfN ? 'Prefill waiting' : 'Prefill waiting \u00b7 queue clear') + '</span></div>' +
-    '</div></div>' +
-    '<div class="pv-strip"><h3>Council \u2014 latest pass</h3><div class="pv-council-line">' + cnHTML + '</div></div>' +
     '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
     '</section>' +
     '</div>';
@@ -8353,36 +8389,89 @@ function hmPushHeroHTML(){
   return '<div class="gm-pushhero ' + cls + '"><div class="gm-ph-cell"><span class="gm-ph-k">Last update</span><b>' + esc(lastTxt) + '</b><span class="gm-ph-s">' + esc(lastSub) + '</span></div>' +
     '<div class="gm-ph-cell"><span class="gm-ph-k">Next scheduled</span><b>' + nextTxt + '</b><span class="gm-ph-s">Sweeps run 6:54 AM and 6:54 PM ET.</span></div></div>';
 }
+/* V4.19.0 (JD): the Overview's right column gets big color-coded
+   hero stats — a contact summary and a records summary — computed
+   live from the same data the rest of the app reads:
+   - Contact: distinct people with a contact event (kind contact,
+     the event's online flag) in the last 7 / 30 days, split
+     in-person vs online, plus the most recent contact of each
+     kind by name.
+   - Records: people searched in the last 7 days (the sweep's own
+     freshness count in daily-ten.json), the latest sweep's size,
+     and new results confirmed in the last 7 days (research_review
+     "file" decisions). The sweep keeps no 48-hour count and no
+     running total of searches — those tiles say so instead of
+     inventing a number. */
+function hmHeroStatsHTML(){
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function isoDaysAgo(n){
+    var t = new Date(); t.setDate(t.getDate() - n);
+    return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2);
+  }
+  function fmtD(iso){
+    var p = String(iso || '').split('-');
+    return p.length === 3 ? MN[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0] : String(iso || '');
+  }
+  var d7 = isoDaysAgo(6), d30 = isoDaysAgo(29);
+  var wkIp = {}, wkOn = {}, moIp = {}, moOn = {};
+  var lastIp = null, lastOn = null, confirmed7 = 0;
+  people().forEach(function(e){
+    var nm = dispName(e), di = D.directory.indexOf(e);
+    (e.events || []).forEach(function(ev){
+      if((ev.kind || ev.type) !== 'contact') return;
+      var dt = String(ev.date || '').slice(0, 10);
+      if(!dt) return;
+      if(ev.online){
+        if(dt >= d7) wkOn[nm] = 1;
+        if(dt >= d30) moOn[nm] = 1;
+        if(!lastOn || dt > lastOn.date) lastOn = { name: nm, date: dt, di: di };
+      } else {
+        if(dt >= d7) wkIp[nm] = 1;
+        if(dt >= d30) moIp[nm] = 1;
+        if(!lastIp || dt > lastIp.date) lastIp = { name: nm, date: dt, di: di };
+      }
+    });
+    var rm = rcReviewMap(e);
+    Object.keys(rm).forEach(function(k){
+      var dec = rm[k];
+      if(dec && dec.decision === 'file' && String(dec.at || '').slice(0, 10) >= d7) confirmed7++;
+    });
+  });
+  function tile(cls, k, v, sub){
+    return '<div class="gm-hs-tile ' + cls + '"><span class="gm-hs-k">' + k + '</span><b>' + v + '</b>' + (sub ? '<span class="gm-hs-s">' + sub + '</span>' : '') + '</div>';
+  }
+  function lastLine(label, L){
+    if(!L) return '<div class="gm-hs-last"><span>' + label + '</span><b>none on file</b></div>';
+    return '<div class="gm-hs-last"><span>' + label + '</span><a class="lnk" href="#/p/' + L.di + '"><b>' + esc(L.name) + '</b></a><span class="gm-hs-d">' + fmtD(L.date) + '</span></div>';
+  }
+  var dtOk = (typeof DT !== 'undefined' && DT && DT.freshness);
+  var searched7 = dtOk ? String(DT.freshness.d7 != null ? DT.freshness.d7 : '—') : '…';
+  var sweepTile = dtOk ? tile('rec', 'Latest sweep', String((DT.checked || []).length), 'people · ' + fmtD(DT.date)) : tile('rec', 'Latest sweep', '…', 'loading');
+  return '<div class="gm-herostats">' +
+    '<div class="gm-hs-sec"><h3>Contact</h3><div class="gm-hs-grid">' +
+    tile('ip', 'In person · last 7 days', String(Object.keys(wkIp).length)) +
+    tile('on', 'Online · last 7 days', String(Object.keys(wkOn).length)) +
+    tile('ip', 'In person · last 30 days', String(Object.keys(moIp).length)) +
+    tile('on', 'Online · last 30 days', String(Object.keys(moOn).length)) +
+    '</div>' +
+    lastLine('Last person in-person contact', lastIp) +
+    lastLine('Last person online contact', lastOn) +
+    '</div>' +
+    '<div class="gm-hs-sec"><h3>Records</h3><div class="gm-hs-grid">' +
+    tile('rec', 'People searched · last 7 days', searched7) +
+    tile('rec dim', 'People searched · last 48 hours', '—', 'the sweep keeps no 48-hour count') +
+    sweepTile +
+    tile('rec', 'New results confirmed · last 7 days', String(confirmed7)) +
+    '</div></div></div>';
+}
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
   function skpi(lab, val, sub){
     return '<div class="gm-skpi"><div class="gm-sk-top"><span class="lab">' + lab + '</span><span class="num">' + val + '</span></div><div class="sub">' + sub + '</div></div>';
   }
-  /* V4.15.0: ONE sidebar, on the right. Everything the retired left
-     rail carried is compacted into the "Directory at a glance" block
-     below the hero slot: the four headline counts as compact rows,
-     then the filled-out, currency, and last-contact bar groups. */
-  var stats = '<div class="gm-mini gm-stats"><h3>Directory at a glance</h3>' +
-    skpi('People in directory', o.N, (o.addedNames.length ? '<b>+' + o.addedNames.length + '</b> today (' + esc(o.addedNames[0]) + ') · ' : '') + 'every count foots to ' + o.N) +
-    skpi('In touch lately', o.inTouch + ' <small>/ ' + o.N + '</small>', 'Talked to in <b>' + (o.cy - 1) + ' or ' + o.cy + '</b> · <b>' + o.older + '</b> last in touch ' + (o.cy - 2) + ' or earlier') +
-    skpi('Full picture', T.full + ' <small>/ ' + o.N + '</small>', '<b>' + T.solid + '</b> solid · <b>' + T.light + '</b> light · <b>' + T.name + '</b> name only') +
-    skpi('Information current', o.curFair + ' <small>/ ' + o.N + '</small>', '<b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current · <b>' + B.outdated + '</b> outdated') +
-    '<h3 class="gm-subh">How filled-out are the records?</h3>' +
-    v4MRow('Full picture', '', 'blue', o.pct(T.full), T.full) + v4MRow('Solid', '', 'blue', o.pct(T.solid), T.solid) +
-    v4MRow('Light', '', 'amber', o.pct(T.light), T.light) + v4MRow('Name only', '', 'dim', o.pct(T.name), T.name) +
-    '<div class="pv-foot"><a class="lnk" href="#/audit">See who is missing what in Audit →</a></div>' +
-    '<h3 class="gm-subh">How current is the information?</h3>' +
-    v4MRow('Current', '', 'green', o.pct(B.current), B.current) + v4MRow('Fairly current', '', 'blue', o.pct(B.fairly), B.fairly) +
-    v4MRow('Getting thin or old', '', 'amber', o.pct(B.thin), B.thin) + v4MRow('Outdated', '', 'red', o.pct(B.outdated), B.outdated) +
-    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so their recency scores 0 for lack of evidence, not because the information is proven stale.</div>' +
-    '<h3 class="gm-subh">Last contact — how stale?</h3>' +
-    v4MRow(String(o.cy), '', 'gold', o.pct(M.lc.y0), M.lc.y0) + v4MRow(String(o.cy - 1), '', 'gold', o.pct(M.lc.y1), M.lc.y1) +
-    v4MRow((o.cy - 3) + ' – ' + (o.cy - 2), '', 'dim', o.pct(M.lc.y2324), M.lc.y2324) +
-    v4MRow((o.cy - 5) + ' – ' + (o.cy - 4), '', 'dim', o.pct(M.lc.y2122), M.lc.y2122) +
-    v4MRow((o.cy - 6) + ' or earlier', '', 'dim', o.pct(M.lc.yOld), M.lc.yOld) +
-    v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
-    '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div>' +
-    '</div>';
+  /* V4.19.0 (JD): "Directory at a glance" is REMOVED — the right
+     column's space goes to the contact/records hero stats
+     (hmHeroStatsHTML) instead. */
   /* V4.17.0 layout (JD 2026-11-14): the map takes the FULL width
      of the band — the right sidebar's space is merged into it —
      and everything the sidebar carried moves BELOW the map into
@@ -8416,18 +8505,11 @@ function hmBandHTML(o){
     '<div class="gm-scrubhint">Each stop is one dated appearance — no empty years to drag across. Drag, use the arrow keys on the slider, or step with the buttons.</div></div>' +
     '<div class="gm-astrip" id="hmAppsStrip"></div>' +
     '</div>';
+  /* V4.19.0 (JD): the foot keeps only "Known since". Removed:
+     the "Where the map stands" readout, "How to read it", the
+     "Biggest places" detail block, and "Directory at a glance".
+     Their painters are all null-guarded, so the map is unaffected. */
   var foot = '<div class="gm-foot">' +
-    hmReadoutHTML() +
-    '<div class="gm-mini" id="hmLegend"><h3>How to read it <button type="button" class="gm-legbtn" data-act="hmlegend">Hide</button></h3><div class="gm-legend">' +
-    '<div><span class="gm-sw a-hot"></span>Published in the last 21 days</div>' +
-    '<div><span class="gm-sw a-mid"></span>Published in the last 90 days</div>' +
-    '<div><span class="gm-sw a-old"></span>Published longer ago</div>' +
-    '<div><span class="gm-sw a-und"></span>No published date on record — rests in All appearances, never in the steps</div>' +
-    '<div><span class="gm-sw a-pin"></span>A recent appearance, labeled with who and what</div>' +
-    '<div class="gm-leg-note">A place badge counts the findings there; its ring takes the newest finding\u2019s colour — dashed when a place has findings with no published date in view. A badge naming several places is a cluster of close places — click to zoom in. Click any place, label, or list row and its card opens on the map.</div>' +
-    '</div></div>' +
-    '<div class="gm-mini hm-detail" id="hmDetail"></div>' +
-    stats +
     '<div class="gm-mini"><h3>Known since</h3>' +
     v4MRow('20+ years', '', 'gold', o.pct(M.ks.p20), M.ks.p20) + v4MRow('10 – 19 years', '', 'gold', o.pct(M.ks.y1019), M.ks.y1019) +
     v4MRow('5 – 9 years', '', 'gold', o.pct(M.ks.y59), M.ks.y59) + v4MRow('2 – 4 years', '', 'gold', o.pct(M.ks.y24), M.ks.y24) +
@@ -8437,7 +8519,7 @@ function hmBandHTML(o){
   /* V4.18.0 (JD 2026-11-25): the band is two half columns — the
      map on the left, and on the right the push hero on top with
      the readout cards stacked under it in one uniform column. */
-  return '<section class="gm-band cols"><div class="gm-left">' + center + '</div><div class="gm-right">' + hmPushHeroHTML() + foot + '</div></section>';
+  return '<section class="gm-band cols"><div class="gm-left">' + center + '</div><div class="gm-right">' + hmPushHeroHTML() + hmHeroStatsHTML() + foot + '</div></section>';
 }
 function hmGapsHTML(){
   var parts = [];
@@ -9128,19 +9210,9 @@ function viewStats(v){
     P.forEach(function(di){ var mf = msgFor(D.directory[di]); if(mf && mf.n){ msgThreads++; msgTot += mf.n; msgRows.push({ di:di, n:mf.n }); } });
     msgRows.sort(function(a, b){ return b.n - a.n || a.di - b.di; }); msgRows = msgRows.slice(0, 5);
   }
-  /* --- filings this week (7-day columns) --- */
-  var wkDays = [], wkByDay = {};
-  for(var wi = 6; wi >= 0; wi--){ var wd = new Date(now.getTime() - wi * 864e5); var wds = stDstr(wd); wkByDay[wds] = { d:wds, dow:MSG_DAY[wd.getDay()].slice(0, 3), num:wd.getDate(), f:0, p:0 }; wkDays.push(wkByDay[wds]); }
-  Object.keys(chByDay).forEach(function(d){ if(wkByDay[d]) wkByDay[d].f = chByDay[d]; });
-  if(WN && WN.items) WN.items.forEach(function(it){ if(it.kind === 'photo' && wkByDay[it.date]) wkByDay[it.date].p++; });
-  var wkMax = Math.max.apply(null, wkDays.map(function(x){ return x.f + x.p; }).concat([1]));
-  var wkCols = wkDays.map(function(x){
-    var t = x.f + x.p, h = t ? Math.max(5, Math.round(t / wkMax * 100)) : 0;
-    return '<div class="st-col"><span class="st-cv">' + (t || '') + '</span><span class="st-colbar" style="height:' + h + '%">' +
-      (x.p ? '<span class="st-cp" style="height:' + Math.round(x.p / t * 100) + '%"></span>' : '') +
-      (x.f ? '<span class="st-cf" style="height:' + Math.round(x.f / t * 100) + '%"></span>' : '') +
-      '</span><span class="st-cl">' + x.dow + ' ' + x.num + '</span></div>';
-  }).join('');
+  /* V4.19.0 (JD): the Filings-this-week columns MOVED to the
+     Overview header (pvHeroStatHTML, widened to 14 days) — the
+     card no longer renders here. */
   /* --- explorer distributions, reused --- */
   function distRows(g, limit, withPct){
     var rows = g.rows.slice(0, limit || g.rows.length);
@@ -9201,7 +9273,7 @@ function viewStats(v){
     stCard('Records currency', curCnt, curInner, (DT && DT.freshness) ? 'Live Records rotation \u2014 profiles are checked against the public record in turn. Oldest check on file: ' + esc(DT.freshness.oldest || '\u2014') + ' \u00b7 brief of ' + esc(DT.date || '') + '.' : ''),
     stCard('Field completeness', 'of ' + P.length + ' profiles', '<div class="st-rows">' + fieldRows + '</div>', 'Email is scrubbed from the published data build, so the email count reflects only what the app data itself carries.'),
     stCard('Events by kind \u2014 this month', evTot + ' events on file', evSegs, 'Kinds as filed: contact and proximity are stamped kinds; everything else reads as narrative. This month = ' + MSG_MON[now.getMonth()] + ' ' + now.getFullYear() + '.'),
-    stCard('Filings this week', 'last 7 days', '<div class="st-cols">' + wkCols + '</div><div class="st-legline"><span><span class="st-sw std0"></span>Fact &amp; event filings</span><span><span class="st-sw std1"></span>Photo filings</span></div>', 'Facts and events from the change log; photo filings from the What\u2019s New feed.'),
+    /* V4.19.0: the Filings card moved to the Overview header. */
     stCard('Proximity', proxTot + ' total \u00b7 ' + proxMo + ' this month', '<div class="st-rows">' + proxRows + '</div>', 'Proximity = co-presence on file (same place, same day). It never counts as contact. Months are the last six with any proximity filed.'),
     stCard('Last-contact recency', 'of ' + P.length + ' profiles', '<div class="st-rows">' + distRows(dist[5], 5, true) + '</div>', 'The full distribution lives here; Home keeps the headline strip. \u201cNever / not recorded\u201d includes profiles whose last contact was years ago or never marked \u2014 read it as unmarked, not as due.'),
     stCard('Completeness bands', 'score bands', '<div class="st-rows">' + distRows(dist[0], 5, true) + '</div>', 'The same completeness score People and Audit use.'),
@@ -10849,6 +10921,9 @@ var LR_ANIM_SEEN = false; /* edges pass (JD 2026-11-02): Live Records entrance m
    load succeeds (the Council no-clobber rule): a save built on
    an unread map would overwrite decisions made on other devices. */
 var FI = null, FI_LOADING = false, FI_PROF = null, FI_PROF_FAILED = false, FI_STATE = null, FI_SAVE_SEQ = 0;
+/* V4.19.0 (perf): memo of fiStateMap()'s derived union — see the
+   note inside fiStateMap. Cleared wherever an input changes. */
+var FI_MAP_MEMO = null;
 var FI_BRIDGE; /* undefined until first read; localStorage snapshot of the last state map THIS device saved (V3.79.2) */
 function fiBridgeRead(){
   if(FI_BRIDGE !== undefined) return FI_BRIDGE;
@@ -10861,11 +10936,11 @@ function fiBridgeRead(){
 }
 function fiBridgeStore(map){
   var b = { savedAt: Date.now(), map: map };
-  FI_BRIDGE = b;
+  FI_BRIDGE = b; FI_MAP_MEMO = null;
   try { localStorage.setItem('ncc_fi_bridge_v1', JSON.stringify(b)); } catch(e){}
 }
 function fiBridgeRestore(raw){
-  FI_BRIDGE = undefined;
+  FI_BRIDGE = undefined; FI_MAP_MEMO = null;
   try { if(raw) localStorage.setItem('ncc_fi_bridge_v1', raw); else localStorage.removeItem('ncc_fi_bridge_v1'); } catch(e){}
 }
 var FI_FILTER = 'all', FI_SORT = 'new', FI_SEL = null, FI_SEL_NEXT = null;
@@ -11049,8 +11124,8 @@ function fiLoad(){
   FI_LOADING = true;
   fetch('data/fact-inbox.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ FI = d; if(FI && FI.entries) FI.entries = fiDedupe(FI.entries); FI_LOADING = false; repaintForData('fi'); })
-    .catch(function(){ FI = { empty:true, entries:[] }; FI_LOADING = false; repaintForData('fi'); });
+    .then(function(d){ FI = d; if(FI && FI.entries) FI.entries = fiDedupe(FI.entries); FI_LOADING = false; FI_MAP_MEMO = null; repaintForData('fi'); })
+    .catch(function(){ FI = { empty:true, entries:[] }; FI_LOADING = false; FI_MAP_MEMO = null; repaintForData('fi'); });
 }
 function fiProfLoad(){
   if(FI_PROF || FI_PROF_FAILED) return;
@@ -11070,8 +11145,9 @@ function fiProfLoad(){
           }
         }
       }
-      if(!found){ FI_PROF_FAILED = true; repaintForData('fi'); return; }
+      if(!found){ FI_PROF_FAILED = true; FI_MAP_MEMO = null; repaintForData('fi'); return; }
       FI_PROF = { map: map };
+      FI_MAP_MEMO = null;
       repaintForData('fi');
     })
     .catch(function(){ FI_PROF_FAILED = true; repaintForData('fi'); });
@@ -11083,6 +11159,13 @@ function fiStateBlocked(){
 }
 function fiStateMap(){
   if(FI_STATE) return FI_STATE;
+  /* V4.19.0 (perf): this union used to be rebuilt on EVERY call —
+     and fiStatus() is called per entry by fiCounts(), fiVisible(),
+     the rail badge and every paint, so a single paint was
+     quadratic in the fact count and clicks felt dead. The inputs
+     (FI entries, the profiles bake, the localStorage bridge) only
+     change at load/save points, which clear FI_MAP_MEMO. */
+  if(FI_MAP_MEMO) return FI_MAP_MEMO;
   /* V3.79.2 (JD 2026-11-03: reads "not saving" after a reload): the old
      precedence let whichever source loaded first win outright — a
      profiles.json bake from BEFORE the last save (cell still empty)
@@ -11113,6 +11196,7 @@ function fiStateMap(){
       Object.keys(b.map).forEach(function(k){ put(k, b.map[k]); });
     }
   }
+  FI_MAP_MEMO = m;
   return m;
 }
 function fiStatus(e){ var s = fiStateMap()[e.id]; return s ? s.status : null; }
@@ -11398,7 +11482,10 @@ function lrTodayHTML(){
   function cardFor(display, name, fc, di, st){
     var dates = '';
     if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
-    return '<div class="pv-card lr-fc">' + lrDateBadge(fc.published, 'Published') + '<div class="lr-fc-main"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(display || name) + '</a>' : esc(display || name)) + '</span>' + v4ChipAbout() +
+    /* V4.19.0: the person's profile photo rides on the fresh card
+       when they have one (afAvatarHTML falls back to initials when
+       no photo is on file — no placeholder image is ever faked). */
+    return '<div class="pv-card lr-fc">' + lrDateBadge(fc.published, 'Published') + '<div class="lr-fc-main"><div class="chead">' + (di != null ? afAvatarHTML({ name: display || name }, di, 'md') : '') + '<span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(display || name) + '</a>' : esc(display || name)) + '</span>' + v4ChipAbout() +
       (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
       '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
       (dates ? '<div class="pv-dates">' + dates + '</div>' : '') +
@@ -11552,8 +11639,11 @@ function fiMove(dRow, dCol){
   var cg = fiAllGroups();
   var ci = loc.ci, gi = loc.gi;
   if(dCol){
+    /* V4.19.0: one column only — a left/right hop has nowhere to
+       go (the old code indexed a second column that no longer
+       exists and threw). */
     var other = ci === 0 ? 1 : 0;
-    if(!cg[other].length) return;
+    if(!cg[other] || !cg[other].length) return;
     ci = other; gi = Math.min(gi, cg[other].length - 1);
   } else {
     gi = Math.max(0, Math.min(cg[ci].length - 1, gi + dRow));
@@ -11623,7 +11713,13 @@ function fiMarkRead(id){
   var g = loc.g;
   var cg = fiAllGroups();
   var colGs = cg[loc.ci];
-  var nxt = colGs[loc.gi + 1] || colGs[loc.gi - 1] || (cg[loc.ci === 0 ? 1 : 0][0] || null);
+  /* V4.19.0: the feed is ONE column since V4.18.0 — fiAllGroups()
+     returns a single group array, so the old two-column fallback
+     (cg[other column]) read past the end of the array and threw,
+     killing the Read click before the save whenever the card was
+     the last (or only) one in the column. Next card = the next or
+     previous card in the same column, or none. */
+  var nxt = colGs[loc.gi + 1] || colGs[loc.gi - 1] || null;
   var cur = fiStateMap(), next = {};
   Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
   var at = new Date().toISOString();
@@ -13705,6 +13801,34 @@ function phInspClose(instant){
   phMarkSel();
 }
 
+/* V4.19.0 (JD): the last-7-days photo meter — one horizontal
+   strip, one segment per day, colored by that day's photo-check
+   yield: green when the day's filed photos are all confirmed,
+   amber when filings landed but some are still unconfirmed,
+   plain when nothing was filed. Built from photos.json `added`
+   dates (an added_approx entry counts at its month's 1st — the
+   shipped phIsNew convention). There is no per-day check-RUN log
+   in the app data, so the meter reads filings, which are what
+   the checks produce. */
+function phWeekMeterHTML(){
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function isoOf(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var days = [];
+  for(var i = 6; i >= 0; i--){ var d = new Date(today); d.setDate(d.getDate() - i); days.push(isoOf(d)); }
+  var byDay = {};
+  days.forEach(function(k){ byDay[k] = { n:0, conf:0 }; });
+  (PH.people || []).forEach(function(p){
+    var ad = p.added || (p.added_approx ? String(p.added_approx).slice(0, 7) + '-01' : '');
+    if(ad && byDay[ad]){ byDay[ad].n++; if(p.status === 'confirmed') byDay[ad].conf++; }
+  });
+  var segs = days.map(function(k){
+    var b = byDay[k], p = k.split('-');
+    var cls = !b.n ? 'none' : (b.conf === b.n ? 'ok' : 'part');
+    return '<i class="' + cls + '" title="' + MN[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ' · ' + (b.n ? b.n + ' photo' + (b.n === 1 ? '' : 's') + ' filed · ' + b.conf + ' confirmed' : 'no photos filed') + '"></i>';
+  }).join('');
+  return '<span class="ph-meter" title="Photos filed by the photo checks, last 7 days"><span class="ph-meter-lab">Last 7 days</span>' + segs + '</span>';
+}
 function viewPhotos(v){
   phLoad();
   var head = '<div class="pv-vhead"><div><h1>Photos</h1></div></div>';
@@ -13724,12 +13848,15 @@ function viewPhotos(v){
   /* V4.3.0 (JD 2026-11-04): one compact stat strip, last check
      first — the grid starts high. The three hero cards and the
      right-side stat stack are gone. */
-  var headFull = '<div class="pv-vhead"><div><h1>Photos</h1></div></div>' +
-    '<div class="pv-strip row ph-strip"><span class="ph-lastcheck">' + ic('calendar', 13) + 'Last photo check: <b>' + (PH.updated ? esc(fmtIsoD(PH.updated)) : '—') + '</b></span>' +
+  /* V4.19.0 (JD): "Last photo check" moves UP onto the title row
+     (right side), and the strip slims to counts + the 7-day
+     meter — everything moves up a row. */
+  var headFull = '<div class="pv-vhead"><div><h1>Photos</h1></div><div class="side"><span class="ph-lastcheck">' + ic('calendar', 13) + 'Last photo check: <b>' + (PH.updated ? esc(fmtIsoD(PH.updated)) : '—') + '</b></span></div></div>' +
+    '<div class="pv-strip row ph-strip">' +
     '<span><b>' + withPh + '</b> on file</span>' +
     '<span><b>' + pc.missing + '</b> no photo yet</span>' +
     (unchecked ? '<span><b>' + unchecked + '</b> not yet checked</span>' : '') +
-    '<span class="sp"></span><span><b>' + (PH.total || PH.people.length) + '</b> records checked</span></div>';
+    '<span class="sp"></span>' + phWeekMeterHTML() + '<span><b>' + (PH.total || PH.people.length) + '</b> records checked</span></div>';
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
   function fbtn(f, label, n){ return '<button type="button" class="ph-fbtn' + (PH_FILT === f ? ' on' : '') + '" data-act="phfilt" data-f="' + esc(f) + '"><span>' + esc(label) + '</span><b>' + n + '</b></button>'; }
@@ -21856,6 +21983,18 @@ function viewCouncil(v){
   var open = flags.filter(function(f){ return cnFlagState(f, q) === 'open'; });
   var stagedOnly = flags.filter(function(f){ return cnFlagState(f, q) === 'staged'; });
   var closed = flags.filter(function(f){ return cnFlagState(f, q) === 'closed'; });
+  /* V4.19.0 (JD): the Decided list shows only the last two days —
+     older decisions stay on record (the queue and the council
+     board keep them) but stop being displayed. A decision's date
+     is its board queue entry's timestamp; a flag closed only in
+     the council snapshot has no provable decision date, so it is
+     not shown. */
+  var decCutoff = Date.now() - 2 * 864e5;
+  var closedRecent = closed.filter(function(f){
+    var best = NaN;
+    q.forEach(function(e){ if(e.flag === f.id && e.state === 'done'){ var t = Date.parse(e.ts || ''); if(!isNaN(t) && (isNaN(best) || t > best)) best = t; } });
+    return !isNaN(best) && best >= decCutoff;
+  });
   var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
   var h = '<div class="cnc v4p" data-kind="neutral">' +
     '<div class="pv-vhead"><div><h1>Council</h1><p class="pv-hsub">Flags and recommendations from the weekly checks.</p></div></div>' +
@@ -21888,13 +22027,13 @@ function viewCouncil(v){
   });
   h += '</div></section>';
   /* ---- decided ---- */
-  h += '<details class="cnc-decided"><summary>Decided (' + closed.length + ')</summary><div class="cnc-dlist">';
-  h += closed.length ? closed.map(function(f){
+  h += '<details class="cnc-decided"><summary>Decided (' + closedRecent.length + ')</summary><div class="cnc-dlist">';
+  h += closedRecent.length ? closedRecent.map(function(f){
     var res = q.filter(function(e){ return e.flag === f.id && e.state === 'done'; })[0];
     return '<div class="cnc-drow"><b>' + esc(f.title || '') + '</b>' +
       ((f.ruling || f.resolution) ? '<p>' + esc(f.ruling || f.resolution) + '</p>' : '') +
       (res ? '<p class="cnc-dres">Resolved from the board ' + esc(String(res.ts || '').slice(0, 10)) + ' — ' + esc(res.label || '') + (res.outcome ? ' (' + esc(res.outcome) + ')' : '') + '</p>' : '') + '</div>';
-  }).join('') : '<p class="sb-note">No closed flags yet.</p>';
+  }).join('') : '<p class="sb-note">Nothing decided in the last two days.</p>';
   h += '</div></details>';
   h += '</div>';
   v.innerHTML = h;
