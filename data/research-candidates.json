@@ -18913,6 +18913,244 @@
    "fields": {},
    "published": "2026-06-03",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261125-ct-jessica-braman-named-as-a-surviving-daughter-in-the",
+   "name": "ct:jessica braman",
+   "display": "Jessica Braman",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "The Waddington obituary of Rodney J. Babbitt, who died April 9, 2022, names a Jessica Braman among his surviving children.",
+   "file_text": "Named as a surviving daughter in the obituary of Rodney J. Babbitt of Waddington, Apr 2022",
+   "source": "North Country This Week",
+   "url": "https://zeta.creativecirclecdn.com/ncn/files/20220513-150049-2022-04-23.pdf",
+   "quote": "Joe is survived by three children; Jennifer \u2026 Nightingale, Jessica Braman, and Michael \u2026 Babbitt",
+   "anchors": [
+    "Waddington-area context only"
+   ],
+   "missing_gate": "This is about Jessica's family, so I always check with you first.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2022-04-23",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-sf-shannon-zych-received-all-league-honorable-mentio",
+   "name": "sf:shannon-zych",
+   "display": "Shannon Zych",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "An Oswego County Today fall athletics recap names a Shannon Zych receiving all-league honorable mention for varsity girls volleyball at G. Ray Bodley High School in Fulton.",
+   "file_text": "Received all-league honorable mention for varsity girls volleyball at G. Ray Bodley High School in Fulton",
+   "source": "Oswego County Today",
+   "url": "https://oswegocountytoday.com/sports/fulton-city-school-district-fall-athletics-recap/",
+   "quote": "Second team all league honorees included Mallory Harter and Karly Kearns while Kylie Ashline, Olivia Pawlewicz, and Shannon Zych received honorable mention.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names a Shannon Zych in Fulton, but nothing on it ties her to the Army or nursing facts on Shannon's record.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-sf-peter-johnson-served-as-principal-investigator-for",
+   "name": "sf:peter-johnson",
+   "display": "Peter Johnson",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The federal SBIR awards site names a Peter Johnson of Ombra LLC as Principal Investigator on a $1,249,913 Air Force SBIR Phase II award for 'Face1st,' running June 2024 to March 2026.",
+   "file_text": "Served as Principal Investigator for Ombra LLC's $1,249,913 USAF SBIR Phase II 'Face1st' award, Jun 2024",
+   "source": "SBIR.gov",
+   "url": "https://www.sbir.gov/awards/209137",
+   "quote": "Name: Peter Johnson / OMBRA LLC / Total Award Amount: $1,249,913",
+   "anchors": [
+    "Ombra, his employer on file",
+    "the Face1st biometrics work matches his Clarkson fingerprint research on file"
+   ],
+   "missing_gate": "The page names a Peter Johnson at Ombra, but it does not mention Clarkson or Potsdam, so I am not fully sure it is him.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-ig-oliviamariegrant-runs-olivia-grant-creative-a-video-p",
+   "name": "ig:oliviamariegrant",
+   "display": "Olivia Grant",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A CanvasRebel Magazine interview has an Olivia Grant saying she runs her own video production company, Olivia Grant Creative, with work for L.L.Bean, McDonald's and Walmart.",
+   "file_text": "Runs Olivia Grant Creative, a video production and social media content company",
+   "source": "CanvasRebel Magazine",
+   "url": "https://canvasrebel.com/meet-olivia-grant/",
+   "quote": "I have my own production company called Olivia Grant Creative. I specialize in video production and social media content creation.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The interview names an Olivia Grant, but nothing on it ties her to SUNY Potsdam or the Crane School on Olivia's record.",
+   "confidence": 30,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-ig-sammace11-member-of-the-st-lawrence-thunder-14",
+   "name": "ig:sammace11",
+   "display": "Sam Mace",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Two New York State Senate resolutions name a Samantha Mace on St. Lawrence Thunder girls hockey teams: the 14U team that won the 2013 New York State Tier II Championship, and the 16U team that won the NYSAHA Tier II Northern Zone Sectional Championship in February 2014.",
+   "file_text": "Member of the St. Lawrence Thunder 14U girls hockey team that won the 2013 New York State Tier II Championship, Mar 2013 ;; Member of the St. Lawrence Thunder 16U girls hockey team that won the NYSAHA Tier II Northern Zone Sectional Championship, Feb 2014",
+   "source": "New York State Senate",
+   "url": "https://www.nysenate.gov/legislation/resolutions/2013/2013-j2644",
+   "quote": "congratulate the 2012-13 St. Lawrence Thunder 14U Girls Hockey Team; its members: Elizabeth Collins, Madison Cullen, Raechel Davis, Jordan Emerson, Kaitlin Irvine, Katie MacCuaig, Mary Kate Mace, Samantha Mace, Maddie Mailhot, Mikenna Merry, Sidney Molnar, Molly O'Connell, Abby Paquin, Kerrigan Rondeau, Maya Swamp and Jayden Young",
+   "anchors": [
+    "St. Lawrence County team",
+    "a Mary Kate Mace is listed on the same teams"
+   ],
+   "missing_gate": "The pages name a Samantha Mace on St. Lawrence County teams, but nothing on them ties her to Canton, SUNY Potsdam, or lacrosse on Sam's record.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-ct-olivia-brown-presented-a-quantitative-genetics-po",
+   "name": "ct:olivia brown",
+   "display": "Olivia Brown",
+   "run_date": "2026-11-25",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "An Olivia E. Brown in Auburn University's Wolak Research Group was reported presenting a poster at Evolution 2026. Her lab page says she earned her bachelor's at Auburn in 2022, while Olivia's record shows a Clarkson biology degree in 2022, so this looks like a different person and nothing was filed.",
+   "file_text": "Presented a quantitative-genetics poster at Evolution 2026 as an Auburn University M.Sc. student",
+   "source": "Auburn University Wolak Research Group",
+   "url": "https://qgevoeco.com/people/",
+   "quote": "Olivia received a Bachelor of Science in Wildlife Ecology and Management from Auburn University in 2022",
+   "anchors": [
+    "biology field only; the Auburn degree conflicts with the Clarkson degree on file"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 15,
+   "confidence_parts": {
+    "identity": 2,
+    "source": 8,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-sf-ian-bailey-launched-vivid-coffee-s-canned-iced",
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "run_date": "2026-11-25",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A July 2026 Hardtank article about canned coffee, interviewing Ian Bailey as Vivid Coffee's founder, says Vivid released its first canned iced coffee in late May 2020, including a canned Maple Latte made with Vermont maple syrup.",
+   "file_text": "Launched Vivid Coffee's canned iced coffee line in May 2020, including a canned Maple Latte made with Vermont maple syrup",
+   "source": "Hardtank",
+   "url": "https://hardtank.com/2026/07/22/choosing-perfect-rtd-coffee-products-cafes/",
+   "quote": "Vivid began working with a new manufacturing company that matched their values, sending samples and offering factory visits. Within 4\u20135 weeks, Vivid released its first canned iced coffee in late May 2020.",
+   "anchors": [
+    "Vivid Coffee founder, on file",
+    "Burlington, Vermont, on file"
+   ],
+   "missing_gate": "This follows from something already on Ian's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 8,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-07-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-sf-ian-bailey-vended-with-the-burlington-farmers-m",
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "run_date": "2026-11-25",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A BootstrapVT guide to working remotely in Burlington says Vivid Coffee founder Ian Bailey vended with the Burlington Farmers Market for six years before opening the caf\u00e9.",
+   "file_text": "Vended with the Burlington Farmers Market for six years before opening the Vivid Coffee caf\u00e9",
+   "source": "BootstrapVT",
+   "url": "https://bootstrapvt.com/blog/best-spots-to-work-remotely-in-burlington-vermont/",
+   "quote": "Founder Ian Bailey has been vending with the Burlington Farmers Market market for six years, before opening the cafe.",
+   "anchors": [
+    "Vivid Coffee founder, on file",
+    "Burlington, Vermont, on file"
+   ],
+   "missing_gate": "This follows from something already on Ian's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 5,
+    "detail": 7
+   },
+   "fields": {},
+   "published": "2026-07-07",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261125-madstop136-holds-u-s-dot-carrier-registration-1",
+   "name": "madstop136",
+   "display": "Eric Criscitello",
+   "run_date": "2026-11-25",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "The Federal Motor Carrier Safety Administration's carrier record lists Eric Criscitello, doing business as From the Heart Cabinetry, with U.S. DOT registration 1617121, one vehicle and one driver.",
+   "file_text": "Holds U.S. DOT carrier registration 1617121 as Eric Criscitello, doing business as From the Heart Cabinetry",
+   "source": "U.S. Federal Motor Carrier Safety Administration",
+   "url": "https://ai.fmcsa.dot.gov/SMS/Carrier/1617121/CompleteProfile.aspx?BASICUrlName=HMCompliance",
+   "quote": "ERIC CRISCITELLO / DBA: FROM THE HEART CABINETRY / U.S. DOT#: 1617121 / Number of Vehicles: 1 / Number of Drivers: 1",
+   "anchors": [
+    "From the Heart Cabinetry, his business on file"
+   ],
+   "missing_gate": "This follows from something already on Eric's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 25,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
