@@ -3102,7 +3102,7 @@ body[data-view="council"] #view{max-width:none;padding:0;margin:0}
 .cnc-actlab span{display:block;color:var(--mut);font-size:12.3px;line-height:1.45;margin-top:2px}
 .cnc-actbtns{display:flex;gap:8px;align-items:center;margin-top:9px;flex-wrap:wrap}
 .cnc-stagedchip{display:inline-flex;align-items:center;gap:5px;font:700 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--cn-blu)}
-.cnc-depts{padding:26px 30px 0}
+.cnc-depts{padding:22px 0 0}
 .cnc-h2{font:600 21px var(--serif);margin:0 0 14px}
 .cnc-dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .cnc-dept{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card);padding:16px 18px;backdrop-filter:blur(18px) saturate(1.3)}
@@ -3137,7 +3137,7 @@ body[data-view="council"] #view{max-width:none;padding:0;margin:0}
 .cnc-druns{margin-top:11px;font-size:11.8px;color:var(--dim)}
 .cnc-runs{padding:26px 30px 0}
 .cnc-runlist{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card);padding:8px 16px}
-.cnc-decided{margin:26px 30px 0;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card)}
+.cnc-decided{margin:22px 0 0;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card)}
 .cnc-decided summary{cursor:pointer;padding:14px 18px;font:600 15px var(--serif)}
 .cnc-dlist{padding:0 18px 14px;display:flex;flex-direction:column;gap:10px}
 .cnc-drow{border-top:1px solid var(--line);padding-top:10px}
@@ -3148,7 +3148,11 @@ body[data-view="council"] #view{max-width:none;padding:0;margin:0}
   .cnc-flag{grid-template-columns:1fr}
   .cnc-facts{border-left:none;border-top:1px solid var(--line)}
   .cnc-hero,.cnc-flags,.cnc-depts,.cnc-runs{padding-left:16px;padding-right:16px}
-  .cnc-decided{margin-left:16px;margin-right:16px}
+  /* V4.20.0: Departments keeps the shared page edge at mobile
+     too (the block above would re-indent it past every other
+     Council block). */
+  .cnc-depts{padding-left:0;padding-right:0}
+  .cnc-decided{margin-left:0;margin-right:0}
   .cnc-strip{flex-wrap:wrap}
 }
 
@@ -6398,17 +6402,27 @@ html[data-mode="dark"] #top .gsearch input{background:transparent;border:0;heigh
 .pv-hero .pulse{margin-left:auto;text-align:right;font-size:12px;color:var(--pv-mut);line-height:1.6}
 .pv-hero .pulse b{color:var(--pv-text)}
 /* V4.19.0: header stat + 14-day photos/facts graphic, same footprint. */
-.pv-herostat{margin-left:auto;display:flex;align-items:center;gap:22px;min-width:0}
-.pv-hs-file{display:flex;flex-direction:column;gap:1px;text-align:right}
+/* V4.20.0: the filings graph spreads across the FULL header
+   footprint — the stat block flexes to fill the hero row, and
+   the seven day columns (Mon–Sun) divide that width evenly,
+   each printing its own fact/photo counts above its bars. */
+.pv-herostat{flex:1 1 auto;margin-left:0;display:flex;align-items:center;gap:22px;min-width:0}
+.pv-hs-file{display:flex;flex-direction:column;gap:1px;text-align:right;flex:none}
 .pv-hs-file .pv-hs-k{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--pv-mut);white-space:nowrap}
 .pv-hs-file b{font-size:26px;line-height:1.05;color:var(--pv-text)}
-.pv-hs-graph{display:flex;flex-direction:column;gap:4px}
-.pv-hg-cols{display:flex;gap:4px;align-items:flex-end;height:28px}
-.pv-hg-day{display:flex;gap:1px;align-items:flex-end;height:28px}
-.pv-hg-day i{display:block;width:4px;border-radius:1px 1px 0 0}
+.pv-hs-graph{display:flex;flex-direction:column;gap:4px;flex:1 1 auto;min-width:0}
+.pv-hg-cols{display:flex;gap:4px;align-items:stretch}
+.pv-hg-day{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.pv-hg-day.future{opacity:.45}
+.pv-hg-nums{display:flex;gap:6px;font-size:10.5px;line-height:1;font-variant-numeric:tabular-nums}
+.pv-hg-nums b.f{color:var(--ink-about-bright)}
+.pv-hg-nums b.p{color:var(--ink-conn-bright)}
+.pv-hg-bars{display:flex;gap:2px;align-items:flex-end;height:28px}
+.pv-hg-day i{display:block;width:5px;border-radius:1px 1px 0 0}
 .pv-hg-day i.f{background:var(--ink-about-bright)}
 .pv-hg-day i.p{background:var(--ink-conn-bright)}
-.pv-hg-cap{font-size:11px;color:var(--pv-mut);white-space:nowrap}
+.pv-hg-lab{font-size:10px;color:var(--pv-mut);white-space:nowrap}
+.pv-hg-cap{font-size:11px;color:var(--pv-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pv-hg-cap b{color:var(--pv-text)}
 @media(max-width:760px){.pv-herostat{margin-left:0;flex-wrap:wrap}}
 .pv-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
@@ -6552,16 +6566,36 @@ html[data-mode="light"] .pv-btn.primary{color:#fff}
 .ph-meter i.ok{background:var(--pv-green)}
 .ph-meter i.part{background:var(--pv-amber)}
 /* V4.3.0: Council recommendation packets + one-line desks */
-.cnc-rec{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;margin-bottom:12px}
+/* V4.20.0 (JD 2026-11-26): Council upper area redesigned for
+   alignment and space. Every block in the page now shares the
+   same left/right edge (the view's own padding) — Departments
+   and Decided used to sit 30px further in than the header,
+   strips and Recommendations. The strips slim down, and the
+   Recommendations become a uniform two-column card grid:
+   consistent widths, aligned rows, no wasted vertical space.
+   Content is unchanged. */
+.cnc .pv-vhead{margin-bottom:12px}
+.cnc-strip{margin-bottom:10px}
+.cnc-recs{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:12px;align-items:start}
+.cnc-recs .cnc-h2{grid-column:1/-1;margin-bottom:2px}
+.cnc-recs .empty{grid-column:1/-1}
+.cnc-rec{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;margin-bottom:0}
 .cnc-rec h3{font-size:16px;font-weight:680;margin:0 0 3px}
-.cnc-rec-meta{font-size:12px;color:var(--mut);margin-bottom:9px}
-.cnc-rec-line{font-size:13.5px;line-height:1.55;margin:0 0 7px}
+.cnc-rec-meta{font-size:12px;color:var(--mut);margin-bottom:8px}
+.cnc-rec-line{font-size:13.5px;line-height:1.55;margin:0 0 6px}
 .cnc-rec-line ul{margin:3px 0 0;padding-left:18px}
 .cnc-rec-line li{margin:2px 0}
-.cnc-dlist2{display:flex;flex-direction:column}
-.cnc-drow2{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:13.5px;flex-wrap:wrap}
-.cnc-drow2-last{color:var(--mut);font-size:12.5px}
-.cnc-drow2-find{margin-left:auto;color:var(--txt2);font-size:13px;text-align:right}
+@media(max-width:760px){.cnc-recs{grid-template-columns:1fr}}
+/* V4.20.0: Departments as a proper table — header row, aligned
+   columns (was free-form flex rows). */
+.cnc-dtable{width:100%;border-collapse:collapse;font-size:13.5px}
+.cnc-dtable th{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);text-align:left;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+.cnc-dtable td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.cnc-dtable th:first-child,.cnc-dtable td:first-child{padding-left:2px}
+.cnc-dtable th:last-child,.cnc-dtable td:last-child{padding-right:2px}
+.cnc-dtable tbody tr:last-child td{border-bottom:0}
+.cnc-dt-name{font-weight:700;white-space:nowrap}
+.cnc-dt-last{color:var(--mut);font-size:12.5px}
 /* V4.3.0: Live Records — brief hero, two-column fact cards,
    calendar publish-date badge */
 .lr-hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:16px 20px;margin-bottom:14px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--sh-card)}
@@ -6728,8 +6762,14 @@ html[data-mode="light"] body::before{background:radial-gradient(1200px 600px at 
    never move the chrome — measured by qa/nav_stability_qa.py. */
 .pv-vhead>div:first-child{flex:1;min-width:0}
 .page.lr .pv-hsub{height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pv-lrtabs a .n{display:inline-block;min-width:34px;text-align:center}
-.pv-lrtabs a .n.zero{opacity:0}
+/* V4.20.0: tab count chips take one fixed slot on every tab and
+   a zero count stays faintly VISIBLE — the old rule hid zero
+   chips (opacity:0) while still reserving their 34px, so the
+   gap between "New facts" and "Needs a decision" changed with
+   the counts and the spacing read as uneven. Geometry is now
+   identical whatever the numbers are. */
+.pv-lrtabs a .n{display:inline-block;min-width:32px;text-align:center}
+.pv-lrtabs a .n.zero{opacity:.38}
 @media (max-width:760px){ .page.lr .pv-hsub{height:37px;white-space:normal;text-overflow:clip} }
 
 /* V4.1 stage 8 — Evidence first-class (JD 2026-11-04): the card's
@@ -7608,12 +7648,16 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
    ================================================================ */
 /* Live Records: ONE header row — title block, tabs, Command
    Center button — so content starts higher on every LR view. */
-.pv-vhead.lr-headrow{align-items:center;flex-wrap:wrap;gap:10px 18px;margin-bottom:12px}
+/* V4.20.0 (JD 2026-11-26): the tab row is CENTER-justified —
+   the header is a 3-zone grid (title | tabs | side button) with
+   equal outer columns, so the tabs sit in the middle of the row
+   instead of hard against the right edge. */
+.pv-vhead.lr-headrow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px 18px;margin-bottom:12px}
 .lr-headrow .lr-titleblock{display:flex;align-items:baseline;gap:12px;min-width:0}
 .lr-headrow .lr-titleblock .pv-hsub{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pv-lrtabs.lr-inline{margin:0 0 0 auto}
-.lr-headrow .side{margin-left:0}
-@media(max-width:899px){.pv-lrtabs.lr-inline{margin-left:0;order:3}.lr-headrow .side{margin-left:auto}}
+.pv-lrtabs.lr-inline{margin:0;justify-self:center}
+.lr-headrow .side{margin-left:0;justify-self:end}
+@media(max-width:899px){.pv-vhead.lr-headrow{grid-template-columns:1fr}.pv-lrtabs.lr-inline{justify-self:start}.lr-headrow .side{justify-self:start}}
 /* Research Command head: one compact line + a slim legend row. */
 .rc-head.compact{padding:10px 16px;align-items:center;gap:8px 16px}
 .rc-head.compact h2{font-size:16px;margin:0}
@@ -7654,12 +7698,16 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .gm-pushhero.none{box-shadow:inset 4px 0 0 var(--pv-line)}
 @media(max-width:560px){.gm-pushhero{grid-template-columns:1fr}.gm-pushhero .gm-ph-cell + .gm-ph-cell{border-left:0;border-top:1px solid var(--pv-line)}}
 /* V4.19.0: Overview hero stats (contact + records), right column. */
-.gm-herostats{border:1px solid var(--pv-line);border-radius:12px;background:var(--pv-panel);padding:14px 16px;display:flex;flex-direction:column;gap:14px}
-.gm-herostats h3{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pv-mut);margin:0 0 8px}
-.gm-hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.gm-hs-tile{border:1px solid var(--pv-line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--pv-panel2)}
-.gm-hs-tile .gm-hs-k{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pv-mut)}
-.gm-hs-tile b{font-size:26px;line-height:1.1;color:var(--pv-text)}
+/* V4.20.0 (JD 2026-11-26): CONDENSED — the tiles were far wider
+   than the numbers they hold. Four narrow tiles per row now,
+   tighter padding and type, and the two last-contact names are
+   heroed in their own aligned row under the Contact tiles. */
+.gm-herostats{border:1px solid var(--pv-line);border-radius:12px;background:var(--pv-panel);padding:12px 14px;display:flex;flex-direction:column;gap:12px}
+.gm-herostats h3{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pv-mut);margin:0 0 7px}
+.gm-hs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gm-hs-tile{border:1px solid var(--pv-line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;background:var(--pv-panel2);min-width:0}
+.gm-hs-tile .gm-hs-k{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--pv-mut);line-height:1.35}
+.gm-hs-tile b{font-size:21px;line-height:1.1;color:var(--pv-text)}
 .gm-hs-tile .gm-hs-s{font-size:11px;color:var(--pv-mut)}
 .gm-hs-tile.ip{box-shadow:inset 3px 0 0 var(--pv-gold)}
 .gm-hs-tile.ip .gm-hs-k{color:var(--pv-gold)}
@@ -7670,9 +7718,51 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .gm-hs-tile.rec.dim{box-shadow:inset 3px 0 0 var(--pv-line)}
 .gm-hs-tile.rec.dim .gm-hs-k{color:var(--pv-mut)}
 .gm-hs-tile.rec.dim b{color:var(--pv-mut)}
-.gm-hs-last{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--pv-mut);margin-top:8px}
-.gm-hs-last b{color:var(--pv-text);font-size:13.5px}
-.gm-hs-last .gm-hs-d{color:var(--pv-dim)}
+/* V4.20.0: last-contact heroes — the names are the biggest type
+   in the card, aligned in a two-column row that matches the
+   tile grid; the meta line carries date + days-ago, color-coded
+   by recency (r0 green, r1 amber, r2 muted). */
+.gm-hs-lasts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.gm-hs-hero{border:1px solid var(--pv-line);border-radius:10px;padding:9px 12px;background:var(--pv-panel2);display:flex;flex-direction:column;gap:2px;min-width:0}
+.gm-hs-hero.ip{box-shadow:inset 3px 0 0 var(--pv-gold)}
+.gm-hs-hero.on{box-shadow:inset 3px 0 0 var(--pv-blue)}
+.gm-hs-hero .gm-hs-k{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--pv-mut)}
+.gm-hs-hero.ip .gm-hs-k{color:var(--pv-gold)}
+.gm-hs-hero.on .gm-hs-k{color:var(--pv-blue)}
+.gm-hs-name{font-size:19px;font-weight:700;line-height:1.15;color:var(--pv-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+a.gm-hs-name:hover{text-decoration:underline}
+.gm-hs-meta{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--pv-mut)}
+.gm-hs-meta i{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.gm-hs-meta.r0{color:var(--pv-green)}
+.gm-hs-meta.r1{color:var(--pv-amber)}
+.gm-hs-meta.r2{color:var(--pv-mut)}
+/* Light mode: the green/amber tokens measure 4.44/4.41:1 at this
+   size on panel2 — a hair under the 4.5 line — so the recency
+   line darkens a step in light mode only (dark measured 7.0:1). */
+html[data-mode="light"] .gm-hs-meta.r0{color:#1f6b38}
+html[data-mode="light"] .gm-hs-meta.r1{color:#8a5c0e}
+@media(max-width:1180px){.gm-hs-grid{grid-template-columns:1fr 1fr}}
+/* V4.20.0: Routines list (right column, under the hero stats). */
+.gm-routines{border:1px solid var(--pv-line);border-radius:12px;background:var(--pv-panel);padding:12px 14px}
+.gm-routines h3{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pv-mut);margin:0 0 4px}
+.gm-rout{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:7px 0;border-top:1px solid var(--pv-line)}
+.gm-rout-n{font-size:13px;font-weight:600;color:var(--pv-text);padding-top:1px}
+.gm-rout-t{font-size:11.5px;color:var(--pv-mut);text-align:right;line-height:1.55;font-variant-numeric:tabular-nums}
+.gm-rout-t b{color:var(--pv-text);font-weight:600}
+/* V4.20.0: Known since — the labeled year distribution. Every
+   row prints its count, its share, and the cumulative share;
+   the bar is a visual aid, never the only carrier of the number. */
+.gm-ks-sub{font-size:12px;color:var(--pv-mut);margin:0 0 10px;line-height:1.5}
+.gm-ks-sub b{color:var(--pv-text)}
+.gm-ks{display:flex;flex-direction:column;gap:5px}
+.gm-ks-row{display:grid;grid-template-columns:94px 1fr 34px 38px 64px;align-items:center;gap:9px;font-size:12px}
+.gm-ks-lab{color:var(--pv-text);font-weight:600;white-space:nowrap}
+.gm-ks-bar{display:block;height:12px;border-radius:3px;background:rgba(127,140,160,.16);overflow:hidden}
+.gm-ks-bar i{display:block;height:100%;background:var(--pv-gold);border-radius:3px}
+.gm-ks-row.noyr .gm-ks-bar i{background:var(--pv-dim)}
+.gm-ks-n{font-size:13px;color:var(--pv-text);text-align:right;font-variant-numeric:tabular-nums}
+.gm-ks-pct{color:var(--pv-mut);text-align:right;font-variant-numeric:tabular-nums}
+.gm-ks-cum{color:var(--pv-dim);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* Overview bottom: uniform two-card row, actions full width. */
 .pv-bottom{grid-template-columns:1fr 1fr}
 .pv-bottom .pv-actions{grid-column:1/-1}
