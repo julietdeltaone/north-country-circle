@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.19.0';
+var APP_VERSION = '4.20.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2107,8 +2107,10 @@ function renderChrome(){
   var cnCt = '', cnSub = '';
   try{
     if(typeof CN !== 'undefined' && CN){
-      var openF = (CN.flags || []).filter(function(f){ return f.state === 'open'; }).length;
-      cnCt = openF ? '<span class="nv-ct">' + openF + ' flags open</span>' : '<span class="nv-ct ok">Gate clear</span>';
+      /* V4.20.0: the rail count comes from the canonical counter
+         (cnFlagCounts via cnNavCountHTML) — never the raw
+         snapshot, which lags board decisions. */
+      cnCt = cnNavCountHTML();
       var lr = cnLatestRun(CN);
       if(lr) cnSub = '<div class="rl-sub">Latest pass ' + esc(cnFmtDate(lr.date)) + ' \u2014 ' + esc(lr.run.title || 'Council') + '</div>';
     }
@@ -5181,19 +5183,21 @@ function viewNetwork(v){
   (function frame(){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
     var now = performance.now();
-    /* 3D idle motion: the sphere yaws at one revolution per 90
-       seconds. A hand on the map (any pointer down) or a camera
-       glide in flight pauses it, and reduced motion holds the
-       sphere still. */
+    /* 3D idle motion: the sphere yaws slowly — one revolution
+       per 240 seconds (V4.20.0, JD 2026-11-26: slowed from the
+       old 90-second revolution). A hand on the map (any pointer
+       down) or a camera glide in flight pauses it, and reduced
+       motion holds the sphere still. */
     if(NET.view === '3d' && !REDUCED_MOTION && !NET.glide && !Object.keys(NET.ptr).length){
       var dt = Math.min(100, now - (NET.lastT || now));
-      if(dt > 0){ NET.rot = (NET.rot + dt / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
+      if(dt > 0){ NET.rot = (NET.rot + dt / 1000 * (Math.PI * 2 / 240)) % (Math.PI * 2); NET.dirty = true; }
     }
-    /* 2D idle spin (JD 2026-10-28): same 90-second revolution,
-       same pauses — a hand on the map, a glide, reduced motion. */
+    /* 2D idle spin (JD 2026-10-28): same 240-second revolution
+       (slowed in V4.20.0), same pauses — a hand on the map, a
+       glide, reduced motion. */
     if(NET.view === '2d' && !REDUCED_MOTION && !NET.glide && !Object.keys(NET.ptr).length){
       var dt2 = Math.min(100, now - (NET.lastT || now));
-      if(dt2 > 0){ NET.spin = ((NET.spin || 0) + dt2 / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
+      if(dt2 > 0){ NET.spin = ((NET.spin || 0) + dt2 / 1000 * (Math.PI * 2 / 240)) % (Math.PI * 2); NET.dirty = true; }
     }
     NET.lastT = now;
     netGlideStep(now);
@@ -7545,59 +7549,12 @@ function hmiDispatchOpen(el){
   hmiOpenList(kind, key, label, el);
 }
 
-/* --- Config 5: the Network, in miniature. Same layout the
-   Network view computes (netBuild: score rings, org hubs at
-   member centroids, tier colors), drawn as one SVG. The whole
-   plotted group drifts at the Network 3D view's rate (one
-   revolution per 90 s); hub name plates counter-rotate so
-   they stay upright. Hover pauses the drift. --- */
-var HM_NET_RAF = 0;
-var HM_DATES = store('ncc_hm_dates') === '1';   /* Home Photos "Added" dates: collapsed by default, toggle in the card header (JD 2026-10-26) */
-function hmNetCard(){
-  netBuild();
-  var parts = [], rot = [], i;
-  for(i = 0; i < SCORE_RADII.length; i++){
-    parts.push('<circle cx="0" cy="0" r="' + SCORE_RADII[i] + '" class="hm-ring"/>');
-    parts.push('<text class="hm-guide" x="14" y="' + (-SCORE_RADII[i] + 32) + '">' + esc(SCORE_GUIDES[i]) + '</text>');
-  }
-  NET.hubs.forEach(function(h){ rot.push('<line class="hm-hubspoke" x1="0" y1="0" x2="' + h.x.toFixed(1) + '" y2="' + h.y.toFixed(1) + '"/>'); });
-  NET.hubs.slice(0, 6).forEach(function(h){ h.nds.forEach(function(nd){ rot.push('<line class="hm-spoke" x1="' + h.x.toFixed(1) + '" y1="' + h.y.toFixed(1) + '" x2="' + nd.sx.toFixed(1) + '" y2="' + nd.sy.toFixed(1) + '"/>'); }); });
-  NET.nodes.forEach(function(nd){ rot.push('<circle class="hm-node" cx="' + nd.sx.toFixed(1) + '" cy="' + nd.sy.toFixed(1) + '" r="' + (nd.r * 2.6).toFixed(1) + '" fill="' + netColor(nd) + '"/>'); });
-  NET.hubs.forEach(function(h){
-    rot.push('<rect class="hm-hubmark" x="' + (h.x - 9).toFixed(1) + '" y="' + (h.y - 9).toFixed(1) + '" width="18" height="18" transform="rotate(45 ' + h.x.toFixed(1) + ' ' + h.y.toFixed(1) + ')"/>');
-  });
-  NET.hubs.slice(0, 5).forEach(function(h){
-    rot.push('<text class="hm-hublabel" data-hx="' + h.x.toFixed(1) + '" data-hy="' + h.y.toFixed(1) + '" x="' + h.x.toFixed(1) + '" y="' + (h.y - 26).toFixed(1) + '" text-anchor="middle">' + esc(h.name) + '</text>');
-  });
-  var svg = '<svg class="hm-netsvg" viewBox="-1040 -1040 2080 2080" role="img" aria-label="Network preview: everyone in the directory on closeness rings around JD">' +
-    parts.join('') + '<g class="hm-rot">' + rot.join('') + '</g>' +
-    '<circle cx="0" cy="0" r="17" class="hm-jddot"/><text class="hm-jd" x="0" y="64" text-anchor="middle">JD</text></svg>';
-  var orgRows = NET.hubs.slice(0, 8).map(function(h){
-    return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">' + h.nds.length + '</b></button>';
-  }).join('');
-  return '<section class="card hm-blk" data-kind="connection"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' in the network &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
-    '<div class="hm-netgrid"><a class="hm-netlink" href="#/network" aria-label="Open the full Network">' + svg + '</a>' +
-    '<div><h4>Organizations &mdash; tap to focus</h4><div class="hm-orgs">' + orgRows + '</div>' +
-    '<p class="dim hm-note">Everyone in the directory on closeness rings; each tie routes through the person&rsquo;s largest organization. Tap the map for the full Network.</p></div></div>' +
-    '</div></section>';
-}
-function hmNetDrift(){
-  cancelAnimationFrame(HM_NET_RAF);
-  var g = $('.hm-rot'), svg = $('.hm-netsvg');
-  if(!g || !svg || REDUCED_MOTION) return;
-  var labels = $$('.hm-hublabel', svg), paused = false, ang = 0, last = performance.now();
-  svg.addEventListener('pointerenter', function(){ paused = true; });
-  svg.addEventListener('pointerleave', function(){ paused = false; });
-  function frame(now){
-    if(!document.body.contains(g) || S.route.name !== 'home') return;
-    var dt = now - last; last = now;
-    if(!paused) ang = (ang + dt * 0.004) % 360;   /* 0.004 deg/ms = one revolution per 90 s, the Network 3D drift rate */
-    g.setAttribute('transform', 'rotate(' + ang.toFixed(2) + ')');
-    for(var i = 0; i < labels.length; i++) labels[i].setAttribute('transform', 'rotate(' + (-ang).toFixed(2) + ' ' + labels[i].getAttribute('data-hx') + ' ' + labels[i].getAttribute('data-hy') + ')');
-    HM_NET_RAF = requestAnimationFrame(frame);
-  }
-  HM_NET_RAF = requestAnimationFrame(frame);
-}
+/* --- Config 5: the Network, in miniature — REMOVED in
+   V4.20.0 (JD 2026-11-26). The card was dead code (never
+   called), and its hmNetDrift walker rotated the plotted
+   group on a requestAnimationFrame loop — exactly the kind
+   of map-side animation JD ordered off the Overview. The
+   full Network lives on its own page. --- */
 /* --- Config 6: Photos. "On file" mirrors the Photos view's
    own rule (a URL plus a confirmed / likely / possible grade,
    minus anything JD rejected). The wall leads with the most
@@ -7836,13 +7793,11 @@ function v4MRow(label, small, barCls, pct, val){
 /* V4.19.0 (JD): the Overview header's right side — inside the
    SAME hero footprint the old "Needs you" line occupied — now
    carries (a) the filings-this-week stat (change-log entries
-   filed since Monday) and (b) the photos-and-facts graphic moved
-   here from the Stats page, widened to the last 14 days: one
-   slim column per day, facts (blue) beside photos (amber), with
-   the window totals and the confirmed share of the window's
-   photos as its caption — the quality read. Photo days run on
-   photos.json `added` dates (an added_approx entry counts at
-   its month's 1st, the shipped phIsNew convention). */
+   filed since Monday) and (b) a per-day photos-and-facts
+   graphic. V4.20.0 rebuilt that graphic as a labeled week view
+   (see pvHeroStatHTML). Photo days run on photos.json `added`
+   dates (an added_approx entry counts at its month's 1st, the
+   shipped phIsNew convention). */
 /* A photo's effective filed date: the exact `added` date, else
    added_approx at month precision (the 1st) — the same rule
    phAddedTs ships, done on strings so no timezone shift creeps
@@ -7856,36 +7811,54 @@ function pvEffAdded(p){
   if(m2){ var mi = MN3.indexOf(m2[1].slice(0, 3).toLowerCase()); if(mi >= 0) return m2[2] + '-' + ('0' + (mi + 1)).slice(-2) + '-01'; }
   return '';
 }
+/* V4.20.0 (JD 2026-11-26): the filings graph is rebuilt — the
+   V4.19 strip squeezed 14 unlabeled days into the corner, and
+   the bars meant nothing without numbers. Now it is the WEEK,
+   one labeled column per day (Mon–Sun), spread across the full
+   header footprint: each day prints its own counts (facts in
+   blue, photos in amber) above its bars, and the caption carries
+   the week's totals and the confirmed share. Same data, same
+   rules: facts from the change log's filed dates, photo days on
+   pvEffAdded (added, else added_approx at the month's 1st). */
 function pvHeroStatHTML(){
   function isoOf(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var DN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var today = new Date(); today.setHours(0, 0, 0, 0);
   var mon = new Date(today); mon.setDate(mon.getDate() - ((today.getDay() + 6) % 7));
   var monIso = isoOf(mon);
+  var days = [];
+  for(var i = 0; i < 7; i++){ var d = new Date(mon); d.setDate(d.getDate() + i); days.push({ iso:isoOf(d), lab:DN[i], dom:d.getDate(), future:d > today }); }
+  var inWeek = {}; days.forEach(function(d){ inWeek[d.iso] = 1; });
+  var sunIso = days[6].iso;
+  var factsByDay = {}, photosByDay = {}, totF = 0, totP = 0, confP = 0, maxV = 1;
   var filedWeek = null;
   if(typeof CH !== 'undefined' && CH && CH.entries){
     filedWeek = 0;
-    CH.entries.forEach(function(c){ if(c.filed && c.filed >= monIso) filedWeek++; });
+    CH.entries.forEach(function(c){
+      if(c.filed && c.filed >= monIso) filedWeek++;
+      if(c.filed && inWeek[c.filed]){ factsByDay[c.filed] = (factsByDay[c.filed] || 0) + 1; totF++; }
+    });
   }
-  var days = [], factsByDay = {}, photosByDay = {}, totF = 0, totP = 0, confP = 0, maxV = 1;
-  for(var i = 13; i >= 0; i--){ var d = new Date(today); d.setDate(d.getDate() - i); days.push(isoOf(d)); }
-  var firstDay = days[0];
-  if(typeof CH !== 'undefined' && CH && CH.entries) CH.entries.forEach(function(c){ if(c.filed && c.filed >= firstDay){ factsByDay[c.filed] = (factsByDay[c.filed] || 0) + 1; totF++; } });
   if(typeof PH !== 'undefined' && PH && PH.people) PH.people.forEach(function(p){
     var ad = pvEffAdded(p);
-    if(ad && ad >= firstDay){ photosByDay[ad] = (photosByDay[ad] || 0) + 1; totP++; if(p.status === 'confirmed') confP++; }
+    if(ad && inWeek[ad]){ photosByDay[ad] = (photosByDay[ad] || 0) + 1; totP++; if(p.status === 'confirmed') confP++; }
   });
-  days.forEach(function(k){ var s = (factsByDay[k] || 0) + (photosByDay[k] || 0); if(s > maxV) maxV = s; });
-  var cols = days.map(function(k){
-    var f = factsByDay[k] || 0, p = photosByDay[k] || 0;
-    return '<span class="pv-hg-day" title="' + k + ' · ' + f + ' facts · ' + p + ' photos">' +
-      '<i class="f" style="height:' + Math.max(f ? 3 : 0, Math.round(f / maxV * 26)) + 'px"></i>' +
-      '<i class="p" style="height:' + Math.max(p ? 3 : 0, Math.round(p / maxV * 26)) + 'px"></i></span>';
+  days.forEach(function(d){ var m = Math.max(factsByDay[d.iso] || 0, photosByDay[d.iso] || 0); if(m > maxV) maxV = m; });
+  var cols = days.map(function(d){
+    var f = factsByDay[d.iso] || 0, p = photosByDay[d.iso] || 0;
+    return '<span class="pv-hg-day' + (d.future ? ' future' : '') + '" title="' + d.iso + ' · ' + f + ' facts · ' + p + ' photos">' +
+      '<span class="pv-hg-nums"><b class="f">' + f + '</b><b class="p">' + p + '</b></span>' +
+      '<span class="pv-hg-bars"><i class="f" style="height:' + (f ? Math.max(3, Math.round(f / maxV * 26)) : 0) + 'px"></i>' +
+      '<i class="p" style="height:' + (p ? Math.max(3, Math.round(p / maxV * 26)) : 0) + 'px"></i></span>' +
+      '<span class="pv-hg-lab">' + d.lab + ' ' + d.dom + '</span></span>';
   }).join('');
-  var qual = totP ? Math.round(confP / totP * 100) + '% of photos confirmed' : 'no photos filed';
+  var qual = totP ? Math.round(confP / totP * 100) + '% of photos confirmed' : 'no photos filed this week';
+  var wkLab = 'Mon ' + MN[mon.getMonth()] + ' ' + mon.getDate() + ' – Sun ' + MN[parseInt(sunIso.slice(5, 7), 10) - 1] + ' ' + parseInt(sunIso.slice(8, 10), 10);
   return '<div class="pv-herostat">' +
     '<div class="pv-hs-file"><span class="pv-hs-k">Filings this week</span><b>' + (filedWeek == null ? '…' : filedWeek) + '</b></div>' +
     '<div class="pv-hs-graph"><div class="pv-hg-cols">' + cols + '</div>' +
-    '<div class="pv-hg-cap">Last 14 days · <b>' + totF + '</b> facts · <b>' + totP + '</b> photos filed · ' + qual + '</div></div>' +
+    '<div class="pv-hg-cap">' + wkLab + ' · <b>' + totF + '</b> facts · <b>' + totP + '</b> photos filed this week · ' + qual + '</div></div>' +
     '</div>';
 }
 function viewHome(v){
@@ -7930,9 +7903,12 @@ function viewHome(v){
     hmBandHTML({ N:N, T:T, B:B, cy:cy, inTouch:inTouch, older:older, curFair:curFair, pct:pct, proxN:proxN, proxVenue:proxVenue, addedNames:addedNames, M:M }) +
     /* V4.19.0 (JD): the "Needs you today" strip and the Council
        strip are removed from the Overview; the actions row stays. */
-    '<section class="pv-bottom">' +
-    '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
-    '</section>' +
+    /* V4.20.0 (JD 2026-11-26): the bottom actions row is REMOVED
+       for good — its "Log proximity for today" duplicated the top
+       bar's entry point (the one place that action lives now),
+       and its "Decide in Live Records" button duplicated the
+       Live Records tab. Do not re-add either button here. */
+    '' +
     '</div>';
   hmMount();
 }
@@ -8366,7 +8342,7 @@ function hmSelectApp(i){
   hmPaint();
   var A = hmAppsModel(), app = null;
   A.items.forEach(function(x){ if(x.i === i) app = x; });
-  if(app && HM.map){ var pl = hmModel().places[app.pid]; if(pl) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.5 }); }
+  if(app && HM.map){ var pl = hmModel().places[app.pid]; if(pl) HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { animate:false }); }
 }
 /* The standing readout, in the footer band below the map
    (V4.17.0): where the map stands, in counts and honest gaps.
@@ -8455,9 +8431,27 @@ function hmHeroStatsHTML(){
   function tile(cls, k, v, sub){
     return '<div class="gm-hs-tile ' + cls + '"><span class="gm-hs-k">' + k + '</span><b>' + v + '</b>' + (sub ? '<span class="gm-hs-s">' + sub + '</span>' : '') + '</div>';
   }
-  function lastLine(label, L){
-    if(!L) return '<div class="gm-hs-last"><span>' + label + '</span><b>none on file</b></div>';
-    return '<div class="gm-hs-last"><span>' + label + '</span><a class="lnk" href="#/p/' + L.di + '"><b>' + esc(L.name) + '</b></a><span class="gm-hs-d">' + fmtD(L.date) + '</span></div>';
+  /* V4.20.0 (JD 2026-11-26): the last-contact names are HEROED —
+     big, aligned in their own row under the tiles — and each
+     carries its date and how many days ago it was, color-coded
+     by recency (green today/yesterday, amber within the week,
+     muted older). Contact events on file carry a DATE only —
+     no time of day exists in the source, so none is shown. */
+  function daysAgo(iso){
+    var p = String(iso || '').split('-');
+    if(p.length !== 3) return null;
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    var d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return Math.round((t - d) / 864e5);
+  }
+  function lastHero(cls, label, L){
+    if(!L) return '<div class="gm-hs-hero ' + cls + '"><span class="gm-hs-k">' + label + '</span><b class="gm-hs-name">None on file</b></div>';
+    var da = daysAgo(L.date);
+    var rc = da == null ? 'r2' : da <= 1 ? 'r0' : da <= 7 ? 'r1' : 'r2';
+    var ago = da == null ? '' : da === 0 ? 'today' : da === 1 ? '1 day ago' : da + ' days ago';
+    return '<div class="gm-hs-hero ' + cls + '"><span class="gm-hs-k">' + label + '</span>' +
+      '<a class="gm-hs-name" href="#/p/' + L.di + '">' + esc(L.name) + '</a>' +
+      '<span class="gm-hs-meta ' + rc + '"><i></i>' + fmtD(L.date) + (ago ? ' · ' + ago : '') + '</span></div>';
   }
   var dtOk = (typeof DT !== 'undefined' && DT && DT.freshness);
   var searched7 = dtOk ? String(DT.freshness.d7 != null ? DT.freshness.d7 : '—') : '…';
@@ -8469,8 +8463,10 @@ function hmHeroStatsHTML(){
     tile('ip', 'In person · last 30 days', String(Object.keys(moIp).length)) +
     tile('on', 'Online · last 30 days', String(Object.keys(moOn).length)) +
     '</div>' +
-    lastLine('Last person in-person contact', lastIp) +
-    lastLine('Last person online contact', lastOn) +
+    '<div class="gm-hs-lasts">' +
+    lastHero('ip', 'Last in-person contact', lastIp) +
+    lastHero('on', 'Last online contact', lastOn) +
+    '</div>' +
     '</div>' +
     '<div class="gm-hs-sec"><h3>Records</h3><div class="gm-hs-grid">' +
     tile('rec', 'People searched · last 7 days', searched7) +
@@ -8478,6 +8474,109 @@ function hmHeroStatsHTML(){
     sweepTile +
     tile('rec', 'New results confirmed · last 7 days', String(confirmed7)) +
     '</div></div></div>';
+}
+/* V4.20.0 (JD 2026-11-26): "Known since" rebuilt as a real
+   distribution. The old five span bars ("20+ years", "10–19"…)
+   carried no years, no shares, and quietly folded people with
+   NO known-since year into "Under a year". This version plots
+   the actual years: one row per year bucket with its count,
+   its share of the directory, and the cumulative share — and
+   people with no year on file get their own honest row. The
+   rows sum to the directory's people count exactly. */
+function hmKnownSinceHTML(){
+  var cy = new Date().getFullYear();
+  var defs = [
+    { lab:'Before 2000', lo:0, hi:1999 },
+    { lab:'2000 – 2004', lo:2000, hi:2004 },
+    { lab:'2005 – 2009', lo:2005, hi:2009 },
+    { lab:'2010 – 2014', lo:2010, hi:2014 },
+    { lab:'2015 – 2019', lo:2015, hi:2019 },
+    { lab:'2020 – ' + (cy - 4), lo:2020, hi:cy - 4 },
+    { lab:(cy - 3) + ' – ' + (cy - 2), lo:cy - 3, hi:cy - 2 },
+    { lab:(cy - 1) + ' – ' + cy, lo:cy - 1, hi:cy }
+  ];
+  var counts = defs.map(function(){ return 0; });
+  var noYear = 0, N = 0, ys = [], minY = null;
+  people().forEach(function(di){
+    var e = D.directory[di]; N++;
+    var y = knownSinceYear(e);
+    if(!y){ noYear++; return; }
+    ys.push(y); if(minY == null || y < minY) minY = y;
+    for(var i = 0; i < defs.length; i++) if(y >= defs[i].lo && y <= defs[i].hi){ counts[i]++; break; }
+  });
+  ys.sort(function(a, b){ return a - b; });
+  var med = ys.length ? ys[Math.floor(ys.length / 2)] : null;
+  var maxC = 1; counts.forEach(function(c){ if(c > maxC) maxC = c; });
+  var cum = 0;
+  var rows = defs.map(function(d, i){
+    cum += counts[i];
+    return '<div class="gm-ks-row"><span class="gm-ks-lab">' + d.lab + '</span>' +
+      '<span class="gm-ks-bar"><i style="width:' + Math.round(counts[i] / maxC * 100) + '%"></i></span>' +
+      '<b class="gm-ks-n">' + counts[i] + '</b>' +
+      '<span class="gm-ks-pct">' + (N ? Math.round(counts[i] / N * 100) : 0) + '%</span>' +
+      '<span class="gm-ks-cum">cum ' + (N ? Math.round(cum / N * 100) : 0) + '%</span></div>';
+  }).join('');
+  cum += noYear;
+  rows += '<div class="gm-ks-row noyr"><span class="gm-ks-lab">No year on file</span>' +
+    '<span class="gm-ks-bar"><i style="width:' + Math.round(noYear / maxC * 100) + '%"></i></span>' +
+    '<b class="gm-ks-n">' + noYear + '</b>' +
+    '<span class="gm-ks-pct">' + (N ? Math.round(noYear / N * 100) : 0) + '%</span>' +
+    '<span class="gm-ks-cum">cum ' + (N ? Math.round(cum / N * 100) : 0) + '%</span></div>';
+  return '<div class="gm-mini"><h3>Known since</h3>' +
+    '<p class="gm-ks-sub">The year JD first knew each person — <b>' + N + '</b> people' +
+    (med ? ' · median <b>' + med + '</b>' : '') + (minY ? ' · longest since <b>' + minY + '</b>' : '') + '</p>' +
+    '<div class="gm-ks">' + rows + '</div>' +
+    '<div class="pv-foot">“No year on file” is counted in its own row — never guessed into a year.</div></div>';
+}
+/* V4.20.0 (JD 2026-11-26): the routines that feed this app, as a
+   neat list under the hero stats — each with its last run and
+   its next run, built ONLY from data the app or repo carries:
+   - Live Records sweep: last = the latest brief's date in
+     daily-ten.json; next = the 6:54 AM/PM ET cadence, computed
+     the same way the push hero computes it.
+   - Directory sync & site push: last = the dossier bake stamp
+     (D.updated, UTC, shown in ET); the sync runs every ~10
+     minutes (the subject-sync cadence), so "next" is the
+     cadence itself, not an invented clock time.
+   - Photo checks: last = photos.json's updated date (the same
+     stamp the Photos page shows); next = the Council photos
+     cycle text from the council roster.
+   - Council weekly pass: last = the latest dated run in
+     council.json; next = the roster's stated next run.
+   Anything not yet loaded shows a dash, never a guess. */
+function hmRoutinesHTML(){
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtIso(iso){
+    var p = String(iso || '').split('-');
+    return p.length === 3 ? MN[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0] : (iso || '—');
+  }
+  function rosterNext(key){
+    if(typeof CN === 'undefined' || !CN || !CN.roster) return '';
+    var r = key ? CN.roster.filter(function(x){ return x.key === key; })[0] : CN.roster[0];
+    return r ? String(r.next_run || '') : '';
+  }
+  var rows = [];
+  var dtDate = (typeof DT !== 'undefined' && DT && DT.date) ? DT.date : null;
+  var now = new Date(), mins = now.getHours() * 60 + now.getMinutes();
+  var sweepNext = mins < (6 * 60 + 54) ? 'Today, 6:54 AM ET' : (mins < (18 * 60 + 54) ? 'Today, 6:54 PM ET' : 'Tomorrow, 6:54 AM ET');
+  rows.push({ n:'Live Records sweep', last: dtDate ? fmtIso(dtDate) : '—', next: sweepNext });
+  var updTxt = '—';
+  if(typeof D !== 'undefined' && D && D.updated){
+    var ud = new Date(String(D.updated).replace(' UTC', '').replace(' ', 'T') + ':00Z');
+    updTxt = isNaN(ud.getTime()) ? String(D.updated)
+      : ud.toLocaleString('en-US', { timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) + ' ET';
+  }
+  rows.push({ n:'Directory sync & site push', last: updTxt, next:'Every ~10 min' });
+  var phNext = rosterNext('photos');
+  rows.push({ n:'Photo checks', last: (typeof PH !== 'undefined' && PH && PH.updated) ? fmtIso(PH.updated) : '—',
+    next: phNext ? phNext.replace(/\s*—\s*weekly cycle/i, '') + ' (Council photos cycle)' : '—' });
+  var lr = (typeof CN !== 'undefined' && CN) ? cnLatestRun(CN) : null;
+  var cnNext = rosterNext(null);
+  rows.push({ n:'Council weekly pass', last: lr ? cnFmtDate(lr.date) : '—', next: cnNext || '—' });
+  return '<div class="gm-routines"><h3>Routines</h3>' + rows.map(function(r){
+    return '<div class="gm-rout"><span class="gm-rout-n">' + esc(r.n) + '</span>' +
+      '<span class="gm-rout-t">Last <b>' + esc(r.last) + '</b><br>Next <b>' + esc(r.next) + '</b></span></div>';
+  }).join('') + '</div>';
 }
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
@@ -8524,17 +8623,15 @@ function hmBandHTML(o){
      the "Where the map stands" readout, "How to read it", the
      "Biggest places" detail block, and "Directory at a glance".
      Their painters are all null-guarded, so the map is unaffected. */
-  var foot = '<div class="gm-foot">' +
-    '<div class="gm-mini"><h3>Known since</h3>' +
-    v4MRow('20+ years', '', 'gold', o.pct(M.ks.p20), M.ks.p20) + v4MRow('10 – 19 years', '', 'gold', o.pct(M.ks.y1019), M.ks.y1019) +
-    v4MRow('5 – 9 years', '', 'gold', o.pct(M.ks.y59), M.ks.y59) + v4MRow('2 – 4 years', '', 'gold', o.pct(M.ks.y24), M.ks.y24) +
-    v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
-    '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
-    '</div>';
+  /* V4.20.0: "Known since" is the labeled year distribution
+     (hmKnownSinceHTML), not the old span bars. */
+  var foot = '<div class="gm-foot">' + hmKnownSinceHTML() + '</div>';
   /* V4.18.0 (JD 2026-11-25): the band is two half columns — the
      map on the left, and on the right the push hero on top with
      the readout cards stacked under it in one uniform column. */
-  return '<section class="gm-band cols"><div class="gm-left">' + center + '</div><div class="gm-right">' + hmPushHeroHTML() + hmHeroStatsHTML() + foot + '</div></section>';
+  /* V4.20.0: the routines list rides the right column directly
+     under the hero stats (JD 2026-11-26). */
+  return '<section class="gm-band cols"><div class="gm-left">' + center + '</div><div class="gm-right">' + hmPushHeroHTML() + hmHeroStatsHTML() + hmRoutinesHTML() + foot + '</div></section>';
 }
 function hmGapsHTML(){
   var parts = [];
@@ -8712,7 +8809,8 @@ function hmSetEv(v, fly){
   hmPaint();
   if(fly && HM.evIdx >= 0 && HM.map && window.L){
     var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
-    if(pl) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.7 });
+    /* V4.20.0: instant jump, never an animated flight — the map is static. */
+    if(pl) HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { animate:false });
   }
 }
 function hmCluster(vis){
@@ -8792,7 +8890,7 @@ function hmPaint(){
       cmk.on('click', function(){
         var z = HM.map.getZoom();
         if(z >= 14){ HM.selBack = null; HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) }; hmPaintDetail(); }
-        else HM.map.flyTo([lat, lng], Math.min(z + 2, 14), { duration:.5 });
+        else HM.map.setView([lat, lng], Math.min(z + 2, 14), { animate:false });
       });
       return;
     }
@@ -9008,7 +9106,11 @@ function hmMount(){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
     if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; }
     var mode = document.documentElement.getAttribute('data-mode');
-    HM.map = L.map('hmMap', { scrollWheelZoom:true, attributionControl:true });
+    /* V4.20.0 (JD 2026-11-26): the Overview map is STATIC — every
+       Leaflet animation is off (no tile fade, no animated zoom,
+       no marker zoom, no pan glide). Moves land instantly via
+       setView; nothing on this map animates. */
+    HM.map = L.map('hmMap', { scrollWheelZoom:true, attributionControl:true, zoomAnimation:false, fadeAnimation:false, markerZoomAnimation:false, inertia:false });
     if(L.control && L.control.scale) L.control.scale({ imperial:true, metric:false, position:'bottomleft' }).addTo(HM.map);
     /* Basemap tiles: Esri's public ArcGIS basemaps \u2014 key-free
        with attribution. Dark/medium: the Dark Gray Canvas BASE
@@ -19202,7 +19304,14 @@ function sbHome(){
     sightDays = Object.keys(sd).length;
   }
   var cflags = (SB.council && SB.council.flags) || [];
-  var cOpen = cflags.filter(function(f){ return f.status === 'open' || f.status === 'staged'; }).length;
+  /* V4.20.0: the canonical counter (cnCountFlags against the
+     board queue). The old read of f.status always counted 0 —
+     council flags carry `state`, not `status`. The label says
+     "open or staged", so the count is open + staged. */
+  if(!CN && SB.council) CN = SB.council;
+  cnProfLoad(function(){ if(S.route && S.route.name === 'sandbox') render(); });
+  var cCnt = cnCountFlags(cflags, cnQueue());
+  var cOpen = cCnt.open + cCnt.staged;
   var tierMix = { vetted:0, associate:0, open:0, none:0 }, links = 0;
   people().forEach(function(di){
     var e = D.directory[di], t = tierOf(e);
@@ -19675,11 +19784,21 @@ function sbRaw(){
   }
   else if(w === 'council' && SB.council){
     var cn = SB.council;
+    /* V4.20.0: the open-flags list and count use the canonical
+       counter (cnFlagState against the board queue). The old read
+       of f.status matched nothing — flags carry `state` — so it
+       counted all 29 flags as open, including ones JD had already
+       decided on the board. The table now lists only flags that
+       are actually open or staged. */
+    if(!CN) CN = cn;
+    cnProfLoad(function(){ if(S.route && S.route.name === 'sandbox') render(); });
+    var cnQ = cnQueue();
+    var cnOpenList = (cn.flags || []).filter(function(f){ return cnFlagState(f, cnQ) !== 'closed'; });
     h += '<p class="sb-note">Adopted ' + esc(cn.adopted || '') + ' · updated ' + esc(cn.updated || '') + ' · budget: ' + esc(String((cn.budget || {}).used_pct != null ? (cn.budget || {}).used_pct : '—')) + '% used (read ' + esc((cn.budget || {}).read_at || '') + ')</p>';
     h += tbl(['Role', 'Status', 'Next run'],
       (cn.roster || []).map(function(r){ return '<tr><td>' + esc(r.name || '') + '</td><td>' + esc(r.status || '') + '</td><td>' + esc(r.next_run || '') + '</td></tr>'; }).join(''));
-    h += '<h3 class="sb-h3">Open flags (' + (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length + ')</h3>';
-    h += (cn.flags || []).length ? tbl(['Date', 'From', 'Flag'], (cn.flags || []).map(function(f){ return '<tr><td>' + esc(f.date || '') + '</td><td>' + esc(f.from || '') + '</td><td>' + esc(f.title || '') + '</td></tr>'; }).join(''))
+    h += '<h3 class="sb-h3">Open flags (' + cnOpenList.length + ')</h3>';
+    h += cnOpenList.length ? tbl(['Date', 'From', 'Flag'], cnOpenList.map(function(f){ return '<tr><td>' + esc(f.date || '') + '</td><td>' + esc(f.from || '') + '</td><td>' + esc(f.title || '') + '</td></tr>'; }).join(''))
       : '<p class="sb-note">Nothing waiting on JD.</p>';
   }
   else if(w === 'profiling' && SB.prof){
@@ -21089,13 +21208,21 @@ function cnProfFlush(){
   cbs.forEach(function(f){ if(f) f(); });
 }
 function cnLoad(){
-  cnProfLoad(function(){ if(S.route && S.route.name === 'council') render(); });
+  /* V4.20.0: when the board queue lands, the Overview (routines
+     list + rail count) and the Lab council surfaces re-render too
+     — not just the Council page — and on any other route the rail
+     count span is updated in place, so the open-flag count agrees
+     everywhere the moment the queue is readable. */
+  cnProfLoad(function(){
+    if(S.route && (S.route.name === 'council' || S.route.name === 'home' || S.route.name === 'sandbox')) render();
+    else { var el = document.getElementById('cnnavct'); if(el && typeof CN !== 'undefined' && CN) el.outerHTML = cnNavCountHTML(); }
+  });
   if(CN || CN_LOADING) return;
   CN_LOADING = true;
   if(typeof SB !== 'undefined' && SB.council) CN = SB.council;
   fetch('data/council.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && S.route.name === 'council') render(); })
+    .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && (S.route.name === 'council' || S.route.name === 'home' || S.route.name === 'sandbox')) render(); })
     .catch(function(){ CN_LOADING = false; });
 }
 function cnDi(key){
@@ -21167,6 +21294,29 @@ function cnFlagState(f, q){
   var done = q.some(function(e){ return e.flag === f.id && e.state === 'done' && (e.kind === 'fix' || e.kind === 'decision' || e.kind === 'merge'); });
   if(f.state === 'closed' || done) return 'closed';
   return q.some(function(e){ return e.flag === f.id && e.state === 'staged'; }) ? 'staged' : 'open';
+}
+/* V4.20.0 (JD 2026-11-26): ONE canonical flag counter. Every
+   surface that states how many Council flags are open — the rail,
+   the Council header strip, the Lab panels, the sandbox council
+   viewer — derives it HERE, from cnFlagState against the live
+   board queue. The bug this fixes: the rail and the Council strip
+   counted the raw council.json snapshot (f.state === 'open'),
+   which still showed the Steve Evans flag open after JD's V4.19
+   decision had closed it on the board — so the app said "1 flag
+   open" and "no flags waiting" at the same time. A flag closed
+   on the board is closed everywhere, snapshot or not. */
+function cnCountFlags(flags, q){
+  var c = { open:0, staged:0, closed:0 };
+  (flags || []).forEach(function(f){ c[cnFlagState(f, q)]++; });
+  return c;
+}
+function cnFlagCounts(){
+  return cnCountFlags((CN && CN.flags) || [], cnQueue());
+}
+function cnNavCountHTML(){
+  var n = cnFlagCounts().open;
+  return n ? '<span class="nv-ct" id="cnnavct">' + n + ' flag' + (n === 1 ? '' : 's') + ' open</span>'
+           : '<span class="nv-ct ok" id="cnnavct">Gate clear</span>';
 }
 function cnToday(iso){
   return iso && new Date(iso).toDateString() === new Date().toDateString();
@@ -22013,21 +22163,29 @@ function viewCouncil(v){
   var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
   var h = '<div class="cnc v4p" data-kind="neutral">' +
     '<div class="pv-vhead"><div><h1>Council</h1><p class="pv-hsub">Flags and recommendations from the weekly checks.</p></div></div>' +
-    '<div class="pv-strip row" style="margin-bottom:14px"><span><b>Latest pass:</b> ' + (cnLatestRun(cn) ? esc(cnLatestRun(cn).run.title || 'Council') + ' · ' + esc(cnFmtDate(cnLatestRun(cn).date)) : 'none on file') + '</span><span class="sp"></span><span>' + ((cn.flags || []).some(function(f){ return f.state === 'open'; }) ? '<b>Flags open</b>' : '<span class="ok">✓ Gate clear</span>') + (cn.budget && cn.budget.used_pct != null ? ' · Resource ' + esc(String(cn.budget.used_pct)) + '% of the week used' : '') + '</span></div>';
+    /* V4.20.0: the strip's flag state comes from the SAME
+       canonical count as the Recommendations hero below (the
+       `open` list, built on cnFlagState + the board queue) —
+       never the raw snapshot, which lagged JD's Evans decision
+       and made this strip disagree with the page under it. */
+    '<div class="pv-strip row cnc-strip"><span><b>Latest pass:</b> ' + (cnLatestRun(cn) ? esc(cnLatestRun(cn).run.title || 'Council') + ' · ' + esc(cnFmtDate(cnLatestRun(cn).date)) : 'none on file') + '</span><span class="sp"></span><span>' + (open.length ? '<b>' + open.length + ' flag' + (open.length === 1 ? '' : 's') + ' open</b>' : '<span class="ok">✓ Gate clear</span>') + (cn.budget && cn.budget.used_pct != null ? ' · Resource ' + esc(String(cn.budget.used_pct)) + '% of the week used' : '') + '</span></div>';
   if(qDown){
     h += '<div class="cnc-queuebar cnc-qalert"><span class="cnc-qlab">' + ic('x', 13) + ' Staged queue unavailable</span>' +
       '<span class="cnc-qitems">The profiles data failed to load, so the staged queue cannot be read. Reload the page to retry.</span></div>';
   }
   if(stagedEntries.length){
-    h += '<div class="pv-strip row" style="margin-bottom:14px"><span><b>Staged:</b> ' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span></div>';
+    h += '<div class="pv-strip row cnc-strip"><span><b>Staged:</b> ' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span></div>';
   }
   h += '<section class="cnc-recs"><h2 class="cnc-h2">Recommendations</h2>';
   var hero = open.concat(stagedOnly);
   h += hero.length ? hero.map(function(f){ return cnPacketHTML(f, q); }).join('')
     : '<div class="empty"><h3>Nothing waiting</h3><p>No open flags.</p></div>';
   h += '</section>';
-  /* ---- departments: one line per desk ---- */
-  h += '<section class="cnc-depts"><h2 class="cnc-h2">Departments</h2><div class="cnc-dlist2">';
+  /* ---- departments: one row per desk, as a proper table
+     (V4.20.0, JD 2026-11-26 — was free-form flex rows whose
+     fields landed in different places on every line) ---- */
+  h += '<section class="cnc-depts"><h2 class="cnc-h2">Departments</h2>' +
+    '<table class="cnc-dtable"><thead><tr><th>Department</th><th>Status</th><th>Last run</th><th>Latest finding</th></tr></thead><tbody>';
   CN_ORDER.forEach(function(key){
     var r = (cn.roster || []).filter(function(x){ return x.key === key; })[0] || {};
     var es = ((cn.findings || {})[key] || []);
@@ -22036,11 +22194,12 @@ function viewCouncil(v){
     var pill = !rd ? '<span class="cnc-pill is-none">No run date</span>'
       : cnFresh(rd) ? '<span class="cnc-pill is-cur">Current</span>'
       : '<span class="cnc-pill is-stale">Stale — last ran ' + esc(cnFmtDate(rd)) + '</span>';
-    h += '<div class="cnc-drow2"><b>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</b>' + pill +
-      '<span class="cnc-drow2-last">Last: ' + esc(r.last_run || '—') + '</span>' +
-      (latest ? '<span class="cnc-drow2-find">' + esc(latest.title || '') + '</span>' : '<span class="cnc-drow2-find dim">No findings yet</span>') + '</div>';
+    h += '<tr><td class="cnc-dt-name">' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</td>' +
+      '<td>' + pill + '</td>' +
+      '<td class="cnc-dt-last">' + esc(r.last_run || '—') + '</td>' +
+      (latest ? '<td>' + esc(latest.title || '') + '</td>' : '<td class="dim">No findings yet</td>') + '</tr>';
   });
-  h += '</div></section>';
+  h += '</tbody></table></section>';
   /* ---- decided ---- */
   h += '<details class="cnc-decided"><summary>Decided (' + closedRecent.length + ')</summary><div class="cnc-dlist">';
   h += closedRecent.length ? closedRecent.map(function(f){
