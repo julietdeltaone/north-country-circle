@@ -11634,9 +11634,14 @@ function lrTodayHTML(){
     var empty = '<div class="pv-card"><p class="pv-fact">' + headline + '</p>' +
       (otherN ? '<p class="pv-fact" style="margin-top:6px">The brief also filed ' + otherN + ' fact' + (otherN === 1 ? '' : 's') + ' from older sources. ' + (otherN === 1 ? 'It lives' : 'They live') + ' in <a class="lnk" href="#/daily/facts">New facts</a> — this page only shows facts published in the last 21 days.</p>' : '') +
       '</div>';
-    return hero + '<div class="lr-cards2">' + empty + '</div>';
+    return hero + '<div class="fi-layout lr-today-layout"><div class="fi-main"><div class="lr-cards2">' + empty + '</div></div>' + lrActColHTML() + '</div>';
   }
-  return hero + '<div class="lr-cards2">' + cards + '</div>';
+  /* V4.20.1 (JD 2026-11-27): Today mirrors the New facts layout —
+     fresh-facts cards in the main column, the Activity feed
+     (afStreamHTML, happening-date order) in a column beside them.
+     Hero and cards unchanged; .fi-layout stacks the column below
+     on narrow screens, same as New facts. */
+  return hero + '<div class="fi-layout lr-today-layout"><div class="fi-main"><div class="lr-cards2">' + cards + '</div></div>' + lrActColHTML() + '</div>';
 }/* V4.1 History: last-checked coverage + the change log (the old
    Filings feed, unchanged underneath). */
 function lrHistoryHTML(){
@@ -11673,87 +11678,8 @@ function fiPageHTML(){
      single left column, the Activity feed merged into the right
      column (its standalone section is deleted). */
   return h + '<div class="fi-layout"><div class="fi-main">' + fiBodyHTML() + '</div>' +
-    '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>What Luna filed, newest filed first</span></div>' +
-    '<div class="fi-actfeed" id="fi-actfeed">' + fiActHTML() + '</div></aside></div>';
-}
-/* ============================================================
-   Activity column (V4.20.1, JD 2026-11-27): the right column of
-   New facts headed "What Luna filed, newest first" previously
-   rendered afStreamHTML() — the audited effective feed, ordered
-   by each fact's own event/published date — so its top items sat
-   at Nov 7-8 while filing continued to Nov 26 and the column
-   read as stale. This renderer is sourced from the CHANGE LOG
-   (CH / data/changes.json) instead: entries sorted by their
-   FILED date, newest first, grouped by filed day, with same-day
-   same-kind filings collapsed via chgRows (filed|what|source).
-   afStreamHTML itself is untouched — the standalone timeline /
-   calendar model keeps its audited event-date order.
-   ============================================================ */
-var FI_ACT_SHOWN = 30, FI_ACT_PAGE = 30;
-function fiActSorted(){
-  var es = (CH && CH.entries) ? CH.entries.slice() : [];
-  es.forEach(function(c, i){ c.__fiaIx = i; });
-  es.sort(function(a, b){
-    var fa = String(a.filed || ''), fb = String(b.filed || '');
-    if(fa !== fb) return fa < fb ? 1 : -1;
-    return a.__fiaIx - b.__fiaIx;
-  });
-  es.forEach(function(c){ delete c.__fiaIx; });
-  return es;
-}
-function fiActSrcChip(c){
-  /* Full source title, never truncated: afSrcChipHTML renders the
-     chip and the V4.20.1 CSS lets it wrap instead of ellipsizing. */
-  return afSrcChipHTML({ source: c.source || 'Source', url: c.url || '' });
-}
-function fiActRowHTML(c){
-  var di = hmDiOf(c.name);
-  return '<article class="fia-row" data-kind="' + textKind(c.what) + '">' +
-    afAvatarHTML(c, di, 'xs') +
-    '<div class="fia-main"><div class="fia-top"><span class="fia-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' +
-    '<span class="fia-src">' + fiActSrcChip(c) + '</span></div>' +
-    '<div class="fia-namerow">' + afNameHTML(c, di) + '</div>' +
-    '<p class="fia-what">' + esc(c.what || '') + '</p>' + novBar(c.novelty) + '</div></article>';
-}
-function fiActGroupHTML(g){
-  var c = g.first;
-  var di = hmDiOf(c.name);
-  var members = g.items.map(function(x){ return fiActRowHTML(x); }).join('');
-  return '<div class="chg-grp fia-grp" data-kind="' + textKind(c.what) + '">' +
-    '<button type="button" class="chg-grp-h fia-grp-h" data-act="chggrp" aria-expanded="false">' +
-    afAvatarHTML(c, di, 'xs') +
-    '<span class="chg-grp-main"><span class="fia-top"><span class="fia-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' +
-    '<span class="chg-cnt">' + g.items.length + ' filings</span></span>' +
-    '<span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
-    '<span class="fia-srcrow">' + fiActSrcChip(c) + '</span></span>' +
-    '<span class="chg-chev">' + ic('chev', 14) + '</span></button>' +
-    '<div class="chg-members"><div class="chg-members-in">' + members + '</div></div></div>';
-}
-function fiActHTML(){
-  if(!CH) return '<p class="dim">Loading what Luna filed&hellip;</p>';
-  var sorted = fiActSorted();
-  if(!sorted.length) return '<p class="dim">No filings yet.</p>';
-  var dayCounts = {};
-  sorted.forEach(function(c){ var f = String(c.filed || ''); dayCounts[f] = (dayCounts[f] || 0) + 1; });
-  var groups = chgRows(sorted);
-  var shown = groups.slice(0, FI_ACT_SHOWN);
-  var h = '', lastDay = null;
-  shown.forEach(function(g){
-    var f = String(g.first.filed || '');
-    if(f !== lastDay){
-      lastDay = f;
-      h += '<div class="fia-day"><span>' + esc(hmFmtD(f) || 'No filed date') + '</span><em>' + (dayCounts[f] || 0) + ' filed</em></div>';
-    }
-    h += g.items.length > 1 ? fiActGroupHTML(g) : fiActRowHTML(g.first);
-  });
-  if(shown.length < groups.length)
-    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + groups.length + ' filing groups &middot; ' + sorted.length + ' filings</span>' +
-      '<button type="button" class="pv-btn sm" data-act="fiactmore">Show more</button></div>';
-  return h;
-}
-function fiActPaint(){
-  var w = document.getElementById('fi-actfeed');
-  if(w) w.innerHTML = fiActHTML();
+    '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>Confirmed facts, by date of happening</span></div>' +
+    '<div class="af-tl fi-actfeed" id="fi-actfeed">' + (typeof AF !== 'undefined' && AF ? afStreamHTML() : '<p class="dim">Loading the feed&hellip;</p>') + '</div></aside></div>';
 }
 /* The Fact Inbox body without the page chrome (V4 Phase 8a): the
    Decide view renders it as the New facts group under the shared
@@ -12264,11 +12190,9 @@ function afLoad(){
   fetch('data/effective-feed.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){ AF_LOADING = false; AF = d || { items:[], counts:{} };
-      /* V4.20.1: the New facts Activity column is change-log sourced
-         (fiActHTML) — the effective feed no longer paints into it. */
-      fiActPaint(); })
+      afPaintCols(); })
     .catch(function(){ AF_LOADING = false; AF = { items:[], counts:{} };
-      fiActPaint(); });
+      afPaintCols(); });
 }
 function afAvatarHTML(e, di, size){
   var e2 = di != null ? D.directory[di] : null;
@@ -12564,6 +12488,23 @@ function afPaintStream(){
   var w = document.getElementById('af-stream');
   if(w) w.innerHTML = afStreamHTML();
 }
+function afPaintCols(){
+  /* V4.20.1: every Activity column (New facts #fi-actfeed and the
+     Today column #lr-actfeed) repaints from the same audited feed
+     when AF lands or Show-more advances. Class-based, so either
+     page — or both in a kept-alive DOM — stays current. */
+  $$('.fi-actfeed').forEach(function(w){ w.innerHTML = afStreamHTML(); });
+}
+function lrActColHTML(){
+  /* The Activity column shared by New facts and Today (V4.20.1):
+     the high-threshold audited feed (effective-feed.json), ordered
+     by the confirmed date each fact HAPPENED — the subtitle says
+     so, after the old "What Luna filed, newest first" wording made
+     the column read as stale when the newest confirmed happening
+     dates were weeks behind the filing dates. */
+  return '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>Confirmed facts, by date of happening</span></div>' +
+    '<div class="af-tl fi-actfeed" id="lr-actfeed">' + (typeof AF !== 'undefined' && AF ? afStreamHTML() : '<p class="dim">Loading the feed&hellip;</p>') + '</div></aside>';
+}
 function afCalModel(items){
   /* Calendar model (V4.10.0): REAL month grids, mirroring the
      Calendar page's month structure (weekday header, 7-column
@@ -12720,7 +12661,7 @@ function lrActivityHTML(){
 }
 
 function viewDaily(v){
-  dtLoad(); chLoad(); rcLoad(); phLoad();   /* V4.19.0: phLoad — the Today fresh cards carry profile photos now */
+  dtLoad(); chLoad(); rcLoad(); phLoad(); afLoad();   /* V4.19.0: phLoad — the Today fresh cards carry profile photos now. V4.20.1: afLoad on every Live Records route — Today's new Activity column renders the audited feed */
   if(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox')){
     /* V4.3.0 (JD 2026-11-04): New facts is its own section of Live
        Records, not a group buried under the decision surface. */
@@ -16906,8 +16847,7 @@ function onClick(ev){
     case 'cdeclear': cdeClear(); break;
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
-    case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); break;
-    case 'fiactmore': FI_ACT_SHOWN += FI_ACT_PAGE; fiActPaint(); break;
+    case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); afPaintCols(); break;
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
