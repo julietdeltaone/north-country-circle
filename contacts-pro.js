@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.20.2';
+var APP_VERSION = '4.21.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7856,7 +7856,7 @@ function pvHeroStatHTML(){
   return '<div class="pv-herostat">' +
     '<div class="pv-hs-file"><span class="pv-hs-k">New facts filed this week</span><b>' + (filedWeek == null ? '…' : filedWeek) + '</b></div>' +
     '<div class="pv-hs-graph"><div class="pv-hg-cols">' + cols + '</div>' +
-    '<div class="pv-hg-cap">' + wkLab + ' — <b>' + totF + '</b> new facts and <b>' + totP + '</b> new photos were filed this week. ' + qual + '.' +
+    '<div class="pv-hg-cap">' + wkLab + ' — <b>' + totF + '</b> new facts and <b>' + totP + '</b> new photo' + (totP === 1 ? ' was' : 's were') + ' filed this week. ' + qual + '.' +
     '<span class="pv-hg-legend"><span><i class="f"></i>facts per day</span><span><i class="p"></i>photos per day</span></span></div></div>' +
     '</div>';
 }
