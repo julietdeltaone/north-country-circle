@@ -7317,6 +7317,10 @@
    "name": "alyssalramsay",
    "pattern": "employer_change",
    "source": "St. Lawrence County Soil and Water Conservation District",
+   "state": {
+    "at": "2026-11-27T06:33:50.310Z",
+    "status": "read"
+   },
    "url": "https://www.facebook.com/SLCSWCD/posts/pfbid02Chqt7VxV9YAosVUVjT1rL3YSbtx3ASHA4j35ibc3dh7WTtyUhgT2mTCJzR4Jw2Atl"
   },
   {
@@ -7330,6 +7334,10 @@
    "name": "jocelynrose04",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-27T06:33:52.990Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/honors_convocation/"
   },
   {
