@@ -19365,6 +19365,270 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-aaronjdaniels-diocesan-controller-for-the-catholic",
+   "name": "aaronjdaniels",
+   "display": "Aaron Daniels",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Small Business Auxilium's website profiles an Aaron Daniels, CPA, who is Diocesan Controller for the Catholic Diocese of St. Petersburg, with accounting degrees from SUNY Brockport.",
+   "file_text": "Diocesan Controller for the Catholic Diocese of St. Petersburg and CPA at Small Business Auxilium",
+   "source": "Small Business Auxilium",
+   "url": "https://www.sbaauxilium.com/about/aaron-daniels.html",
+   "quote": "He holds an M.S. in Forensic Accounting and a B.S. in Accounting from SUNY Brockport, and specializes in fund accounting, audit readiness, internal controls, and multi-entity consolidation. At Small Business Auxilium he leads controller work and tax preparation.",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names an Aaron Daniels in Florida, but his schools and work do not match the SUNY Canton civil engineering graduate on Aaron's record.",
+   "confidence": 15,
+   "confidence_parts": {
+    "identity": 3,
+    "source": 8,
+    "detail": 4
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-martinlovell-8-plaintiff-in-a-federal-housing-case",
+   "name": "martinlovell.8",
+   "display": "Martin Lovell",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A federal court docket names a Martin Lovell as the plaintiff in a housing case moved from Nassau County state court to federal court in March 2022.",
+   "file_text": "Plaintiff in a federal housing case removed from Nassau County Supreme Court, Mar 2022",
+   "source": "Justia Dockets & Filings",
+   "url": "https://dockets.justia.com/docket/new-york/nyedce/2:2022cv01330/476975",
+   "quote": "Plaintiff: Martin Lovell",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The docket names a Martin Lovell on Long Island, but nothing on it ties him to Richville or the tree work on Martin's record.",
+   "confidence": 12,
+   "confidence_parts": {
+    "identity": 4,
+    "source": 5,
+    "detail": 3
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-jackson-paladin-listed-as-an-oral-presenter-at-baylo",
+   "name": "jackson.paladin",
+   "display": "Jackson Paladin",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Baylor University's McNair Scholars conference schedule lists a Jackson Paladin as an oral presenter in an Interdisciplinary session.",
+   "file_text": "Listed as an oral presenter at Baylor University's McNair Scholars conference",
+   "source": "Baylor University McNair Scholars Program",
+   "url": "https://mcnairscholars.web.baylor.edu/conference/schedule?field_session_type_target_id=331",
+   "quote": "| Interdisciplinary | Foster 107 | Thursday, 3:15 - 4:15pm | Oral Student Presentations, Student Presentations | Katherine Mamwacha, Jackson Paladin, Will Mcclendon |",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The schedule names a Jackson Paladin, but nothing on it ties him to Lee University or the research on Jackson's record.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 14,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-sf-tori-brunet-received-a-northern-new-york-communi",
+   "name": "sf:tori-brunet",
+   "display": "Tori Brunet",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The Northern New York Community Foundation's scholarship page lists a Tori Brunet as a 2019-2020 scholarship recipient at General Brown Central School.",
+   "file_text": "Received a Northern New York Community Foundation scholarship as a General Brown Central School student, 2019-2020",
+   "source": "Northern New York Community Foundation",
+   "url": "https://nnycf.org/foundation-awards-scholarships/",
+   "quote": "Chase Alexander, Alexis Anderson, Anna Bauter, Shea Black, Tori Brunet, Abigayle Buck, Jenna Buzyniski, Madison Cloonan, Drew Cronk, Reina Guerriero, Haley",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The list names a Tori Brunet at General Brown, but Tori's record ties her to Hermon-DeKalb, a different school.",
+   "confidence": 30,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-daniel-manor-named-on-the-federal-carrier-registr",
+   "name": "daniel__manor",
+   "display": "Daniel Manor",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A federal carrier record for U.S. DOT 3264372 lists 'Daniel Manor Jr & Daniel Manor Sr' doing business as Manor's Stump Grinding and Lawn Restoration at 5410 State Highway 56 in Potsdam.",
+   "file_text": "Named on the federal carrier registration for Manor's Stump Grinding and Lawn Restoration, Potsdam",
+   "source": "FMCSA SAFER Web",
+   "url": "https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&query_string=3264372",
+   "quote": "Legal Name: DANIEL MANOR JR & DANIEL MANOR SR",
+   "anchors": [
+    "the Manor name",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "The record names Daniel Manor Jr. and Sr., and Daniel's record lists him as Daniel Manor III, so this looks like his father and grandfather, not him.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 15,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-ceciliesmith2025-works-as-an-admissions-assistant-at",
+   "name": "ceciliesmith2025",
+   "display": "Cecilie Smith",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Resurrection Christian School in Loveland, Colorado lists a Cecilie Smith as an Admissions Assistant on its admissions page.",
+   "file_text": "Works as an Admissions Assistant at Resurrection Christian School in Loveland, Colorado",
+   "source": "Resurrection Christian School",
+   "url": "https://rcschool.org/admissions-process/",
+   "quote": "Cecilie Smith \u2014 Admissions Assistant",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names a Cecilie Smith in Colorado, but nothing on it ties her to Massena or New Testament Church on Cecilie's record.",
+   "confidence": 20,
+   "confidence_parts": {
+    "identity": 6,
+    "source": 8,
+    "detail": 6
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-drewspov-attorney-at-seward-kissel-llp",
+   "name": "drewspov_",
+   "display": "Andrew Matott",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Turnaround Management Association transcript names an Andrew Matott of the law firm Seward & Kissel LLP.",
+   "file_text": "Attorney at Seward & Kissel LLP",
+   "source": "Turnaround Management Association",
+   "url": "https://www.turnaround.org/media-2/ceo-speaks/ceo-speaks-transcript-3-25-23/",
+   "quote": "Andrew Matott, Seward & Kissel LLP",
+   "anchors": [
+    "name only"
+   ],
+   "missing_gate": "The page names an Andrew Matott at a New York law firm, but nothing on it ties him to Potsdam, Rhode Island, or Awakening Church on Andrew's record.",
+   "confidence": 15,
+   "confidence_parts": {
+    "identity": 4,
+    "source": 7,
+    "detail": 4
+   },
+   "fields": {},
+   "published": "2023-03-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-daniellecaskinett-named-with-her-husband-luke-in-the-j",
+   "name": "daniellecaskinett",
+   "display": "Danielle Caskinett",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "The June 2024 obituary of Kevin R. Caskinett of Potsdam names Luke and Daniele Caskinett of Brasher Falls among his surviving family.",
+   "file_text": "Named with her husband Luke in the June 2024 obituary of his father, Kevin R. Caskinett",
+   "source": "Buck Funeral Home",
+   "url": "https://buckfuneralhome.com/tribute/details/2649/Kevin-Caskinett/memories.html",
+   "quote": "Kevin is survived by his wife of 42 years, Ramona, Potsdam; his two sons, Zachary and Jessica Caskinett, Potsdam and Luke and Daniele Caskinett, Brasher Falls;",
+   "anchors": [
+    "the Caskinett name",
+    "Brasher Falls, her hometown on file"
+   ],
+   "missing_gate": "This is about Danielle's family, so I always check with you first.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 22,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-caroline-lafountain-daughter-of-jason-and-heather-lafoun",
+   "name": "caroline.lafountain",
+   "display": "Caroline LaFountain",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "SUNY Potsdam's roster page for Caroline LaFountain names her parents, Jason and Heather LaFountain.",
+   "file_text": "Daughter of Jason and Heather LaFountain",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
+   "quote": "Personal: Daughter of Jason and Heather LaFountain . . . majoring in Business administration . . . she received an advanced regents' diploma when she graduated from Saratoga Springs High School",
+   "anchors": [
+    "SUNY Potsdam women's basketball",
+    "Business Administration major",
+    "Saratoga Springs High School"
+   ],
+   "missing_gate": "This is about Caroline's family, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 28,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261126-nevaeh-phillips-named-first-team-all-district-at-inf",
+   "name": "nevaeh_phillips",
+   "display": "Nevaeh Phillips",
+   "run_date": "2026-11-26",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A Katy Tigers softball team post was reported in search results as showing Nevaeh Phillips named First Team All-District at infield for 2026, but the post itself could not be read to confirm it.",
+   "file_text": "Named First Team All-District at infield for Katy High School, 2026",
+   "source": "Katy Tigers softball (Instagram)",
+   "url": "",
+   "quote": "",
+   "anchors": [
+    "Katy High School softball"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-05-06",
+   "novelty": "new"
   }
  ]
 }
