@@ -1,0 +1,74 @@
+[
+ {
+  "person": "Cassandra Fernandez",
+  "image_url": null,
+  "source_page": "https://www.saltcityholistichealth.com/yoga",
+  "evidence": "MAYBE — image access: the Salt City Holistic Health 'Meet your Teachers' page pairs a Cassandra Fernandez bio (military veteran, Jai Yoga School graduate, Syracuse) with an adjacent image, but the image host returned 403, so pixels and size are unverified (ChatGPT rerun item 15).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Alan K Daniels",
+  "image_url": "https://cpmfiles1.com/cfconline.org/missions-night-012.jpeg",
+  "source_page": "https://www.cfconline.org/global-missions",
+  "evidence": "MAYBE — group identification: three mission images sit above the names Alan Daniels, Rick Sinclair, and Paul Brown on the CFC Global Missions page, with no unambiguous person-by-person positioning; image download returned 403 (ChatGPT rerun item 16).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Alan K Daniels",
+  "image_url": null,
+  "source_page": "https://www.kevindanielsagency.com/employees/alan-k-daniels/",
+  "evidence": "JD seed: Kevin Daniels Agency staff page for Alan Daniels (Potsdam office). The page renders under his name in the browser, but the portrait image URL is not exposed in the text fetch and a direct fetch returned 403, so the portrait has not been retrieved or verified.",
+  "staged": "2026-11-27",
+  "origin": "jd-seeds"
+ },
+ {
+  "person": "Wayne Lougheed",
+  "image_url": null,
+  "source_page": "https://www.linkedin.com/in/blakeburr",
+  "evidence": "MAYBE — caption found, media blocked: colleague Blake Burr's LinkedIn repost describes a defense-tactics class and identifies Wayne Lougheed in the center photo on the mat; direct LinkedIn fetch returned 999, so the image itself and a stable original-post URL remain unverified (ChatGPT rerun item 18).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Ethan Ryan",
+  "image_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/Police%20academy%20graduates.jpg?itok=QJeaXY2w",
+  "source_page": "https://www.potsdam.edu/news/lawenforcementgraduates",
+  "evidence": "MAYBE — group position unknown: refreshed URL for the SUNY Potsdam law-enforcement academy graduation group photo (4474x3135); Ethan Ryan is named in the roster under Norwood Police Department but his position in the frame is not keyed. Note: his photos.json entry already holds this same image as 'possible' under an older itok URL (ChatGPT rerun item 19).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Paige Davis",
+  "image_url": null,
+  "source_page": "https://clarksonathletics.com/sports/swimming-and-diving/roster/paige-davis/9643",
+  "evidence": "MAYBE — contact identity: Clarkson swimming & diving roster page for Paige Davis (chemical engineering, Buxton, Maine); the on-file seed is only a Facebook profile, which has not been linked to this athlete. Confirm she is the Clarkson swimmer before adopting (ChatGPT rerun item 21).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Grace Ockrin",
+  "image_url": null,
+  "source_page": "https://www.linkedin.com/posts/mkartalphd_excited-to-share-that-the-spring-semester-activity-7285770293963366400-pcta",
+  "evidence": "MAYBE — cohort photo lead: faculty post names Grace Ockrin among 12 St. Lawrence University NYC Program students (spring 2025). Establishes an event/cohort to inspect, not a face position; do not map list order onto a group photograph (ChatGPT rerun item 25).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Colby Criscitello",
+  "image_url": null,
+  "source_page": "https://www.linkedin.com/in/colby-criscitello-093483157",
+  "evidence": "MAYBE — professional profile: LinkedIn profile (Team Hilbert / Culture Brand Consulting, Rochester web/design, Monroe Community College, St. Lawrence County tie) is name-consistent, but LinkedIn did not expose the profile photo for retrieval; portrait pixels unverified (ChatGPT rerun item 26; also JD seed, checked 2026-11-27).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ },
+ {
+  "person": "Nelson Dane",
+  "image_url": null,
+  "source_page": "https://www.linkedin.com/in/nelsondane",
+  "evidence": "MAYBE — professional profile: LinkedIn self-linked from his on-file GitHub (github.com/NelsonDane, Clarkson computer-engineering graduate) — stronger than a name-only match, but no usable portrait was retrieved (ChatGPT rerun item 27).",
+  "staged": "2026-11-27",
+  "origin": "chatgpt-rerun"
+ }
+]
