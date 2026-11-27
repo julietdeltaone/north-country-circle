@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.21.0';
+var APP_VERSION = '4.22.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8068,13 +8068,11 @@ var HM_VENUES = {
 var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
            sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false,
            fs:false, fsFallback:false,
-           /* V4.17.0: the homepage map shows web-search appearances
-              ONLY (JD 2026-11-14). evIdx is the event stepper's
-              state: -1 = the resting "All appearances" state;
-              0..N-1 = stepped to that dated appearance (events
-              ordered by published date). The old V4.16 layer
-              toggles are gone — there is one layer left. */
-           layers:{ web:true, home:true, seen:true }, apps:null, evIdx:-1, ev:null };
+           /* V4.22.0: the homepage map is a heat map of the
+              placed web-search appearances with Airbnb-style
+              place pills (JD 2026-11-27). The event stepper and
+              its state are gone entirely. */
+           layers:{ web:true, home:true, seen:true }, apps:null };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8222,33 +8220,12 @@ function hmAppsModel(){
   HM.apps = { items:items, byPlace:byPlace, counts:(AP && AP.counts) || null };
   return HM.apps;
 }
-/* The dated appearances in published order — the stepper's
-   stops. Cached against the loaded corpus. */
-function hmEvents(){
-  if(HM.ev) return HM.ev;
-  if(!AP) return [];
-  var A = hmAppsModel();
-  HM.ev = A.items.filter(function(a){ return !!a.published; })
-    .sort(function(a, b){ return a.published.localeCompare(b.published) || a.display.localeCompare(b.display); });
-  return HM.ev;
-}
-/* What the map shows at the current stepper state. Rest
-   (evIdx < 0): every placed appearance, dated and undated.
-   Stepped to event N: the dated appearances published on or
-   before that event's date (cumulative) — undated findings
-   have no moment and step aside until rest. */
 function hmStateApps(){
-  var A = hmAppsModel(), evs = hmEvents();
-  if(HM.evIdx < 0 || !evs.length) return { list:A.items, byPlace:A.byPlace, rest:true, cutoff:'' };
-  var k = Math.min(HM.evIdx, evs.length - 1), cutoff = evs[k].published;
-  var list = [], byPlace = {};
-  A.items.forEach(function(a){
-    if(a.published && a.published <= cutoff){
-      list.push(a);
-      (byPlace[a.pid] = byPlace[a.pid] || []).push(a);
-    }
-  });
-  return { list:list, byPlace:byPlace, rest:false, cutoff:cutoff };
+  /* V4.22.0: there is no stepper state — the map always stands
+     on ALL placed appearances, dated and undated alike. The
+     heat is about WHERE, not when. */
+  var A = hmAppsModel();
+  return { list:A.items, byPlace:A.byPlace, rest:true, cutoff:'' };
 }
 /* A place's findings list (its hero card): the findings the
    current state puts on the map, PLUS every undated finding
@@ -8257,11 +8234,8 @@ function hmStateApps(){
    Newest first; undated last (the byPlace sort already puts
    empty dates last). */
 function hmPlaceFindings(pk){
-  var A = hmAppsModel(), all = A.byPlace[pk] || [];
-  if(HM.evIdx < 0) return all;
-  var evs = hmEvents(); if(!evs.length) return all;
-  var cutoff = evs[Math.min(HM.evIdx, evs.length - 1)].published;
-  return all.filter(function(a){ return !a.published || a.published <= cutoff; });
+  var A = hmAppsModel();
+  return A.byPlace[pk] || [];
 }
 function hmAppRecent(a, ds){ return !!a.published && Math.round((hmDayMs(ds) - hmDayMs(a.published)) / 864e5) <= 90; }
 function hmAppsPhrase(text){
@@ -8568,20 +8542,17 @@ function hmBandHTML(o){
      speaks for itself and the space goes to content. Only the
      two tool buttons remain, on a slim bar. */
   var center = '<div class="gm-mapcard" id="hmCard">' +
-    /* V4.21.0 (JD 2026-11-27): the stepper is ARROWS ONLY — the
-       range slider is deleted (dragging it repainted the whole
-       map per tick and flashed). The ‹ › buttons ride the top
-       tool bar next to Reset view / Full screen; under the map
-       only the ONE readout line remains. */
+    /* V4.22.0 (JD 2026-11-27): the stepper is GONE entirely —
+       no arrows, no slider, no readout line. The map is a HEAT
+       MAP of where the placed findings concentrate, with
+       Airbnb-style place pills as you zoom in (hmSyncMapLayers).
+       The card keeps only the map, Reset view, Full screen. */
     '<div class="gm-mtools slim">' +
-    '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
-    '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div>' +
-    '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Map of web search appearances"></div>' +
+    '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Heat map of web search appearances"></div>' +
     '<div class="gm-mapnote" id="hmNote" hidden></div>' +
     '<div class="gm-hero gm-herodock" id="hmHero" hidden></div></div>' +
-    '<div class="gm-evread" id="hmEvRead">—</div>' +
     '</div>';
   /* V4.19.0 (JD): the foot keeps only "Known since". Removed:
      the "Where the map stands" readout, "How to read it", the
@@ -8609,9 +8580,9 @@ function hmGapsHTML(){
        strip carry (V4.17.1): dated and undated are stated for
        the whole file AND for the placed findings the map and
        the steps actually hold, each labeled as what it is. */
-    parts.push('Of the ' + ac.total + ' findings on file, ' + ac.dated + ' carry a published date: ' + dPl + ' of them are placed and form the steps' +
-      (ac.dated - dPl ? '; the other ' + (ac.dated - dPl) + ' name no place, so they cannot be stepped to' : '') + '. ' +
-      'The other ' + ac.undated + ' have no published date and are never backdated \u2014 ' + uPl + ' of them are placed, resting in All appearances and in their place\u2019s list.');
+    parts.push('Of the ' + ac.total + ' findings on file, ' + ac.dated + ' carry a published date: ' + dPl + ' of them are placed on the map' +
+      (ac.dated - dPl ? '; the other ' + (ac.dated - dPl) + ' name no place, so they cannot be placed' : '') + '. ' +
+      'The other ' + ac.undated + ' have no published date and are never backdated \u2014 ' + uPl + ' of them are placed, counting toward their place on the map and listed in its findings\u2019s list.');
     if(ac.unplaced) parts.push(ac.unplaced + ' findings name no place in the record and have none on file — counted here, never placed by guess.');
   }
   return parts.join('<br>');
@@ -8685,7 +8656,7 @@ function hmPaintDetail(){
       '<div class="gm-dline gm-dim">' + (app.placeSrc === 'profile'
         ? 'The finding itself names no place, so it is pinned at the place on file.'
         : 'The place is named in the finding itself.') +
-        (app.published ? '' : ' No published date is on file for this finding, so it rests in All appearances and in its place\u2019s list — never backdated, and never one of the steps.') + '</div>' +
+        (app.published ? '' : ' No published date is on file for this finding, it counts toward its place on the map and stays in its place\u2019s list — never backdated.') + '</div>' +
       (ae ? '<div class="gm-hero-acts"><a class="btn primary sm gm-openbtn" href="#/p/' + encodeURIComponent(personId(ae)) + '" data-act="openp" data-di="' + app.di + '">Open profile</a></div>' : '');
     return;
   }
@@ -8705,124 +8676,27 @@ function hmPaintDetail(){
       '<div class="gm-dsub">' + rowsF.length + (rowsF.length === 1 ? ' finding' : ' findings') + ' here' +
         (stP.rest ? ' in All appearances.' : ' listed — ' + mapN + ' of them on the map through this stop.') + '</div>' +
       (newest ? '<div class="gm-dline"><span class="gm-adot ' + hmAppAgeCls(newest, stP.rest ? M.maxD : stP.cutoff) + '"></span><span>Newest here: <b>' + esc(newest.display) + '</b>, ' + hmFmtDate(newest.published) + '</span></div>' : '') +
-      (rowsF.length ? hmPlaceAppsHTML(HM.sel.key) : '<p class="gm-dim">No findings here at this stop. Step forward, or rest on All appearances.</p>') +
+      (rowsF.length ? hmPlaceAppsHTML(HM.sel.key) : '<p class="gm-dim">No findings here.</p>') +
       (undN && !stP.rest ? '<div class="gm-pfoot">' + undN + ' of these have no published date — they belong to the place, so they stay listed; they are not on the map at this stop.</div>' : '');
     return;
   }
   HM.sel = null; hero.hidden = true; hero.innerHTML = '';
 }
 function hmPaintReadout(){
-  var M = hmModel(), st = hmStateApps(), evs = hmEvents();
+  var M = hmModel(), st = hmStateApps();
   var asOf = document.getElementById('hmAsOf'), counts = document.getElementById('hmCounts'),
       gaps = document.getElementById('hmGaps');
-  if(asOf) asOf.textContent = !AP ? 'loading' : (st.rest ? 'All appearances' : hmFmtDate(st.cutoff));
+  if(asOf) asOf.textContent = !AP ? 'loading' : 'All appearances';
   if(counts){
     if(!AP) counts.innerHTML = 'Loading the findings\u2026';
-    else if(st.rest){
+    else {
       var datedN = 0;
       hmAppsModel().items.forEach(function(a){ if(a.published) datedN++; });
       counts.innerHTML = '<b>' + st.list.length + '</b> findings on the map \u00b7 <b>' + Object.keys(st.byPlace).length + '</b> places<br>' +
-        '<b>' + datedN + '</b> of them carry a published date \u2014 those are the steps. The other <b>' + (st.list.length - datedN) + '</b> have no published date; they rest here, in All.';
-    } else {
-      counts.innerHTML = '<b>' + st.list.length + '</b> finding' + (st.list.length === 1 ? '' : 's') + ' on the map through ' + hmFmtDate(st.cutoff) +
-        ' \u00b7 event ' + (HM.evIdx + 1) + ' of ' + evs.length + '<br>Rest on All appearances to bring the undated findings back.';
+        '<b>' + datedN + '</b> of them carry a published date. The other <b>' + (st.list.length - datedN) + '</b> have no published date \u2014 they still count toward their place on the map.';
     }
   }
   if(gaps) gaps.innerHTML = hmGapsHTML();
-}
-/* The event stepper's own paint: the ONE readout line. The
-   readout shows only NAME, DATE, and the information (what
-   happened + where) — no "Event X of N", no explanatory text
-   (V4.20.2). At rest it names the newest dated appearance in
-   the same format. V4.21.0: no slider remains to sync. */
-function hmPaintStepper(){
-  var evs = hmEvents(), N = evs.length;
-  var rd = document.getElementById('hmEvRead');
-  if(rd){
-    if(!AP) rd.textContent = 'Loading\u2026';
-    else if(!N) rd.textContent = '\u2014';
-    else {
-      var a = HM.evIdx < 0 ? evs[N - 1] : evs[Math.min(HM.evIdx, N - 1)], pl = hmModel().places[a.pid];
-      rd.innerHTML = '<b>' + esc(a.display) + '</b> \u00b7 ' + hmFmtDate(a.published) + ' \u00b7 ' + esc(hmAppsPhrase(a.text)) + ' \u00b7 ' + esc(a.place || (pl ? pl.label : ''));
-      rd.title = a.display + ' \u2014 ' + hmFmtDate(a.published) + ' \u2014 ' + a.text + ' \u2014 ' + (a.place || (pl ? pl.label : ''));
-    }
-  }
-}
-/* Move the stepper. v is the stop value: 0 = rest (All
-   appearances), 1..N = events 1..N in published order.
-   V4.21.0: stepping NEVER full-repaints. The readout and the
-   single orb are swapped in place; the badges layer is cleared
-   exactly once on the rest→stepped transition; and the
-   programmatic setView is flagged (HM._navMove) so the moveend
-   handler does not answer it with a redundant rebuild — that
-   rebuild-per-step was the flashing JD saw. */
-function hmSetEv(v, fly){
-  var evs = hmEvents(), N = evs.length;
-  v = Math.max(0, Math.min(N, v));
-  var wasRest = HM.evIdx < 0;
-  HM.evIdx = v - 1;
-  if(HM.evIdx < 0){
-    /* Back to rest: one full paint restores the overview. */
-    hmPaint();
-    return;
-  }
-  if(wasRest) hmPaint();          /* clears badges, draws the orb */
-  else { hmPaintStepper(); hmDrawStepPin(); }
-  if(fly && HM.map && window.L){
-    var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
-    if(pl){
-      HM._navMove = true;
-      /* V4.20.0: instant jump, never an animated flight — the map is static. */
-      HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 11), { animate:false });
-    }
-  }
-}
-/* The stepped appearance's marker (V4.21.0): a circular ORB
-   centred exactly on the place's lat/lng — the divIcon is a
-   0x0 point at the place and the orb is centred on it by CSS,
-   so nothing about text length can shift it. The ring colour
-   is the recency class (a-hot fresh / a-mid within 90 days /
-   a-old older — the palette the dots and badges already use).
-   HOVER expands the full info card in place (name and date as
-   heroes, the FULL finding text, where, source); a tap toggles
-   the same card for touch. Clicking still selects the
-   appearance (hero card) as before. */
-function hmOrbIcon(a, ref){
-  var ageCls = hmAppAgeCls(a, ref);
-  var pl = hmModel().places[a.pid];
-  var html = '<span class="gm-orbwrap">' +
-    '<span class="gm-orb ' + ageCls + '"><i></i></span>' +
-    '<span class="gm-ocard">' +
-    '<span class="gm-oc-name">' + esc(a.display) + '</span>' +
-    '<span class="gm-oc-date">' + hmFmtDate(a.published) + '</span>' +
-    '<span class="gm-oc-text">' + esc(a.text) + '</span>' +
-    '<span class="gm-oc-meta">' + esc(a.place || (pl ? pl.label : '')) +
-    (a.source ? ' · ' + esc(a.source) : '') + '</span>' +
-    '</span></span>';
-  return L.divIcon({ className:'gm-di gm-orbdi', html:html, iconSize:[0, 0], iconAnchor:[0, 0] });
-}
-/* Swap ONLY the stepped orb (its own layer group, HM.pinLayer):
-   the basemap and every other layer are untouched, so a step
-   costs one marker, not a rebuild. */
-function hmDrawStepPin(){
-  if(!HM.map || !window.L || !AP) return;
-  if(!HM.pinLayer) HM.pinLayer = L.layerGroup().addTo(HM.map);
-  var evs = hmEvents();
-  var curA = (HM.evIdx >= 0 && evs.length) ? evs[Math.min(HM.evIdx, evs.length - 1)] : null;
-  var key = curA ? curA.i : -1;
-  if(HM._pinKey === key && HM.pinLayer.getLayers().length) return;
-  HM._pinKey = key;
-  HM.pinLayer.clearLayers();
-  if(!curA) return;
-  var M = hmModel(), pl = M.places[curA.pid];
-  if(!pl) return;
-  var pin = L.marker([pl.lat, pl.lng], { icon:hmOrbIcon(curA, M.maxD) }).addTo(HM.pinLayer);
-  pin.on('click', function(){
-    var el = pin.getElement();
-    if(el && window.matchMedia && window.matchMedia('(hover: none)').matches)
-      el.classList.toggle('gm-orb-open');
-    hmSelectApp(curA.i);
-  });
 }
 function hmCluster(vis){
   /* screen-space grid clustering of place badges (64px cells of
@@ -8874,102 +8748,95 @@ function hmInitials(e){
 }
 function hmPaint(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
-  hmPaintStepper(); hmPaintReadout(); hmPaintDetail();
+  hmPaintReadout(); hmPaintDetail();
   if(!HM.map || !window.L) return;
-  if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
-  var M = hmModel(), st = hmStateApps();
-  /* V4.21.0: the main layer is cleared ONLY for the resting
-     overview. While stepped, the badges are cleared exactly
-     once (the rest→stepped transition) and the orb lives in
-     its own layer, swapped by hmDrawStepPin — stepping can no
-     longer rebuild the map. */
-  if(!st.rest){
-    if(HM._restDrawn){ HM.layer.clearLayers(); HM._restDrawn = false; }
-    if(AP) hmDrawStepPin();
-    return;
-  }
-  HM.layer.clearLayers();
-  HM._restDrawn = true;
-  if(HM.pinLayer){ HM.pinLayer.clearLayers(); HM._pinKey = -1; }
-  var selPk = null;
-  if(HM.sel && HM.sel.type === 'place') selPk = HM.sel.key;
-  else if(HM.sel && HM.sel.type === 'app' && AP){
-    var A0 = hmAppsModel();
-    for(var avi = 0; avi < A0.items.length; avi++){ if(A0.items[avi].i === HM.sel.i){ selPk = A0.items[avi].pid; break; } }
-  }
-  /* Place badges + clusters, built from the state's findings
-     only. A badge counts findings; its ring takes the newest
-     dated finding's age colour at the state's reference date,
-     dashed when findings with no published date are in view,
-     and muted when the place has only undated findings. */
-  /* Badges + clusters are the RESTING overview only (V4.20.2):
-     the moment the stepper moves, they leave the map. */
-  if(st.rest) hmCluster(st).forEach(function(g){
-    var totN = 0, wlat = 0, wlng = 0;
-    g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
-    var lat = wlat / totN, lng = wlng / totN;
-    if(g.length > 1){
-      var names = g.slice().sort(function(a, b){ return b.n - a.n; }).map(function(a){ return a.pl.label.replace(/, [A-Z]{2}$/, ''); });
-      var ctitle = (names.length > 2 ? names.slice(0, 2).join(' + ') + ' +' + (names.length - 2) : names.join(' + '));
-      var cmk = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-badge gm-cluster' + (totN >= 10 ? ' b-lg' : (totN >= 4 ? ' b-md' : '')) + '" title="' + esc(ctitle) + '"><b>' + totN + '</b><i>' + esc(ctitle) + '</i></span>', iconSize:[52, 52], iconAnchor:[26, 26] }) }).addTo(HM.layer);
-      cmk.on('click', function(){
-        var z = HM.map.getZoom();
-        if(z >= 14){ HM.selBack = null; HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) }; hmPaintDetail(); }
-        else HM.map.setView([lat, lng], Math.min(z + 2, 14), { animate:false });
-      });
-      return;
-    }
-    var a0 = g[0], rowsA = st.byPlace[a0.pk], pl = a0.pl;
-    var ref = st.rest ? M.maxD : st.cutoff, newestD = '', hasUnd = false;
-    rowsA.forEach(function(a){ if(!a.published) hasUnd = true; else if(a.published > newestD) newestD = a.published; });
-    var age = newestD ? hmAppAgeCls({ published:newestD }, ref) : '';
-    var ring = age === 'a-hot' ? 'ring-fresh' : (age === 'a-mid' ? 'ring-year' : (age === 'a-old' ? 'ring-old' : ''));
-    var cls = 'gm-badge' + (ring ? ' ' + ring : '') + (totN >= 10 ? ' b-lg' : (totN >= 4 ? ' b-md' : '')) +
-      (!newestD ? ' und' : (hasUnd ? ' dund' : '')) + (selPk === a0.pk ? ' sel' : '');
-    var mk = L.marker([pl.lat, pl.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="' + cls + '" title="' + esc(pl.label) + '"><b>' + totN + '</b><i>' + esc(pl.label.replace(/, [A-Z]{2}$/, '')) + '</i></span>', iconSize:[52, 52], iconAnchor:[26, 26] }) }).addTo(HM.layer);
-    mk.on('click', function(){ hmSelectPlace(a0.pk); });
+  hmSyncMapLayers();
+}
+/* ================================================================
+   V4.22.0 — the Overview map is a HEAT MAP with Airbnb-style
+   place pills (JD 2026-11-27: "ditch the stepper, reconstruct
+   the overview map"). The heat shows where the placed findings
+   CONCENTRATE: every placed appearance counts toward its place,
+   dated or not — the heat is about WHERE, not when. As you zoom
+   in ("dial it in"), the heat crossfades down and the places
+   resolve into pills carrying the place name + finding count,
+   Airbnb price-pill style. Clicking a pill selects the place
+   and opens the same hero detail the map has always had.
+   Layers change ONLY on a zoom-band change or a selection
+   change — never per move, never a basemap rebuild (the 4.21.0
+   anti-flash rules stand). */
+/* Heat points: [lat, lng, finding count] per placed place. */
+function hmHeatPoints(){
+  var A = hmAppsModel(), M = hmModel(), pts = [], max = 1;
+  Object.keys(A.byPlace).forEach(function(pk){
+    var pl = M.places[pk]; if(!pl) return;
+    var n = A.byPlace[pk].length;
+    if(n > max) max = n;
+    pts.push([pl.lat, pl.lng, n]);
   });
-  if(!AP) return;
-  if(st.rest){
-    /* Resting on All: the appearances of the last 90 days ride
-       as labeled pins — who and what, at a glance — one per
-       place (the newest), capped so the map stays readable. */
-    var recent = st.list.filter(function(a){ return hmAppRecent(a, M.maxD); })
-      .sort(function(a, b){ return b.published.localeCompare(a.published) || a.display.localeCompare(b.display); });
-    var seenPl = {}, pinN = 0, pinBoxes = [];
-    var mapEl2 = document.getElementById('hmMap');
-    var mapW = mapEl2 ? mapEl2.clientWidth : 0, mapH = mapEl2 ? mapEl2.clientHeight : 0;
-    recent.forEach(function(a){
-      if(pinN >= 16 || seenPl[a.pid]) return;
-      seenPl[a.pid] = 1;
-      var pl2 = M.places[a.pid]; if(!pl2) return;
-      var cpt = HM.map.latLngToContainerPoint([pl2.lat, pl2.lng]);
-      /* A label that cannot be read whole is not drawn
-         (V4.17.1): the pin's box (188 wide, riding 40px above
-         its place point, up to ~58 tall with two phrase lines)
-         is slid sideways to fit inside the map, and the pin is
-         skipped when it still cannot fit or would stack onto
-         a label already drawn — a label clipped by the map's
-         edge or buried under another answers nothing. The
-         place badge and the Latest appearances strip still
-         carry the finding. Newest findings win the labels. */
-      var bx1 = Math.max(4, Math.min(cpt.x - 94, mapW - 192));
-      var bx = { x1:bx1, y1:cpt.y - 86, x2:bx1 + 188, y2:cpt.y - 28 };
-      if(!mapW || bx.x2 > mapW - 4 || bx.y1 < 4 || bx.y2 > mapH - 4) return;
-      for(var bi = 0; bi < pinBoxes.length; bi++){
-        var ob = pinBoxes[bi];
-        if(bx.x1 < ob.x2 + 2 && bx.x2 > ob.x1 - 2 && bx.y1 < ob.y2 + 2 && bx.y2 > ob.y1 - 2) return;
-      }
-      pinBoxes.push(bx); pinN++;
-      var ll = HM.map.containerPointToLatLng(L.point(bx.x1 + 94, cpt.y - 40));
-      var ageD = Math.round((hmDayMs(M.maxD) - hmDayMs(a.published)) / 864e5);
-      var pin = L.marker(ll, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin' + (ageD <= 21 ? ' fresh' : '') + (HM.sel && HM.sel.type === 'app' && HM.sel.i === a.i ? ' sel' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
-      pin.on('click', function(){ hmSelectApp(a.i); });
-    });
+  return { pts:pts, max:max };
+}
+/* The zoom bands: heat (default view, heat full, places are
+   dots) / mid (heat thins, count pills) / pill (heat a whisper,
+   full name+count pills). */
+function hmZoomBand(){
+  if(!HM.map) return 'heat';
+  var z = HM.map.getZoom();
+  return z >= 13 ? 'pill' : (z >= 11 ? 'mid' : 'heat');
+}
+function hmPillIcon(pl, n, band, sel){
+  var name = pl.label.replace(/, [A-Z]{2}$/, '');
+  if(band === 'heat')
+    return L.divIcon({ className:'gm-di gm-pilldi', html:'<span class="gm-dotwrap"><span class="gm-dot"></span></span>', iconSize:[0, 0], iconAnchor:[0, 0] });
+  var inner = band === 'mid'
+    ? '<span class="gm-pill mini' + (sel ? ' sel' : '') + '"><b>' + n + '</b></span>'
+    : '<span class="gm-pill' + (sel ? ' sel' : '') + '">' + esc(name) + ' <b>' + n + '</b></span>';
+  return L.divIcon({ className:'gm-di gm-pilldi', html:'<span class="gm-pillwrap">' + inner + '</span>', iconSize:[0, 0], iconAnchor:[0, 0] });
+}
+function hmDrawPills(){
+  if(!HM.map || !window.L || !AP) return;
+  if(!HM.pillLayer) HM.pillLayer = L.layerGroup().addTo(HM.map);
+  HM.pillLayer.clearLayers();
+  var A = hmAppsModel(), M = hmModel(), band = HM._zband || 'heat';
+  var selPk = (HM.sel && HM.sel.type === 'place') ? HM.sel.key : null;
+  Object.keys(A.byPlace).forEach(function(pk){
+    var pl = M.places[pk]; if(!pl) return;
+    var mk = L.marker([pl.lat, pl.lng], { icon:hmPillIcon(pl, A.byPlace[pk].length, band, pk === selPk) }).addTo(HM.pillLayer);
+    mk.on('click', function(){ hmSelectPlace(pk); });
+  });
+  HM._pillSel = selPk; HM._pillBand = band;
+}
+/* Crossfade + pill form follow the zoom band. Called on
+   zoomend/moveend and after the layers sync; a no-op unless the
+   band actually changed (or the selection did). */
+function hmZoomSync(force){
+  if(!HM.map || !window.L) return;
+  var band = hmZoomBand();
+  var changed = band !== HM._zband;
+  HM._zband = band;
+  var cv = document.querySelector('#hmMap .leaflet-heatmap-layer');
+  if(cv) cv.style.opacity = band === 'heat' ? '0.9' : (band === 'mid' ? '0.45' : '0.12');
+  var selPk = (HM.sel && HM.sel.type === 'place') ? HM.sel.key : null;
+  if(force || changed || HM._pillBand !== band || HM._pillSel !== selPk) hmDrawPills();
+}
+/* Build the heat + pill layers once per corpus; afterwards
+   only the band/selection sync touches them. */
+function hmSyncMapLayers(){
+  if(!HM.map || !window.L || !AP) return;
+  var A = hmAppsModel();
+  var key = (AP.counts ? AP.counts.total : 0) + ':' + Object.keys(A.byPlace).length;
+  if(HM._mapKey !== key){
+    HM._mapKey = key;
+    if(HM.heatLayer){ try { HM.map.removeLayer(HM.heatLayer); } catch(x){} HM.heatLayer = null; }
+    if(window.L.heatLayer){
+      var hd = hmHeatPoints();
+      HM.heatLayer = L.heatLayer(hd.pts, { radius:26, blur:20, maxZoom:13, max:hd.max, minOpacity:0.3,
+        gradient:{ 0.3:'#2a4d9b', 0.55:'#1b7f79', 0.8:'#d9a441', 1.0:'#f0c96a' } }).addTo(HM.map);
+    }
+    HM._zband = null;
+    hmZoomSync(true);
   } else {
-    /* V4.21.0: unreachable — hmPaint returns in the stepped
-       branch above; the stepped orb is drawn by hmDrawStepPin
-       in its own layer so stepping never rebuilds this one. */
+    hmZoomSync(false);
   }
 }
 function hmSelectPlace(pk){
@@ -9062,12 +8929,6 @@ function hmFitDefault(){
      selection last flew the map. Reset view returns here. */
   HM.map.setView([44.6698, -74.9818], 9);
 }
-function hmStopPlay(){
-  /* V4.18.0: no playback exists anymore; kept as a no-op so the
-     unmount paths that call it stay safe. */
-  HM.playing = false;
-  if(HM.timer){ clearInterval(HM.timer); HM.timer = null; }
-}
 /* V4.18.0: hmTick (the Play walker) removed with the Play feature. */
 /* If the basemap service itself fails (bad endpoint, outage),
    Leaflet still loads and the badges would float on a blank
@@ -9086,17 +8947,10 @@ function hmTileWatch(layer){
 function hmMount(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
   if(HM.fs){ HM.fs = false; HM.fsFallback = false; if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){} } }
-  /* The stepper's stops are the dated appearances themselves:
-     stop 0 = All appearances (rest), 1..N = events in published
-     order. Navigation is the ‹ › buttons in the top tool bar
-     (V4.21.0 — the range slider is deleted); each step moves
-     AND zooms the map to the stop's place at once. */
-  var evs0 = hmEvents();
-  if(HM.evIdx >= evs0.length) HM.evIdx = evs0.length - 1;
   hmPaint();
   hmLoadLeaflet(function(ok){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
-    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; HM.pinLayer = null; HM._pinKey = -1; HM._sized = false; HM._restDrawn = false; HM._navMove = false; }
+    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; HM.pillLayer = null; HM.heatLayer = null; HM._mapKey = null; HM._zband = null; HM._pillSel = undefined; HM._pillBand = null; HM._sized = false; }
     var mode = document.documentElement.getAttribute('data-mode');
     /* V4.20.0 (JD 2026-11-26): the Overview map is STATIC — every
        Leaflet animation is off (no tile fade, no animated zoom,
@@ -9125,17 +8979,10 @@ function hmMount(){
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
         { maxZoom:18, maxNativeZoom:16 }).addTo(HM.map));
     }
-    /* V4.21.0: moveend no longer answers every move with a
-       full repaint. A programmatic step (HM._navMove) is
-       consumed silently; while stepped, the orb is anchored to
-       its lat/lng and needs no repaint at all; only a user's
-       own pan/zoom at REST repaints (clusters and label fit are
-       screen-space there). */
-    HM.map.on('moveend zoomend', function(){
-      if(HM._navMove){ HM._navMove = false; return; }
-      if(HM.evIdx >= 0) return;
-      hmPaint();
-    });
+    /* V4.22.0: moves never repaint. zoomend/moveend only run
+       the band sync — the heat crossfade and the pill form
+       change when the zoom CROSSES a band, nothing else. */
+    HM.map.on('moveend zoomend', function(){ hmZoomSync(false); });
     hmFitDefault();
     hmPaint();
     /* One settle pass: Leaflet measured the container before
@@ -9144,7 +8991,7 @@ function hmMount(){
        screenshot). invalidateSize runs ONCE here after layout
        settles — and on full-screen toggles (hmFsSize) — never
        per step. */
-    setTimeout(function(){ if(HM.map && !HM._sized){ HM._sized = true; HM.map.invalidateSize(); if(HM.evIdx < 0) hmPaint(); } }, 350);
+    setTimeout(function(){ if(HM.map && !HM._sized){ HM._sized = true; HM.map.invalidateSize(); hmPaint(); } }, 350);
   });
 }
 function hmNoMap(){
@@ -9152,16 +8999,31 @@ function hmNoMap(){
   if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map service is unavailable. The readout and the statistics below the map still work; reload to try the map again.</div>';
 }
 function hmLoadLeaflet(cb){
-  if(window.L){ cb(true); return; }
+  if(window.L && window.L.heatLayer){ cb(true); return; }
   if(HM.loading){ (HM.cbs = HM.cbs || []).push(cb); return; }
   HM.loading = true; HM.cbs = [cb];
+  function done(ok){ var c = HM.cbs || []; HM.cbs = null; HM.loading = false; c.forEach(function(f){ f(ok); }); }
+  /* V4.22.0: the heat layer is the Leaflet.heat plugin, loaded
+     from the same unpkg CDN right after Leaflet itself. It is
+     an enhancement — if the plugin fails, the map still opens
+     and the place pills carry it; only a Leaflet failure is a
+     no-map. */
+  function loadHeat(){
+    if(window.L.heatLayer){ done(true); return; }
+    var h = document.createElement('script');
+    h.src = 'https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js';
+    h.onload = function(){ done(true); };
+    h.onerror = function(){ done(true); };
+    document.head.appendChild(h);
+  }
+  if(window.L){ loadHeat(); return; }
   var link = document.createElement('link');
   link.rel = 'stylesheet'; link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
   document.head.appendChild(link);
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  s.onload = function(){ var c = HM.cbs || []; HM.cbs = null; c.forEach(function(f){ f(true); }); };
-  s.onerror = function(){ var c = HM.cbs || []; HM.cbs = null; c.forEach(function(f){ f(false); }); };
+  s.onload = function(){ loadHeat(); };
+  s.onerror = function(){ done(false); };
   document.head.appendChild(s);
 }
 
@@ -16951,9 +16813,6 @@ function onClick(ev){
     case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
     case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.gm-ctside'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
     /* V4.18.0: 'hmplay' removed — the map is static; no Play control exists. */
-    case 'hmprev': { hmStopPlay(); hmSetEv(HM.evIdx, true); break; }
-    case 'hmnext': { hmStopPlay(); hmSetEv(HM.evIdx + 2, true); break; }
-    case 'hmall': { hmStopPlay(); hmSetEv(0, false); hmFitDefault(); break; }
     case 'hmapp': { hmSelectApp(+el.getAttribute('data-i')); break; }
     case 'hmreset': { hmFitDefault(); break; }
     case 'hmplace': { hmSelectPlace(el.getAttribute('data-k')); break; }
