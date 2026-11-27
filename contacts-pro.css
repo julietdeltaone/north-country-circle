@@ -7673,7 +7673,16 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .fi-flagbadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#161c24;background:var(--warn);border-radius:2px;padding:4px 9px}
 .fi-flagwhy{font-size:12.5px;color:var(--dim);line-height:1.55;margin:8px 0 10px}
 /* Overview: map half-left, info right; uniform cards. */
-.gm-band.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+/* V4.21.0: the columns are PINNED — map takes the rest, the
+   rail is a fixed 350px. The old 1fr/1fr let each track size
+   to its content, so the rail's per-step text (it repaints for
+   every stop) kept re-splitting the band and resizing the map
+   card mid-step; Leaflet's tiles then under-covered the wider
+   card and left a white strip at the right edge (JD's
+   screenshot, 2026-11-27). minmax(0,...) + min-width:0 mean
+   content can never push the map around again. */
+.gm-band.cols{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:16px;align-items:start}
+.gm-left{min-width:0}
 .gm-right{min-width:0;display:flex;flex-direction:column;gap:12px}
 .gm-right .gm-foot{grid-template-columns:1fr;margin-top:0;gap:12px}
 .gm-right .gm-mini{padding:14px 16px}
