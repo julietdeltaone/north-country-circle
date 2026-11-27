@@ -37914,8 +37914,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 4,
-   "new": 0,
+   "todo": 6,
+   "new": 2,
    "cleared_at": null
   }
  },
@@ -41741,7 +41741,19 @@
    "added": "2026-11-24",
    "class": "new",
    "source": "Photo filed"
+  },
+  "caleb froats": {
+   "first_seen": "2026-11-27T09:54:00Z",
+   "added": "2026-11-27",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "tim criscitello": {
+   "first_seen": "2026-11-27T09:54:00Z",
+   "added": "2026-11-27",
+   "class": "new",
+   "source": "Photo filed"
   }
  },
- "updated": "2026-11-27T09:34:00Z"
+ "updated": "2026-11-27T09:54:00Z"
 }
