@@ -1,14 +1,14 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1559,
-  "dated": 80,
+  "total": 1560,
+  "dated": 81,
   "undated": 1479,
-  "placed": 1402,
-  "unplaced": 157,
+  "placed": 1404,
+  "unplaced": 156,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 33,
+  "brief_attached": 34,
   "brief_standalone": 48,
   "brief_unresolved": 1
  },
@@ -108,18 +108,6 @@
    "pid": "44.5956,-75.1691",
    "place": "Canton",
    "place_src": "text"
-  },
-  {
-   "di": 16,
-   "display": "Alyssa L Ramsay",
-   "text": "Started as an intern with the St. Lawrence County Soil and Water Conservation District in May 2026, working as a wetland monitor for the Wetland Reserve Program in partnership with NRCS",
-   "source": "St. Lawrence County Soil and Water Conservation District",
-   "url": "https://www.facebook.com/SLCSWCD/posts/pfbid02Chqt7VxV9YAosVUVjT1rL3YSbtx3ASHA4j35ibc3dh7WTtyUhgT2mTCJzR4Jw2Atl",
-   "published": "2026-11-06",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
   },
   {
    "di": 322,
@@ -290,18 +278,6 @@
    "place_src": "profile"
   },
   {
-   "di": 323,
-   "display": "Wayne Brown",
-   "text": "Featured as Gather Markets' Wayne Brown on the Chrisman Commentary podcast discussing CRA-eligible loans, Oct 2026",
-   "source": "Chrisman Commentary",
-   "url": "https://chrismancommentary.com/podcast/10-8-26/",
-   "published": "2026-10-08",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
    "di": 212,
    "display": "Liam Miller-Lynch",
    "text": "Named to the 2026 Liberty League Football All-Academic Team as a St. Lawrence University sophomore from Potsdam, New York",
@@ -324,6 +300,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
+  },
+  {
+   "di": 57,
+   "display": "Alfredo Rodriguez",
+   "text": "Announced as Chaplain and Bible & Theology Teacher at Awakening Christian Academy, Aug 2026",
+   "source": "Awakening Christian Academy",
+   "url": "https://www.instagram.com/p/DcjQoPHufdj/",
+   "published": "2026-08-27",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 468,
@@ -410,6 +398,18 @@
    "place_src": "text"
   },
   {
+   "di": 142,
+   "display": "Hannah Braun",
+   "text": "Co-authored a Biology of Reproduction paper on transcriptome markers of bovine embryo quality with the Barfield Lab at Colorado State University, Feb 2026",
+   "source": "PubMed",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/41342381/",
+   "published": "2026-02-18",
+   "fresh": false,
+   "pid": "44.7247,-75.3183",
+   "place": "Lisbon, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 168,
    "display": "Jocelyn Daniels",
    "text": "Named to SUNY Canton's President's List for the Fall 2025 semester as an Individual Studies student, Jan 2026",
@@ -455,6 +455,18 @@
    "fresh": false,
    "pid": "44.9281,-74.8919",
    "place": "Massena, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 90,
+   "display": "Dillynn Grant",
+   "text": "Passed the U.S. Figure Skating Gold Solo Free Dance test, Aug 2025",
+   "source": "Potsdam Figure Skating Club",
+   "url": "https://www.facebook.com/PotsdamFSC/posts/pfbid0KrQVGpC2qAw7oKVUEsN5xs3vw8qW86gcJe3RRE1frrk69LT8zXdFyTD3BWXrBAcRl",
+   "published": "2025-08-17",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
    "place_src": "profile"
   },
   {
@@ -569,6 +581,18 @@
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2024/honors-spring24.php",
+   "published": "2024-06-17",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 727,
+   "display": "Gabriel Wangerin",
+   "text": "Named to SUNY Canton's Dean's List for Spring 2024 as a Business Administration student (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "https://canton.edu/news/2024/honors-spring24.php",
    "published": "2024-06-17",
@@ -908,18 +932,6 @@
    "source": "Hope College",
    "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
    "published": "2018-08-07",
-   "fresh": false,
-   "pid": "44.5531,-74.9394",
-   "place": "Colton, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 118,
-   "display": "Julia Fulton",
-   "text": "Served as an executive board member of Vox Populi, the Hope College student group that managed the Holland mayoral debate dialogue, Oct 2017",
-   "source": "The Anchor",
-   "url": "https://anchor.hope.edu/campus/student-groups-host-mayoral-debate/",
-   "published": "2017-10-25",
    "fresh": false,
    "pid": "44.5531,-74.9394",
    "place": "Colton, NY",
