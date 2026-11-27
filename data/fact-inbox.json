@@ -7377,6 +7377,10 @@
    "name": "ig:hnnbraun",
    "pattern": "milestone",
    "source": "PubMed",
+   "state": {
+    "at": "2026-11-27T22:39:04.289Z",
+    "status": "read"
+   },
    "url": "https://pubmed.ncbi.nlm.nih.gov/41342381/"
   },
   {
@@ -7390,6 +7394,10 @@
    "name": "ig:hnnbraun",
    "pattern": "milestone",
    "source": "ICAR 2026",
+   "state": {
+    "at": "2026-11-27T22:39:04.289Z",
+    "status": "read"
+   },
    "url": "https://icar2026.jp/workshop.html"
   },
   {
@@ -7403,6 +7411,10 @@
    "name": "ct:gabriel wangerin",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-27T22:39:08.143Z",
+    "status": "read"
+   },
    "url": "https://canton.edu/news/2024/honors-spring24.php"
   },
   {
@@ -7416,6 +7428,10 @@
    "name": "ig:certified.sauce",
    "pattern": "title_change",
    "source": "Awakening Christian Academy",
+   "state": {
+    "at": "2026-11-27T22:39:10.948Z",
+    "status": "read"
+   },
    "url": "https://www.instagram.com/p/DcjQoPHufdj/"
   }
  ],
