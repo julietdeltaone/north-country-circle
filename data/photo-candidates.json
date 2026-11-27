@@ -1,9 +1,9 @@
 [
  {
   "person": "Cassandra Fernandez",
-  "image_url": null,
+  "image_url": "photos/cassandra-fernandez.jpg",
   "source_page": "https://www.saltcityholistichealth.com/yoga",
-  "evidence": "MAYBE — image access: the Salt City Holistic Health 'Meet your Teachers' page pairs a Cassandra Fernandez bio (military veteran, Jai Yoga School graduate, Syracuse) with an adjacent image, but the image host returned 403, so pixels and size are unverified (ChatGPT rerun item 15).",
+  "evidence": "MAYBE — image access: the Salt City Holistic Health 'Meet your Teachers' page pairs a Cassandra Fernandez bio (military veteran, Jai Yoga School graduate, Syracuse) with an adjacent image, but the image host returned 403, so pixels and size are unverified (ChatGPT rerun item 15). Image recovered 2026-11-27: the portrait paired with her bio on the page was fetched and viewed (a woman in a yoga pose, consistent with her teacher bio) and localized as photos/cassandra-fernandez.jpg, so the card now shows the photo itself.",
   "staged": "2026-11-27",
   "origin": "chatgpt-rerun"
  },
