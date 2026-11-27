@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.20.1';
+var APP_VERSION = '4.20.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8295,40 +8295,6 @@ function hmPlaceAppsHTML(pk){
   return '<div class="gm-plist gm-aplist">' + shown.map(function(a){ return hmAppRowHTML(a, ref, false); }).join('') + '</div>' +
     (rows.length > shown.length ? '<div class="gm-pfoot">Showing the newest ' + shown.length + ' of ' + rows.length + ' findings here.</div>' : '');
 }
-/* The first-glance strip: the newest dated appearances at the
-   current stepper state, readable without clicking — who,
-   doing what, where, when. Sits inside the map card under the
-   stepper, so it rides into full-screen mode with the card. */
-function hmPaintStrip(){
-  var el = document.getElementById('hmAppsStrip'); if(!el) return;
-  if(!AP){ el.innerHTML = '<div class="gm-as-head">Latest appearances<span>in web search</span></div><p class="gm-dim">Loading the findings…</p>'; return; }
-  var A = hmAppsModel(), M = hmModel(), st = hmStateApps();
-  var ref = st.rest ? M.maxD : st.cutoff;
-  var dated = A.items.filter(function(a){ return a.published && a.published <= ref; })
-    .sort(function(a, b){ return b.published.localeCompare(a.published) || a.display.localeCompare(b.display); });
-  var h = '<div class="gm-as-head">Latest appearances<span>in web search · ' +
-    (st.rest ? 'as of ' + hmFmtDate(M.maxD) : 'through ' + hmFmtDate(st.cutoff)) + '</span></div>';
-  if(dated.length){
-    h += dated.slice(0, 5).map(function(a){
-      var pl = M.places[a.pid];
-      return '<button type="button" class="gm-asrow" data-act="hmapp" data-i="' + a.i + '" data-pub="' + a.published + '">' +
-        '<span class="gm-adot ' + hmAppAgeCls(a, ref) + '"></span>' +
-        '<span class="gm-aswho">' + esc(a.display) + '</span>' +
-        '<span class="gm-aswhat">' + esc(hmAppsPhrase(a.text)) + '</span>' +
-        '<span class="gm-aswhere">' + esc(a.place || (pl ? pl.label : '')) + '</span>' +
-        '<span class="gm-aswhen">' + hmShortDate(a.published) + '</span></button>';
-    }).join('');
-  } else {
-    var evs = hmEvents(), firstD = evs.length ? evs[0] : null;
-    h += '<p class="gm-dim">No dated appearance yet at this stop' +
-      (firstD ? ' — dated appearances on file start ' + hmMonYear(firstD.published) + '; step forward.' : '.') + '</p>';
-  }
-  if(st.rest){
-    var undN = A.items.filter(function(a){ return !a.published; }).length;
-    if(undN) h += '<div class="gm-asfoot">' + undN + ' findings on the map have no published date — they rest here, in All appearances, and in each place\u2019s list. They never join the event steps.</div>';
-  }
-  el.innerHTML = h;
-}
 function hmSelectApp(i){
   if(HM.sel && HM.sel.type === 'place') HM.selBack = { type:'place', key:HM.sel.key };
   else if(HM.sel && HM.sel.type === 'person') HM.selBack = { type:'person', di:HM.sel.di };
@@ -8766,7 +8732,7 @@ function hmPaintReadout(){
 /* The event stepper's own paint: slider position and the ONE
    readout line. The readout shows only NAME, DATE, and the
    information (what happened + where) — no "Event X of N", no
-   explanatory text (V4.20.1). At rest it names the newest dated
+   explanatory text (V4.20.2). At rest it names the newest dated
    appearance in the same format. The tick/meter strip is gone. */
 function hmPaintStepper(){
   var evs = hmEvents(), N = evs.length;
@@ -8851,7 +8817,7 @@ function hmInitials(e){
 }
 function hmPaint(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
-  hmPaintStepper(); hmPaintReadout(); hmPaintDetail(); hmPaintStrip();
+  hmPaintStepper(); hmPaintReadout(); hmPaintDetail();
   if(!HM.map || !window.L) return;
   if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
   HM.layer.clearLayers();
@@ -8867,7 +8833,9 @@ function hmPaint(){
      dated finding's age colour at the state's reference date,
      dashed when findings with no published date are in view,
      and muted when the place has only undated findings. */
-  hmCluster(st).forEach(function(g){
+  /* Badges + clusters are the RESTING overview only (V4.20.2):
+     the moment the stepper moves, they leave the map. */
+  if(st.rest) hmCluster(st).forEach(function(g){
     var totN = 0, wlat = 0, wlng = 0;
     g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
     var lat = wlat / totN, lng = wlng / totN;
@@ -8930,24 +8898,21 @@ function hmPaint(){
       pin.on('click', function(){ hmSelectApp(a.i); });
     });
   } else {
-    /* Stepping: earlier stops rest as small dots at their
-       places; the current stop wears the full labeled pin,
-       highlighted. Clicking a dot jumps the stepper to it. */
-    var evs2 = hmEvents();
-    for(var ei = 0; ei <= HM.evIdx && ei < evs2.length; ei++){
-      (function(a, idx, isCur){
-        var pl3 = M.places[a.pid]; if(!pl3) return;
-        if(isCur){
-          var cpt2 = HM.map.latLngToContainerPoint([pl3.lat, pl3.lng]);
-          var ll2 = HM.map.containerPointToLatLng(L.point(cpt2.x, cpt2.y - 40));
-          var ageD2 = Math.round((hmDayMs(M.maxD) - hmDayMs(a.published)) / 864e5);
-          var pin2 = L.marker(ll2, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin cur' + (ageD2 <= 21 ? ' fresh' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
-          pin2.on('click', function(){ hmSelectApp(a.i); });
-        } else {
-          var dot = L.marker([pl3.lat, pl3.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-edot ' + hmAppAgeCls(a, st.cutoff) + '" title="' + esc(a.display) + ' \u2014 ' + hmFmtDate(a.published) + '"></span>', iconSize:[14, 14], iconAnchor:[7, 7] }) }).addTo(HM.layer);
-          dot.on('click', function(){ hmSetEv(idx + 1, false); hmSelectApp(a.i); });
-        }
-      })(evs2[ei], ei, ei === HM.evIdx);
+    /* ONE ITEM AT A TIME (V4.20.2, JD 2026-11-27): stepped to a
+       stop, the map shows ONLY that appearance — its labeled pin
+       drawn AT the place's own lat/lng with a fixed iconAnchor
+       ([94,46] on a 188x46 label: the tip sits on the place point
+       no matter how long the name or text is). No cumulative
+       dots, no badges for other findings, no clusters. The pin
+       still opens the appearance hero on click. */
+    var evsS = hmEvents(), curA = evsS.length ? evsS[Math.min(HM.evIdx, evsS.length - 1)] : null;
+    if(curA){
+      var plS = M.places[curA.pid];
+      if(plS){
+        var ageS = Math.round((hmDayMs(M.maxD) - hmDayMs(curA.published)) / 864e5);
+        var pinS = L.marker([plS.lat, plS.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin cur' + (ageS <= 21 ? ' fresh' : '') + '"><b>' + esc(curA.display) + '</b><i>' + esc(hmAppsPhrase(curA.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
+        pinS.on('click', function(){ hmSelectApp(curA.i); });
+      }
     }
   }
 }
@@ -8965,27 +8930,15 @@ function hmSelectPlace(pk){
    the sidebar on exit. Esc exits in both modes (native: the
    browser fires fullscreenchange; fallback: the key handler). */
 function hmFsMoveIn(){
-  var card = document.getElementById('hmCard'); if(!card) return;
-  var panel = document.getElementById('hmFsPanel');
-  if(!panel){ panel = document.createElement('div'); panel.id = 'hmFsPanel'; panel.className = 'gm-fspanel gm-fspanel-leg'; card.appendChild(panel); }
-  /* V4.17.0: the hero already lives inside the map card (an
-     overlay on the map), so only the legend rides into the
-     full-screen panel — its footer home is remembered and
-     restored on exit. */
-  var leg = document.getElementById('hmLegend');
-  if(leg){
-    HM.legHome = { parent: leg.parentNode, next: leg.nextSibling };
-    panel.appendChild(leg);
-    if(HM.legClosed !== false) leg.classList.add('closed');
-    var lb = leg.querySelector('.gm-legbtn');
-    if(lb) lb.textContent = leg.classList.contains('closed') ? 'Show' : 'Hide';
-  }
-  if(!document.getElementById('hmFsHint')){
-    var hint = document.createElement('div');
-    hint.id = 'hmFsHint'; hint.className = 'gm-fshint'; hint.textContent = 'Press Esc to exit full screen';
-    card.appendChild(hint);
-    setTimeout(function(){ var h = document.getElementById('hmFsHint'); if(h) h.remove(); }, 4300);
-  }
+  /* V4.20.2: full screen adds NOTHING to the map card — no
+     legend panel (#hmLegend is not rendered anywhere in the
+     current layout, so there is nothing to move in) and no Esc
+     hint. The card already holds the map, the hero overlay and
+     the slim stepper row; Esc / Exit full screen still work via
+     hmFsExit and fullscreenchange. Any stale hint/panel from an
+     older build is removed, never created. */
+  var fh = document.getElementById('hmFsHint'); if(fh) fh.remove();
+  var panel = document.getElementById('hmFsPanel'); if(panel) panel.remove();
 }
 function hmFsMoveBack(){
   var leg = document.getElementById('hmLegend');
@@ -9080,13 +9033,13 @@ function hmMount(){
   /* The stepper's stops are the dated appearances themselves:
      slider 0 = All appearances, 1..N = events in published
      order. Every input — drag, arrow keys, step buttons — moves
-     AND zooms the map to the stop's place at once (V4.20.1). */
+     AND zooms the map to the stop's place at once (V4.20.2). */
   var evs0 = hmEvents();
   if(HM.evIdx >= evs0.length) HM.evIdx = evs0.length - 1;
   var range = document.getElementById('hmRange');
   if(range){
     range.max = String(evs0.length); range.value = String(HM.evIdx < 0 ? 0 : HM.evIdx + 1);
-    /* V4.20.1: ONE push of the slider navigates — oninput itself
+    /* V4.20.2: ONE push of the slider navigates — oninput itself
        moves AND zooms the map to the stop's place (instant,
        animate:false in hmSetEv); onchange repeats the same call. */
     range.oninput = function(){ hmStopPlay(); hmSetEv(+range.value, true); };
