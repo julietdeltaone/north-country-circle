@@ -37851,10 +37851,13 @@
     "source": "New profile"
    },
    "orgs": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-27T06:17:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-27T12:06:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "open",
@@ -37902,8 +37905,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "orgs": {
-   "open": 1,
-   "new": 1,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-05T02:52:00Z"
   },
@@ -41755,5 +41758,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-27T12:03:00Z"
+ "updated": "2026-11-27T12:06:00Z"
 }
