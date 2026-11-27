@@ -1794,17 +1794,13 @@ function docY(s){ return s.replace(/\b(?:19|20)\d{2}\b/g, '<b>$&</b>'); }
 function docT(s){ return docY(esc(s)); }
 function docBR(s){ return docT(s).replace(/\n/g, '<br>'); }
 
-/* ---------- Case File "Sidebar File": the single export design ----------
-   Layout (JD, 2026-10-15): a full-width header band carries the name and the
-   primary information (handle, location, tier, relationship/context, known
-   since); below it the gray sidebar (contact + ratings + radar) runs beside
-   the narrative column. ONE accent color: very dark navy #16283f (rules,
-   section numbers, rating dots, radar, dotted lines). The tier stamp is the
-   only other color: elegant maroon #5e2129, the same for every tier. Traits
-   are distinguished by label only. Ratings are five-dot scales; sidebar rows
-   are compact; contact and info values sit on dotted form lines. Years in
-   body text and relationship/context values render bold. No rotated stamp. */
-var DOC_NAVY = '#16283f';
+/* ---------- Personnel file export design ----------
+   V4.20.1 (JD pick, 2026-11-27): design #3, the Patient-Style Chart /
+   Clinical Chart grid — see DOC_THEME below for the full spec. The
+   retired "Sidebar File" design (JD, 2026-10-15) is replaced in
+   place; the helpers here (docT/docBR year-bolding, docDots five-dot
+   scales in the single chart ink) carry over. */
+var DOC_NAVY = '#2f3e50';   /* V4.20.1: the clinical chart's single accent ink — rating dots render in it */
 var DOC_MAROON = '#5e2129';
 var TRAIT_STYLE = {
   openness:{ s:'OPN' },
@@ -1845,107 +1841,109 @@ function docRadar(bars){
   bars.forEach(function(b, j){ var q = pt(j, 1.34); s += '<text x="' + q[0].toFixed(1) + '" y="' + (q[1] + 3).toFixed(1) + '" text-anchor="middle" fill="' + traitC(b) + '">' + esc(traitS(b)) + '</text>'; });
   return s + '</svg>';
 }
-var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap',
+var DOC_THEME = { fonts:'',
+  /* ---------- Personnel file design #3 — Patient-Style Chart /
+     Clinical Chart grid (JD pick, 2026-11-27) ----------
+     Paper-white chart, print-native serif only (Georgia / Times —
+     NO webfonts, nothing that looks like a web UI). One ink:
+     near-black #1c1c1a; one restrained chart accent: dark slate
+     #2f3e50 for rules and labels. Every key fact sits in its own
+     labelled cell of a bordered form grid; synopsis, associates,
+     field notes, public footprint and the timeline are full-width
+     chart cells / chronological chart-note rows. Printer-first:
+     white paper, no shadows, no dark fills, Letter @page with a
+     FILE COPY running footer and page counter. */
   css:
-  'body{background:#2b2b2b;margin:0;padding:28px;font-family:"IBM Plex Mono","Courier New",monospace;color:#262626}' +
-  '.page{background:#f4f4f1;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.55);display:flex;flex-direction:column}' +
-  '.strip{background:#16283f;color:#f2f2f0;padding:11px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;flex:none}' +
-  '.bodycols{display:flex;flex:1;min-height:0;align-items:stretch}' +
-  '.side{width:256px;flex:none;background:#ebebe8;border-right:1.5px solid #16283f;padding:22px 20px}' +
-  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #16283f;padding-bottom:7px;margin:0 0 10px}' +
-  '.blk{margin-bottom:18px}.blk:last-child{margin-bottom:4px}' +
-  '.crow{font-size:11.5px;margin-bottom:9px}' +
-  '.crow b{display:block;font-size:9.5px;letter-spacing:.16em;color:#595959;margin-bottom:2px;font-weight:600}' +
-  '.crow span{display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
-  '.trow{margin-bottom:3px}' +
-  '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:1px;line-height:1.2;text-transform:uppercase}' +
-  '.dots{display:flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
-  '.dots i.on{background:#16283f;border-color:#16283f}' +
-  '.kv{font-size:12px;margin-top:7px}' +
-  '.kv span{display:block;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:#595959;margin-bottom:2px}' +
-  '.kv i{font-style:normal;display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
-  '.chartblk{text-align:center}' +
-  '.radar text{font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;font-weight:600;letter-spacing:.05em}' +
-  '.chartcap{font-size:8px;letter-spacing:.14em;color:#6a6a6a;text-align:center;margin-top:2px}' +
-  '.main{flex:1;min-width:0;padding:24px 34px 28px}' +
-  '.headband{padding:20px 36px 18px;border-bottom:2.5px solid #16283f}' +
-  '.hbrow{display:flex;justify-content:space-between;align-items:flex-start;gap:26px}' +
-  '.hbmain{min-width:0}' +
-  '.ident{font-size:12px;color:#595959;margin-top:5px;letter-spacing:.05em}' +
-  '.kick{font-size:10.5px;letter-spacing:.3em;color:#595959;font-weight:600}' +
-  'h1{font-size:27px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:5px 0 0}' +
-  '.aka{font-size:12px;color:#6f6f6f;margin-top:3px}' +
-  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:8px 18px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:0;text-transform:uppercase;white-space:nowrap}' +
-  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #16283f;border-bottom:1px solid #16283f;padding:8px 0;margin-top:14px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;gap:22px}' +
-  '.metaitems{min-width:0}' +
-  '.meta .mv{border-bottom:1.5px dotted #16283f;padding-bottom:1px}' +
-  '.sec{border-top:2px solid #16283f;margin-top:21px;padding-top:10px;break-inside:avoid}' +
-  '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#16283f;font-weight:600}' +
-  '.sbody{font-size:12.5px;line-height:1.75}.sbody p{margin:0 0 9px}' +
-  'ul{margin:0;padding-left:19px;font-size:12.5px;line-height:1.75}ul.cols{column-count:2;column-gap:30px}' +
-  '@page{size:Letter;margin:.55in;background:#f4f4f1;@top-right{content:"FILE COPY";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}' +
+  '*{box-sizing:border-box}' +
+  'body{background:#ffffff;margin:0;padding:30px 22px;font-family:Georgia,"Times New Roman",Times,serif;color:#1c1c1a}' +
+  '.page{background:#ffffff;max-width:840px;margin:0 auto}' +
+  '.charthead{border:2.5px solid #1c1c1a;padding:18px 22px 15px;break-inside:avoid}' +
+  '.kickrow{display:flex;justify-content:space-between;gap:18px;font-size:10.5px;letter-spacing:.26em;color:#2f3e50;font-weight:700;text-transform:uppercase;border-bottom:1px solid #2f3e50;padding-bottom:8px}' +
+  'h1{font-size:27px;font-weight:700;letter-spacing:.02em;margin:13px 0 0;line-height:1.15}' +
+  '.aka{font-size:12.5px;font-style:italic;color:#4a4a44;margin-top:3px}' +
+  '.classif{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#2f3e50;margin-top:9px}' +
+  '.grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1.5px solid #1c1c1a;border-left:1.5px solid #1c1c1a;margin-top:14px}' +
+  '.cell{border-right:1.5px solid #1c1c1a;border-bottom:1.5px solid #1c1c1a;padding:8px 11px 9px;break-inside:avoid;min-width:0}' +
+  '.cell.wide{grid-column:1/-1}' +
+  '.clab{display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#2f3e50;font-weight:700;margin-bottom:3px}' +
+  '.cval{display:block;font-size:13px;line-height:1.45;overflow-wrap:break-word}' +
+  '.fwcell{border:1.5px solid #1c1c1a;margin-top:14px;break-inside:avoid}' +
+  '.fwcell.long{break-inside:auto}' +
+  '.fwhead{border-bottom:1px solid #2f3e50;padding:7px 12px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#2f3e50;font-weight:700;break-after:avoid}' +
+  '.fwbody{padding:10px 12px 12px;font-size:13px;line-height:1.65}' +
+  '.fwbody p{margin:0 0 8px}.fwbody p:last-child{margin-bottom:0}' +
+  '.dots{display:inline-flex;gap:5px;vertical-align:middle}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #9a9a92}' +
+  '.traitgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px}' +
+  '.trow{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px dotted #b9b9b0;padding:3px 0}' +
+  '.trow .dl{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}' +
+  '.trow .tv{font-size:11.5px;color:#4a4a44;white-space:nowrap}' +
+  'ul.assoc{margin:0;padding-left:18px;column-count:2;column-gap:30px;font-size:13px;line-height:1.6}' +
+  'ul.assoc li{break-inside:avoid}' +
+  '.tlrow{display:grid;grid-template-columns:118px 1fr;gap:14px;border-bottom:1px solid #d8d8d0;padding:6px 0;break-inside:avoid}' +
+  '.tlrow:last-child{border-bottom:0}' +
+  '.tldate{font-weight:700;font-size:12.5px}' +
+  '.tlsum{font-size:13px;line-height:1.55}' +
+  '.tldet{font-size:12.5px;color:#4a4a44;line-height:1.55}' +
+  '.filefoot{margin-top:16px;border-top:1.5px solid #1c1c1a;padding-top:7px;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#2f3e50;display:flex;justify-content:space-between;gap:18px}' +
+  '@page{size:Letter;margin:.6in .55in;background:#ffffff;@top-right{content:"FILE COPY";font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}}' +
   '@media print{' +
-  'html{background:#f4f4f1}' +
-  'body{background:#f4f4f1;padding:0}' +
-  '.page{box-shadow:none;max-width:none;width:auto;display:block;background:#f4f4f1}' +
-  '.bodycols{display:block}' +
-  '.headband{padding:22px 36px 18px;break-inside:avoid}' +
-  '.side{float:left;width:250px;margin:2px 24px 14px 0;padding:20px 18px;break-inside:avoid}' +
-  '.main{margin-left:0;padding:22px 36px 12px;min-width:0}' +
-  '.sec{break-inside:auto}' +
-  '.sec h2{break-after:avoid;break-inside:avoid}' +
-  '.sbody p{orphans:3;widows:3}' +
-  'li{break-inside:avoid;orphans:2;widows:2}' +
-  '.blk,.chartblk,.stamp,.meta,h1{break-inside:avoid}' +
-  'h1{break-after:avoid}' +
+  'body{padding:0}' +
+  '.page{max-width:none;width:auto}' +
+  '.chartblk,.cell,.fwcell,.tlrow{break-inside:avoid}' +
+  '.fwcell.long{break-inside:auto}' +
+  '.fwhead{break-after:avoid}' +
+  'p,li{orphans:3;widows:3}' +
   '*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
   render: function(T){
-    var side = '';
-    if(T.contact.length) side += '<div class="blk"><h3>CONTACT</h3>' + T.contact.map(function(it){
-      return '<div class="crow"><b>' + esc(it.l) + '</b><span>' + docT(it.v) + '</span></div>'; }).join('') + '</div>';
-    if(T.extras.length){
-      side += '<div class="blk"><h3>DETAILS</h3>' + T.extras.map(function(x){
-        return '<div class="kv"><span>' + esc(x.l) + '</span><i>' + docT(x.v) + '</i></div>'; }).join('') + '</div>';
+    function chartName(n){
+      var p = String(n || '').trim().split(/\s+/).filter(Boolean);
+      if(p.length < 2) return esc(String(n || '').toUpperCase());
+      return esc(p[p.length - 1].toUpperCase() + ', ' + p.slice(0, -1).join(' '));
     }
-    if(T.bars.length){
-      side += '<div class="blk"><h3>PROFILE RATINGS</h3>' + T.bars.map(function(b){
-        return '<div class="trow"><div class="dl" style="color:' + traitC(b) + '">' + esc(b.l) + '</div>' + docDots(b) + '</div>'; }).join('');
-      side += '</div>';
-      var rad = docRadar(T.bars);
-      if(rad) side += '<div class="blk chartblk">' + rad + '<div class="chartcap">BIG FIVE + EGO · SCALE 0–5</div></div>';
+    var cells = [];
+    function cell(l, v){ if(v) cells.push({ l:l, v:v }); }
+    cell('Location', T.locCity);
+    cell('From / Hometown', T.locHome);
+    cell('Relationship', T.rel);
+    cell('Context', T.ctx);
+    cell('Known Since', T.knownSince);
+    cell('Level / Tier', T.tier);
+    cell('Classification', T.classif);
+    cell('Handle', T.handle);
+    T.contact.forEach(function(it){ cell(it.l, it.v); });
+    T.extras.forEach(function(x){ if(x.l === 'Level' && T.tier) return; cell(x.l, x.v); });
+    var grid = '';
+    if(cells.length || T.bars.length){
+      grid = '<div class="grid">' + cells.map(function(c){
+        return '<div class="cell"><span class="clab">' + esc(c.l) + '</span><span class="cval">' + docT(c.v) + '</span></div>';
+      }).join('');
+      if(T.bars.length){
+        grid += '<div class="cell wide"><span class="clab">Profile Ratings — scale 0–5</span><div class="traitgrid">' +
+          T.bars.map(function(b){
+            return '<div class="trow"><span class="dl">' + esc(b.l) + '</span><span class="tv">' + docDots(b) + ' ' + Math.max(0, Math.min(5, b.v)) + ' / 5</span></div>';
+          }).join('') + '</div></div>';
+      }
+      grid += '</div>';
     }
-    var secs = [];
-    if(T.synBody) secs.push(['SYNOPSIS', '<div class="sbody"><p>' + docBR(T.synBody) + '</p></div>']);
-    if(T.assoc.length) secs.push(['KNOWN ASSOCIATES', '<ul class="cols">' + T.assoc.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>']);
-    if(T.notesText || T.fpText) secs.push(['FIELD NOTES', '<div class="sbody">' +
-      (T.notesText ? '<p>' + docBR(T.notesText) + '</p>' : '') + (T.fpText ? '<p><b>Public footprint</b><br>' + docBR(T.fpText) + '</p>' : '') + '</div>']);
-    if(T.evs.length) secs.push(['TIMELINE', '<ul>' + T.evs.map(function(o){
-      return '<li><b>' + esc(o.date) + '</b> — ' + docT(o.summary) + (o.detail ? '<br>' + docT(o.detail) : '') + '</li>'; }).join('') + '</ul>']);
-    var meta = [];
-    if(T.rel) meta.push('<b class="mv">' + esc(T.rel) + '</b>');
-    if(T.ctx) meta.push('<b class="mv">' + esc(T.ctx) + '</b>');
-    if(T.knownSince) meta.push('<span class="mv">Known since ' + T.knownSince + '</span>');
-    var stamp = '';
-    if(T.tier){
-      stamp = '<span class="stamp" style="border-color:' + DOC_MAROON + ';background:' + TIER_TINT + ';color:' + DOC_MAROON + '">' + esc(T.tier) + '</span>';
-    }
-    var ident = [];
-    if(T.handle) ident.push(esc(T.handle));
-    if(T.locCity) ident.push('Lives in ' + docT(T.locCity));
-    if(T.locHome) ident.push('From ' + docT(T.locHome));
-    var head = '<div class="headband"><div class="hbrow"><div class="hbmain">' +
-      '<h1>' + esc(T.name) + '</h1>' +
-      (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
-      (ident.length ? '<div class="ident">' + ident.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
-      '</div></div>' +
-      ((meta.length || stamp) ? '<div class="meta"><span class="metaitems">' + meta.join(' &nbsp;·&nbsp; ') + '</span>' + stamp + '</div>' : '') + '</div>';
+    var secs = '';
+    if(T.synBody) secs += '<div class="fwcell"><div class="fwhead">Synopsis</div><div class="fwbody"><p>' + docBR(T.synBody) + '</p></div></div>';
+    if(T.assoc.length) secs += '<div class="fwcell"><div class="fwhead">Known Associates</div><div class="fwbody"><ul class="assoc">' +
+      T.assoc.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div></div>';
+    if(T.notesText) secs += '<div class="fwcell long"><div class="fwhead">Field Notes</div><div class="fwbody"><p>' + docBR(T.notesText) + '</p></div></div>';
+    if(T.fpText) secs += '<div class="fwcell long"><div class="fwhead">Public Footprint</div><div class="fwbody"><p>' + docBR(T.fpText) + '</p></div></div>';
+    if(T.evs.length) secs += '<div class="fwcell long"><div class="fwhead">Timeline — Chart Notes</div><div class="fwbody">' +
+      T.evs.map(function(o){
+        return '<div class="tlrow"><span class="tldate">' + esc(o.date) + '</span><span class="tlsum">' + docT(o.summary) +
+          (o.detail ? '<br><span class="tldet">' + docT(o.detail) + '</span>' : '') + '</span></div>';
+      }).join('') + '</div></div>';
     var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
-    return '<style>@page{@top-left{content:"PERSONNEL FILE — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
-      '<div class="page"><div class="strip"><span>PERSONNEL FILE</span><span>FILE COPY</span></div>' +
-      head +
-      '<div class="bodycols">' + (side ? '<div class="side">' + side + '</div>' : '') + '<div class="main">' +
-      secs.map(function(s, i){ return '<div class="sec"><h2><b>' + ('0' + (i + 1)).slice(-2) + '</b> &nbsp;' + s[0] + '</h2>' + s[1] + '</div>'; }).join('') +
-      '</div></div></div>';
+    return '<style>@page{@top-left{content:"PERSONNEL CHART — ' + nmCss + '";font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}}</style>' +
+      '<div class="page"><div class="charthead"><div class="kickrow"><span>Personnel Chart</span><span>File Copy</span></div>' +
+      '<h1>' + chartName(T.name) + '</h1>' +
+      (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
+      (T.classif ? '<div class="classif">' + esc(T.classif) + '</div>' : '') +
+      '</div>' + grid + secs +
+      '<div class="filefoot"><span>Personnel Chart</span><span>File Copy</span></div></div>';
   } };
 
 function doExport(di, mode){
