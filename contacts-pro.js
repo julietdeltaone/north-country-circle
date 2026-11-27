@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.20.0';
+var APP_VERSION = '4.20.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2478,25 +2478,15 @@ var renderTimer = 0;
    glass over something real. Drift only; reduced-motion opts out. */
 var BGFX = null;
 function bgInit(){
-  if(BGFX || !document.body) return;
-  var d = document.createElement('div');
-  d.id = 'bgfx'; d.setAttribute('aria-hidden', 'true');
-  d.innerHTML = '<div class="bgf b1"></div><div class="bgf b2"></div>';
-  document.body.insertBefore(d, document.body.firstChild);
-  BGFX = d;
-  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var tick = false;
-  function upd(){
-    tick = false;
-    var vw = document.getElementById('view');
-    var y = (vw && vw.scrollTop) || window.scrollY || 0;
-    BGFX.children[0].style.transform = 'translate3d(0,' + (y * -0.05) + 'px,0)';
-    BGFX.children[1].style.transform = 'translate3d(0,' + (y * -0.11) + 'px,0)';
-  }
-  function onScr(){ if(!tick){ tick = true; requestAnimationFrame(upd); } }
-  window.addEventListener('scroll', onScr, { passive:true });
-  var vw2 = document.getElementById('view');
-  if(vw2) vw2.addEventListener('scroll', onScr, { passive:true });
+  /* V4.20.1: retired — #bgfx was a second fixed background scene
+     (aurora blobs + grid with its own scroll drift) competing with
+     the body::before parallax scene. There is exactly ONE fixed
+     background now: body::before (parallax via --plx-bg) plus the
+     #plxmid mid-plane. Any stale #bgfx node is removed, never
+     created. */
+  var stale = document.getElementById('bgfx');
+  if(stale) stale.remove();
+  BGFX = null;
 }
 /* ---------- Scroll place-keeping for same-route repaints (V3.79.4) ----------
    A same-route render() rebuilds the view's innerHTML, which resets
@@ -3934,7 +3924,14 @@ function viewProfile(v){
         '<button type="button" class="ib" data-act="ctxstep" data-d="1" aria-label="Next"' + (i === S.ctx.keys.length - 1 ? ' disabled' : '') + '>' + ic('chevr', 18) + '</button></div>';
     }
   }
-  v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' +
+  /* V4.20.1 (JD 2026-11-27): the back / pager / actions controls no
+     longer occupy a standalone .ptop row above the hero — that row
+     was a full band of air pushing the person's name down. They now
+     ride a slim utility strip at the top edge INSIDE the hero shell
+     (.p-hero-shell > .ptop-hero, absolutely positioned over the
+     hero card's top corners), so the hero — and the name — move up
+     to the top of the page. Same data-act handlers throughout. */
+  v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="p-hero-shell"><div class="ptop ptop-hero">' +
     '<div class="pback"><button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(backTo) + '">Back to ' + esc(backTo) + '</button>' +
     (navNext() ? '<button type="button" class="crumb fwd" data-act="fwd" title="Forward to ' + esc(navNext().label) + '">Forward to ' + esc(navNext().label) + ' ' + ic('chevr', 13) + '</button>' : '') + '</div>' + pager + '<span class="sp"></span>' +
@@ -3945,7 +3942,7 @@ function viewProfile(v){
     '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
-    '<section id="p-hero" class="hero"></section>' +
+    '<section id="p-hero" class="hero"></section></div>' +
     '<div class="psheets">' +
     '<div class="pmove sheet-a" id="pm-a" data-kind="about"><div class="pmove-h"><span class="pmh-t">About ' + esc(dispName(e).split(' ')[0]) + '</span>' + kindChip('about', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-a"></span></div><div class="pgrid" id="pmg-a"></div></div>' +
     '<div class="pmove sheet-c" id="pm-c" data-kind="connection"><div class="pmove-h"><span class="pmh-t">Connection</span>' + kindChip('connection', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-c"></span></div><div class="pgrid" id="pmg-c"></div></div>' +
@@ -11678,8 +11675,87 @@ function fiPageHTML(){
      single left column, the Activity feed merged into the right
      column (its standalone section is deleted). */
   return h + '<div class="fi-layout"><div class="fi-main">' + fiBodyHTML() + '</div>' +
-    '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>What Luna filed, newest first</span></div>' +
-    '<div class="af-tl fi-actfeed" id="fi-actfeed">' + (typeof AF !== 'undefined' && AF ? afStreamHTML() : '<p class="dim">Loading the feed&hellip;</p>') + '</div></aside></div>';
+    '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>What Luna filed, newest filed first</span></div>' +
+    '<div class="fi-actfeed" id="fi-actfeed">' + fiActHTML() + '</div></aside></div>';
+}
+/* ============================================================
+   Activity column (V4.20.1, JD 2026-11-27): the right column of
+   New facts headed "What Luna filed, newest first" previously
+   rendered afStreamHTML() — the audited effective feed, ordered
+   by each fact's own event/published date — so its top items sat
+   at Nov 7-8 while filing continued to Nov 26 and the column
+   read as stale. This renderer is sourced from the CHANGE LOG
+   (CH / data/changes.json) instead: entries sorted by their
+   FILED date, newest first, grouped by filed day, with same-day
+   same-kind filings collapsed via chgRows (filed|what|source).
+   afStreamHTML itself is untouched — the standalone timeline /
+   calendar model keeps its audited event-date order.
+   ============================================================ */
+var FI_ACT_SHOWN = 30, FI_ACT_PAGE = 30;
+function fiActSorted(){
+  var es = (CH && CH.entries) ? CH.entries.slice() : [];
+  es.forEach(function(c, i){ c.__fiaIx = i; });
+  es.sort(function(a, b){
+    var fa = String(a.filed || ''), fb = String(b.filed || '');
+    if(fa !== fb) return fa < fb ? 1 : -1;
+    return a.__fiaIx - b.__fiaIx;
+  });
+  es.forEach(function(c){ delete c.__fiaIx; });
+  return es;
+}
+function fiActSrcChip(c){
+  /* Full source title, never truncated: afSrcChipHTML renders the
+     chip and the V4.20.1 CSS lets it wrap instead of ellipsizing. */
+  return afSrcChipHTML({ source: c.source || 'Source', url: c.url || '' });
+}
+function fiActRowHTML(c){
+  var di = hmDiOf(c.name);
+  return '<article class="fia-row" data-kind="' + textKind(c.what) + '">' +
+    afAvatarHTML(c, di, 'xs') +
+    '<div class="fia-main"><div class="fia-top"><span class="fia-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' +
+    '<span class="fia-src">' + fiActSrcChip(c) + '</span></div>' +
+    '<div class="fia-namerow">' + afNameHTML(c, di) + '</div>' +
+    '<p class="fia-what">' + esc(c.what || '') + '</p>' + novBar(c.novelty) + '</div></article>';
+}
+function fiActGroupHTML(g){
+  var c = g.first;
+  var di = hmDiOf(c.name);
+  var members = g.items.map(function(x){ return fiActRowHTML(x); }).join('');
+  return '<div class="chg-grp fia-grp" data-kind="' + textKind(c.what) + '">' +
+    '<button type="button" class="chg-grp-h fia-grp-h" data-act="chggrp" aria-expanded="false">' +
+    afAvatarHTML(c, di, 'xs') +
+    '<span class="chg-grp-main"><span class="fia-top"><span class="fia-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' +
+    '<span class="chg-cnt">' + g.items.length + ' filings</span></span>' +
+    '<span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
+    '<span class="fia-srcrow">' + fiActSrcChip(c) + '</span></span>' +
+    '<span class="chg-chev">' + ic('chev', 14) + '</span></button>' +
+    '<div class="chg-members"><div class="chg-members-in">' + members + '</div></div></div>';
+}
+function fiActHTML(){
+  if(!CH) return '<p class="dim">Loading what Luna filed&hellip;</p>';
+  var sorted = fiActSorted();
+  if(!sorted.length) return '<p class="dim">No filings yet.</p>';
+  var dayCounts = {};
+  sorted.forEach(function(c){ var f = String(c.filed || ''); dayCounts[f] = (dayCounts[f] || 0) + 1; });
+  var groups = chgRows(sorted);
+  var shown = groups.slice(0, FI_ACT_SHOWN);
+  var h = '', lastDay = null;
+  shown.forEach(function(g){
+    var f = String(g.first.filed || '');
+    if(f !== lastDay){
+      lastDay = f;
+      h += '<div class="fia-day"><span>' + esc(hmFmtD(f) || 'No filed date') + '</span><em>' + (dayCounts[f] || 0) + ' filed</em></div>';
+    }
+    h += g.items.length > 1 ? fiActGroupHTML(g) : fiActRowHTML(g.first);
+  });
+  if(shown.length < groups.length)
+    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + groups.length + ' filing groups &middot; ' + sorted.length + ' filings</span>' +
+      '<button type="button" class="pv-btn sm" data-act="fiactmore">Show more</button></div>';
+  return h;
+}
+function fiActPaint(){
+  var w = document.getElementById('fi-actfeed');
+  if(w) w.innerHTML = fiActHTML();
 }
 /* The Fact Inbox body without the page chrome (V4 Phase 8a): the
    Decide view renders it as the New facts group under the shared
@@ -12190,9 +12266,11 @@ function afLoad(){
   fetch('data/effective-feed.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){ AF_LOADING = false; AF = d || { items:[], counts:{} };
-      var afc = document.getElementById('fi-actfeed'); if(afc) afc.innerHTML = afStreamHTML(); })
+      /* V4.20.1: the New facts Activity column is change-log sourced
+         (fiActHTML) — the effective feed no longer paints into it. */
+      fiActPaint(); })
     .catch(function(){ AF_LOADING = false; AF = { items:[], counts:{} };
-      var afc = document.getElementById('fi-actfeed'); if(afc) afc.innerHTML = afStreamHTML(); });
+      fiActPaint(); });
 }
 function afAvatarHTML(e, di, size){
   var e2 = di != null ? D.directory[di] : null;
@@ -12247,8 +12325,8 @@ function afSrcChipHTML(e){
      source's stored name. No url -> the same pill, muted and
      not a link (5 audited items have no link). */
   var nm = esc(e.source || 'Source');
-  if(e.url) return '<a class="af-src-chip" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + nm + ' ' + ic('ext', 10) + '</a>';
-  return '<span class="af-src-chip plain">' + nm + '</span>';
+  if(e.url) return '<a class="af-src-chip" title="' + nm + '" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + nm + ' ' + ic('ext', 10) + '</a>';
+  return '<span class="af-src-chip plain" title="' + nm + '">' + nm + '</span>';
 }
 function afSwitchHTML(on){
   /* Timeline | Calendar switch (design spec B1), riding under
@@ -16831,6 +16909,7 @@ function onClick(ev){
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
     case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); break;
+    case 'fiactmore': FI_ACT_SHOWN += FI_ACT_PAGE; fiActPaint(); break;
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
