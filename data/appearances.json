@@ -1,15 +1,15 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1556,
-  "dated": 78,
-  "undated": 1478,
-  "placed": 1401,
-  "unplaced": 155,
+  "total": 1559,
+  "dated": 80,
+  "undated": 1479,
+  "placed": 1402,
+  "unplaced": 157,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 34,
-  "brief_standalone": 45,
+  "brief_attached": 33,
+  "brief_standalone": 48,
   "brief_unresolved": 1
  },
  "items": [
@@ -98,18 +98,6 @@
    "place_src": "profile"
   },
   {
-   "di": 726,
-   "display": "Caleb Froats",
-   "text": "As of Nov 2026, a senior at SUNY Potsdam's Crane School of Music double-majoring in vocal performance and music business, in the Class of 2027 (SUNY Potsdam)",
-   "source": "SUNY Potsdam",
-   "url": "https://potsdam.meritpages.com/news/first-look--crane-opera-ensemble-presents-a-double-bill-of-gossip--chaos---missed-connections/63179",
-   "published": "2026-11-10",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "SUNY Potsdam",
-   "place_src": "text"
-  },
-  {
    "di": 212,
    "display": "Liam Miller-Lynch",
    "text": "Recorded one solo tackle, for a 3-yard loss, for St. Lawrence in its game against Buffalo State in Canton on Nov 7, 2026",
@@ -120,6 +108,18 @@
    "pid": "44.5956,-75.1691",
    "place": "Canton",
    "place_src": "text"
+  },
+  {
+   "di": 16,
+   "display": "Alyssa L Ramsay",
+   "text": "Started as an intern with the St. Lawrence County Soil and Water Conservation District in May 2026, working as a wetland monitor for the Wetland Reserve Program in partnership with NRCS",
+   "source": "St. Lawrence County Soil and Water Conservation District",
+   "url": "https://www.facebook.com/SLCSWCD/posts/pfbid02Chqt7VxV9YAosVUVjT1rL3YSbtx3ASHA4j35ibc3dh7WTtyUhgT2mTCJzR4Jw2Atl",
+   "published": "2026-11-06",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 322,
@@ -288,6 +288,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Potsdam, NY",
    "place_src": "profile"
+  },
+  {
+   "di": 323,
+   "display": "Wayne Brown",
+   "text": "Featured as Gather Markets' Wayne Brown on the Chrisman Commentary podcast discussing CRA-eligible loans, Oct 2026",
+   "source": "Chrisman Commentary",
+   "url": "https://chrismancommentary.com/podcast/10-8-26/",
+   "published": "2026-10-08",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
   },
   {
    "di": 212,
@@ -896,6 +908,18 @@
    "source": "Hope College",
    "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
    "published": "2018-08-07",
+   "fresh": false,
+   "pid": "44.5531,-74.9394",
+   "place": "Colton, NY",
+   "place_src": "profile"
+  },
+  {
+   "di": 118,
+   "display": "Julia Fulton",
+   "text": "Served as an executive board member of Vox Populi, the Hope College student group that managed the Holland mayoral debate dialogue, Oct 2017",
+   "source": "The Anchor",
+   "url": "https://anchor.hope.edu/campus/student-groups-host-mayoral-debate/",
+   "published": "2017-10-25",
    "fresh": false,
    "pid": "44.5531,-74.9394",
    "place": "Colton, NY",
@@ -3767,6 +3791,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
+   "place_src": "text"
+  },
+  {
+   "di": 726,
+   "display": "Caleb Froats",
+   "text": "As of Nov 2026, a senior at SUNY Potsdam's Crane School of Music double-majoring in vocal performance and music business, in the Class of 2027 (SUNY Potsdam)",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "SUNY Potsdam",
    "place_src": "text"
   },
   {
