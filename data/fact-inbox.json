@@ -7305,6 +7305,58 @@
     "status": "read"
    },
    "url": "https://potsdam.meritpages.com/news/first-look--crane-opera-ensemble-presents-a-double-bill-of-gossip--chaos---missed-connections/63179"
+  },
+  {
+   "anchor": "St. Lawrence County Soil and Water Conservation District \u00b7 Canton, NY",
+   "batch": "PM run \u2014 Nov 26, 2026",
+   "display": "Alyssa L Ramsay",
+   "fact": "Alyssa Ramsay started as an intern with the St. Lawrence County Soil and Water Conservation District in May 2026, working as a wetland monitor for the Wetland Reserve Program in partnership with NRCS",
+   "id": "fi-20261126-alyssalramsay-alyssa-ramsay-started-as-an-in",
+   "key": "alyssalramsay",
+   "learned": "2026-11-26",
+   "name": "alyssalramsay",
+   "pattern": "employer_change",
+   "source": "St. Lawrence County Soil and Water Conservation District",
+   "url": "https://www.facebook.com/SLCSWCD/posts/pfbid02Chqt7VxV9YAosVUVjT1rL3YSbtx3ASHA4j35ibc3dh7WTtyUhgT2mTCJzR4Jw2Atl"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Individual Studies",
+   "batch": "PM run \u2014 Nov 26, 2026",
+   "display": "Jocelyn Daniels",
+   "fact": "Jocelyn Daniels received a SUNY Canton Honors Convocation academic award for Individual Studies in 2026, the convocation honor for students with the top GPA in their major for their class year",
+   "id": "fi-20261126-jocelynrose04-jocelyn-daniels-received-a-sun",
+   "key": "jocelynrose04",
+   "learned": "2026-11-26",
+   "name": "jocelynrose04",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/honors_convocation/"
+  },
+  {
+   "anchor": "Bridgewater State University",
+   "batch": "PM run \u2014 Nov 26, 2026",
+   "display": "Olga Lindsey",
+   "fact": "Olga Lindsey is a member of Bridgewater State University's Class of 2017",
+   "id": "fi-20261126-ol9a-olga-lindsey-is-a-member-of-br",
+   "key": "ol9a",
+   "learned": "2026-11-26",
+   "name": "ol9a",
+   "pattern": "milestone",
+   "source": "Bridgewater State University",
+   "url": "https://www.bridgew.edu/the-university/bridgewater-magazine/spring2021/leading-by-example"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 women's basketball",
+   "batch": "PM run \u2014 Nov 26, 2026",
+   "display": "Caroline LaFountain",
+   "fact": "Caroline LaFountain started all 24 games in the 2021-22 season for SUNY Potsdam women's basketball, averaging 7.4 points and 4.8 rebounds per game",
+   "id": "fi-20261126-caroline-lafountain-caroline-lafountain-started-al",
+   "key": "caroline.lafountain",
+   "learned": "2026-11-26",
+   "name": "caroline.lafountain",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121"
   }
  ],
  "patterns": {
