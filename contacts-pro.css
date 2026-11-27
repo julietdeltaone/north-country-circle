@@ -7849,10 +7849,10 @@ html[data-mode="light"] body::before{
 .page.profile .ptop-hero .crumb{padding:3px 6px;font-size:11px;background:color-mix(in srgb,var(--pv-panel) 78%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:6px}
 .page.profile .ptop-hero .pager{font-size:12px;gap:4px}
 .page.profile .ptop-hero .menu-pop{top:30px}
-.page.profile #p-hero{padding-top:34px}
+.page.profile #p-hero{padding-top:38px !important}
 @media (max-width:640px){
   .page.profile .ptop-hero .crumb.fwd{display:none}
-  .page.profile #p-hero{padding-top:32px}
+  .page.profile #p-hero{padding-top:36px !important}
 }
 
 /* --- 3b. Activity column: change-log filings (.fia-*) ------- */
