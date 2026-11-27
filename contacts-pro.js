@@ -8604,15 +8604,17 @@ function hmBandHTML(o){
     '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Map of web search appearances"></div>' +
     '<div class="gm-mapnote" id="hmNote" hidden></div>' +
     '<div class="gm-hero gm-herodock" id="hmHero" hidden></div></div>' +
+    /* V4.20.1 (JD 2026-11-27): the stepper is stripped to ONE slim
+       row — ‹ ›, the slider, and one readout line (name · date ·
+       what · where, nothing else). Gone: the Latest appearances
+       strip, the tick/meter strip, the hint text, and the "All
+       appearances" button (rest is slider position 0). */
     '<div class="gm-step"><div class="gm-srow">' +
     '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
     '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
-    '<button type="button" class="btn ghost sm" data-act="hmall">All appearances</button>' +
+    '<input type="range" id="hmRange" class="gm-range" min="0" max="0" value="0" step="1" aria-label="Step through the dated appearances, one stop per appearance">' +
+    '</div>' +
     '<div class="gm-evread" id="hmEvRead">—</div></div>' +
-    '<input type="range" id="hmRange" min="0" max="0" value="0" step="1" aria-label="Step through the dated appearances, one stop per appearance">' +
-    '<div class="gm-evmarks" id="hmEvMarks"></div>' +
-    '<div class="gm-scrubhint">Each stop is one dated appearance — no empty years to drag across. Drag, use the arrow keys on the slider, or step with the buttons.</div></div>' +
-    '<div class="gm-astrip" id="hmAppsStrip"></div>' +
     '</div>';
   /* V4.19.0 (JD): the foot keeps only "Known since". Removed:
      the "Where the map stands" readout, "How to read it", the
@@ -8761,10 +8763,11 @@ function hmPaintReadout(){
   }
   if(gaps) gaps.innerHTML = hmGapsHTML();
 }
-/* The event stepper's own paint: slider position, the per-event
-   tick strip (one segment per dated appearance, filled up to
-   the current stop), and the readout line that says, in words,
-   the current stop's date, who, what, and where. */
+/* The event stepper's own paint: slider position and the ONE
+   readout line. The readout shows only NAME, DATE, and the
+   information (what happened + where) — no "Event X of N", no
+   explanatory text (V4.20.1). At rest it names the newest dated
+   appearance in the same format. The tick/meter strip is gone. */
 function hmPaintStepper(){
   var evs = hmEvents(), N = evs.length;
   var r = document.getElementById('hmRange');
@@ -8773,24 +8776,14 @@ function hmPaintStepper(){
     var v = HM.evIdx < 0 ? 0 : HM.evIdx + 1;
     if(document.activeElement !== r && r.value !== String(v)) r.value = String(v);
   }
-  var mk = document.getElementById('hmEvMarks');
-  if(mk && AP){
-    var cur = HM.evIdx < 0 ? 0 : HM.evIdx + 1;
-    if(mk._n !== N || mk._c !== cur){
-      var mh = '';
-      for(var i = 0; i < N; i++) mh += '<span class="' + (i < cur ? 'on' : '') + '" title="' + hmFmtDate(evs[i].published) + ' \u2014 ' + esc(evs[i].display) + '"></span>';
-      mk.innerHTML = mh; mk._n = N; mk._c = cur;
-    }
-  }
   var rd = document.getElementById('hmEvRead');
   if(rd){
-    if(!AP) rd.textContent = 'Loading the findings\u2026';
-    else if(HM.evIdx < 0 || !N){
-      var last = N ? evs[N - 1] : null;
-      rd.innerHTML = '<b>All appearances</b>' + (last ? ' \u00b7 newest dated: ' + hmFmtDate(last.published) + ' \u2014 ' + esc(last.display) + ', ' + esc(last.place) : '');
-    } else {
-      var a = evs[Math.min(HM.evIdx, N - 1)], pl = hmModel().places[a.pid];
-      rd.innerHTML = 'Event ' + (HM.evIdx + 1) + ' of ' + N + ' \u00b7 <b>' + hmFmtDate(a.published) + '</b> \u2014 <b>' + esc(a.display) + '</b> \u00b7 ' + esc(hmAppsPhrase(a.text)) + ' \u00b7 ' + esc(a.place || (pl ? pl.label : ''));
+    if(!AP) rd.textContent = 'Loading\u2026';
+    else if(!N) rd.textContent = '\u2014';
+    else {
+      var a = HM.evIdx < 0 ? evs[N - 1] : evs[Math.min(HM.evIdx, N - 1)], pl = hmModel().places[a.pid];
+      rd.innerHTML = '<b>' + esc(a.display) + '</b> \u00b7 ' + hmFmtDate(a.published) + ' \u00b7 ' + esc(hmAppsPhrase(a.text)) + ' \u00b7 ' + esc(a.place || (pl ? pl.label : ''));
+      rd.title = a.display + ' \u2014 ' + hmFmtDate(a.published) + ' \u2014 ' + a.text + ' \u2014 ' + (a.place || (pl ? pl.label : ''));
     }
   }
 }
@@ -8805,7 +8798,7 @@ function hmSetEv(v, fly){
   if(fly && HM.evIdx >= 0 && HM.map && window.L){
     var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
     /* V4.20.0: instant jump, never an animated flight — the map is static. */
-    if(pl) HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { animate:false });
+    if(pl) HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 11), { animate:false });
   }
 }
 function hmCluster(vis){
@@ -9086,14 +9079,17 @@ function hmMount(){
   if(HM.fs){ HM.fs = false; HM.fsFallback = false; if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){} } }
   /* The stepper's stops are the dated appearances themselves:
      slider 0 = All appearances, 1..N = events in published
-     order. Dragging paints in place; releasing flies to the
-     stop's place. Keyboard arrows ride the native slider. */
+     order. Every input — drag, arrow keys, step buttons — moves
+     AND zooms the map to the stop's place at once (V4.20.1). */
   var evs0 = hmEvents();
   if(HM.evIdx >= evs0.length) HM.evIdx = evs0.length - 1;
   var range = document.getElementById('hmRange');
   if(range){
     range.max = String(evs0.length); range.value = String(HM.evIdx < 0 ? 0 : HM.evIdx + 1);
-    range.oninput = function(){ hmStopPlay(); hmSetEv(+range.value, false); };
+    /* V4.20.1: ONE push of the slider navigates — oninput itself
+       moves AND zooms the map to the stop's place (instant,
+       animate:false in hmSetEv); onchange repeats the same call. */
+    range.oninput = function(){ hmStopPlay(); hmSetEv(+range.value, true); };
     range.onchange = function(){ hmSetEv(+range.value, true); };
   }
   hmPaint();
