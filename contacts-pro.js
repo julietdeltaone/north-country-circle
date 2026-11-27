@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.23.0';
+var APP_VERSION = '4.24.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9357,6 +9357,7 @@ function repaintForData(kind){
     return;
   }
   if(kind === 'fi'){ fiPaintNavBadge(); if(r === 'daily') render(); return; }
+  if(kind === 'phc'){ fiPaintNavBadge(); if(r === 'daily') render(); return; }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
   if(kind === 'ch'){
     /* V4.13.0: the Newly found badge keys off the change log — when it
@@ -9684,9 +9685,24 @@ function rcAlreadyFiled(e, c){
 function rcStatus(c){
   var di = rcDi(c);
   if(di == null) return { k:'orphan', label:'Profile not found', at:'' };
-  var e = D.directory[di], dec = rcReviewMap(e)[c.id];
+  var e = D.directory[di], map = rcReviewMap(e), dec = map[c.id];
   if(dec && dec.decision === 'file') return { k:'filed', label:'Filed by JD', at:dec.at || '' };
   if(dec && dec.decision === 'dismiss') return { k:'dismissed', label:'Dismissed', at:dec.at || '' };
+  if(dec && dec.decision === 'incorrect') return { k:'incorrect', label:'Incorrect \u2014 wrong person', at:dec.at || '' };
+  /* V4.24.0 (JD 2026-11-27): Incorrect is keyed to the PAIRING
+     (this person + this source URL), not the candidate id — if
+     the same source is ever re-staged under a new candidate id,
+     the pairing scan buries it again, permanently. Dismiss
+     deliberately gets NO pairing scan: it is id-exact and may
+     resurface with materially new evidence. */
+  if(c.url){
+    var ks = Object.keys(map);
+    for(var i = 0; i < ks.length; i++){
+      var en = map[ks[i]];
+      if(en && en.decision === 'incorrect' && en.url && en.url === c.url)
+        return { k:'incorrect', label:'Incorrect \u2014 wrong person', at:en.at || '' };
+    }
+  }
   if(rcAlreadyFiled(e, c)) return { k:'already', label:'Already on file', at:'' };
   return { k:'pending', label:'Pending', at:'' };
 }
@@ -9892,9 +9908,12 @@ function rcDecide(id, decision){
     for(var j = idx + 1; j < m0.shown.length; j++) if(m0.shown[j].st.k === 'pending' && m0.shown[j].c.id !== id){ nextCur = m0.shown[j].c.id; return; }
     for(var j2 = idx - 1; j2 >= 0; j2--) if(m0.shown[j2].st.k === 'pending' && m0.shown[j2].c.id !== id){ nextCur = m0.shown[j2].c.id; return; }
   })();
-  txn(decision === 'file' ? 'File research candidate' : 'Dismiss research candidate', function(){
+  txn(decision === 'file' ? 'File research candidate' : decision === 'incorrect' ? 'Mark research candidate incorrect' : 'Dismiss research candidate', function(){
     var patch = {}, map = rcReviewMap(e), prev = map[c.id] || {};
-    var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+    /* V4.24.0: every entry records its pairing (source URL +
+       source name) — the Incorrect verdict's permanence scan and
+       any future staging pass key off it. */
+    var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || ''), url:String(c.url || ''), source:String(c.source || '') };
     if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
     map[c.id] = entry;
     patch.research_review = JSON.stringify(map);
@@ -9917,6 +9936,8 @@ function rcDecide(id, decision){
   });
   toast(decision === 'file'
     ? 'Filed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D'
+    : decision === 'incorrect'
+    ? 'Marked incorrect for ' + (c.display || '') + ' — wrong person. That source will not be brought up for them again.'
     : 'Dismissed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
     /* The conveyor (V4.4.2, JD 2026-11-04): \"When you file or
@@ -9929,7 +9950,7 @@ function rcDecide(id, decision){
      never decides anything by itself. */
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
-    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
+    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : decision === 'incorrect' ? 'incorrect' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : decision === 'incorrect' ? 'Incorrect' : 'Dismissed') + '</span>';
     rcCountsInPlace(rowEl);
     rcExitThenNext(rowEl, nextCur);
   } else {
@@ -9962,7 +9983,7 @@ function rcDecideGroup(cs, decision){
     for(var j2 = first - 1; j2 >= 0; j2--) if(m0.shown[j2].st.k === 'pending' && !idset[m0.shown[j2].c.id]){ nextCur = m0.shown[j2].c.id; return; }
   })();
   var rowEl = rcRowEl(lead.id);
-  txn(decision === 'file' ? 'File research candidates' : 'Dismiss research candidates', function(){
+  txn(decision === 'file' ? 'File research candidates' : decision === 'incorrect' ? 'Mark research candidates incorrect' : 'Dismiss research candidates', function(){
     var patch = {}, map = rcReviewMap(e);
     var we = {}; Object.keys(e).forEach(function(k){ we[k] = e[k]; });
     var fp = String(gv(e, 'public_footprint') || '').trim();
@@ -9970,7 +9991,7 @@ function rcDecideGroup(cs, decision){
     var files = (e.files || []).slice(), filesChanged = false;
     pend.forEach(function(c){
       var prev = map[c.id] || {};
-      var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+      var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || ''), url:String(c.url || ''), source:String(c.source || '') };
       if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
       map[c.id] = entry;
       if(decision === 'file'){
@@ -9999,11 +10020,13 @@ function rcDecideGroup(cs, decision){
   });
   toast(decision === 'file'
     ? 'Filed ' + pend.length + ' points for ' + (lead.display || '') + '. It saves through the Save Pool.'
+    : decision === 'incorrect'
+    ? 'Marked ' + pend.length + ' points incorrect for ' + (lead.display || '') + ' — wrong person. That source will not be brought up for them again.'
     : 'Dismissed ' + pend.length + ' points for ' + (lead.display || '') + '. Luna\u2019s call stands.', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
-    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
+    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : decision === 'incorrect' ? 'incorrect' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : decision === 'incorrect' ? 'Incorrect' : 'Dismissed') + '</span>';
     rcCountsInPlace(rowEl);
     rcExitThenNext(rowEl, nextCur);
   } else {
@@ -10062,12 +10085,13 @@ function rcModel(){
     var di = rcDi(c);
     return { c:c, di:di, st:rcStatus(c), photo:di != null && rcPhotoFlag(D.directory[di], c) };
   });
-  var counts = { pending:0, filed:0, dismissed:0, close:0, photo:0 };
+  var counts = { pending:0, filed:0, dismissed:0, incorrect:0, close:0, photo:0 };
   rows.forEach(function(r){
     if(r.photo) counts.photo++;
     if(r.st.k === 'pending'){ counts.pending++; if((+r.c.confidence || 0) >= 70) counts.close++; }
     else if(r.st.k === 'filed' || r.st.k === 'already') counts.filed++;
     else if(r.st.k === 'dismissed') counts.dismissed++;
+    else if(r.st.k === 'incorrect') counts.incorrect++;
   });
   var q = String(RC_VIEW.q || '').trim().toLowerCase();
   var shown = rows.filter(function(r){
@@ -10075,6 +10099,7 @@ function rcModel(){
     if(RC_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
     if(RC_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
     if(RC_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
+    if(RC_VIEW.status === 'incorrect' && r.st.k !== 'incorrect') return false;
     if(RC_VIEW.cat !== 'all' && c.category !== RC_VIEW.cat) return false;
     if(RC_VIEW.photo && !r.photo) return false;
     if(q){
@@ -10313,7 +10338,7 @@ function rcConsoleHTML(){
   }
   var legend = [['near', '85\u2013100', 'Near certain'], ['strong', '70\u201384', 'Strong'], ['plausible', '55\u201369', 'Plausible'], ['weak', '40\u201354', 'Weak'], ['unsupported', '0\u201339', 'Not supported']]
     .map(function(b){ return '<span class="rc-leg rcb-' + b[0] + '"><i></i>' + b[1] + ' ' + b[2] + '</span>'; }).join('');
-  var statBtns = [['pending', 'Pending', counts.pending], ['filed', 'Filed / on file', counts.filed], ['dismissed', 'Dismissed', counts.dismissed], ['all', 'All research', rows.length]]
+  var statBtns = [['pending', 'Pending', counts.pending], ['filed', 'Filed / on file', counts.filed], ['dismissed', 'Dismissed', counts.dismissed], ['incorrect', 'Incorrect', counts.incorrect], ['all', 'All research', rows.length]]
     .map(function(b){ return '<button type="button" class="' + (RC_VIEW.status === b[0] ? 'on' : '') + '" data-act="rcfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
   var catOpts = ['<option value="all"' + (RC_VIEW.cat === 'all' ? ' selected' : '') + '>All categories</option>']
     .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
@@ -10370,8 +10395,9 @@ function rcConsoleHTML(){
       '<div class="rc-ev">' + rcEvidenceHTML(rs, lead, pubC, srcs) + '</div>' +
       '<div class="rc-actions">' +
       '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c0.id) + '">File it</button>' +
-      '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c0.id) + '">Dismiss</button>' + photoBtn +
-      '<span class="rc-actnote">One decision covers all ' + rs.length + ' points.<br>File it = add them to the record.<br>Dismiss = leave the record as is.</span></div></div>';
+      '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c0.id) + '">Dismiss</button>' +
+      '<button type="button" class="btn ghost sm danger" data-act="rcincorrect" data-id="' + esc(c0.id) + '">Incorrect</button>' + photoBtn +
+      '<span class="rc-actnote">One decision covers all ' + rs.length + ' points.<br>File it = add them to the record.<br>Dismiss = leave the record as is.<br>Incorrect = wrong person — this source is never brought up for them again.</span></div></div>';
   }
   var rowHtmls = shown.map(function(r){
     var c = r.c, parts = c.confidence_parts || {};
@@ -10395,8 +10421,9 @@ function rcConsoleHTML(){
     var actions = r.st.k === 'pending'
       ? '<div class="rc-actions">' +
         '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
-        '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' + photoBtn +
-        '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.</span></div>'
+        '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' +
+        '<button type="button" class="btn ghost sm danger" data-act="rcincorrect" data-id="' + esc(c.id) + '">Incorrect</button>' + photoBtn +
+        '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.<br>Incorrect = wrong person — this source is never brought up for them again.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
     return '<div class="rc-row rcb-' + band.k + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
@@ -10448,7 +10475,7 @@ function rcConsoleHTML(){
      the candidates start immediately below. */
   return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
     '<div class="rc-head compact"><h2>Research — unfiled candidates</h2>' +
-    '<span class="rc-hstats"><b>' + counts.pending + '</b> awaiting your call &middot; <b>' + counts.close + '</b> close calls (70+) &middot; <b>' + counts.filed + '</b> filed / on file &middot; <b>' + counts.dismissed + '</b> dismissed</span></div>' +
+    '<span class="rc-hstats"><b>' + counts.pending + '</b> awaiting your call &middot; <b>' + counts.close + '</b> close calls (70+) &middot; <b>' + counts.filed + '</b> filed / on file &middot; <b>' + counts.dismissed + '</b> dismissed' + (counts.incorrect ? ' &middot; <b>' + counts.incorrect + '</b> incorrect' : '') + '</span></div>' +
     '<div class="rc-legend slim">' + legend + '</div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
@@ -10563,7 +10590,7 @@ document.addEventListener('keydown', function(ev){
   }
   var lk = (k && k.length === 1) ? k.toLowerCase() : '';
   if(lk === 'o'){ ev.preventDefault(); rcOpenSource(); return; }
-  if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p'){
+  if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p' || lk === 'i'){
     /* One press, one card (V4.4.1, JD 2026-11-04). Auto-repeat
        keydowns are ignored, and a second keydown inside 250ms is
        the same physical press (a bouncing key), never a second
@@ -10583,7 +10610,7 @@ document.addEventListener('keydown', function(ev){
       return;
     }
     if(rcStatus(c).k !== 'pending') return;
-    rcDecide(c.id, lk === 'f' ? 'file' : 'dismiss');
+    rcDecide(c.id, lk === 'f' ? 'file' : lk === 'i' ? 'incorrect' : 'dismiss');
   }
 });
 /* Clicking any row makes it the current row (its action buttons
@@ -11422,7 +11449,8 @@ function pfPendingCount(){ return PF ? pfRows().counts.pending : 0; }
 function lrWaitingCount(){
   return (typeof FI !== 'undefined' && FI ? fiUnreadCount() : 0) +
          (typeof RC !== 'undefined' && RC ? rcPendingCount() : 0) +
-         (typeof PF !== 'undefined' && PF ? pfPendingCount() : 0);
+         (typeof PF !== 'undefined' && PF ? pfPendingCount() : 0) +
+         (typeof PHC !== 'undefined' && PHC && typeof D !== 'undefined' && D ? phcPendingCount() : 0);
 }
 function fiTabsHTML(on){
   /* V4 Phase 8a: one decision surface. The old Inbox tab is now
@@ -12610,9 +12638,11 @@ function viewDaily(v){
        kind keeps its own renderer, state, keyboard path and write
        path (BL for research, BM for prefill). */
     pfLoad();
+    phcLoad();
     /* V3.88.0 (JD 2026-11-04): the sub states the waiting count IN
        PARTS, in plain words. */
     var dcRC = RC ? rcPendingCount() : 0, dcPF = PF ? pfPendingCount() : 0;
+    var dcPH = PHC ? phcPendingCount() : 0;
     var dcWhen = '';
     if(DT && DT.date){
       var dp = String(DT.date).split('-');
@@ -12620,11 +12650,13 @@ function viewDaily(v){
     }
     var dcParts = [];
     if(dcRC) dcParts.push(dcRC + ' need your call');
+    if(dcPH) dcParts.push(dcPH + ' photo candidate' + (dcPH === 1 ? '' : 's') + ' to rule on');
     if(dcPF) dcParts.push(dcPF + ' prefill suggestion' + (dcPF === 1 ? '' : 's') + ' to approve');
     var dcSub = dcParts.length ? dcParts.join(' &middot; ') + dcWhen : 'Nothing waiting' + dcWhen;
     v.innerHTML = '<div class="page lr dc-page v4p" data-kind="about">' +
       lrChromeHTML('decide', 'Needs a decision', dcSub) +
       '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2></div>' + rcConsoleHTML() + '</section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>Photo decisions</h2><span>Photos whose identity is not yet confirmed. Confirming one makes it stick — key photo, verdict and a note on their record.</span></div><div id="phcwrap">' + phcSectionHTML() + '</div></section>' +
       '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Inferred values for blank fields — approve or deny.</span></div><div id="pfwrap"></div></section>' +
       '</div>';
     pfRender();
@@ -13043,6 +13075,150 @@ function phSetVerdict(name, val, reason){
 }
 function phSetReview(name, val){ phSetVerdict(name, val, undefined); }
 
+/* ============================================================
+   V4.24.0 — PHOTO CANDIDATES IN NEEDS A DECISION (JD 2026-11-27)
+   Uncertain photos (possible / likely from any pass) are staged
+   in data/photo-candidates.json by the photo passes:
+     { candidates: [ { person, person_id, image_url, source_page,
+                       evidence, note, upgrade } ] }
+   They render as decisions on #/daily/decide beside Research
+   Command. Verdicts persist in the profile's research_review
+   map (the decided-claims registry) under the pairing key
+   "photo:<image_url>", so a verdict follows the PAIRING
+   (person + image / source page), never just a row:
+     file      — confirmed; the beef-up below makes it stick.
+     dismiss   — not this one; that exact image stays down, a
+                 materially new image may be staged again.
+     incorrect — WRONG PERSON, permanent: the pairing scan in
+                 phcPairEntry buries the same image OR the same
+                 source page forever, however often a later pass
+                 rediscovers it.
+   DEDUPE GUARD (JD caught Luna listing people whose photos were
+   already confirmed): a person with a confirmed photo on file
+   NEVER appears here as a photo need — the only exception is a
+   staging entry explicitly marked upgrade:true (a low-res
+   confirmed photo's labelled replacement candidate).
+   ============================================================ */
+var PHC = null, PHC_LOADING = false, PHC_MISSING = false;
+function phcLoad(){
+  if(PHC || PHC_LOADING) return;
+  PHC_LOADING = true;
+  fetch('data/photo-candidates.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ PHC = { candidates:(d && d.candidates) || (Array.isArray(d) ? d : []) }; PHC_LOADING = false; repaintForData('phc'); })
+    .catch(function(){ PHC = { candidates:[] }; PHC_MISSING = true; PHC_LOADING = false; repaintForData('phc'); });
+}
+var PHC_BYID = null;
+function phcDi(c){
+  if(c.person_id){
+    if(!PHC_BYID){ PHC_BYID = {}; D.directory.forEach(function(e, di){ PHC_BYID[personId(e)] = di; }); }
+    if(PHC_BYID[c.person_id] != null) return PHC_BYID[c.person_id];
+  }
+  var di = BYN[String(c.person || '').toLowerCase()];
+  return di == null ? null : di;
+}
+function phcKey(c){ return 'photo:' + String(c.image_url || ''); }
+function phcPairEntry(e, c){
+  var map = rcReviewMap(e), en = map[phcKey(c)];
+  if(en) return en;
+  var ks = Object.keys(map);
+  for(var i = 0; i < ks.length; i++){
+    var x = map[ks[i]];
+    if(x && x.decision === 'incorrect' && (x.photo_url === c.image_url || (c.source_page && x.source_page && x.source_page === c.source_page))) return x;
+  }
+  return null;
+}
+function phcConfirmedPhoto(di){
+  var e = D.directory[di];
+  if(String(gv(e, 'primary_photo') || '').trim()) return String(gv(e, 'primary_photo')).trim();
+  var idx = phIndex(), p = idx && idx[dispName(e)];
+  if(p && p.status === 'confirmed' && p.photo_url) return p.photo_url;
+  return '';
+}
+function phcHasImage(c){ return !!(c.image_url && c.image_url !== 'None'); }
+function phcPendingList(){
+  if(!PHC || !D) return [];
+  var out = [];
+  PHC.candidates.forEach(function(c, i){
+    if(!c || (!c.image_url && !c.source_page)) return;
+    var di = phcDi(c); if(di == null) return;
+    var e = D.directory[di];
+    var conf = phcConfirmedPhoto(di);
+    if(conf && conf === c.image_url) return;          /* this very photo is already their confirmed one */
+    if(conf && !c.upgrade) return;                     /* dedupe guard: confirmed people are not photo needs */
+    /* JD's verdict is a confirmation too: a profile whose
+       photo_review is already 'confirmed' never re-enters as a
+       photo need (only a labelled upgrade may). */
+    if(String(gv(e, 'photo_review') || '').trim() === 'confirmed' && !c.upgrade) return;
+    if(phcPairEntry(e, c)) return;                     /* already decided — dismiss exact, incorrect permanent */
+    out.push({ c:c, i:i, di:di, upgrade:!!(conf && c.upgrade) });
+  });
+  return out;
+}
+function phcPendingCount(){ return phcPendingList().length; }
+function phcDecide(ci, decision){
+  var c = PHC && PHC.candidates[ci]; if(!c) return;
+  if(decision === 'file' && !phcHasImage(c)){ toast('That candidate has no direct image to file — open the source page first.'); return; }
+  var di = phcDi(c);
+  if(di == null){ toast('That profile is no longer in the directory — the photo cannot be filed.'); return; }
+  var e = D.directory[di], name = dispName(e);
+  txn(decision === 'file' ? 'Confirm photo' : decision === 'incorrect' ? 'Mark photo incorrect' : 'Dismiss photo candidate', function(){
+    var patch = {}, map = rcReviewMap(e);
+    map[phcKey(c)] = { decision:decision, at:new Date().toISOString(), kind:'photo', photo_url:String(c.image_url || ''), source_page:String(c.source_page || '') };
+    patch.research_review = JSON.stringify(map);
+    if(decision === 'file'){
+      /* Beef up the connection (JD 2026-11-27): one patch makes
+         the confirmation stick everywhere the app reads — the
+         key photo (primary_photo), the recorded verdict
+         (photo_review = confirmed, which also lifts the Photos
+         page suspect queue), and a dated note on the timeline.
+         photos.json itself is rebuilt from these Sheet fields
+         by the sync, so the file follows. */
+      patch.primary_photo = String(c.image_url || '');
+      patch.photo_review = 'confirmed';
+      var now = new Date();
+      var iso = now.toISOString().slice(0, 10);
+      var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var nice = MON[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+      var evs = (e.events || []).slice();
+      evs.push({ date:iso, kind:'note', src:'photo-review', summary:'Photo confirmed by JD \u2014 ' + nice + '.' });
+      patch.events = JSON.stringify(evs);
+    }
+    queuePatch(di, patch);
+  });
+  toast(decision === 'file'
+    ? 'Photo confirmed for ' + name + ' — it is now their key photo, with the verdict and a dated note on their record.'
+    : decision === 'incorrect'
+    ? 'Marked incorrect for ' + name + ' — wrong person. That photo and its source page will never be brought up for them again.'
+    : 'Photo set aside for ' + name + ' — that exact image stays down.', { undo:true });
+  render();
+}
+function phcSectionHTML(){
+  if(!PHC) return '<div class="phc-load dim">Loading photo candidates\u2026</div>';
+  if(PHC_MISSING) return '<div class="phc-none">No photo candidates are staged right now — the staging file (photo-candidates.json) has not been prepared yet. When a photo pass stages uncertain photos, they will wait here for your call.</div>';
+  var list = phcPendingList();
+  if(!list.length) return '<div class="phc-none">No photo candidates waiting. Confirmed photos, dismissed images and wrong-person pairings never resurface here.</div>';
+  return '<div class="phc-list">' + list.map(function(it){
+    var c = it.c, e = D.directory[it.di];
+    var hasImg = phcHasImage(c);
+    return '<div class="phc-card">' +
+      (hasImg
+        ? '<img class="phc-img" src="' + esc(c.image_url) + '" alt="Candidate photo for ' + esc(dispName(e)) + '" loading="lazy" referrerpolicy="no-referrer" onerror="phImgErr(this)">'
+        : '<div class="phc-img phc-noimg">No direct image yet — the source page is the lead.</div>') +
+      '<div class="phc-main"><div class="phc-person"><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + it.di + '"><b>' + esc(dispName(e)) + '</b></a>' +
+      (it.upgrade ? '<span class="phc-upgrade">Upgrade — a confirmed photo is already on file; this is a better one</span>' : '') + '</div>' +
+      (c.evidence ? '<p class="phc-ev">' + esc(c.evidence) + '</p>' : '') +
+      (c.note ? '<p class="phc-note dim">' + esc(c.note) + '</p>' : '') +
+      (c.source_page ? '<a class="phc-src" href="' + esc(c.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a>' : '') +
+      '</div>' +
+      '<div class="phc-actions">' +
+      (hasImg ? '<button type="button" class="btn primary sm" data-act="phcfile" data-ci="' + it.i + '">Confirm photo</button>' : '') +
+      '<button type="button" class="btn ghost sm" data-act="phcdismiss" data-ci="' + it.i + '">Not this one</button>' +
+      '<button type="button" class="btn ghost sm danger" data-act="phcincorrect" data-ci="' + it.i + '">Wrong person</button>' +
+      '<span class="rc-actnote">Confirm = this becomes their photo everywhere.<br>Not this one = that exact image stays down.<br>Wrong person = never brought up again.</span></div></div>';
+  }).join('') + '</div>';
+}
+
 /* ---------- profile photos: framing store + hero + editor (JD 2026-10-22) ---------- */
 var PH_BY_NAME = null;
 function phIndex(){
@@ -13436,9 +13612,19 @@ function phSuspects(){
   if(!PH || !PH.people) return [];
   return PH.people.filter(function(p){
     if(!p.photo_url || (p.status !== 'possible' && p.status !== 'likely')) return false;
-    if(phDiOf(p.name) == null) return false;   /* V3.75.0 (bug hunt 23): people lists hold directory people only */
+    var di = phDiOf(p.name);
+    if(di == null) return false;   /* V3.75.0 (bug hunt 23): people lists hold directory people only */
     var r = phRevOf(p);
-    return r !== 'confirmed' && r !== 'rejected';
+    if(r === 'confirmed' || r === 'rejected') return false;
+    /* V4.24.0: a pairing JD marked Incorrect (wrong person) never
+       resurfaces in this queue either — the verdict lives in the
+       profile's research_review map, keyed to the image. */
+    var map = rcReviewMap(D.directory[di]), ks = Object.keys(map);
+    for(var i = 0; i < ks.length; i++){
+      var en = map[ks[i]];
+      if(en && en.decision === 'incorrect' && en.photo_url && en.photo_url === p.photo_url) return false;
+    }
+    return true;
   });
 }
 /* V3.75.0 (bug hunt 8): Instagram CDN URLs carry a hex oe= expiry; once
@@ -16632,6 +16818,10 @@ function onClick(ev){
     case 'chggrp': chgToggle(el); break;
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
+    case 'rcincorrect': rcDecide(el.getAttribute('data-id'), 'incorrect'); break;
+    case 'phcfile': phcDecide(+el.getAttribute('data-ci'), 'file'); break;
+    case 'phcdismiss': phcDecide(+el.getAttribute('data-ci'), 'dismiss'); break;
+    case 'phcincorrect': phcDecide(+el.getAttribute('data-ci'), 'incorrect'); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; RC_VIEW.q = ''; RC_VIEW.cat = 'all'; RC_VIEW.photo = false; rcSaveView(); rcPaint(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotogroup': rcTogglePhotoGroup((el.getAttribute('data-ids') || '').split(',').filter(Boolean)); break;
