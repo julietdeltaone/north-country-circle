@@ -7772,8 +7772,10 @@ html[data-mode="light"] .gm-hs-meta.r1{color:#8a5c0e}
    V4.20.1 (JD 2026-11-27) — three fixes:
    1. ONE background, website-wide, WITH parallax.
    2. Source chips never truncate.
-   3. Profile controls ride inside the hero; Activity column
-      renders the change log by filed date (.fia-*).
+   3. Profile controls ride inside the hero. (The Activity
+      columns on New facts and Today both render the audited
+      feed; their only change here is the source-chip fix in
+      item 2 and an honest subtitle in the markup.)
    ============================================================ */
 
 /* --- 1. ONE background scene --------------------------------
@@ -7855,31 +7857,8 @@ html[data-mode="light"] body::before{
   .page.profile #p-hero{padding-top:36px !important}
 }
 
-/* --- 3b. Activity column: change-log filings (.fia-*) ------- */
-.fi-actfeed{padding-left:0}
-.fia-day{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px;padding-bottom:5px;border-bottom:1px solid var(--pv-line2)}
-.fia-day:first-child{margin-top:2px}
-.fia-day span{font:800 13px var(--sans);color:var(--pv-text)}
-.fia-day em{font:600 11px var(--sans);font-style:normal;color:var(--pv-dim);margin-left:auto}
-.fia-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--pv-line)}
-.fia-day + .fia-row{border-top:0}
-.fia-row .af-av{width:38px;height:38px}
-.fia-row>.av{width:30px;height:30px;font-size:12.5px;flex:none}
-.fia-main{flex:1;min-width:0}
-.fia-top{display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap}
-.fia-filed{font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--pv-gold);white-space:nowrap;padding-top:3px}
-.fia-src{flex:1 1 auto;min-width:0;display:flex;justify-content:flex-end}
-.fia-src .af-src-chip{max-width:100%}
-.fia-namerow{margin-top:3px}
-.fi-actfeed .af-name{font-size:15.5px;font-weight:700;line-height:1.25}
-.fia-what{margin:2px 0 0;font-size:13px;font-weight:550;line-height:1.45;color:var(--pv-text)}
-.fia-grp{border-top:1px solid var(--pv-line)}
-.fia-day + .fia-grp{border-top:0}
-.fia-grp-h{align-items:flex-start;gap:10px;padding:9px 0;width:100%}
-.fia-grp-h .af-av{width:38px;height:38px;flex:none}
-.fia-grp-h>.av{width:30px;height:30px;font-size:12.5px;flex:none}
-.fia-grp .chg-grp-what{color:var(--pv-text);font-size:13px;font-weight:550}
-.fia-grp .chg-cnt{text-transform:none;letter-spacing:0}
-.fia-srcrow{display:flex;margin-top:5px}
-.fia-grp .chg-members .fia-row{padding-left:14px}
-.fi-actfeed .af-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0 2px}
+/* --- Today layout (V4.20.1): fresh cards + Activity column,
+   mirroring New facts (.fi-layout at the fi-page width), stacking
+   below on narrow screens exactly like New facts does. --- */
+.lr-today-layout{grid-template-columns:minmax(0,1fr) 370px;gap:18px}
+@media(max-width:1100px){.lr-today-layout{grid-template-columns:1fr}}
