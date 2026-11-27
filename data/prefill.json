@@ -1,22 +1,7 @@
 {
  "generated": "2026-11-27",
- "count": 1,
- "suggestions": [
-  {
-   "id": "pf-fa8d30391f",
-   "key": "ct:gabriel wangerin",
-   "display": "Gabriel Wangerin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Norwood, NY",
-   "grade": "Probable",
-   "evidence": [
-    "Family on file in Norwood: Danny Wangerin, Ina Wangerin, Lydia Martin, Sam Wangerin.",
-    "4 of 4 located known associates are in Norwood."
-   ],
-   "conf": 72
-  }
- ],
+ "count": 0,
+ "suggestions": [],
  "auto_apply": [
   {
    "key": "sf:murray",
@@ -51,17 +36,17 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 13,
+   "tentative_floor": 14,
    "shelved": 2,
    "corroboration": 1
   },
   "items": [
    {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
+    "id": "pf-fe213c9784",
+    "key": "annecatherina7",
+    "display": "Anne Katherin Wolf",
     "field": "location_on_file",
-    "value": "Fort Covington, NY",
+    "value": "Norwood, NY",
     "rules": [
      "tentative_floor"
     ]
@@ -172,6 +157,16 @@
     "display": "Jeremy Taylor",
     "field": "location_on_file",
     "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-a05834389d",
+    "key": "sf:liz-wangerin",
+    "display": "Liz Wangerin",
+    "field": "location_on_file",
+    "value": "Norwood, NY",
     "rules": [
      "tentative_floor"
     ]
