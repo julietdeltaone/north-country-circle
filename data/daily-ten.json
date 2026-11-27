@@ -1,339 +1,403 @@
 {
  "date": "2026-11-26",
- "run_label": "Daily rotation",
+ "run_label": "Daily rotation (PM)",
  "checked": [
   {
-   "name": "sf:caleb-froats",
-   "display": "Caleb Froats"
+   "name": "kaylemmccormick",
+   "display": "Kayle McCormick"
   },
   {
-   "name": "hjlevendusky",
-   "display": "Heidi Jo Levendusky"
+   "name": "john_zufall",
+   "display": "John Zufall"
   },
   {
-   "name": "sphip_06",
-   "display": "Sydnie Phippen"
+   "name": "aaronjdaniels",
+   "display": "Aaron Daniels"
   },
   {
-   "name": "sf:susan-blewett",
-   "display": "Susan Blewett"
+   "name": "martinlovell.8",
+   "display": "Martin Lovell"
   },
   {
-   "name": "cbresett20",
-   "display": "Caleb Bresett"
+   "name": "molliiwhitee",
+   "display": "Molli Sue"
   },
   {
-   "name": "ct:david hartman",
-   "display": "David Hartman"
+   "name": "ysabellamcolbert",
+   "display": "Ysabella Colbert"
   },
   {
-   "name": "sf:jamal-moses",
-   "display": "Jamal Moses"
+   "name": "ol9a",
+   "display": "Olga Lindsey"
   },
   {
-   "name": "fdb:maggie_marceau",
-   "display": "Maggie Marceau"
+   "name": "t.fetterley",
+   "display": "Tasia Fetterley"
   },
   {
-   "name": "sf:noah-michael",
-   "display": "Noah Michael"
+   "name": "jocelynrose04",
+   "display": "Jocelyn Daniels"
   },
   {
-   "name": "sf:alexander-hacker",
-   "display": "Alexander Hacker"
+   "name": "jackson.paladin",
+   "display": "Jackson Paladin"
   },
   {
-   "name": "sf:savannah-durant",
-   "display": "Savannah Durant"
+   "name": "livparker5",
+   "display": "Olivia Parker"
   },
   {
-   "name": "ally.dubbioso",
-   "display": "Ally Dubbioso"
+   "name": "philip__dennis",
+   "display": "Philip Dennis"
   },
   {
-   "name": "furious_myles",
-   "display": "Myles Laramay"
+   "name": "sf:tori-brunet",
+   "display": "Tori Brunet"
   },
   {
-   "name": "sf:cody-benham",
-   "display": "Cody Benham"
+   "name": "alyssalramsay",
+   "display": "Alyssa L Ramsay"
   },
   {
-   "name": "sf:katelynne-kulp",
-   "display": "Katelynne Kulp"
+   "name": "daniellecaskinett",
+   "display": "Danielle Caskinett"
   },
   {
-   "name": "sf:victoria lucas",
-   "display": "Victoria Lucas"
+   "name": "sf:kundai-mugugu",
+   "display": "Kundai Mugugu"
   },
   {
-   "name": "ct:julia tomford",
-   "display": "Julia Tomford"
+   "name": "brendan.bombard_19",
+   "display": "Brendan Bombard"
   },
   {
-   "name": "countess_lepevi",
-   "display": "Leslie Perri"
+   "name": "dawsonwiegandt",
+   "display": "Dawson Wiegandt"
   },
   {
-   "name": "sf:owen-kennedy",
-   "display": "Owen Kennedy"
+   "name": "janelc8",
+   "display": "Janel Colbert"
   },
   {
-   "name": "ct:susan buckley",
-   "display": "Susan Buckley"
+   "name": "madstop136",
+   "display": "Eric Criscitello"
   },
   {
-   "name": "fdb:amber_ingram",
-   "display": "Amber Ingram"
+   "name": "meg.peddle",
+   "display": "Megan Peddle"
   },
   {
-   "name": "sf:emily-ward",
-   "display": "Emily Ward"
+   "name": "outrageouslyloved",
+   "display": "Jeff McGrath"
   },
   {
-   "name": "sf:kara-ferguson",
-   "display": "Kara Ferguson"
+   "name": "daniel__manor",
+   "display": "Daniel Manor"
   },
   {
-   "name": "sf:nadia-thomas",
-   "display": "Nadia Thomas"
+   "name": "bree.rogers545",
+   "display": "Bree Rogers"
   },
   {
-   "name": "ct:justin estep",
-   "display": "Justin Estep"
+   "name": "sf:elliot-martin",
+   "display": "Elliot Martin"
   },
   {
-   "name": "sf:greg-lapinski",
-   "display": "Greg Lapinski"
+   "name": "elliecriscitello",
+   "display": "Ellie Criscitello"
   },
   {
-   "name": "sf:cassandra-fernandez",
-   "display": "Cassandra Fernandez"
+   "name": "gabematthis",
+   "display": "Gabe Matthis"
   },
   {
-   "name": "sf:nina-criscitello",
-   "display": "Nina Criscitello"
+   "name": "midwifesunday",
+   "display": "Sunday Wright Smith"
   },
   {
-   "name": "sf:cj-tomford",
-   "display": "CJ Tomford"
+   "name": "lynzeelou",
+   "display": "Lindsey Sorrento"
   },
   {
-   "name": "sf:matthew-merria",
-   "display": "Matthew Merria"
+   "name": "taswyka",
+   "display": "Tim Swyka"
   },
   {
-   "name": "sf:nanette-yervasi-holt",
-   "display": "Nanette Yervasi Holt"
+   "name": "choppa_salwa",
+   "display": "Salwa Hmyene"
   },
   {
-   "name": "zoeytaylor018",
-   "display": "Zoey Taylor"
+   "name": "anastasia_g_daniels",
+   "display": "Anastasia Daniels"
   },
   {
-   "name": "sf:christopher-pagan",
-   "display": "Christopher Pagan"
+   "name": "dr.angelesfelix",
+   "display": "Angeles Felix"
   },
   {
-   "name": "sf:jessica-osypiewski",
-   "display": "Jessica Osypiewski"
+   "name": "syd.collins11",
+   "display": "Sydney Storrin"
   },
   {
-   "name": "sf:gavin-matthews",
-   "display": "Gavin Matthews"
+   "name": "si3rragrace",
+   "display": "Sierra Smith"
   },
   {
-   "name": "sf:robin-dipasquale",
-   "display": "Robin DiPasquale"
+   "name": "fulton.julia",
+   "display": "Julia Fulton"
   },
   {
-   "name": "sf:grace-lapointe",
-   "display": "Grace LaPointe"
+   "name": "traci.laing",
+   "display": "Traci Laing"
   },
   {
-   "name": "sf:toni-ajayi",
-   "display": "Toni Ajayi"
+   "name": "mallory_greene",
+   "display": "Mallory Greene"
   },
   {
-   "name": "sf:lennart-johns",
-   "display": "Lennart Johns"
+   "name": "m.not.a.lobster",
+   "display": "Michelle Johnston"
   },
   {
-   "name": "ct:jillian ferrante",
-   "display": "Jillian Ferrante"
+   "name": "kourtneyypeets",
+   "display": "Kourtney Peets"
   },
   {
-   "name": "sf:annika-greco",
-   "display": "Annika Greco"
+   "name": "desknaebel",
+   "display": "Debbie Knaebel"
   },
   {
-   "name": "sf:ian-bailey",
-   "display": "Ian Bailey"
+   "name": "brookemariejoyce",
+   "display": "Brooke Joyce"
   },
   {
-   "name": "ct:emily criscitello",
-   "display": "Emily Criscitello"
+   "name": "dsmithroc",
+   "display": "Daniel Smith"
   },
   {
-   "name": "sf:tyreese-brown",
-   "display": "Tyreese Brown"
+   "name": "drewspov_",
+   "display": "Andrew Matott"
   },
   {
-   "name": "sf:jeremy-taylor",
-   "display": "Jeremy Taylor"
+   "name": "caroline.lafountain",
+   "display": "Caroline LaFountain"
   },
   {
-   "name": "sf:gregory-hurlbut",
-   "display": "Gregory Hurlbut"
+   "name": "delany._.durant",
+   "display": "Delany Durant"
   },
   {
-   "name": "sf:thea-krywanczyk",
-   "display": "Thea Krywanczyk"
+   "name": "ceciliesmith2025",
+   "display": "Cecilie Smith"
   },
   {
-   "name": "ct:dr kring",
-   "display": "Lawrence Kring"
+   "name": "eli.e.thomas",
+   "display": "Eli Thomas"
   },
   {
-   "name": "sf:raymond-persons",
-   "display": "Raymond Persons"
+   "name": "josiahjmartin",
+   "display": "Josiah Martin"
   },
   {
-   "name": "michaeljent1",
-   "display": "Michael Jent"
+   "name": "annabellerose.07",
+   "display": "Annabelle Dowling"
   },
   {
-   "name": "sf:whitney-verbeck",
-   "display": "Whitney Verbeck"
+   "name": "becca_emmett",
+   "display": "Becca Emmett"
   },
   {
-   "name": "dpaladin",
-   "display": "Daniel Paladin"
+   "name": "karijmoulton",
+   "display": "Kari Moulton"
   },
   {
-   "name": "johnmeyers_sr",
-   "display": "John Meyers"
+   "name": "bronwynpaladin",
+   "display": "Bronwyn Paladin"
   },
   {
-   "name": "jemma.cooper4",
-   "display": "Jemma Cooper"
+   "name": "hannahllbanana",
+   "display": "Hannah McConnell"
   },
   {
-   "name": "cathie_deschaine",
-   "display": "Cathie Deschaine"
+   "name": "coreyd123103",
+   "display": "Corey Delisa"
   },
   {
-   "name": "malyssar_7",
-   "display": "Malyssa Shenko"
+   "name": "julianna_shatraw",
+   "display": "Julianna Shatraw"
   },
   {
-   "name": "cameramancory",
-   "display": "Cory Williams"
+   "name": "nevaeh_phillips",
+   "display": "Nevaeh Phillips"
   },
   {
-   "name": "haleydlutz",
-   "display": "Haley Lutz"
+   "name": "eileen_mackenzie",
+   "display": "Eileen Mackenzie"
   },
   {
-   "name": "criscitello_riley",
-   "display": "Riley Criscitello"
+   "name": "andy.dennis777",
+   "display": "Andy Dennis"
   },
   {
-   "name": "peyt0nsheehan",
-   "display": "Peyton Sheehan"
+   "name": "nancyhull9",
+   "display": "Nancy Hull"
   },
   {
-   "name": "adhope2006",
-   "display": "Adriana Levendusky"
+   "name": "mayaatchan",
+   "display": "Maya M. Atchan"
   },
   {
-   "name": "lise.cevallos",
-   "display": "Annelise Cevallos"
+   "name": "dgruneisen",
+   "display": "Don Gruneisen"
   },
   {
-   "name": "taylor_rawson_",
-   "display": "Taylor Rawson"
+   "name": "brian.m.zehr",
+   "display": "Brian M. Zehr"
   },
   {
-   "name": "hholt_777",
-   "display": "Hannah Holt"
+   "name": "nat.waterman",
+   "display": "Natalie Waterman"
   },
   {
-   "name": "daniel_ursus_arctos",
-   "display": "Daniel Moulton"
+   "name": "elizabethadaniels",
+   "display": "Elizabeth Daniels"
   },
   {
-   "name": "elisameyers",
-   "display": "Elisa Meyers"
+   "name": "madi_kerr_",
+   "display": "Madison Kerr"
   },
   {
-   "name": "cy.cy.17",
-   "display": "Cynthia"
+   "name": "jtmoulton",
+   "display": "Joel Moulton"
   },
   {
-   "name": "juliacarmella1",
-   "display": "Julia Swy"
+   "name": "jessicahurlbut",
+   "display": "Jessica Hurlbut"
   },
   {
-   "name": "mlapins7",
-   "display": "Molly Lapinski"
+   "name": "morse_like_the_code",
+   "display": "Morgan Morse"
   },
   {
-   "name": "abbydaniels03",
-   "display": "Abigail Daniels"
+   "name": "wayne_brown_ii",
+   "display": "Wayne Brown"
   },
   {
-   "name": "kimberlymitchelldamon",
-   "display": "Kimberly Damon"
+   "name": "emma_morse315",
+   "display": "Emma Morse"
   },
   {
-   "name": "spurgeonfiddle",
-   "display": "Haddon Brown"
+   "name": "elizabeth.deschaine",
+   "display": "Elizabeth Deschaine"
   },
   {
-   "name": "hello3milyy",
-   "display": "Emily Bouchard"
+   "name": "mr.muggy",
+   "display": "Mark Tomford"
   },
   {
-   "name": "emily_g_ramer",
-   "display": "Emily Ramer"
+   "name": "micahmcculley_",
+   "display": "Micah McCulley"
   },
   {
-   "name": "hopiek_09",
-   "display": "Hope Kilcollins"
+   "name": "judder_budder",
+   "display": "Judson Colbert"
   }
  ],
  "filed": [
   {
-   "name": "sf:caleb-froats",
-   "display": "Caleb Froats",
+   "name": "ol9a",
+   "display": "Olga Lindsey",
    "facts": [
     {
-     "text": "As of Nov 2026, a senior at SUNY Potsdam's Crane School of Music double-majoring in vocal performance and music business, in the Class of 2027",
-     "source": "SUNY Potsdam",
-     "url": "https://potsdam.meritpages.com/news/first-look--crane-opera-ensemble-presents-a-double-bill-of-gossip--chaos---missed-connections/63179",
-     "published": "2026-11-10",
+     "text": "Member of Bridgewater State University's Class of 2017",
+     "source": "Bridgewater State University",
+     "url": "https://www.bridgew.edu/the-university/bridgewater-magazine/spring2021/leading-by-example",
+     "published": "",
      "novelty": "expands",
      "fresh": false
     }
    ]
   },
   {
-   "name": "sf:cody-benham",
-   "display": "Cody Benham",
+   "name": "jocelynrose04",
+   "display": "Jocelyn Daniels",
    "facts": [
     {
-     "text": "Tied for 6th in MA1 at the 2025 Van Buren SuperFlex in Aug 2025, shooting +1 (62)",
-     "source": "PDGA",
-     "url": "https://www.pdga.com/tour/event/94334",
+     "text": "Received a SUNY Canton Honors Convocation academic award for Individual Studies in 2026, the convocation honor for students with the top GPA in their major for their class year",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/honors_convocation/",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "alyssalramsay",
+   "display": "Alyssa L Ramsay",
+   "facts": [
+    {
+     "text": "Started as an intern with the St. Lawrence County Soil and Water Conservation District in May 2026, working as a wetland monitor for the Wetland Reserve Program in partnership with NRCS",
+     "source": "St. Lawrence County Soil and Water Conservation District",
+     "url": "https://www.facebook.com/SLCSWCD/posts/pfbid02Chqt7VxV9YAosVUVjT1rL3YSbtx3ASHA4j35ibc3dh7WTtyUhgT2mTCJzR4Jw2Atl",
+     "published": "2026-11-06",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "midwifesunday",
+   "display": "Sunday Wright Smith",
+   "facts": [
+    {
+     "text": "As Rotary Club of Potsdam president, presented the club's $200 donation to Helping Hands of Potsdam for its annual Thanksgiving food basket giveaway, Nov 2026",
+     "source": "Rotary Club of Potsdam",
+     "url": "https://potsdamrotary.org/Stories/potsdam-rotary-donates-to-helping-hands",
+     "published": "",
+     "novelty": "expands",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "fulton.julia",
+   "display": "Julia Fulton",
+   "facts": [
+    {
+     "text": "Presented undergraduate research titled 'Liberty, Equality, Sisterhood: The Role of Women in the French Revolution' in Hope College's Celebration of Undergraduate Research, 2016",
+     "source": "Hope College",
+     "url": "https://hope.edu/academics/world-languages-cultures/special-programs-opportunities/index.html",
      "published": "",
      "novelty": "new",
      "fresh": false
     },
     {
-     "text": "Tied for 31st in MA1 at the 2025 Syracuse Open in Liverpool, New York, in Sep 2025, shooting +9",
-     "source": "PDGA",
-     "url": "https://www.pdga.com/tour/event/92299",
+     "text": "Served as an executive board member of Vox Populi, the Hope College student group that managed the Holland mayoral debate dialogue, Oct 2017",
+     "source": "The Anchor",
+     "url": "https://anchor.hope.edu/campus/student-groups-host-mayoral-debate/",
+     "published": "2017-10-25",
+     "novelty": "new",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "caroline.lafountain",
+   "display": "Caroline LaFountain",
+   "facts": [
+    {
+     "text": "Started all 24 games in the 2021-22 season for SUNY Potsdam women's basketball, averaging 7.4 points and 4.8 rebounds per game",
+     "source": "SUNY Potsdam Athletics",
+     "url": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
+     "published": "",
+     "novelty": "new",
+     "fresh": false
+    },
+    {
+     "text": "Played in 23 games in the 2019-20 season for SUNY Potsdam women's basketball, averaging 12.3 points and 4.0 rebounds per game",
+     "source": "SUNY Potsdam Athletics",
+     "url": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
      "published": "",
      "novelty": "new",
      "fresh": false
@@ -341,28 +405,14 @@
    ]
   },
   {
-   "name": "sf:owen-kennedy",
-   "display": "Owen Kennedy",
+   "name": "wayne_brown_ii",
+   "display": "Wayne Brown",
    "facts": [
     {
-     "text": "Sold 124 Hayes Rd, Schuylerville, as seller's agent with Empire Real Estate Firm for $367,000, closed Mar 10, 2026",
-     "source": "Homes.com",
-     "url": "https://www.homes.com/property/124-hayes-rd-schuylerville-ny/z78250djljkem/",
-     "published": "",
-     "novelty": "expands",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "ct:dr kring",
-   "display": "Lawrence Kring",
-   "facts": [
-    {
-     "text": "Serves as President of the Morristown Central School Board of Education, listed in the St. Lawrence-Lewis BOCES 2025-26 Annual Meeting & Budget Booklet",
-     "source": "St. Lawrence-Lewis BOCES",
-     "url": "https://www.sllboces.org/2025-annual-meeting-and-budget-booklet/",
-     "published": "",
+     "text": "Featured as Gather Markets' Wayne Brown on the Chrisman Commentary podcast discussing CRA-eligible loans, Oct 2026",
+     "source": "Chrisman Commentary",
+     "url": "https://chrismancommentary.com/podcast/10-8-26/",
+     "published": "2026-10-08",
      "novelty": "expands",
      "fresh": false
     }
@@ -375,10 +425,6 @@
   "window_days": 30
  },
  "next_up": [
-  {
-   "name": "aaronjdaniels",
-   "display": "Aaron Daniels"
-  },
   {
    "name": "adria.t18",
    "display": "Adria Tebo"
@@ -400,20 +446,24 @@
    "display": "Alfredo Rodriguez"
   },
   {
-   "name": "alyssalramsay",
-   "display": "Alyssa L Ramsay"
+   "name": "annecatherina7",
+   "display": "Anne Katherin Wolf"
   },
   {
-   "name": "anastasia_g_daniels",
-   "display": "Anastasia Daniels"
+   "name": "autumn.zellweger",
+   "display": "Autumn Zellweger"
   },
   {
-   "name": "drewspov_",
-   "display": "Andrew Matott"
+   "name": "cloutlord_420",
+   "display": "Avery Criscitello"
   },
   {
-   "name": "andy.dennis777",
-   "display": "Andy Dennis"
+   "name": "benlevendusky",
+   "display": "Ben Levendusky"
+  },
+  {
+   "name": "sf:benjamin-horner",
+   "display": "Benjamin Horner"
   }
  ],
  "unchecked_remaining": 0,
@@ -426,5 +476,5 @@
   "oldest": "2026-11-21"
  },
  "hot": [],
- "note": "AM run. AM run; 75 from the oldest tiers (1 never-checked + 50 from the 2026-11-20 tier + 24 from 2026-11-21). 5 bullets across 4 people, each parent-verified on its source page and read back in the Sheet exactly once: Froats [expands: Crane senior double-major in vocal performance and music business, Class of 2027 \u2014 SUNY Potsdam Merit Pages, pub. 2026-11-10], Benham x2 [new: T-6th MA1 at the 2025 Van Buren SuperFlex; T-31st MA1 at the 2025 Syracuse Open \u2014 PDGA], Kennedy [expands: sold 124 Hayes Rd, Schuylerville, as Empire seller's agent for $367,000, closed Mar 10, 2026 \u2014 Homes.com], Kring [expands: President of the Morristown Central School Board of Education in the SLL BOCES 2025-26 booklet]. Fresh sweep: none found (dedicated Nov 5-26 sweep \u2014 every genuinely new in-window item was about a non-directory person: Gorski's NABC board appointment, Chen Liu's NSF role, Amanda Jones's history-center hire, SUNY Canton's Mohawk videos; directory members in the window's coverage \u2014 Goettl, Spademan, Tebo, Evans, Miller-Lynch, Walczyk, Mayer \u2014 were already on file or known-role only). Hot list empty (the Nov 24 Goettl/Spademan/Tebo items aged out of the 48-hour window). Parent verification demoted Annika Greco's Equip Conference speaking claim: the only source naming her as a speaker is a Genesis Network Instagram announcement (Stewardship's own conference page confirms the Sep 18, 2026 event but does not name her), so it was logged, not filed. Logged, not filed and not candidated under the Nov 4 rule: Greco (above), Daniel Paladin's June 27, 2026 Middle Tennessee move (his wife's Instagram only; the Columbia, TN detail appeared only on a banned source and was not recorded), Cory Williams's conference session and Creative Currents launch (his own business accounts only), Gregory Hurlbut's NTC Plattsburgh speaker item (social post summary only), Kring's jail medical-director claim (the March 7, 2022 county record shows interest and a budget change, never an appointment) and his WebMD Claxton-Hepburn listing (single aggregator, conflicts with his Rochester Regional affiliation on file), Owen Kennedy's 466 Ontario St closing (the two brokerages' own posts conflict on who closed it) and 1075 Pleasant St bought-with credit (no closing date on the page), Cody Benham's Clay Park Classic result (Disc Golf Scene page alone ties only one anchor), and Heidi Jo Levendusky's daughter item (a fact about Joye, not Heidi). On-file issues flagged, nothing changed: Susan Buckley's Binghamton University department-chair bullet appears to be a namesake (that scholar holds a University of Minnesota PhD with no SUNY Canton or State Police tie), and Matthew Merria's two Lalonde Mar 31, 2026 bullets contradict each other (one says his summary-judgment motion was granted in full, the other that the excessive-force claim survived because he had not moved on it) \u2014 the sensitive case stays as filed pending JD's word. 8 candidates added to Research Command (ledger 745: identity holds for Bresett, Marceau, Nina Criscitello, Nanette Holt, Rawson, Lapinski; Kring sensitive family hold; Froats failed-verification record). 7 JD console filing points reconciled into changes.json. Photo leads flagged by JD still unharvested: Max Ferran (Bold.org), Megan Converse (Clarkson Merit Pages), Emily Criscitello (Precision Scuba Diving), Joe Charlebois (Elite Prospects), Joann Duclos (Army.mil), Kayla Hettel (Puget Sound Birth Center), Christine Sutter (UConn Today), Katelyn Tomford (Zola), Jon Cyphers (Jesus Freak Hideout), Jale (Jale's Turkish Delights). Coverage 726/726; unchecked_remaining 0; freshness d7 726, oldest 2026-11-21. Inbox: 1 appended; 4 suppressed (read pattern / near-duplicate)."
+ "note": "PM run. PM run (second of the day, twice-daily cadence); 75 from the 2026-11-21 tier. 9 bullets across 7 people, each parent-verified on its source page and read back in the Sheet exactly once: Ramsay [new, in-motion: started as an intern with the St. Lawrence County Soil and Water Conservation District in May 2026, working as a wetland monitor for the Wetland Reserve Program in partnership with NRCS \u2014 the district's own post, pub. 2026-11-06; blank Companies filled], Daniels [new: SUNY Canton Honors Convocation academic award for Individual Studies, 2026 \u2014 top GPA in her major for her class year], Fulton [new x2: 2016 Celebration of Undergraduate Research presentation on women in the French Revolution; Vox Populi executive board member for the Oct 2017 Holland mayoral debate], LaFountain [new x2: started all 24 games in 2021-22, 7.4 points / 4.8 rebounds per game; played 23 games in 2019-20, 12.3 points / 4.0 rebounds \u2014 SUNY Potsdam Athletics roster bio], Brown [expands: Chrisman Commentary podcast interview as Gather Markets' Wayne Brown on CRA-eligible loans, Oct 8, 2026 \u2014 blank Companies filled with Gather Markets], Lindsey [expands: Bridgewater State University Class of 2017], Smith [expands: as Rotary Club of Potsdam president, presented the club's $200 Helping Hands Thanksgiving donation, Nov 2026]. Fresh sweep: none found (dedicated Nov 5-26 sweep, independently re-run this evening \u2014 every in-window directory item was already filed, incl. this morning's Goettl/Spademan/Tebo goals and Froats, or known-role only: Haller bylines, Szafran institutional items; health-system coverage in the window was institutional only). Hot list empty (no filed fact published Nov 25-26). Logged, not filed and not candidated under the Nov 4 rule: Kayle McCormick's July 2026 NCPR development-coordinator announcement (the job change is already on her footprint; the article only dates it), Brendan Bombard's GovSalaries Norwood General Employee listing (single aggregator, one anchor; a search snippet misreading it as a police role is not supported by the opened page), Kourtney Peets's Fall 2020 and Spring 2021 SUNY Canton honor-roll lines (her name appears on both pages but the honor category could not be established from the pages as opened), Natalie Waterman's Nov 13, 2026 Darie Lab presentation (her own lab's social post only), Jessica Hurlbut's Apr 18, 2026 Autism Mother to Mother Luncheon speaking slot (her footprint already carries the same luncheon with no date \u2014 likely the same recurring engagement), Micah McCulley's undated TFRRS Harry F. Anderson Invitational result (single source, no date on the page), Angeles Felix's CMDA dental-missions webinar listing (single social source, year of the Jan 26 webinar not stated) and her WebMD expired-licence listing (single aggregator, contradicted by her practice's live staff page \u2014 not filed without the official Rhode Island lookup), Sierra Smith's Viable Options CEO listing (single aggregator, internally inconsistent about who leads the organization), Traci Laing's A-Frames lodging listing (page names the farm but not Traci or Scott, and the A-Frames may be the cabins already on file), Michelle Johnston's '16 years of experience teaching' line (static detail on the same faculty page her on-file facts came from), Debbie Knaebel's Clarkson Love Stories meeting detail (her own alumni submission), Josiah Martin's Good Morning America Deals & Steals claim (his own business's site only), the John Zufall NCPR photography item (the article's subject is David Zufall, not John \u2014 not attributed across the family), and Caroline LaFountain's Wellspring ONE Campaign photo caption (Saratoga area only, one anchor). 10 candidates added to Research Command (ledger 755: identity holds for Aaron Daniels, Martin Lovell, Jackson Paladin, Tori Brunet, Daniel Manor, Cecilie Smith, Andrew Matott; sensitive family holds for Danielle Caskinett and Caroline LaFountain; Nevaeh Phillips failed-verification record). 2 JD console filing points reconciled into changes.json. Photo leads flagged by JD still unharvested: Max Ferran (Bold.org), Megan Converse (Clarkson Merit Pages), Emily Criscitello (Precision Scuba Diving), Joe Charlebois (Elite Prospects), Joann Duclos (Army.mil), Kayla Hettel (Puget Sound Birth Center), Christine Sutter (UConn Today), Katelyn Tomford (Zola), Jon Cyphers (Jesus Freak Hideout), Jale (Jale's Turkish Delights). Lane: 5 compounded; 0 new facts filed; 0 candidates; 0 corrections flagged; 7 loop closures; 8 discards. Inbox: 4 appended; 5 suppressed (read pattern / near-duplicate). Coverage 726/726; unchecked_remaining 0; freshness d7 726, oldest 2026-11-21."
 }
