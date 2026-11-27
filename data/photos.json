@@ -1663,7 +1663,7 @@
    "type": "Facebook profile picture"
   },
   {
-   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list — no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type.",
+   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list — no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type. JD-supplied Facebook seed checked 2026-11-27: profile ID 61556063210734 is verified as Courtney Letiecq's own profile, but her profile photo is not retrievable — she is not in JD's Facebook friends list and connector profile/timeline reads return 'Profile Not Accessible' (403); browser fetch shows the profile name only, no image.",
    "name": "Courtney Letiecq",
    "photo_url": null,
    "source_page": "http://psqr-site-content-migration.s3-website-us-west-2.amazonaws.com/Site-Backups/ALTMAR_PARISH_WILLIAMSTOWN_CSD/www.apwschools.org/site/handlers/APW_2024GraduationNewsletterc6ea.pdf?moduleinstanceid=5202&dataid=4489&FileName=APW_2024GraduationNewsletter.pdf",
