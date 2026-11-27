@@ -7848,12 +7848,16 @@ function pvHeroStatHTML(){
       '<i class="p" style="height:' + (p ? Math.max(3, Math.round(p / maxV * 26)) : 0) + 'px"></i></span>' +
       '<span class="pv-hg-lab">' + d.lab + ' ' + d.dom + '</span></span>';
   }).join('');
-  var qual = totP ? Math.round(confP / totP * 100) + '% of photos confirmed' : 'no photos filed this week';
+  /* V4.21.0 (JD 2026-11-27): plain language — the band says what
+     a filing IS, the two numbers per day get a legend in words,
+     and the caption is one clear sentence. Same counts. */
+  var qual = totP ? 'You have confirmed ' + confP + ' of them (' + Math.round(confP / totP * 100) + '%)' : 'No photos were filed this week';
   var wkLab = 'Mon ' + MN[mon.getMonth()] + ' ' + mon.getDate() + ' – Sun ' + MN[parseInt(sunIso.slice(5, 7), 10) - 1] + ' ' + parseInt(sunIso.slice(8, 10), 10);
   return '<div class="pv-herostat">' +
-    '<div class="pv-hs-file"><span class="pv-hs-k">Filings this week</span><b>' + (filedWeek == null ? '…' : filedWeek) + '</b></div>' +
+    '<div class="pv-hs-file"><span class="pv-hs-k">New facts filed this week</span><b>' + (filedWeek == null ? '…' : filedWeek) + '</b></div>' +
     '<div class="pv-hs-graph"><div class="pv-hg-cols">' + cols + '</div>' +
-    '<div class="pv-hg-cap">' + wkLab + ' · <b>' + totF + '</b> facts · <b>' + totP + '</b> photos filed this week · ' + qual + '</div></div>' +
+    '<div class="pv-hg-cap">' + wkLab + ' — <b>' + totF + '</b> new facts and <b>' + totP + '</b> new photos were filed this week. ' + qual + '.' +
+    '<span class="pv-hg-legend"><span><i class="f"></i>facts per day</span><span><i class="p"></i>photos per day</span></span></div></div>' +
     '</div>';
 }
 function viewHome(v){
@@ -8564,23 +8568,20 @@ function hmBandHTML(o){
      speaks for itself and the space goes to content. Only the
      two tool buttons remain, on a slim bar. */
   var center = '<div class="gm-mapcard" id="hmCard">' +
+    /* V4.21.0 (JD 2026-11-27): the stepper is ARROWS ONLY — the
+       range slider is deleted (dragging it repainted the whole
+       map per tick and flashed). The ‹ › buttons ride the top
+       tool bar next to Reset view / Full screen; under the map
+       only the ONE readout line remains. */
     '<div class="gm-mtools slim">' +
+    '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
+    '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div>' +
     '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Map of web search appearances"></div>' +
     '<div class="gm-mapnote" id="hmNote" hidden></div>' +
     '<div class="gm-hero gm-herodock" id="hmHero" hidden></div></div>' +
-    /* V4.20.1 (JD 2026-11-27): the stepper is stripped to ONE slim
-       row — ‹ ›, the slider, and one readout line (name · date ·
-       what · where, nothing else). Gone: the Latest appearances
-       strip, the tick/meter strip, the hint text, and the "All
-       appearances" button (rest is slider position 0). */
-    '<div class="gm-step"><div class="gm-srow">' +
-    '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
-    '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
-    '<input type="range" id="hmRange" class="gm-range" min="0" max="0" value="0" step="1" aria-label="Step through the dated appearances, one stop per appearance">' +
-    '</div>' +
-    '<div class="gm-evread" id="hmEvRead">—</div></div>' +
+    '<div class="gm-evread" id="hmEvRead">—</div>' +
     '</div>';
   /* V4.19.0 (JD): the foot keeps only "Known since". Removed:
      the "Where the map stands" readout, "How to read it", the
@@ -8729,19 +8730,13 @@ function hmPaintReadout(){
   }
   if(gaps) gaps.innerHTML = hmGapsHTML();
 }
-/* The event stepper's own paint: slider position and the ONE
-   readout line. The readout shows only NAME, DATE, and the
-   information (what happened + where) — no "Event X of N", no
-   explanatory text (V4.20.2). At rest it names the newest dated
-   appearance in the same format. The tick/meter strip is gone. */
+/* The event stepper's own paint: the ONE readout line. The
+   readout shows only NAME, DATE, and the information (what
+   happened + where) — no "Event X of N", no explanatory text
+   (V4.20.2). At rest it names the newest dated appearance in
+   the same format. V4.21.0: no slider remains to sync. */
 function hmPaintStepper(){
   var evs = hmEvents(), N = evs.length;
-  var r = document.getElementById('hmRange');
-  if(r){
-    if(r.max !== String(N)) r.max = String(N);
-    var v = HM.evIdx < 0 ? 0 : HM.evIdx + 1;
-    if(document.activeElement !== r && r.value !== String(v)) r.value = String(v);
-  }
   var rd = document.getElementById('hmEvRead');
   if(rd){
     if(!AP) rd.textContent = 'Loading\u2026';
@@ -8753,19 +8748,81 @@ function hmPaintStepper(){
     }
   }
 }
-/* Move the stepper. v is the slider value: 0 = rest (All
-   appearances), 1..N = events 1..N in published order. */
+/* Move the stepper. v is the stop value: 0 = rest (All
+   appearances), 1..N = events 1..N in published order.
+   V4.21.0: stepping NEVER full-repaints. The readout and the
+   single orb are swapped in place; the badges layer is cleared
+   exactly once on the rest→stepped transition; and the
+   programmatic setView is flagged (HM._navMove) so the moveend
+   handler does not answer it with a redundant rebuild — that
+   rebuild-per-step was the flashing JD saw. */
 function hmSetEv(v, fly){
   var evs = hmEvents(), N = evs.length;
   v = Math.max(0, Math.min(N, v));
+  var wasRest = HM.evIdx < 0;
   HM.evIdx = v - 1;
-  var r = document.getElementById('hmRange'); if(r) r.value = String(v);
-  hmPaint();
-  if(fly && HM.evIdx >= 0 && HM.map && window.L){
-    var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
-    /* V4.20.0: instant jump, never an animated flight — the map is static. */
-    if(pl) HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 11), { animate:false });
+  if(HM.evIdx < 0){
+    /* Back to rest: one full paint restores the overview. */
+    hmPaint();
+    return;
   }
+  if(wasRest) hmPaint();          /* clears badges, draws the orb */
+  else { hmPaintStepper(); hmDrawStepPin(); }
+  if(fly && HM.map && window.L){
+    var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
+    if(pl){
+      HM._navMove = true;
+      /* V4.20.0: instant jump, never an animated flight — the map is static. */
+      HM.map.setView([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 11), { animate:false });
+    }
+  }
+}
+/* The stepped appearance's marker (V4.21.0): a circular ORB
+   centred exactly on the place's lat/lng — the divIcon is a
+   0x0 point at the place and the orb is centred on it by CSS,
+   so nothing about text length can shift it. The ring colour
+   is the recency class (a-hot fresh / a-mid within 90 days /
+   a-old older — the palette the dots and badges already use).
+   HOVER expands the full info card in place (name and date as
+   heroes, the FULL finding text, where, source); a tap toggles
+   the same card for touch. Clicking still selects the
+   appearance (hero card) as before. */
+function hmOrbIcon(a, ref){
+  var ageCls = hmAppAgeCls(a, ref);
+  var pl = hmModel().places[a.pid];
+  var html = '<span class="gm-orbwrap">' +
+    '<span class="gm-orb ' + ageCls + '"><i></i></span>' +
+    '<span class="gm-ocard">' +
+    '<span class="gm-oc-name">' + esc(a.display) + '</span>' +
+    '<span class="gm-oc-date">' + hmFmtDate(a.published) + '</span>' +
+    '<span class="gm-oc-text">' + esc(a.text) + '</span>' +
+    '<span class="gm-oc-meta">' + esc(a.place || (pl ? pl.label : '')) +
+    (a.source ? ' · ' + esc(a.source) : '') + '</span>' +
+    '</span></span>';
+  return L.divIcon({ className:'gm-di gm-orbdi', html:html, iconSize:[0, 0], iconAnchor:[0, 0] });
+}
+/* Swap ONLY the stepped orb (its own layer group, HM.pinLayer):
+   the basemap and every other layer are untouched, so a step
+   costs one marker, not a rebuild. */
+function hmDrawStepPin(){
+  if(!HM.map || !window.L || !AP) return;
+  if(!HM.pinLayer) HM.pinLayer = L.layerGroup().addTo(HM.map);
+  var evs = hmEvents();
+  var curA = (HM.evIdx >= 0 && evs.length) ? evs[Math.min(HM.evIdx, evs.length - 1)] : null;
+  var key = curA ? curA.i : -1;
+  if(HM._pinKey === key && HM.pinLayer.getLayers().length) return;
+  HM._pinKey = key;
+  HM.pinLayer.clearLayers();
+  if(!curA) return;
+  var M = hmModel(), pl = M.places[curA.pid];
+  if(!pl) return;
+  var pin = L.marker([pl.lat, pl.lng], { icon:hmOrbIcon(curA, M.maxD) }).addTo(HM.pinLayer);
+  pin.on('click', function(){
+    var el = pin.getElement();
+    if(el && window.matchMedia && window.matchMedia('(hover: none)').matches)
+      el.classList.toggle('gm-orb-open');
+    hmSelectApp(curA.i);
+  });
 }
 function hmCluster(vis){
   /* screen-space grid clustering of place badges (64px cells of
@@ -8820,8 +8877,20 @@ function hmPaint(){
   hmPaintStepper(); hmPaintReadout(); hmPaintDetail();
   if(!HM.map || !window.L) return;
   if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
-  HM.layer.clearLayers();
   var M = hmModel(), st = hmStateApps();
+  /* V4.21.0: the main layer is cleared ONLY for the resting
+     overview. While stepped, the badges are cleared exactly
+     once (the rest→stepped transition) and the orb lives in
+     its own layer, swapped by hmDrawStepPin — stepping can no
+     longer rebuild the map. */
+  if(!st.rest){
+    if(HM._restDrawn){ HM.layer.clearLayers(); HM._restDrawn = false; }
+    if(AP) hmDrawStepPin();
+    return;
+  }
+  HM.layer.clearLayers();
+  HM._restDrawn = true;
+  if(HM.pinLayer){ HM.pinLayer.clearLayers(); HM._pinKey = -1; }
   var selPk = null;
   if(HM.sel && HM.sel.type === 'place') selPk = HM.sel.key;
   else if(HM.sel && HM.sel.type === 'app' && AP){
@@ -8898,22 +8967,9 @@ function hmPaint(){
       pin.on('click', function(){ hmSelectApp(a.i); });
     });
   } else {
-    /* ONE ITEM AT A TIME (V4.20.2, JD 2026-11-27): stepped to a
-       stop, the map shows ONLY that appearance — its labeled pin
-       drawn AT the place's own lat/lng with a fixed iconAnchor
-       ([94,46] on a 188x46 label: the tip sits on the place point
-       no matter how long the name or text is). No cumulative
-       dots, no badges for other findings, no clusters. The pin
-       still opens the appearance hero on click. */
-    var evsS = hmEvents(), curA = evsS.length ? evsS[Math.min(HM.evIdx, evsS.length - 1)] : null;
-    if(curA){
-      var plS = M.places[curA.pid];
-      if(plS){
-        var ageS = Math.round((hmDayMs(M.maxD) - hmDayMs(curA.published)) / 864e5);
-        var pinS = L.marker([plS.lat, plS.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin cur' + (ageS <= 21 ? ' fresh' : '') + '"><b>' + esc(curA.display) + '</b><i>' + esc(hmAppsPhrase(curA.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
-        pinS.on('click', function(){ hmSelectApp(curA.i); });
-      }
-    }
+    /* V4.21.0: unreachable — hmPaint returns in the stepped
+       branch above; the stepped orb is drawn by hmDrawStepPin
+       in its own layer so stepping never rebuilds this one. */
   }
 }
 function hmSelectPlace(pk){
@@ -9031,24 +9087,16 @@ function hmMount(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
   if(HM.fs){ HM.fs = false; HM.fsFallback = false; if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){} } }
   /* The stepper's stops are the dated appearances themselves:
-     slider 0 = All appearances, 1..N = events in published
-     order. Every input — drag, arrow keys, step buttons — moves
-     AND zooms the map to the stop's place at once (V4.20.2). */
+     stop 0 = All appearances (rest), 1..N = events in published
+     order. Navigation is the ‹ › buttons in the top tool bar
+     (V4.21.0 — the range slider is deleted); each step moves
+     AND zooms the map to the stop's place at once. */
   var evs0 = hmEvents();
   if(HM.evIdx >= evs0.length) HM.evIdx = evs0.length - 1;
-  var range = document.getElementById('hmRange');
-  if(range){
-    range.max = String(evs0.length); range.value = String(HM.evIdx < 0 ? 0 : HM.evIdx + 1);
-    /* V4.20.2: ONE push of the slider navigates — oninput itself
-       moves AND zooms the map to the stop's place (instant,
-       animate:false in hmSetEv); onchange repeats the same call. */
-    range.oninput = function(){ hmStopPlay(); hmSetEv(+range.value, true); };
-    range.onchange = function(){ hmSetEv(+range.value, true); };
-  }
   hmPaint();
   hmLoadLeaflet(function(ok){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
-    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; }
+    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; HM.pinLayer = null; HM._pinKey = -1; HM._sized = false; HM._restDrawn = false; HM._navMove = false; }
     var mode = document.documentElement.getAttribute('data-mode');
     /* V4.20.0 (JD 2026-11-26): the Overview map is STATIC — every
        Leaflet animation is off (no tile fade, no animated zoom,
@@ -9077,10 +9125,26 @@ function hmMount(){
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
         { maxZoom:18, maxNativeZoom:16 }).addTo(HM.map));
     }
-    HM.map.on('moveend zoomend', function(){ hmPaint(); });
+    /* V4.21.0: moveend no longer answers every move with a
+       full repaint. A programmatic step (HM._navMove) is
+       consumed silently; while stepped, the orb is anchored to
+       its lat/lng and needs no repaint at all; only a user's
+       own pan/zoom at REST repaints (clusters and label fit are
+       screen-space there). */
+    HM.map.on('moveend zoomend', function(){
+      if(HM._navMove){ HM._navMove = false; return; }
+      if(HM.evIdx >= 0) return;
+      hmPaint();
+    });
     hmFitDefault();
     hmPaint();
-    setTimeout(function(){ if(HM.map) HM.map.invalidateSize(); }, 60);
+    /* One settle pass: Leaflet measured the container before
+       the card reached its final width, which left a white
+       strip of uncovered tiles at the right edge (JD's
+       screenshot). invalidateSize runs ONCE here after layout
+       settles — and on full-screen toggles (hmFsSize) — never
+       per step. */
+    setTimeout(function(){ if(HM.map && !HM._sized){ HM._sized = true; HM.map.invalidateSize(); if(HM.evIdx < 0) hmPaint(); } }, 350);
   });
 }
 function hmNoMap(){
