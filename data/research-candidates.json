@@ -19629,6 +19629,60 @@
    "fields": {},
    "published": "2026-05-06",
    "novelty": "new"
+  },
+  {
+   "name": "kale_hitchman",
+   "display": "Kale Hitchman",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A New York State Police officer named K.C. Hitchman took part in a community lunch visit with elementary students at Colton-Pierrepont Central School on November 20, 2026, in a post from the school.",
+   "file_text": "Took part in a New York State Police community lunch visit at Colton-Pierrepont Central School, Nov 2026",
+   "source": "Colton-Pierrepont Central School",
+   "url": "https://www.facebook.com/CPCSColts/posts/pfbid0fwuJ6DKMz23Xa8RNrVfwPUm96qpujrZw18WvmQ7Wqtw3W7pKqe7DTvRmpRCdgW4Gl",
+   "quote": "Multiple images show New York State Police officer K.C. Hitchman, a Potsdam Police sergeant, Sheriff L. Filiatrault, and a man in a light blue shirt and tie (wearing a badge and gloves) sitting at blue lunch tables with groups of young children",
+   "anchors": [
+    "New York State Police is his employer on file",
+    "Colton is his town on file"
+   ],
+   "missing_gate": "The post names the officer only as K.C. Hitchman, so I am not sure the first name is Kale.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-11-20",
+   "novelty": "new",
+   "id": "lr-20261127-kale-hitchman-took-part-in-a-new-york-state-police",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "jlevens18",
+   "display": "Joye Levendusky",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A Legacy Elite Wrestling Club post promotes a Joye Levendusky Clinic on August 14-15 in Medford, Oregon, listing her King University coaching role.",
+   "file_text": "Led a two-day wrestling clinic for Legacy Elite Wrestling Club in Medford, Oregon, Aug 2026",
+   "source": "Legacy Elite Wrestling Club",
+   "url": "",
+   "quote": "",
+   "anchors": [
+    "King University assistant coach role on file",
+    "U.S. Open champion on file"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-jlevens18-led-a-two-day-wrestling-clinic-for-l",
+   "run_date": "2026-11-27"
   }
  ]
 }
