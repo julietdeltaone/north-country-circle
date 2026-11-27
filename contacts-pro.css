@@ -7767,3 +7767,119 @@ html[data-mode="light"] .gm-hs-meta.r1{color:#8a5c0e}
 .pv-bottom{grid-template-columns:1fr 1fr}
 .pv-bottom .pv-actions{grid-column:1/-1}
 @media(max-width:1180px){.pv-bottom{grid-template-columns:1fr}}
+
+/* ============================================================
+   V4.20.1 (JD 2026-11-27) — three fixes:
+   1. ONE background, website-wide, WITH parallax.
+   2. Source chips never truncate.
+   3. Profile controls ride inside the hero; Activity column
+      renders the change log by filed date (.fia-*).
+   ============================================================ */
+
+/* --- 1. ONE background scene --------------------------------
+   Exactly one fixed scene: body::before (the multi-gradient
+   scene defined at the top of the glass era), overscanned and
+   drifted by the --plx-bg parallax driver. #plxmid stays as the
+   mid-plane of that same scene (matching palette, different
+   drift rate — legitimate parallax depth). Everything else
+   that painted a background is neutralized:
+   - html/body carry a SOLID base color only (no gradients), so
+     nothing reads as a sticky layer behind the glass cards.
+   - #bgfx is permanently gone (bgInit no longer creates it).
+   - .page.profile::before paints no scene of its own.
+   - The late V4 overrides that flattened body::before to a
+     single radial with transform:none !important are reversed:
+     the full scene and its parallax transform are restored. */
+html,body{background:var(--pv-bg)}
+html[data-mode="dark"] body{background:#0b0e13}
+html[data-mode="medium"] body{background:#525c68}
+html[data-mode="light"] body{background:#e7ebf1}
+body::before{
+  background:
+    radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 52%,transparent),transparent 64%),
+    radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 46%,transparent),transparent 64%),
+    radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 20%,transparent),transparent 60%),
+    radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 16%,transparent),transparent 60%),
+    radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(31,48,71,.16) 100%),
+    linear-gradient(155deg,color-mix(in srgb,var(--ga) 13%,var(--field)),color-mix(in srgb,var(--gb) 11%,var(--field))) !important;
+  inset:-180px -70px;
+  transform:translate3d(0,var(--plx-bg),0) !important;
+  will-change:transform}
+html[data-mode="dark"] body::before{
+  background:
+    radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 58%,transparent),transparent 64%),
+    radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 52%,transparent),transparent 64%),
+    radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 24%,transparent),transparent 60%),
+    radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 20%,transparent),transparent 60%),
+    radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.42) 100%),
+    linear-gradient(155deg,color-mix(in srgb,var(--ga) 14%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field))) !important}
+html[data-mode="light"] body::before{
+  background:
+    radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 52%,transparent),transparent 64%),
+    radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 46%,transparent),transparent 64%),
+    radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 20%,transparent),transparent 60%),
+    radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 16%,transparent),transparent 60%),
+    radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(31,48,71,.16) 100%),
+    linear-gradient(155deg,color-mix(in srgb,var(--ga) 13%,var(--field)),color-mix(in srgb,var(--gb) 11%,var(--field))) !important}
+#bgfx{display:none !important}
+.page.profile::before{background:none !important;content:''}
+@media (prefers-reduced-motion:reduce){
+  body::before{transform:none !important}
+  #plxmid{transform:none !important}
+}
+
+/* --- 2. Source chips: full title, wraps, never ellipsized --- */
+.af-src-chip{white-space:normal;overflow-wrap:anywhere;line-height:1.35;text-align:left}
+.af-topright{flex:1 1 auto;min-width:0;max-width:none;overflow:visible;display:flex;justify-content:flex-end}
+.af-topright .af-src-chip{max-width:100%;overflow:visible;text-overflow:clip;white-space:normal}
+@media (max-width:640px){.af-topright{max-width:none}}
+
+/* --- 3a. Profile hero shell: controls inside the hero -------
+   .p-hero-shell wraps the hero card; .ptop-hero is a slim
+   utility strip overlaid on the hero's top edge (back at the
+   top-left corner, pager centred, actions menu top-right).
+   The hero's own top padding grows just enough (30px) for the
+   strip to sit above the name without covering it, replacing
+   the old standalone ~34px .ptop row + page gap entirely. */
+.page.profile .p-hero-shell{position:relative}
+.page.profile .ptop-hero{position:absolute;top:5px;left:10px;right:10px;z-index:70;display:flex;align-items:center;gap:8px;padding:0;pointer-events:none}
+.page.profile .ptop-hero>*{pointer-events:auto}
+.page.profile .ptop-hero .ib{width:26px;height:26px;background:color-mix(in srgb,var(--pv-panel) 78%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.page.profile .ptop-hero .ib svg{width:15px;height:15px}
+.page.profile .ptop-hero .crumb{padding:3px 6px;font-size:11px;background:color-mix(in srgb,var(--pv-panel) 78%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:6px}
+.page.profile .ptop-hero .pager{font-size:12px;gap:4px}
+.page.profile .ptop-hero .menu-pop{top:30px}
+.page.profile #p-hero{padding-top:34px}
+@media (max-width:640px){
+  .page.profile .ptop-hero .crumb.fwd{display:none}
+  .page.profile #p-hero{padding-top:32px}
+}
+
+/* --- 3b. Activity column: change-log filings (.fia-*) ------- */
+.fi-actfeed{padding-left:0}
+.fia-day{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px;padding-bottom:5px;border-bottom:1px solid var(--pv-line2)}
+.fia-day:first-child{margin-top:2px}
+.fia-day span{font:800 13px var(--sans);color:var(--pv-text)}
+.fia-day em{font:600 11px var(--sans);font-style:normal;color:var(--pv-dim);margin-left:auto}
+.fia-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--pv-line)}
+.fia-day + .fia-row{border-top:0}
+.fia-row .af-av{width:38px;height:38px}
+.fia-row>.av{width:30px;height:30px;font-size:12.5px;flex:none}
+.fia-main{flex:1;min-width:0}
+.fia-top{display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap}
+.fia-filed{font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--pv-gold);white-space:nowrap;padding-top:3px}
+.fia-src{flex:1 1 auto;min-width:0;display:flex;justify-content:flex-end}
+.fia-src .af-src-chip{max-width:100%}
+.fia-namerow{margin-top:3px}
+.fi-actfeed .af-name{font-size:15.5px;font-weight:700;line-height:1.25}
+.fia-what{margin:2px 0 0;font-size:13px;font-weight:550;line-height:1.45;color:var(--pv-text)}
+.fia-grp{border-top:1px solid var(--pv-line)}
+.fia-day + .fia-grp{border-top:0}
+.fia-grp-h{align-items:flex-start;gap:10px;padding:9px 0;width:100%}
+.fia-grp-h .af-av{width:38px;height:38px;flex:none}
+.fia-grp-h>.av{width:30px;height:30px;font-size:12.5px;flex:none}
+.fia-grp .chg-grp-what{color:var(--pv-text);font-size:13px;font-weight:550}
+.fia-grp .chg-cnt{text-transform:none;letter-spacing:0}
+.fia-srcrow{display:flex;margin-top:5px}
+.fia-grp .chg-members .fia-row{padding-left:14px}
+.fi-actfeed .af-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0 2px}
