@@ -7365,6 +7365,58 @@
    "pattern": "milestone",
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121"
+  },
+  {
+   "anchor": "Colorado State University \u00b7 Barfield Lab PhD researcher",
+   "batch": "AM run \u2014 Nov 27, 2026",
+   "display": "Hannah Braun",
+   "fact": "Co-authored a Biology of Reproduction paper on transcriptome markers of bovine embryo quality with the Barfield Lab at Colorado State University, Feb 2026",
+   "id": "fi-20261127-hnnbraun-co-authored-a-biology-of-repro",
+   "key": "ig:hnnbraun",
+   "learned": "2026-11-27",
+   "name": "ig:hnnbraun",
+   "pattern": "milestone",
+   "source": "PubMed",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/41342381/"
+  },
+  {
+   "anchor": "Colorado State University \u00b7 Barfield Lab PhD researcher",
+   "batch": "AM run \u2014 Nov 27, 2026",
+   "display": "Hannah Braun",
+   "fact": "Listed as a workshop speaker on evaluating bovine embryo competence through time-lapse technology at ICAR 2026, Jun 2026",
+   "id": "fi-20261127-hnnbraun-listed-as-a-workshop-speaker-o",
+   "key": "ig:hnnbraun",
+   "learned": "2026-11-27",
+   "name": "ig:hnnbraun",
+   "pattern": "milestone",
+   "source": "ICAR 2026",
+   "url": "https://icar2026.jp/workshop.html"
+  },
+  {
+   "anchor": "Business Administration student \u00b7 Norwood, NY",
+   "batch": "AM run \u2014 Nov 27, 2026",
+   "display": "Gabriel Wangerin",
+   "fact": "Named to SUNY Canton's Dean's List for Spring 2024 as a Business Administration student",
+   "id": "fi-20261127-ct-gabriel-wangerin-named-to-suny-canton-s-dean-s",
+   "key": "ct:gabriel wangerin",
+   "learned": "2026-11-27",
+   "name": "ct:gabriel wangerin",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2024/honors-spring24.php"
+  },
+  {
+   "anchor": "Chaplain \u00b7 Awakening Christian Academy",
+   "batch": "AM run \u2014 Nov 27, 2026",
+   "display": "Alfredo Rodriguez",
+   "fact": "Announced as Chaplain and Bible & Theology Teacher at Awakening Christian Academy, Aug 2026",
+   "id": "fi-20261127-certified-sauce-announced-as-chaplain-and-bibl",
+   "key": "ig:certified.sauce",
+   "learned": "2026-11-27",
+   "name": "ig:certified.sauce",
+   "pattern": "title_change",
+   "source": "Awakening Christian Academy",
+   "url": "https://www.instagram.com/p/DcjQoPHufdj/"
   }
  ],
  "patterns": {
