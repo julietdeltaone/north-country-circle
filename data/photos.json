@@ -389,7 +389,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Massena CSD budget newsletter names her in text only: special educator Ana Miller won the 2024 Puzzle Piece Foundation NNY Grant for her ASD classroom (principal accepted on the school's behalf). No photo or caption tied to her; no image URL extractable.",
+   "evidence": "Massena CSD budget newsletter names her in text only: special educator Ana Miller won the 2024 Puzzle Piece Foundation NNY Grant for her ASD classroom (principal accepted on the school's behalf). No photo or caption tied to her; no image URL extractable. Seed (ChatGPT rerun 2026-11-27): https://ne.mcs.k12.ny.us/apps/staff/ — Massena Nightingale Elementary staff directory lists Ana Miller, PreKindergarten Teacher. No named portrait verified; do not use the principal's grant award-acceptance photo as Ana.",
    "name": "Ana Miller",
    "photo_url": null,
    "source_page": "https://4.files.edl.io/4911/05/08/24/114028-07c836f4-2825-4820-8002-2d78e26719e8.pdf",
@@ -686,7 +686,16 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "No source links on file.",
+   "added": "2026-11-12",
+   "evidence": "Jones Hockey Development (Potsdam, NY) team page: the image carries alt text 'Azlyn Richardson' and sits directly beside her name heading and title 'Social Media & Marketing Coordinator'; the page's Clarkson University ties match her Clarkson anchor, and her Zola wedding-party listing confirms the same person.",
+   "name": "Azlyn Richardson",
+   "photo_url": "photos/azlyn-richardson.jpg",
+   "source_page": "https://www.joneshockeydevelopmentllc.com/team",
+   "status": "confirmed",
+   "type": "Staff/team page photo"
+  },
+  {
+   "evidence": "No source links on file. Seed (ChatGPT rerun 2026-11-27): https://thehillnews.org/features/rebeccadoser/i-bagel-your-pardon/ — Bagelry ownership article with Gabe Ockrin and Park Bros. business anchors; strong identity context, no captioned portrait located. A Charlotte / Finance of America Ryan Dunphey result was excluded as an unconnected namesake.",
    "name": "B. Ryan Dunphey",
    "photo_url": null,
    "source_page": null,
@@ -1152,6 +1161,15 @@
    "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-27",
+   "evidence": "SUNY Potsdam opera release caption identifies Caleb Froats on the left, playing the Judge, in a named rehearsal photograph (1600x1100); via ChatGPT photo rerun 2026-11-27.",
+   "name": "Caleb Froats",
+   "photo_url": "photos/caleb-froats.jpg",
+   "source_page": "https://www.potsdam.edu/news/Fall2026Opera",
+   "status": "confirmed",
+   "type": "University news photo"
+  },
+  {
    "added": "2026-11-02",
    "evidence": "Instagram profile @callindsey (display name \"Caleb Lindsey\"); bio: \"\"Be wise as serpents and harmless as doves.\" Matt 10:16\".",
    "name": "Caleb Lindsey",
@@ -1550,6 +1568,25 @@
    "type": "directory photo"
   },
   {
+   "added": "2026-11-05",
+   "also": [
+    {
+     "added": "2026-11-15",
+     "evidence": "Facebook profile picture showing Conor Miller-Lynch holding a baby; the profile name matches the directory entry, the profile is JD's Facebook friend, and the same Facebook profile was already cited as the source for his earlier possible photo, though the profile lists no city or school anchor.",
+     "photo_url": "photos/conor-miller-lynch-fb.jpg",
+     "source_page": "https://facebook.com/ctml03",
+     "status": "possible",
+     "type": "Facebook profile picture"
+    }
+   ],
+   "evidence": "Facebook profile picture; the profile name matches the directory entry.",
+   "name": "Conor Miller-Lynch",
+   "photo_url": "photos/conor-miller-lynch.jpg",
+   "source_page": "https://facebook.com/ctml03",
+   "status": "possible",
+   "type": "Facebook profile picture"
+  },
+  {
    "added": "2026-11-01",
    "evidence": "Crop of Cora Capozzi from the Potsdam Rotary story photo, captioned 'Left to right: Potsdam Rotary President Duane Pelkey, Cisco, Capozzi and Rotary Vocational Service Chair Paul McGrath' — she is 3rd from left, holding a certificate that reads 'Cora Capozzi / Health Careers'. The story text names her as a St. Lawrence Central School student in the Health Careers program at BOCES Seaway Tech, and the Rotary Club of Potsdam BOCES Student of the Month for October.",
    "name": "Cora Capozzi",
@@ -1663,7 +1700,7 @@
    "type": "Facebook profile picture"
   },
   {
-   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list — no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type. JD-supplied Facebook seed checked 2026-11-27: profile ID 61556063210734 is verified as Courtney Letiecq's own profile, but her profile photo is not retrievable — she is not in JD's Facebook friends list and connector profile/timeline reads return 'Profile Not Accessible' (403); browser fetch shows the profile name only, no image.",
+   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list — no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type. JD-supplied Facebook seed checked 2026-11-27: profile ID 61556063210734 is verified as Courtney Letiecq's own profile, but her profile photo is not retrievable — she is not in JD's Facebook friends list and connector profile/timeline reads return 'Profile Not Accessible' (403); browser fetch shows the profile name only, no image. Seed (ChatGPT rerun 2026-11-27): https://oswegocountytoday.com/community/oswego-county-residents-army-national-guard-promotions-november-2026/ — 222nd Military Police Company, promoted to specialist October 22, 2026. Use the unit and event date to search captioned military galleries; the article itself is not a photo hit. She stays no_photo.",
    "name": "Courtney Letiecq",
    "photo_url": null,
    "source_page": "http://psqr-site-content-migration.s3-website-us-west-2.amazonaws.com/Site-Backups/ALTMAR_PARISH_WILLIAMSTOWN_CSD/www.apwschools.org/site/handlers/APW_2024GraduationNewsletterc6ea.pdf?moduleinstanceid=5202&dataid=4489&FileName=APW_2024GraduationNewsletter.pdf",
@@ -1689,13 +1726,32 @@
    "type": "headshot"
   },
   {
-   "added": "2026-11-09",
-   "evidence": "Instagram profile @daniel__manor (display name \"Daniel\"). Repair 2026-11-09: the original Instagram CDN link's signature expired 2026-10-27 and the picture stopped loading; the picture was re-downloaded from the same Instagram profile and is now hosted locally.",
+   "added": "2026-11-12",
+   "evidence": "The photo is the single image on the 'About Me' page of her own blog 'Hi, I'm Danica' (dunphey.com), which is written in her voice about her family in Madrid, NY; she is the adult woman at center holding the baby, beside her husband, surrounded by their children.",
+   "name": "Danica Dunphey",
+   "photo_url": "photos/danica-dunphey.jpg",
+   "source_page": "https://dunphey.com/about/",
+   "status": "likely",
+   "type": "Blog About Me page family photo"
+  },
+  {
+   "added": "2026-11-27",
+   "evidence": "SUNY Canton EDF Renewables scholarship release photograph (580x340) whose caption identifies Daniel W. Manor of Potsdam on the right installing solar panels; via ChatGPT photo rerun 2026-11-27.",
    "name": "Daniel Manor",
-   "photo_url": "photos/daniel-manor.jpg",
-   "source_page": "https://www.instagram.com/daniel__manor/",
+   "photo_url": "photos/daniel-manor-solar.jpg",
+   "source_page": "https://canton.edu/news/2023/edf.php",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "College news photo",
+   "also": [
+    {
+     "added": "2026-11-09",
+     "evidence": "Instagram profile @daniel__manor (display name \"Daniel\"). Repair 2026-11-09: the original Instagram CDN link's signature expired 2026-10-27 and the picture stopped loading; the picture was re-downloaded from the same Instagram profile and is now hosted locally.",
+     "photo_url": "photos/daniel-manor.jpg",
+     "source_page": "https://www.instagram.com/daniel__manor/",
+     "status": "confirmed",
+     "type": "Instagram profile picture"
+    }
+   ]
   },
   {
    "added": "2026-11-09",
@@ -2031,7 +2087,7 @@
    "type": "Professional portrait"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Only link on file is Facebook (auth). Note (ChatGPT rerun 2026-11-27): name expands to Dianalyn Finn Martin (Cornell Vet). The Cornell bear-cub article (https://www.vet.cornell.edu/about-us/news/20190917/cornell-veterinarians-save-black-bear-cub-hit-car) credits a bear photograph TO her — she is the photographer, not the subject. No portrait confirmed.",
    "name": "Dianalyn Martin",
    "photo_url": null,
    "source_page": null,
@@ -2067,7 +2123,7 @@
   {
    "added": "2026-10-29",
    "added_approx": "Oct 2026",
-   "evidence": "Senior portrait, Clarksonian 1977 (Clarkson University yearbook), p. 177: captioned 'Donald W. Gruneisen, Accounting', bottom row, right. Crop from the New York Heritage digital archive scan (Clarkson University collection).",
+   "evidence": "Senior portrait, Clarksonian 1977 (Clarkson University yearbook), p. 177: captioned 'Donald W. Gruneisen, Accounting', bottom row, right. Crop from the New York Heritage digital archive scan (Clarkson University collection). Seed (ChatGPT rerun 2026-11-27): https://www.northcountrypublicradio.org/news/pages/st-lawrence-valley-ny?limit=30&nophotos=&start=630 — NCPR index lead to a December 13, 2013 studio performance with Lorie Gruneisen ('A Potsdam trio live in the studio with holiday music'); index text is a lead, not a verified photo.",
    "name": "Don Gruneisen",
    "photo_url": "photos/don-gruneisen-clarkson-1977.jpg",
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/clarkson/id/7362",
@@ -2634,11 +2690,11 @@
    "type": "Instagram profile picture"
   },
   {
-   "added": "2026-11-02",
-   "evidence": "DVIDS photo 5602010 (VIRIN 190725-M-ZQ619-1175, July 2019): a U.S. Army captain briefs Indonesian airborne soldiers in the jungle; his name tape reads 'DIMAKAS' (the leading D sits at a uniform fold), with captain's rank on his chest. He was Captain commanding B Company, 182nd Infantry Regiment in July 2019 (the battalion was in Indonesia for Garuda Shield 2019).",
+   "added": "2026-11-27",
+   "evidence": "DVIDS photo 5602010 caption names Capt. Evan Dimakas during Guatemala training, July 2019 (preview 1000x748); local file restored from the DVIDS image, via ChatGPT photo rerun 2026-11-27.",
    "name": "Evan Dimakas",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/1907/5602010/1000w_q95.jpg",
-   "source_page": "",
+   "photo_url": "photos/evan-dimakas.jpg",
+   "source_page": "https://www.dvidshub.net/image/5602010/us-soldiers-trek-through-jungles-with-guatemalan-special-forces",
    "status": "confirmed",
    "type": "Official military photo"
   },
@@ -3719,12 +3775,12 @@
    "type": "Facebook profile picture"
   },
   {
-   "added": "2026-11-03",
-   "evidence": "Jennifer Meyer, second from left, with members of Headquarters and Support Company, 642nd Support Battalion, at Sodus Point, New York, on April 29, 2019.",
+   "added": "2026-11-27",
+   "evidence": "DMNA photograph (510x359) whose caption names Staff Sgt. Jennifer Meyer of the 642nd Support Battalion at Sodus Point flood preparation, April 29, 2019; larger original replaces the 100x70 unit thumbnail, via ChatGPT photo rerun 2026-11-27.",
    "name": "Jennifer Meyer",
    "photo_url": "photos/jennifer-meyer.jpg",
-   "source_page": "https://dmna.ny.gov/units/?unit=1227543460&page=featured",
-   "status": "likely",
+   "source_page": "https://dmna.ny.gov/?id=1556564636",
+   "status": "confirmed",
    "type": "Group photo"
   },
   {
@@ -3947,7 +4003,7 @@
      "url": "https://www.hcb.net/a9243ee7cdcd4f3a/9476/c/fit-in/0x0/filters:no_upscale()/filters:strip_exif()/65672688a4f4c8a57ea38e20056bdce1_XL.jpg"
     }
    ],
-   "evidence": "Joe Charlebois wearing a University of New Hampshire jersey; profile photo on his Elite Prospects player page.",
+   "evidence": "Joe Charlebois wearing a University of New Hampshire jersey; profile photo on his Elite Prospects player page. Seed (ChatGPT rerun 2026-11-27): https://www.eliteprospects.com/staff/99241/joe-charlebois — linked Elite Prospects coaching profile (Potsdam Central High). May reuse the same portrait; no quality upgrade claimed.",
    "name": "Joe Charlebois",
    "photo_url": "photos/joe-charlebois.webp",
    "source_page": "https://www.eliteprospects.com/player/14873/joe-charlebois/print",
@@ -4116,14 +4172,22 @@
    "type": null
   },
   {
-   "added": "2026-11-02",
-   "evidence": "Instagram profile @jonah_black01 (display name \"Jonah Black\").",
+   "added": "2026-11-27",
+   "evidence": "SUNY Canton 114th Commencement photograph (580x340) individually captioned for Student Government President Jonah Black; via ChatGPT photo rerun 2026-11-27.",
    "name": "Jonah Black",
-   "photo_url": "photos/jonah-black.jpg",
-   "source_page": "https://www.instagram.com/jonah_black01/",
+   "photo_url": "photos/jonah-black-commencement.jpg",
+   "source_page": "https://canton.edu/news/2022/commencement.php",
    "status": "confirmed",
-   "type": "Instagram profile picture",
+   "type": "College news photo",
    "also": [
+    {
+     "added": "2026-11-02",
+     "evidence": "Instagram profile @jonah_black01 (display name \"Jonah Black\").",
+     "photo_url": "photos/jonah-black.jpg",
+     "source_page": "https://www.instagram.com/jonah_black01/",
+     "status": "confirmed",
+     "type": "Instagram profile picture"
+    },
     {
      "added": "2026-11-21",
      "photo_url": "photos/jonah-black-award.jpg",
@@ -5159,7 +5223,7 @@
   },
   {
    "added": "2026-11-02",
-   "evidence": "Instagram profile @lynzeelou (display name \"Lindsey Sorrento\"); bio: \"Labor & Delivery RN 🤰🏼\".",
+   "evidence": "Instagram profile @lynzeelou (display name \"Lindsey Sorrento\"); bio: \"Labor & Delivery RN 🤰🏼\". Seed (ChatGPT rerun 2026-11-27): https://www.linkedin.com/posts/st-lawrence-health_lindsey-sorrento-rn-started-with-canton-potsdam-activity-7090662196883386370-4D1G — St. Lawrence Health spotlight names her as OB Nurse Educator, but the accessible image resolved to an employer cover banner, not a portrait of Lindsey; do not import the banner.",
    "name": "Lindsey Sorrento",
    "photo_url": "photos/lindsey-sorrento.jpg",
    "source_page": "https://www.instagram.com/lynzeelou/",
@@ -5186,7 +5250,7 @@
    "type": "Facebook profile picture"
   },
   {
-   "evidence": "Her on-file sources appear mismatched: the opengovpay page is for a different name, no NCPR story about her surfaced, and the police-reform PDF is not about her. No checkable source actually about her, and no photo of her found.",
+   "evidence": "Her on-file sources appear mismatched: the opengovpay page is for a different name, no NCPR story about her surfaced, and the police-reform PDF is not about her. No checkable source actually about her, and no photo of her found. Seed (ChatGPT rerun 2026-11-27): https://vi.potsdam.ny.us/wp-content/uploads/2023/10/885.pdf#page=22 — correction to the note above: page 22 of that PDF does name Lisa as a Potsdam business owner and begins a bio connecting her to Eric, Timothy, and the cabinetry business (text-only page). Next seed: advisory committee coverage or business team photos.",
    "name": "Lisa Criscitello",
    "photo_url": null,
    "source_page": null,
@@ -5252,6 +5316,15 @@
    "source_page": "https://www.linkedin.com/in/luke-boyle-466681206",
    "status": "confirmed",
    "type": "LinkedIn profile headshot"
+  },
+  {
+   "added": "2026-11-05",
+   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Smithfield, Rhode Island as the hometown.",
+   "name": "Lydia Bartlett",
+   "photo_url": "photos/lydia-bartlett.jpg",
+   "source_page": "https://facebook.com/lydiaab",
+   "status": "confirmed",
+   "type": "Facebook profile picture"
   },
   {
    "added": "2026-11-03",
@@ -5389,7 +5462,7 @@
    "type": "Facebook profile picture"
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "No source links on file. Seed (ChatGPT rerun 2026-11-27): https://npiprofile.com/npi/1114370046 — local coverage names Maggie Thibodeau, PA-C; follow-up found Margaret T. Thibodeau, PA, in Ogdensburg and a Margaret Thibodeau in a Clarkson PA faculty catalog. Maggie-to-Margaret is still an inference; no photo confirmed.",
    "name": "Maggie Thibodeau",
    "photo_url": null,
    "source_page": null,
@@ -5479,20 +5552,10 @@
    "type": "Instagram profile picture"
   },
   {
-   "added": "2026-11-02",
-   "also": [
-    {
-     "added": "2026-10-31",
-     "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review. Re-hosted locally 2026-10-31 from the same source URL (504x504, bytes verified) so the primary no longer depends on the remote link.",
-     "photo_url": "photos/marissa-kelley.jpg",
-     "source_page": "https://svpc.net/our-friendly-team/",
-     "status": "possible",
-     "type": "staff photo (unverified)"
-    }
-   ],
-   "evidence": "Seaway Valley Prevention Council team page headshot, directly under the heading 'Marissa Kelley / Health Educator'; her page bio (Health Educator at SVPC, Master's in Special Education from SUNY Potsdam) matches her profile's employer and school.",
+   "added": "2026-11-27",
+   "evidence": "Seaway Valley Prevention Council team page places this headshot (504x504) directly above the heading 'Marissa Kelley / Health Educator'; local file restored from the SVPC image, via ChatGPT photo rerun 2026-11-27.",
    "name": "Marissa Kelley",
-   "photo_url": "https://svpc.net/wp-content/uploads/2025/09/2023-Headshot-Template.jpg",
+   "photo_url": "photos/marissa-kelley.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
    "status": "confirmed",
    "type": "Staff headshot"
@@ -5640,6 +5703,15 @@
    "source_page": "https://facebook.com/matthew.cote.3114",
    "status": "possible",
    "type": "Facebook profile picture"
+  },
+  {
+   "added": "2026-11-21",
+   "name": "Matthew Merria",
+   "photo_url": "photos/matthew-merria.jpg",
+   "status": "confirmed",
+   "source_page": "https://zeta.creativecirclecdn.com/ncn/files/20230516-140013-2022-05-07.pdf",
+   "type": "Newspaper group photo",
+   "evidence": "North Country This Week, May 7-13, 2022, p. 7, captioned photo: 'From left to right, Undersheriff Sean P. O'Brien, Sheriff Brooks J. Bigwarfe, Deputy Matthew Merria and Chief Deputy Leighton Filiatrault.' Merria, third from left, holds his letter of commendation. Cropped from the group photo."
   },
   {
    "added": "2026-10-28",
@@ -5925,6 +5997,15 @@
    "type": "Facebook profile picture"
   },
   {
+   "added": "2026-11-21",
+   "name": "Michelle Tolar",
+   "photo_url": "photos/michelle-tolar.jpg",
+   "status": "confirmed",
+   "source_page": "https://sites.google.com/birdvilleschools.net/main-sitepage/home",
+   "type": "School staff page portrait",
+   "evidence": "The official Haltom Middle School site (Birdville ISD) pairs this portrait with the name block 'Dr. Michelle Tolar' and '7th Grade Administrator'; the district's Finalsite administration page lists the same name and role. JD supplied the identification via the school's Jul 14, 2025 Facebook welcome post."
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Mike Coventry",
    "photo_url": null,
@@ -6199,7 +6280,7 @@
    "type": "LinkedIn profile headshot"
   },
   {
-   "evidence": "SUNY Canton Fall 2021 honors page is a text name list (only image is the college logo). Merit profile text-only.",
+   "evidence": "SUNY Canton Fall 2021 honors page is a text name list (only image is the college logo). Merit profile text-only. Seed (ChatGPT rerun 2026-11-27): https://allwny.com/2023/12/21/new-york-state-police-add-232-new-troopers/ — December 2023 state-police graduate list names Noah Marshall of Lake Placid. Education-to-trooper link is plausible, not proven; graduation media is the next seed.",
    "name": "Noah Marshall",
    "photo_url": null,
    "source_page": "https://www.canton.edu/news/2022/honorsf21.php",
@@ -6484,6 +6565,15 @@
    "source_page": "https://facebook.com/peter.pease.35",
    "status": "likely",
    "type": "Facebook profile picture"
+  },
+  {
+   "added": "2026-11-12",
+   "evidence": "Rochester Regional Health article 'GH Auxiliary Awards Seven Scholarships' names Peyton Mussaw as one of the seven 2023 recipients (Gouverneur Hospital employee, Clarkson freshman, matching her profile anchors) and this is the article's group photo of the recipients; individuals are not captioned by name or position, so she cannot be singled out in the frame.",
+   "name": "Peyton Mussaw",
+   "photo_url": "photos/peyton-mussaw.jpg",
+   "source_page": "https://www.rochesterregional.org/hub/gh-auxiliary-awards-seven-scholarships",
+   "status": "possible",
+   "type": "News photo (group scholarship photo)"
   },
   {
    "added": "2026-11-09",
@@ -6864,7 +6954,7 @@
      "url": "photos/salwa-hmyene.jpg"
     }
    ],
-   "evidence": "Berkeley College women's basketball bio headshot: her individual player profile ('30 - Salwa Hmyene', Guard, Potsdam NY) and its image is alt-titled 'Salwa Hmyene'.",
+   "evidence": "Berkeley College women's basketball bio headshot: her individual player profile ('30 - Salwa Hmyene', Guard, Potsdam NY) and its image is alt-titled 'Salwa Hmyene'. Caution (ChatGPT rerun 2026-11-27): the Cornell Extension staff page image that alt-text names Salwa (https://stlawrence.cce.cornell.edu/staff/salwa-hmyene) resolves to /images/default.png, a generic placeholder — false lead, do not import.",
    "name": "Salwa Hmyene",
    "photo_url": "https://berkeleycollege.prestosports.com/sports/wbkb/2024-25/files/Number_30.jpg?max_width=600&max_height=800",
    "source_page": "https://berkeleycollege.prestosports.com/sports/wbkb/2024-25/bios/hmyene_salwa_hm4z",
@@ -6994,6 +7084,15 @@
    "type": "Staff headshot"
   },
   {
+   "added": "2026-11-12",
+   "evidence": "Lisbon Central School District staff directory lists 'Sarah Diederich, Music Teacher' with this photo beside her name and school email; profile anchor matches exactly (Music Teacher at Lisbon Central School District, Lisbon, NY). Downloaded the actual image bytes (22,728 bytes, PNG) and looked at it.",
+   "name": "Sarah Diederich",
+   "photo_url": "photos/sarah-diederich.jpg",
+   "source_page": "https://www.lisboncsd.org/staff?page_no=2",
+   "status": "confirmed",
+   "type": "Staff page photo"
+  },
+  {
    "added": "2026-11-02",
    "evidence": "Instagram profile @sarah.ellabb (display name \"sarah\"); bio: \"NY | DePaul\".",
    "name": "Sarah El-Labban",
@@ -7020,7 +7119,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Rochester Regional article names her in text only as one of seven Certified Lactation Consultant RNs at Canton-Potsdam Hospital's Birthplace; the article's photo is captioned for a patient, not her.",
+   "evidence": "Rochester Regional article names her in text only as one of seven Certified Lactation Consultant RNs at Canton-Potsdam Hospital's Birthplace; the article's photo is captioned for a patient, not her. Note (ChatGPT rerun 2026-11-27): the Rochester Regional lactation article's image is identified as Katie McLaughlin with her baby, NOT Sarah — do not use it. Georgia SANE-coordinator and Wisconsin results were not connected to the Potsdam nurse.",
    "name": "Sarah Pederson",
    "photo_url": null,
    "source_page": "https://www.rochesterregional.org/hub/specialized-rns-assist-new-moms",
@@ -7214,7 +7313,7 @@
    "type": "article photo"
   },
   {
-   "added": "2026-11-03",
+   "added": "2026-11-27",
    "also": [
     {
      "added": "2026-11-15",
@@ -7225,11 +7324,11 @@
      "type": "Instagram profile picture"
     }
    ],
-   "evidence": "Stephanie Adams '23 of Endwell, N.Y., rehearsing 'Angels Round the Zenith' with fellow dancers, SUNY Potsdam Faculty Dance Concert, February 2022.",
+   "evidence": "SUNY Potsdam Faculty Dance Concert release photograph (1600x1000) captioned 'Stephanie Adams '23' rehearsing; full-size original replaces the 200x129 Merit thumbnail of the same image, via ChatGPT photo rerun 2026-11-27.",
    "name": "Stephanie Adams",
    "photo_url": "photos/stephanie-adams.jpg",
-   "source_page": "http://potsdam.meritpages.com/news/suny-potsdam-hosts-faculty-dance-concert--with-works-by-4-choreographers/24828/print",
-   "status": "likely",
+   "source_page": "https://www.potsdam.edu/news/FacultyDanceConcert2022",
+   "status": "confirmed",
    "type": "article photo"
   },
   {
@@ -7405,12 +7504,21 @@
      "type": "Facebook profile picture"
     }
    ],
-   "evidence": "Headshot served by the Clarkson University directory under the username tquant, from Thomas Quant's Clarkson org-chart entry.",
+   "evidence": "Headshot served by the Clarkson University directory under the username tquant, from Thomas Quant's Clarkson org-chart entry. Note (ChatGPT rerun 2026-11-27): his Clarkson profile (https://www.clarkson.edu/people/thomas-quant) explicitly labels a Thomas Quant headshot, but direct page retrieval returned 403 and no larger file was measured — keep the existing 150x200 image. NCPR fire photos credited to Thomas Quant are photos BY him, not of him.",
    "name": "Thomas Quant",
    "photo_url": "photos/thomas-quant.jpg",
    "source_page": "https://www.clarkson.edu/people/thomas-quant",
    "status": "possible",
    "type": "University directory headshot"
+  },
+  {
+   "added": "2026-11-27",
+   "evidence": "Woodshop News feature photograph captioned with Tim Criscitello operating the molder/shaper at From the Heart Cabinetry, Potsdam (860x671); via ChatGPT photo rerun 2026-11-27.",
+   "name": "Tim Criscitello",
+   "photo_url": "photos/tim-criscitello.jpg",
+   "source_page": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "status": "confirmed",
+   "type": "Business/team photo"
   },
   {
    "evidence": "No source links on file.",
@@ -7438,7 +7546,7 @@
    "type": null
   },
   {
-   "evidence": "Sources on file are arXiv papers only — text-only by type.",
+   "evidence": "Sources on file are arXiv papers only — text-only by type. Seed (ChatGPT rerun 2026-11-27): https://www.mtukrc.org/download/clarkson/clarkson_ze_design_paper_2008.pdf — Timothy A. Swyka, Clarkson Electric Knights 2008 electric snowmobile design paper. Next seed: Electric Knights 2007-08 team media; authorship alone identifies no one in a team image.",
    "name": "Tim Swyka",
    "photo_url": null,
    "source_page": null,
@@ -7598,7 +7706,17 @@
    "photo_url": "photos/victoria-fitch.jpg",
    "source_page": "https://www.potsdam.edu/giving/potsdam-college-foundation/fundraising-staff-directory",
    "status": "confirmed",
-   "type": "Professional headshot"
+   "type": "Professional headshot",
+   "also": [
+    {
+     "added": "2026-11-27",
+     "evidence": "SUNY Potsdam Shusda classroom dedication photograph (1600x1100) captioned with Victoria Fitch alongside Sandra Wagoner Shusda, October 2024; via ChatGPT photo rerun 2026-11-27.",
+     "photo_url": "photos/victoria-fitch-shusda.jpg",
+     "source_page": "https://www.potsdam.edu/news/ShusdaClassroom",
+     "status": "confirmed",
+     "type": "Event photo"
+    }
+   ]
   },
   {
    "added": "2026-11-03",
@@ -7766,90 +7884,8 @@
    "source_page": "https://www.canton.edu/president/bio.html",
    "status": "confirmed",
    "type": "staff headshot"
-  },
-  {
-   "added": "2026-11-05",
-   "evidence": "Facebook profile picture; the profile name matches the directory entry and the profile lists Smithfield, Rhode Island as the hometown.",
-   "name": "Lydia Bartlett",
-   "photo_url": "photos/lydia-bartlett.jpg",
-   "source_page": "https://facebook.com/lydiaab",
-   "status": "confirmed",
-   "type": "Facebook profile picture"
-  },
-  {
-   "added": "2026-11-05",
-   "also": [
-    {
-     "added": "2026-11-15",
-     "evidence": "Facebook profile picture showing Conor Miller-Lynch holding a baby; the profile name matches the directory entry, the profile is JD's Facebook friend, and the same Facebook profile was already cited as the source for his earlier possible photo, though the profile lists no city or school anchor.",
-     "photo_url": "photos/conor-miller-lynch-fb.jpg",
-     "source_page": "https://facebook.com/ctml03",
-     "status": "possible",
-     "type": "Facebook profile picture"
-    }
-   ],
-   "evidence": "Facebook profile picture; the profile name matches the directory entry.",
-   "name": "Conor Miller-Lynch",
-   "photo_url": "photos/conor-miller-lynch.jpg",
-   "source_page": "https://facebook.com/ctml03",
-   "status": "possible",
-   "type": "Facebook profile picture"
-  },
-  {
-   "added": "2026-11-12",
-   "evidence": "Lisbon Central School District staff directory lists 'Sarah Diederich, Music Teacher' with this photo beside her name and school email; profile anchor matches exactly (Music Teacher at Lisbon Central School District, Lisbon, NY). Downloaded the actual image bytes (22,728 bytes, PNG) and looked at it.",
-   "name": "Sarah Diederich",
-   "photo_url": "photos/sarah-diederich.jpg",
-   "source_page": "https://www.lisboncsd.org/staff?page_no=2",
-   "status": "confirmed",
-   "type": "Staff page photo"
-  },
-  {
-   "added": "2026-11-12",
-   "evidence": "The photo is the single image on the 'About Me' page of her own blog 'Hi, I'm Danica' (dunphey.com), which is written in her voice about her family in Madrid, NY; she is the adult woman at center holding the baby, beside her husband, surrounded by their children.",
-   "name": "Danica Dunphey",
-   "photo_url": "photos/danica-dunphey.jpg",
-   "source_page": "https://dunphey.com/about/",
-   "status": "likely",
-   "type": "Blog About Me page family photo"
-  },
-  {
-   "added": "2026-11-12",
-   "evidence": "Rochester Regional Health article 'GH Auxiliary Awards Seven Scholarships' names Peyton Mussaw as one of the seven 2023 recipients (Gouverneur Hospital employee, Clarkson freshman, matching her profile anchors) and this is the article's group photo of the recipients; individuals are not captioned by name or position, so she cannot be singled out in the frame.",
-   "name": "Peyton Mussaw",
-   "photo_url": "photos/peyton-mussaw.jpg",
-   "source_page": "https://www.rochesterregional.org/hub/gh-auxiliary-awards-seven-scholarships",
-   "status": "possible",
-   "type": "News photo (group scholarship photo)"
-  },
-  {
-   "added": "2026-11-12",
-   "evidence": "Jones Hockey Development (Potsdam, NY) team page: the image carries alt text 'Azlyn Richardson' and sits directly beside her name heading and title 'Social Media & Marketing Coordinator'; the page's Clarkson University ties match her Clarkson anchor, and her Zola wedding-party listing confirms the same person.",
-   "name": "Azlyn Richardson",
-   "photo_url": "photos/azlyn-richardson.jpg",
-   "source_page": "https://www.joneshockeydevelopmentllc.com/team",
-   "status": "confirmed",
-   "type": "Staff/team page photo"
-  },
-  {
-   "added": "2026-11-21",
-   "name": "Michelle Tolar",
-   "photo_url": "photos/michelle-tolar.jpg",
-   "status": "confirmed",
-   "source_page": "https://sites.google.com/birdvilleschools.net/main-sitepage/home",
-   "type": "School staff page portrait",
-   "evidence": "The official Haltom Middle School site (Birdville ISD) pairs this portrait with the name block 'Dr. Michelle Tolar' and '7th Grade Administrator'; the district's Finalsite administration page lists the same name and role. JD supplied the identification via the school's Jul 14, 2025 Facebook welcome post."
-  },
-  {
-   "added": "2026-11-21",
-   "name": "Matthew Merria",
-   "photo_url": "photos/matthew-merria.jpg",
-   "status": "confirmed",
-   "source_page": "https://zeta.creativecirclecdn.com/ncn/files/20230516-140013-2022-05-07.pdf",
-   "type": "Newspaper group photo",
-   "evidence": "North Country This Week, May 7-13, 2022, p. 7, captioned photo: 'From left to right, Undersheriff Sean P. O'Brien, Sheriff Brooks J. Bigwarfe, Deputy Matthew Merria and Chief Deputy Leighton Filiatrault.' Merria, third from left, holds his letter of commendation. Cropped from the group photo."
   }
  ],
- "total": 703,
- "updated": "2026-11-24"
+ "total": 705,
+ "updated": "2026-11-27"
 }
