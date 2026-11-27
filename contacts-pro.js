@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.22.0';
+var APP_VERSION = '4.23.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1771,7 +1771,9 @@ function buildDossierDoc(e){
     var di = BYN[(nb.u || '').toLowerCase()];
     return di != null ? dispName(D.directory[di]) : (nb.d || nb.u || '');
   }).filter(firstLastOk).slice(0, 10); /* the printed list caps at the strongest 10, same order as the profile page (JD 2026-10-15) */
-  var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '' }; });
+  /* V4.23.0: kind + online ride along so the chart can frame
+     each timeline note as a full sentence (chartEnrich). */
+  var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '', kind:o.ev.kind || '', online:!!o.ev.online }; });
   var T = {
     name:name, aka:aka, handle:handle, classif:classif, rel:gv(e, 'relationship'), ctx:gv(e, 'context'), tierCol:tierCol(e), contact:contact, synBody:synBody,
     locCity:e.city || '', locHome:e.hometown || '', knownSince:knownSinceLabel(e),
@@ -1855,40 +1857,41 @@ var DOC_THEME = { fonts:'',
      FILE COPY running footer and page counter. */
   css:
   '*{box-sizing:border-box}' +
-  'body{background:#ffffff;margin:0;padding:30px 22px;font-family:Georgia,"Times New Roman",Times,serif;color:#1c1c1a}' +
-  '.page{background:#ffffff;max-width:840px;margin:0 auto}' +
+  /* V4.23.0: on screen the paper sits on a DARK surround (deep
+     slate, near-black) with a soft shadow; print strips both
+     (see @media print) — the printed page is unchanged. Accent
+     palette: slate #2f3e50 stays primary; a muted bronze
+     #a07d2c is the secondary accent (header rule, section
+     heads, timeline dates). Print-safe, no bright colours. */
+  'body{background:#141a21;margin:0;padding:30px 22px;font-family:Georgia,"Times New Roman",Times,serif;color:#1c1c1a}' +
+  '.page{background:#ffffff;max-width:840px;margin:0 auto;padding:26px 28px 30px;box-shadow:0 10px 44px rgba(0,0,0,.6)}' +
   '.charthead{border:2.5px solid #1c1c1a;padding:18px 22px 15px;break-inside:avoid}' +
-  '.kickrow{display:flex;justify-content:space-between;gap:18px;font-size:10.5px;letter-spacing:.26em;color:#2f3e50;font-weight:700;text-transform:uppercase;border-bottom:1px solid #2f3e50;padding-bottom:8px}' +
+  '.kickrow{display:flex;justify-content:space-between;gap:18px;font-size:10.5px;letter-spacing:.26em;color:#2f3e50;font-weight:700;text-transform:uppercase;border-bottom:1px solid #a07d2c;padding-bottom:8px}' +
   'h1{font-size:27px;font-weight:700;letter-spacing:.02em;margin:13px 0 0;line-height:1.15}' +
   '.aka{font-size:12.5px;font-style:italic;color:#4a4a44;margin-top:3px}' +
-  '.classif{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#2f3e50;margin-top:9px}' +
   '.grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1.5px solid #1c1c1a;border-left:1.5px solid #1c1c1a;margin-top:14px}' +
+  '.grid.g2{grid-template-columns:repeat(2,1fr)}' +
   '.cell{border-right:1.5px solid #1c1c1a;border-bottom:1.5px solid #1c1c1a;padding:8px 11px 9px;break-inside:avoid;min-width:0}' +
   '.cell.wide{grid-column:1/-1}' +
   '.clab{display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#2f3e50;font-weight:700;margin-bottom:3px}' +
   '.cval{display:block;font-size:13px;line-height:1.45;overflow-wrap:break-word}' +
   '.fwcell{border:1.5px solid #1c1c1a;margin-top:14px;break-inside:avoid}' +
   '.fwcell.long{break-inside:auto}' +
-  '.fwhead{border-bottom:1px solid #2f3e50;padding:7px 12px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#2f3e50;font-weight:700;break-after:avoid}' +
+  '.fwhead{border-bottom:1px solid #a07d2c;padding:7px 12px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#a07d2c;font-weight:700;break-after:avoid}' +
   '.fwbody{padding:10px 12px 12px;font-size:13px;line-height:1.65}' +
   '.fwbody p{margin:0 0 8px}.fwbody p:last-child{margin-bottom:0}' +
-  '.dots{display:inline-flex;gap:5px;vertical-align:middle}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #9a9a92}' +
-  '.traitgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px}' +
-  '.trow{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px dotted #b9b9b0;padding:3px 0}' +
-  '.trow .dl{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}' +
-  '.trow .tv{font-size:11.5px;color:#4a4a44;white-space:nowrap}' +
   'ul.assoc{margin:0;padding-left:18px;column-count:2;column-gap:30px;font-size:13px;line-height:1.6}' +
   'ul.assoc li{break-inside:avoid}' +
   '.tlrow{display:grid;grid-template-columns:118px 1fr;gap:14px;border-bottom:1px solid #d8d8d0;padding:6px 0;break-inside:avoid}' +
   '.tlrow:last-child{border-bottom:0}' +
-  '.tldate{font-weight:700;font-size:12.5px}' +
+  '.tldate{font-weight:700;font-size:12.5px;color:#a07d2c}' +
   '.tlsum{font-size:13px;line-height:1.55}' +
   '.tldet{font-size:12.5px;color:#4a4a44;line-height:1.55}' +
   '.filefoot{margin-top:16px;border-top:1.5px solid #1c1c1a;padding-top:7px;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#2f3e50;display:flex;justify-content:space-between;gap:18px}' +
   '@page{size:Letter;margin:.6in .55in;background:#ffffff;@top-right{content:"FILE COPY";font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}}' +
   '@media print{' +
-  'body{padding:0}' +
-  '.page{max-width:none;width:auto}' +
+  'body{background:#ffffff;padding:0}' +
+  '.page{max-width:none;width:auto;box-shadow:none;padding:0}' +
   '.chartblk,.cell,.fwcell,.tlrow{break-inside:avoid}' +
   '.fwcell.long{break-inside:auto}' +
   '.fwhead{break-after:avoid}' +
@@ -1900,48 +1903,104 @@ var DOC_THEME = { fonts:'',
       if(p.length < 2) return esc(String(n || '').toUpperCase());
       return esc(p[p.length - 1].toUpperCase() + ', ' + p.slice(0, -1).join(' '));
     }
+    /* ---- V4.23.0: timeline notes become full sentences ----
+       Bare fragments ("sent JD a Snapchat video…") are framed
+       with the person and the kind of contact, from the event's
+       kind + online flag. A summary that already carries the
+       framing is never doubled. */
+    var VERB = /^(sent|called|texted|emailed|mailed|met|visited|hosted|attended|played|scored|recorded|won|joined|started|graduated|moved|became|shared|posted|spoke|talked|worked|served|helped|gave|took|made|wrote|announced|released|competed|performed|volunteered|donated|married|retired|launched|opened|closed|signed|committed|enrolled|transferred|promoted|hired|left|returned|traveled|travelled|ran|set|earned|named|elected|appointed|founded|led|taught|coached|photographed|filmed)$/i;
+    var MONTH = /^(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)$/;
+    function lowerFirst(t){
+      var w = t.split(/\s+/)[0];
+      if(MONTH.test(w)) return t;
+      if(/[A-Z]/.test(w.slice(1))) return t;   /* internal capital — proper noun / acronym */
+      if(VERB.test(w)) return w.toLowerCase() + t.slice(w.length);
+      return t;
+    }
+    function period(t){ return /[.!?]$/.test(t) ? t : t + '.'; }
+    function chartEnrich(o){
+      var full = String(T.name || '').trim();
+      var first = full.split(/\s+/)[0] || full;
+      var s = String(o.summary || '').trim();
+      if(!s) return s;
+      var body = s, stripped = false;
+      if(full && body.indexOf(full + ' ') === 0){ body = body.slice(full.length + 1); stripped = true; }
+      else if(first && body.indexOf(first + ' ') === 0){ body = body.slice(first.length + 1); stripped = true; }
+      if(o.kind === 'contact'){
+        if(/^had (online|electronic) contact with JD\b/i.test(body)) return period(full + ' ' + body);
+        if(/^met with JD\b/i.test(body)) return period(full + ' ' + body);
+        var m1 = body.match(/^in-person contact with (.+)$/i);
+        if(m1) return period(full + ' met with JD in person \u2014 ' + m1[1].replace(/\s+$/, ''));
+        var m2 = body.match(/^online contact with (.+)$/i);
+        if(m2) return period(full + ' had online contact with JD \u2014 ' + m2[1].replace(/\s+$/, ''));
+        var frame = o.online ? (full + ' had online contact with JD \u2014 ') : (full + ' met with JD in person \u2014 ');
+        return period(frame + lowerFirst(body));
+      }
+      if(stripped) return period(full + ' ' + lowerFirst(body));
+      if(VERB.test(body.split(/\s+/)[0])) return period(full + ' ' + lowerFirst(body));
+      return period(body);
+    }
+    /* ---- V4.23.0: the grid carries only plainly factual cells.
+       Gone from the chart entirely (internal vocabulary): the
+       Classification line and cell, the Level / Tier cell, the
+       Relationship cell, the Momentum extra, and the trait
+       dot-scale ratings. Filtering happens HERE, in the chart
+       render — buildDossierDoc's content rules are untouched. */
+    var ksYear = (String(T.knownSince || '').match(/\b(?:19|20)\d{2}\b/) || [])[0] || '';
     var cells = [];
     function cell(l, v){ if(v) cells.push({ l:l, v:v }); }
     cell('Location', T.locCity);
     cell('From / Hometown', T.locHome);
-    cell('Relationship', T.rel);
-    cell('Context', T.ctx);
-    cell('Known Since', T.knownSince);
-    cell('Level / Tier', T.tier);
-    cell('Classification', T.classif);
-    cell('Handle', T.handle);
+    cell('Known Since', ksYear || T.knownSince);
     T.contact.forEach(function(it){ cell(it.l, it.v); });
-    T.extras.forEach(function(x){ if(x.l === 'Level' && T.tier) return; cell(x.l, x.v); });
+    T.extras.forEach(function(x){ if(x.l === 'Level' || x.l === 'Momentum') return; cell(x.l, x.v); });
     var grid = '';
-    if(cells.length || T.bars.length){
-      grid = '<div class="grid">' + cells.map(function(c){
+    if(cells.length){
+      grid = '<div class="grid' + (cells.length <= 6 ? ' g2' : '') + '">' + cells.map(function(c){
         return '<div class="cell"><span class="clab">' + esc(c.l) + '</span><span class="cval">' + docT(c.v) + '</span></div>';
-      }).join('');
-      if(T.bars.length){
-        grid += '<div class="cell wide"><span class="clab">Profile Ratings — scale 0–5</span><div class="traitgrid">' +
-          T.bars.map(function(b){
-            return '<div class="trow"><span class="dl">' + esc(b.l) + '</span><span class="tv">' + docDots(b) + ' ' + Math.max(0, Math.min(5, b.v)) + ' / 5</span></div>';
-          }).join('') + '</div></div>';
-      }
-      grid += '</div>';
+      }).join('') + '</div>';
+    }
+    /* ---- V4.23.0: SUMMARY — one plain-language paragraph,
+       synthesised deterministically from what's on file, right
+       under the grid. The person's name does the work pronouns
+       would; no internal vocabulary anywhere in it. */
+    function firstSentence(s){
+      s = String(s || '').replace(/\s+/g, ' ').trim();
+      var m = s.match(/^[^.!?]+[.!?]/);
+      return m ? m[0].trim() : s;
+    }
+    var sumParts = [];
+    var first = String(T.name || '').trim().split(/\s+/)[0] || T.name;
+    var who = firstSentence(T.synBody);
+    if(who) sumParts.push(period(who));
+    if(T.locCity && T.locHome && T.locCity !== T.locHome) sumParts.push(first + ' is based in ' + T.locCity + ' and originally from ' + T.locHome + '.');
+    else if(T.locCity) sumParts.push(first + ' is based in ' + T.locCity + '.');
+    else if(T.locHome) sumParts.push(first + ' is from ' + T.locHome + '.');
+    var orgCell = null;
+    T.contact.forEach(function(it){ if(it.l === 'Orgs') orgCell = it.v; });
+    if(orgCell) sumParts.push(first + '\u2019s main affiliation on file is ' + String(orgCell).split(' \u00b7 ')[0] + '.');
+    if(ksYear) sumParts.push('JD has known ' + first + ' since ' + ksYear + '.');
+    if(T.evs.length){
+      var latest = T.evs.slice().sort(function(a, b){ return String(b.date || '').localeCompare(String(a.date || '')); })[0];
+      if(latest && latest.summary) sumParts.push('Most recently (' + latest.date + '): ' + chartEnrich(latest));
     }
     var secs = '';
+    if(sumParts.length) secs += '<div class="fwcell"><div class="fwhead">Summary</div><div class="fwbody"><p>' + docT(sumParts.join(' ')) + '</p></div></div>';
     if(T.synBody) secs += '<div class="fwcell"><div class="fwhead">Synopsis</div><div class="fwbody"><p>' + docBR(T.synBody) + '</p></div></div>';
     if(T.assoc.length) secs += '<div class="fwcell"><div class="fwhead">Known Associates</div><div class="fwbody"><ul class="assoc">' +
       T.assoc.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div></div>';
     if(T.notesText) secs += '<div class="fwcell long"><div class="fwhead">Field Notes</div><div class="fwbody"><p>' + docBR(T.notesText) + '</p></div></div>';
     if(T.fpText) secs += '<div class="fwcell long"><div class="fwhead">Public Footprint</div><div class="fwbody"><p>' + docBR(T.fpText) + '</p></div></div>';
-    if(T.evs.length) secs += '<div class="fwcell long"><div class="fwhead">Timeline — Chart Notes</div><div class="fwbody">' +
+    if(T.evs.length) secs += '<div class="fwcell long"><div class="fwhead">Timeline \u2014 Chart Notes</div><div class="fwbody">' +
       T.evs.map(function(o){
-        return '<div class="tlrow"><span class="tldate">' + esc(o.date) + '</span><span class="tlsum">' + docT(o.summary) +
+        return '<div class="tlrow"><span class="tldate">' + esc(o.date) + '</span><span class="tlsum">' + docT(chartEnrich(o)) +
           (o.detail ? '<br><span class="tldet">' + docT(o.detail) + '</span>' : '') + '</span></div>';
       }).join('') + '</div></div>';
     var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
-    return '<style>@page{@top-left{content:"PERSONNEL CHART — ' + nmCss + '";font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}}</style>' +
+    return '<style>@page{@top-left{content:"PERSONNEL CHART \u2014 ' + nmCss + '";font-family:Georgia,"Times New Roman",Times,serif;font-size:8.5px;letter-spacing:.22em;color:#6a6a62}}</style>' +
       '<div class="page"><div class="charthead"><div class="kickrow"><span>Personnel Chart</span><span>File Copy</span></div>' +
       '<h1>' + chartName(T.name) + '</h1>' +
       (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
-      (T.classif ? '<div class="classif">' + esc(T.classif) + '</div>' : '') +
       '</div>' + grid + secs +
       '<div class="filefoot"><span>Personnel Chart</span><span>File Copy</span></div></div>';
   } };
