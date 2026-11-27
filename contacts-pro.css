@@ -7310,7 +7310,7 @@ html[data-mode="light"] .gm-map{background:#e8edf3}
 .gm-speed{display:inline-flex;border:1px solid var(--pv-line);border-radius:8px;overflow:hidden}
 .gm-speed button{background:transparent;border:0;color:var(--pv-mut);font:600 12px inherit;padding:5px 10px;cursor:pointer}
 .gm-speed button.on{background:var(--pv-on);color:var(--pv-text)}
-#hmRange{width:100%;margin:10px 0 4px;accent-color:var(--pv-gold);cursor:pointer}
+/* V4.21.0: #hmRange is deleted — the stepper is arrows only. */
 .gm-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--pv-dim)}
 .gm-counts{font-size:13px;color:var(--pv-text);line-height:1.5}
 .gm-gaps{font-size:11.5px;color:var(--pv-dim);line-height:1.5;margin-top:6px}
@@ -7660,7 +7660,7 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .rc-hstats b{color:var(--txt);font-size:14px}
 .rc-legend.slim{display:flex;gap:6px 14px;flex-wrap:wrap;padding:7px 16px;border-bottom:1px solid var(--line);font-size:11px}
 /* New Facts: feed left (single column), Activity right. */
-.fi-page .fi-layout{grid-template-columns:minmax(0,1fr) 370px;gap:18px}
+.fi-page .fi-layout{grid-template-columns:minmax(0,1fr) 440px;gap:18px}
 .fi-page .fi-feed{grid-template-columns:1fr}
 .fi-strip.fi-oneline{padding-top:2px;margin-bottom:10px;align-items:center}
 .fi-actcol{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:12px 14px;min-width:0}
@@ -7855,7 +7855,7 @@ html[data-mode="light"] body::before{
 /* --- Today layout (V4.20.1): fresh cards + Activity column,
    mirroring New facts (.fi-layout at the fi-page width), stacking
    below on narrow screens exactly like New facts does. --- */
-.lr-today-layout{grid-template-columns:minmax(0,1fr) 370px;gap:18px}
+.lr-today-layout{grid-template-columns:minmax(0,1fr) 440px;gap:18px}
 @media(max-width:1100px){.lr-today-layout{grid-template-columns:1fr}}
 
 /* --- Home map stepper, slimmed (V4.20.2, JD 2026-11-27) ------
@@ -7866,7 +7866,50 @@ html[data-mode="light"] body::before{
    map keeps its fixed height (560px / 380px small, flex in
    full screen) independent of readout content. Strip, meter
    and hint styles are deleted with their elements. --- */
-.gm-srow{flex-wrap:nowrap}
-.gm-srow #hmRange{flex:1 1 auto;width:auto;min-width:120px;margin:0}
 .gm-evread{flex:none;width:100%;min-width:0;height:22px;line-height:22px;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;color:var(--pv-text)}
-.gm-step{padding-bottom:2px}
+
+/* --- V4.21.0 (JD 2026-11-27): arrows-only stepper, no white
+   flash, orb + hover card -----------------------------------
+   The Leaflet container itself carries the map's background
+   colour (never white, never transparent): while tiles stream
+   in, gaps show the same slate the dark tiles use, or the
+   light map's paper tone — no white flash at any step. */
+.gm-map .leaflet-container{background:#0d1117}
+html[data-mode="light"] .gm-map .leaflet-container{background:#e8edf3}
+/* The readout now stands alone under the map (the .gm-step row
+   is gone with the slider): it keeps the old row's divider. */
+.gm-evread{border-top:1px solid var(--pv-line);padding-top:10px;margin-top:12px;height:32px;line-height:22px;box-sizing:content-box}
+/* Step buttons in the top tool bar align with the ghost buttons. */
+.gm-mtools .gm-stepbtn{width:30px;height:30px;font-size:17px;align-self:center}
+/* The stepped marker is an ORB centred on the exact place
+   point: the divIcon is a 0x0 point at the lat/lng and the orb
+   is centred on it — text length can never shift it. Ring =
+   recency: fresh (<=21 days) emerald, within 90 days steel
+   blue, older muted violet-slate. Professional, no neon. */
+.gm-orbdi{background:transparent;border:0}
+.gm-orbwrap{display:block;position:relative;width:0;height:0}
+.gm-orb{position:absolute;left:-17px;top:-17px;width:34px;height:34px;border-radius:50%;background:#22304a;border:3px solid #8d84a8;box-shadow:0 2px 10px rgba(0,0,0,.55),inset 0 1px 3px rgba(255,255,255,.25);cursor:pointer;box-sizing:border-box}
+html[data-mode="light"] .gm-orb{background:#2c405f;box-shadow:0 2px 8px rgba(20,30,50,.4),inset 0 1px 3px rgba(255,255,255,.3)}
+.gm-orb i{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#e8ecf1}
+.gm-orb.a-hot{border-color:#1f9d78}
+.gm-orb.a-hot i{background:#7fe3c3}
+.gm-orb.a-mid{border-color:#5b8bc0}
+.gm-orb.a-mid i{background:#bcd7f5}
+.gm-orb.a-old{border-color:#8d84a8}
+.gm-orb.a-old i{background:#d5d0e8}
+/* The hover card: expands in place above the orb, centred on
+   the place point, pointer keeping it pinned there. Name and
+   date are heroes; the description is the FULL finding text. */
+.gm-ocard{display:none;position:absolute;left:0;bottom:30px;transform:translateX(-50%);width:288px;box-sizing:border-box;background:var(--pv-panel);border:1px solid var(--pv-line2);border-radius:12px;padding:13px 15px 12px;box-shadow:0 12px 34px rgba(0,0,0,.55);z-index:1200;cursor:pointer;text-align:left}
+.gm-ocard::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;background:var(--pv-panel);border-right:1px solid var(--pv-line2);border-bottom:1px solid var(--pv-line2);transform:rotate(45deg)}
+.gm-orbwrap:hover .gm-ocard,.gm-orb-open .gm-ocard{display:block}
+.gm-oc-name{display:block;font-size:19px;font-weight:750;line-height:1.2;color:var(--pv-text)}
+.gm-oc-date{display:block;font-size:15.5px;font-weight:700;color:var(--pv-gold);margin-top:2px}
+html[data-mode="light"] .gm-oc-date{color:#9a6d1d}
+.gm-oc-text{display:block;font-size:13px;line-height:1.5;color:var(--pv-text);margin-top:7px;white-space:normal}
+.gm-oc-meta{display:block;font-size:11.5px;color:var(--pv-dim);margin-top:7px;white-space:normal}
+/* Filings-this-week legend (V4.21.0 plain-language pass). */
+.pv-hg-legend{display:inline-flex;gap:12px;margin-left:10px;font-size:10.5px;color:var(--pv-mut)}
+.pv-hg-legend i{display:inline-block;width:5px;height:9px;border-radius:1px;margin-right:4px;vertical-align:-1px}
+.pv-hg-legend i.f{background:var(--ink-about-bright)}
+.pv-hg-legend i.p{background:var(--ink-conn-bright)}
