@@ -7845,7 +7845,16 @@ html[data-mode="light"] body::before{
    The hero's own top padding grows just enough (30px) for the
    strip to sit above the name without covering it, replacing
    the old standalone ~34px .ptop row + page gap entirely. */
-.page.profile .p-hero-shell{position:relative}
+/* V4.23.0: the shell must out-stack its page siblings. The
+   blanket .page.profile>*{z-index:1} rule puts the shell and
+   .psheets in TIED stacking contexts, so the later sheets
+   painted OVER the hero — and over the ··· menu hanging below
+   it (JD's screenshot: the menu clipped by the Connection
+   card). z-index:60 lifts the whole shell (strip + menu with
+   it) above the sheets while staying under the fixed editor
+   popovers (z 90+) and toasts. */
+.page.profile .p-hero-shell{position:relative;z-index:60}
+.page.profile .ptop-hero .menu-pop{z-index:300}
 .page.profile .ptop-hero{position:absolute;top:5px;left:10px;right:10px;z-index:70;display:flex;align-items:center;gap:8px;padding:0;pointer-events:none}
 .page.profile .ptop-hero>*{pointer-events:auto}
 .page.profile .ptop-hero .ib{width:26px;height:26px;background:color-mix(in srgb,var(--pv-panel) 78%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
