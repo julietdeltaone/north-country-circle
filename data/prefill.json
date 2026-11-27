@@ -1,7 +1,22 @@
 {
  "generated": "2026-11-27",
- "count": 0,
- "suggestions": [],
+ "count": 1,
+ "suggestions": [
+  {
+   "id": "pf-fa8d30391f",
+   "key": "ct:gabriel wangerin",
+   "display": "Gabriel Wangerin",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Norwood, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Family on file in Norwood: Danny Wangerin, Ina Wangerin, Lydia Martin, Sam Wangerin.",
+    "4 of 4 located known associates are in Norwood."
+   ],
+   "conf": 72
+  }
+ ],
  "auto_apply": [
   {
    "key": "sf:murray",
@@ -10,6 +25,14 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "ct:gabriel wangerin",
+   "display": "Gabriel Wangerin",
+   "field": "years_known",
+   "value": "2026",
+   "conf": 95,
+   "id": "pf-07d9a5e366"
   }
  ],
  "shelved": [
@@ -36,8 +59,9 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 12,
-   "shelved": 2
+   "tentative_floor": 13,
+   "shelved": 2,
+   "corroboration": 1
   },
   "items": [
    {
@@ -176,6 +200,26 @@
     "display": "Hannah Whiteford",
     "field": "location_on_file",
     "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-565565a46f",
+    "key": "ct:gabriel wangerin",
+    "display": "Gabriel Wangerin",
+    "field": "churches",
+    "value": "Christian Fellowship Center",
+    "rules": [
+     "corroboration"
+    ]
+   },
+   {
+    "id": "pf-4006d0a6db",
+    "key": "ct:gabriel wangerin",
+    "display": "Gabriel Wangerin",
+    "field": "groups",
+    "value": "Christian Fellowship Center",
     "rules": [
      "tentative_floor"
     ]
