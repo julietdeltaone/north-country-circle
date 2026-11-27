@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.24.0';
+var APP_VERSION = '4.25.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9596,6 +9596,24 @@ function rcPubChip(c){
   if(!f) return '';
   return '<div class="rc-pubdate"><span>Published</span><b>' + esc(f) + '</b></div>';
 }
+/* Recent-published highlight (JD 2026-11-27): "Needs a decision"
+   holds the unconfirmed; what marks a fresh one is that its SOURCE
+   was published recently — not that Luna just found it. A decision
+   item whose real published date (full date only — a bare year or
+   month cannot prove recency) falls within the last 21 days gets
+   the amber badge + card accent in both decision sections. No
+   published date, no highlight: the discovery / run / staged date
+   is never substituted. */
+var RECENT_PUB_DAYS = 21;
+function recentPub(published){
+  var p = String(published || '').trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(p)) return null;
+  var t = Date.parse(p + 'T12:00:00');
+  if(isNaN(t)) return null;
+  var days = Math.round((Date.now() - t) / 864e5);
+  if(days < 0 || days > RECENT_PUB_DAYS) return null;
+  return { days:days, label:'Published ' + rcFmtPub(p) + ' \u00b7 recent' };
+}
 /* The identity ask (V4, JD 2026-11-04): identity is the ONE
    category that is truly JD's to verify — pieces of information
    Luna cannot with high confidence determine belong to the
@@ -10379,13 +10397,16 @@ function rcConsoleHTML(){
       : esc(c0.source || '') + ' <span class="rc-nosrc">no source page found</span>';
     var pubC = null;
     rs.forEach(function(r){ if(!pubC && r.c.published) pubC = r.c; });
+    var rpC = null;
+    rs.forEach(function(r){ var x = recentPub(r.c.published); if(x && (!rpC || String(r.c.published) > rpC.p)) rpC = { p:String(r.c.published), label:x.label }; });
     var idAsk = rs.some(function(r){ return r.c.category === 'identity'; }) ? RC_IDASK : '';
     var photoBtn = '<button type="button" class="btn ghost sm rc-photo' + (allPhoto ? ' on' : '') + '" data-act="rcphotogroup" data-ids="' + esc(ids.join(',')) + '">' + ic('camera', 14) + (allPhoto ? 'Photo lead set' : 'Photo at source?') + '</button>';
     var isCur = rs.some(function(r){ return r.c.id === RC_VIEW.cur; });
-    return '<div class="rc-row rc-combo rcb-' + band.k + (isCur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c0.id) + '" data-rcids="' + esc(ids.join(',')) + '">' +
+    return '<div class="rc-row rc-combo rcb-' + band.k + (isCur ? ' rc-cur' : '') + (rpC ? ' rc-recent' : '') + '" data-kind="about" data-rcid="' + esc(c0.id) + '" data-rcids="' + esc(ids.join(',')) + '">' +
       '<div class="rc-conf"><b>' + lconf + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, lconf)) + '%"></i></span>' +
       rcPartsHTML(lp) + '<span class="rc-combo-n">' + rs.length + ' points</span></div>' +
       '<div class="rc-main">' + idAsk + '<div class="rc-person">' + kindGlyph('about') + personLink(c0) + (anyPhoto ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPills +
+      (rpC ? '<span class="rc-recent-badge">' + esc(rpC.label) + '</span>' : '') +
       '<span class="rc-combo-tag">' + rs.length + ' points \u00b7 one source</span>' +
       '<span class="rc-run">' + esc(fmtD(c0.run_date)) + (c0.run_label ? ' \u00b7 ' + esc(c0.run_label) : '') + '</span></div>' +
       '<div class="rc-block"><span class="rc-bh">What I found</span>' + found + '</div>' +
@@ -10407,6 +10428,7 @@ function rcConsoleHTML(){
     var confShown = (parts.identity != null || parts.source != null || parts.detail != null)
       ? ((+parts.identity || 0) + (+parts.source || 0) + (+parts.detail || 0)) : (+c.confidence || 0);
     var band = rcBand(confShown);
+    var rp = recentPub(c.published);
     /* The held category as a color-coded pill (JD 2026-11-01): one
        professional color family per category (rccat-* in the CSS),
        shown beside the name and again at the Why-held column it
@@ -10426,10 +10448,11 @@ function rcConsoleHTML(){
         '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.<br>Incorrect = wrong person — this source is never brought up for them again.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
-    return '<div class="rc-row rcb-' + band.k + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
+    return '<div class="rc-row rcb-' + band.k + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + (rp ? ' rc-recent' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
       '<div class="rc-conf"><b>' + confShown + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, confShown)) + '%"></i></span>' +
       rcPartsHTML(parts) + '</div>' +
       '<div class="rc-main">' + (c.category === 'identity' ? RC_IDASK : '') + '<div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
+      (rp ? '<span class="rc-recent-badge">' + esc(rp.label) + '</span>' : '') +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
       '<div class="rc-block"><span class="rc-bh">What I found</span><p class="rc-claim">' + esc(c.claim || '') + '</p></div>' +
       (rcOnFileLine(r) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(r) + '</div>' : '') +
@@ -13136,6 +13159,22 @@ function phcConfirmedPhoto(di){
   return '';
 }
 function phcHasImage(c){ return !!(c.image_url && c.image_url !== 'None'); }
+/* Display image for a candidate (JD 2026-11-27): the staged image
+   when there is one; otherwise the person's own unconfirmed photo
+   already on file (Photos on File grade possible / likely) — the
+   same lead, with its pixels attached, so the card shows the photo
+   instead of an empty box. Confirmed photos never reach this list
+   (the dedupe guard in phcPendingList), so this can only ever
+   surface an unconfirmed image. Truly image-less leads (a source
+   page whose pixels are walled off, e.g. LinkedIn) keep the
+   placeholder box — the card still renders in full. */
+function phcImgUrl(c, e){
+  if(phcHasImage(c)) return String(c.image_url);
+  if(!e) return '';
+  var idx = phIndex(), p = idx && idx[dispName(e)];
+  if(p && p.photo_url && (p.status === 'possible' || p.status === 'likely')) return String(p.photo_url);
+  return '';
+}
 function phcPendingList(){
   if(!PHC || !D) return [];
   var out = [];
@@ -13158,6 +13197,12 @@ function phcPendingList(){
 function phcPendingCount(){ return phcPendingList().length; }
 function phcDecide(ci, decision){
   var c = PHC && PHC.candidates[ci]; if(!c) return;
+  /* Resolve the display image onto the candidate first, so a
+     Confirm files the very photo the card showed (and the verdict
+     pairing keys off it) even when the pixels came from the
+     person's unconfirmed on-file photo rather than the staging. */
+  var diR = phcDi(c);
+  if(diR != null){ var eu = phcImgUrl(c, D.directory[diR]); if(eu && !phcHasImage(c)) c.image_url = eu; }
   if(decision === 'file' && !phcHasImage(c)){ toast('That candidate has no direct image to file — open the source page first.'); return; }
   var di = phcDi(c);
   if(di == null){ toast('That profile is no longer in the directory — the photo cannot be filed.'); return; }
@@ -13200,13 +13245,16 @@ function phcSectionHTML(){
   if(!list.length) return '<div class="phc-none">No photo candidates waiting. Confirmed photos, dismissed images and wrong-person pairings never resurface here.</div>';
   return '<div class="phc-list">' + list.map(function(it){
     var c = it.c, e = D.directory[it.di];
-    var hasImg = phcHasImage(c);
-    return '<div class="phc-card">' +
+    var imgUrl = phcImgUrl(c, e);
+    var hasImg = !!imgUrl;
+    var rp = recentPub(c.published);
+    return '<div class="phc-card' + (rp ? ' phc-recent' : '') + '">' +
       (hasImg
-        ? '<img class="phc-img" src="' + esc(c.image_url) + '" alt="Candidate photo for ' + esc(dispName(e)) + '" loading="lazy" referrerpolicy="no-referrer" onerror="phImgErr(this)">'
+        ? '<img class="phc-img" src="' + esc(imgUrl) + '" alt="Candidate photo for ' + esc(dispName(e)) + '" loading="lazy" referrerpolicy="no-referrer" onerror="phImgErr(this)">'
         : '<div class="phc-img phc-noimg">No direct image yet — the source page is the lead.</div>') +
       '<div class="phc-main"><div class="phc-person"><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + it.di + '"><b>' + esc(dispName(e)) + '</b></a>' +
-      (it.upgrade ? '<span class="phc-upgrade">Upgrade — a confirmed photo is already on file; this is a better one</span>' : '') + '</div>' +
+      (it.upgrade ? '<span class="phc-upgrade">Upgrade — a confirmed photo is already on file; this is a better one</span>' : '') +
+      (rp ? '<span class="phc-recent-badge">' + esc(rp.label) + '</span>' : '') + '</div>' +
       (c.evidence ? '<p class="phc-ev">' + esc(c.evidence) + '</p>' : '') +
       (c.note ? '<p class="phc-note dim">' + esc(c.note) + '</p>' : '') +
       (c.source_page ? '<a class="phc-src" href="' + esc(c.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a>' : '') +
