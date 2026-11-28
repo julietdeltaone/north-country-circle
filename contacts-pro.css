@@ -7714,7 +7714,12 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
 .gm-right{min-width:0;display:flex;flex-direction:column;gap:12px}
 .gm-right .gm-foot{grid-template-columns:1fr;margin-top:0;gap:12px}
 .gm-right .gm-mini{padding:14px 16px}
-.gm-mtools.slim{display:flex;gap:8px;justify-content:flex-end;padding:0 0 8px}
+.gm-mtools.slim{display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:0 0 8px}
+/* V4.28.0: the dots-hint threshold control in the map tools —
+   a quiet label + select in the same idiom as the ghost
+   buttons, theme colours only, never a fixed light/dark. */
+.gm-hintz{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--pv-mut);margin-right:auto}
+.gm-hintz select{font:inherit;font-size:12px;color:var(--pv-text);background:var(--pv-panel2);border:1px solid var(--pv-line2);border-radius:6px;padding:3px 6px;cursor:pointer}
 @media(max-width:1100px){.gm-band.cols{grid-template-columns:1fr}}
 /* Push hero: big, color-coded by freshness. */
 .gm-pushhero{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--pv-line);border-radius:12px;overflow:hidden;background:var(--pv-panel)}
@@ -7901,7 +7906,13 @@ html[data-mode="light"] body::before{
 /* --- Today layout (V4.20.1): fresh cards + Activity column,
    mirroring New facts (.fi-layout at the fi-page width), stacking
    below on narrow screens exactly like New facts does. --- */
-.lr-today-layout{grid-template-columns:minmax(0,1fr) 440px;gap:18px}
+/* V4.28.0 (JD 2026-11-28): Today is a true TWO-COLUMN system —
+   the fresh-facts cards take one half and stack vertically in
+   it (full cards, one under another), the Activity feed takes
+   the other half with real room to breathe instead of the
+   440px rail. One column under 1100px, as before. */
+.lr-today-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.lr-today-layout .lr-cards2{grid-template-columns:1fr}
 @media(max-width:1100px){.lr-today-layout{grid-template-columns:1fr}}
 
 /* --- Home map stepper, slimmed (V4.20.2, JD 2026-11-27) ------
