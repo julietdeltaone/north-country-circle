@@ -1,18 +1,54 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1560,
-  "dated": 81,
-  "undated": 1479,
-  "placed": 1404,
-  "unplaced": 156,
+  "total": 1566,
+  "dated": 85,
+  "undated": 1481,
+  "placed": 1411,
+  "unplaced": 155,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
-  "brief_attached": 34,
-  "brief_standalone": 48,
+  "brief_attached": 35,
+  "brief_standalone": 51,
   "brief_unresolved": 1
  },
  "items": [
+  {
+   "di": 284,
+   "display": "Ria Amo",
+   "text": "Earned second place in the P2 GPA awards as a BS Pharm Sciences, PharmD student at Albany College of Pharmacy and Health Sciences, Fall 2026",
+   "source": "Albany College of Pharmacy and Health Sciences",
+   "url": "https://www.acphs.edu/news/students-recognized-for-academic-and-character-excellence/",
+   "published": "2026-11-23",
+   "fresh": true,
+   "pid": "42.6526,-73.7562",
+   "place": "Albany",
+   "place_src": "text"
+  },
+  {
+   "di": 284,
+   "display": "Ria Amo",
+   "text": "Serves as president of three student organizations at Albany College of Pharmacy and Health Sciences: the student chapter of the American College of Clinical Pharmacy, Lambda Kappa Sigma, and the current P3 PharmD class, Fall 2026",
+   "source": "Albany College of Pharmacy and Health Sciences",
+   "url": "https://www.acphs.edu/news/students-recognized-for-academic-and-character-excellence/",
+   "published": "2026-11-23",
+   "fresh": true,
+   "pid": "42.6526,-73.7562",
+   "place": "Albany",
+   "place_src": "text"
+  },
+  {
+   "di": 284,
+   "display": "Ria Amo",
+   "text": "One of three students honored with an endowed alumni award for character, leadership, and community commitment at Albany College of Pharmacy and Health Sciences, Fall 2026",
+   "source": "Albany College of Pharmacy and Health Sciences",
+   "url": "https://www.acphs.edu/news/students-recognized-for-academic-and-character-excellence/",
+   "published": "2026-11-23",
+   "fresh": true,
+   "pid": "42.6526,-73.7562",
+   "place": "Albany",
+   "place_src": "text"
+  },
   {
    "di": 719,
    "display": "Raedyn Spademan",
@@ -302,18 +338,6 @@
    "place_src": "text"
   },
   {
-   "di": 57,
-   "display": "Alfredo Rodriguez",
-   "text": "Announced as Chaplain and Bible & Theology Teacher at Awakening Christian Academy, Aug 2026",
-   "source": "Awakening Christian Academy",
-   "url": "https://www.instagram.com/p/DcjQoPHufdj/",
-   "published": "2026-08-27",
-   "fresh": false,
-   "pid": "",
-   "place": "",
-   "place_src": ""
-  },
-  {
    "di": 468,
    "display": "Colin Mackey",
    "text": "Named Treasurer of Mohawk Valley Community College's Board of Trustees for the 2026-2027 academic year, Aug 2026 (Mohawk Valley Community College)",
@@ -336,6 +360,18 @@
    "pid": "44.6698,-74.9818",
    "place": "Clarkson University",
    "place_src": "text"
+  },
+  {
+   "di": 461,
+   "display": "Charlie-Sharon Sweet",
+   "text": "Taught two mini-intensive workshops from his book Prophetic Soil at Redeeming Love Church's Prophetic ONE-DAY event, Jun 2026 (Redeeming Love Church)",
+   "source": "Redeeming Love Church",
+   "url": "https://www.instagram.com/p/DZI-3jpmbzO/",
+   "published": "2026-06-03",
+   "fresh": false,
+   "pid": "26.9597,-80.1164",
+   "place": "Tequesta, FL",
+   "place_src": "profile"
   },
   {
    "di": 266,
@@ -386,6 +422,18 @@
    "place_src": ""
   },
   {
+   "di": 461,
+   "display": "Charlie-Sharon Sweet",
+   "text": "Guest minister with Sharon Sweet at Christian Center Church of Rostraver, Mar 27 and 29, 2026 (Christian Center Church)",
+   "source": "Christian Center Church",
+   "url": "https://www.instagram.com/p/DWZTfjIks1E/",
+   "published": "2026-03-27",
+   "fresh": false,
+   "pid": "26.9597,-80.1164",
+   "place": "Tequesta, FL",
+   "place_src": "profile"
+  },
+  {
    "di": 466,
    "display": "Cody Benham",
    "text": "Finished 3rd in the General division at the PBC Disc Golf Mini Glow Night in Watertown, New York, Mar 18, 2026, shooting even par (UDisc)",
@@ -396,18 +444,6 @@
    "pid": "43.9747,-75.9107",
    "place": "Watertown, New York",
    "place_src": "text"
-  },
-  {
-   "di": 142,
-   "display": "Hannah Braun",
-   "text": "Co-authored a Biology of Reproduction paper on transcriptome markers of bovine embryo quality with the Barfield Lab at Colorado State University, Feb 2026",
-   "source": "PubMed",
-   "url": "https://pubmed.ncbi.nlm.nih.gov/41342381/",
-   "published": "2026-02-18",
-   "fresh": false,
-   "pid": "44.7247,-75.3183",
-   "place": "Lisbon, NY",
-   "place_src": "profile"
   },
   {
    "di": 168,
@@ -434,6 +470,18 @@
    "place_src": ""
   },
   {
+   "di": 12,
+   "display": "Alex Hammond",
+   "text": "Working in partnership with Cornell's Service to Service program to add fellowships dedicated to members of the New York Army National Guard, Nov 2025, building on his master's capstone recommending a National Guard-SUNY partnership to improve recruitment",
+   "source": "Cornell Chronicle",
+   "url": "https://news.cornell.edu/stories/2025/11/program-supports-service-members-transition-public-service",
+   "published": "2025-11-10",
+   "fresh": false,
+   "pid": "44.8639,-75.2043",
+   "place": "Waddington, NY",
+   "place_src": "profile"
+  },
+  {
    "di": 164,
    "display": "Jessica Hurlbut",
    "text": "Featured on the MFI Leaders Podcast episode 'Stretched Thin - Juggling Motherhood & Ministry,' Nov 2025",
@@ -455,18 +503,6 @@
    "fresh": false,
    "pid": "44.9281,-74.8919",
    "place": "Massena, NY",
-   "place_src": "profile"
-  },
-  {
-   "di": 90,
-   "display": "Dillynn Grant",
-   "text": "Passed the U.S. Figure Skating Gold Solo Free Dance test, Aug 2025",
-   "source": "Potsdam Figure Skating Club",
-   "url": "https://www.facebook.com/PotsdamFSC/posts/pfbid0KrQVGpC2qAw7oKVUEsN5xs3vw8qW86gcJe3RRE1frrk69LT8zXdFyTD3BWXrBAcRl",
-   "published": "2025-08-17",
-   "fresh": false,
-   "pid": "44.6698,-74.9818",
-   "place": "Potsdam, NY",
    "place_src": "profile"
   },
   {
@@ -504,6 +540,30 @@
    "pid": "",
    "place": "",
    "place_src": ""
+  },
+  {
+   "di": 107,
+   "display": "Ellie Criscitello",
+   "text": "Watercolor notecards of Park Bros sold at Park Bros in Potsdam, credited to local artist Ellie Criscitello, May 2025",
+   "source": "Park Bros. Bagels and Coffee",
+   "url": "https://www.instagram.com/p/DKCbs42Otlt/",
+   "published": "2025-05-24",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 108,
+   "display": "Emmanuel Atindama",
+   "text": "Taught a data science class at the University of Toledo, reported Feb 2025",
+   "source": "UToledo News",
+   "url": "https://news.utoledo.edu/index.php/02_12_2025/new-data-science-school-invites-collaboration-innovation-in-rapidly-growing-field",
+   "published": "2025-02-12",
+   "fresh": false,
+   "pid": "44.6698,-74.9818",
+   "place": "Potsdam, NY",
+   "place_src": "profile"
   },
   {
    "di": 582,
@@ -581,18 +641,6 @@
    "di": 552,
    "display": "Kayleigh Clary",
    "text": "Named to SUNY Canton's President's List for Spring 2025 as a Health Care Management student, listed as Kayleigh Peets (SUNY Canton)",
-   "source": "SUNY Canton",
-   "url": "https://canton.edu/news/2024/honors-spring24.php",
-   "published": "2024-06-17",
-   "fresh": false,
-   "pid": "44.5956,-75.1691",
-   "place": "SUNY Canton",
-   "place_src": "text"
-  },
-  {
-   "di": 727,
-   "display": "Gabriel Wangerin",
-   "text": "Named to SUNY Canton's Dean's List for Spring 2024 as a Business Administration student (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "https://canton.edu/news/2024/honors-spring24.php",
    "published": "2024-06-17",
@@ -7043,6 +7091,18 @@
    "fresh": false,
    "pid": "44.6698,-74.9818",
    "place": "potsdam",
+   "place_src": "text"
+  },
+  {
+   "di": 727,
+   "display": "Gabriel Wangerin",
+   "text": "Named to SUNY Canton's Dean's List for Spring 2024 as a Business Administration student (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
    "place_src": "text"
   },
   {
@@ -18581,6 +18641,18 @@
    "di": 649,
    "display": "Zvi Szafran",
    "text": "As SUNY Canton president, he spoke at the college's Scholarship Luncheon on October 8, 2026, where the SUNY Canton Foundation announced its Bridge to a Million drive to reach $1 million in scholarship support, an event with more than 100 donors and 250 scholarship recipients. (SUNY Canton)",
+   "source": "SUNY Canton",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "44.5956,-75.1691",
+   "place": "SUNY Canton",
+   "place_src": "text"
+  },
+  {
+   "di": 649,
+   "display": "Zvi Szafran",
+   "text": "Became SUNY Canton's fourth President on July 1, 2014, after serving as Vice President for Academic Affairs at New England College from 1998 to 2005 and at Southern Polytechnic State University from 2005 (SUNY Canton)",
    "source": "SUNY Canton",
    "url": "",
    "published": "",
