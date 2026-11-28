@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.25.0';
+var APP_VERSION = '4.26.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8131,7 +8131,7 @@ var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
               placed web-search appearances with Airbnb-style
               place pills (JD 2026-11-27). The event stepper and
               its state are gone entirely. */
-           layers:{ web:true, home:true, seen:true }, apps:null };
+           layers:{ web:true, home:true, seen:true }, apps:null, field:null };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8819,78 +8819,337 @@ function hmPaint(){
    dated or not — the heat is about WHERE, not when. As you zoom
    in ("dial it in"), the heat crossfades down and the places
    resolve into pills carrying the place name + finding count,
-   Airbnb price-pill style. Clicking a pill selects the place
-   and opens the same hero detail the map has always had.
-   Layers change ONLY on a zoom-band change or a selection
-   change — never per move, never a basemap rebuild (the 4.21.0
-   anti-flash rules stand). */
-/* Heat points: [lat, lng, finding count] per placed place. */
-function hmHeatPoints(){
-  var A = hmAppsModel(), M = hmModel(), pts = [], max = 1;
+   Airbnb price-pill style. Clicking a place selects it and
+   opens the hero detail — the one card a map click can open.
+   V4.26.0 rebuilt HOW it renders (the app's own canvas field
+   layer, hmFieldClass below) after JD's flash/glitch report;
+   what the map shows is unchanged. */
+/* ================================================================
+   V4.26.0 (JD 2026-11-27) — the field is drawn by the app's OWN
+   canvas layer; the Leaflet.heat plugin and the DOM pill
+   markers are gone. The flash JD saw, traced to the old code:
+   - the plugin's canvas is exactly viewport-sized and only
+     repaints on moveend, so panning tore the heat at the
+     edges and popped the whole field back at rest; its zoom
+     compensation never engages on this map because the map
+     runs with zoomAnimation off;
+   - every zoom-band crossing — and every selection change —
+     destroyed and rebuilt EVERY place marker in the DOM
+     (the old hmDrawPills clearLayers), flashing the field;
+   - the heat was normalized by the largest place (516
+     findings), so a median place (4 findings) sat at
+     intensity 0.008 under a gradient starting at 0.3 —
+     invisible. What read on screen was the dot markers:
+     "just dots".
+   Now: two canvases in the overlay pane (heat below, pills
+   above), painted ONCE per settle — never per move frame.
+   The painted field extends HM_PAD px past the viewport on
+   every side and rides the map pane while panning, so the
+   heat stays glued to the geography; a repaint happens only
+   when the view settles (moveend), when a long drag outruns
+   the padding, on zoomend, and on resize — and each repaint
+   swaps a canvas's content inside a single task, so no blank
+   or half-drawn frame is ever painted. Intensity is
+   log-scaled, so the long tail of small places shades in and
+   overlapping kernels merge into continuous density.
+   Clicks land on the map itself and hit-test to the nearest
+   place: one click path, one card (the hero). No markers,
+   no popups, nothing else opens. */
+/* Field data: one entry per placed place, plus the largest
+   finding count — the heat's yardstick. Sorted small to
+   large so the biggest places paint last (on top). */
+function hmFieldPlaces(){
+  var A = hmAppsModel(), M = hmModel(), out = [], max = 1;
   Object.keys(A.byPlace).forEach(function(pk){
     var pl = M.places[pk]; if(!pl) return;
     var n = A.byPlace[pk].length;
     if(n > max) max = n;
-    pts.push([pl.lat, pl.lng, n]);
+    out.push({ pk:pk, lat:pl.lat, lng:pl.lng, n:n, label:pl.label });
   });
-  return { pts:pts, max:max };
+  out.sort(function(a, b){ return a.n - b.n; });
+  return { places:out, max:max };
 }
-/* The zoom bands: heat (default view, heat full, places are
-   dots) / mid (heat thins, count pills) / pill (heat a whisper,
-   full name+count pills). */
+/* The heat palette as a 256-step lookup: deep blue through
+   teal to amber and pale gold — the app's own heat colors. */
+var HM_LUT = null;
+function hmLut(){
+  if(HM_LUT) return HM_LUT;
+  var stops = [[0, '#16305e'], [0.35, '#2a4d9b'], [0.58, '#1b7f79'], [0.8, '#d9a441'], [1, '#f6d789']];
+  function rgb(hx){ return [parseInt(hx.slice(1, 3), 16), parseInt(hx.slice(3, 5), 16), parseInt(hx.slice(5, 7), 16)]; }
+  var lut = [];
+  for(var v = 0; v < 256; v++){
+    var t = v / 255, i = 0;
+    while(i < stops.length - 2 && t > stops[i + 1][0]) i++;
+    var a = stops[i], b = stops[i + 1], f = (t - a[0]) / (b[0] - a[0]);
+    var ca = rgb(a[1]), cb = rgb(b[1]);
+    lut.push([Math.round(ca[0] + (cb[0] - ca[0]) * f), Math.round(ca[1] + (cb[1] - ca[1]) * f), Math.round(ca[2] + (cb[2] - ca[2]) * f)]);
+  }
+  HM_LUT = lut;
+  return lut;
+}
+/* The zoom bands: heat (default view — pure density shading,
+   no dots, no pills) / mid (heat thins, count dots) / pill
+   (heat a whisper, full name+count pills). */
 function hmZoomBand(){
   if(!HM.map) return 'heat';
   var z = HM.map.getZoom();
   return z >= 13 ? 'pill' : (z >= 11 ? 'mid' : 'heat');
 }
-function hmPillIcon(pl, n, band, sel){
-  var name = pl.label.replace(/, [A-Z]{2}$/, '');
-  if(band === 'heat')
-    return L.divIcon({ className:'gm-di gm-pilldi', html:'<span class="gm-dotwrap"><span class="gm-dot"></span></span>', iconSize:[0, 0], iconAnchor:[0, 0] });
-  var inner = band === 'mid'
-    ? '<span class="gm-pill mini' + (sel ? ' sel' : '') + '"><b>' + n + '</b></span>'
-    : '<span class="gm-pill' + (sel ? ' sel' : '') + '">' + esc(name) + ' <b>' + n + '</b></span>';
-  return L.divIcon({ className:'gm-di gm-pilldi', html:'<span class="gm-pillwrap">' + inner + '</span>', iconSize:[0, 0], iconAnchor:[0, 0] });
-}
-function hmDrawPills(){
-  if(!HM.map || !window.L || !AP) return;
-  if(!HM.pillLayer) HM.pillLayer = L.layerGroup().addTo(HM.map);
-  HM.pillLayer.clearLayers();
-  var A = hmAppsModel(), M = hmModel(), band = HM._zband || 'heat';
-  var selPk = (HM.sel && HM.sel.type === 'place') ? HM.sel.key : null;
-  Object.keys(A.byPlace).forEach(function(pk){
-    var pl = M.places[pk]; if(!pl) return;
-    var mk = L.marker([pl.lat, pl.lng], { icon:hmPillIcon(pl, A.byPlace[pk].length, band, pk === selPk) }).addTo(HM.pillLayer);
-    mk.on('click', function(){ hmSelectPlace(pk); });
+var HM_PAD = 220;
+var HM_FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+var HmFieldLayer = null;
+function hmFieldClass(){
+  if(HmFieldLayer || !window.L) return HmFieldLayer;
+  HmFieldLayer = L.Layer.extend({
+    initialize: function(){
+      this._places = []; this._max = 1;
+      this._band = 'heat'; this._selPk = null;
+      this._origin = null; this._w = 0; this._h = 0; this._moveAt = 0;
+    },
+    setData: function(places, max){
+      this._places = places; this._max = max;
+      if(this._map) this._reset();
+    },
+    /* Band + selection: the heat canvas only changes opacity
+       (instant, no transition, no repaint); the pill canvas
+       repaints only when the band or the selection actually
+       changed. */
+    setBand: function(band, selPk){
+      var redraw = band !== this._band || selPk !== this._selPk;
+      this._band = band; this._selPk = selPk;
+      if(this._heatCv) this._heatCv.style.opacity = band === 'heat' ? '0.92' : (band === 'mid' ? '0.5' : '0.16');
+      if(redraw && this._map) this._drawPills();
+    },
+    onAdd: function(map){
+      this._map = map;
+      var pane = map.getPane('overlayPane');
+      this._heatCv = L.DomUtil.create('canvas', 'hm-cv hm-cv-heat', pane);
+      this._pillCv = L.DomUtil.create('canvas', 'hm-cv hm-cv-pill', pane);
+      this._gray = document.createElement('canvas');
+      map.on('moveend', this._settle, this);
+      map.on('move', this._onMove, this);
+      map.on('zoomend', this._reset, this);
+      map.on('resize', this._reset, this);
+      this._reset();
+    },
+    onRemove: function(map){
+      map.off('moveend', this._settle, this);
+      map.off('move', this._onMove, this);
+      map.off('zoomend', this._reset, this);
+      map.off('resize', this._reset, this);
+      if(this._heatCv) L.DomUtil.remove(this._heatCv);
+      if(this._pillCv) L.DomUtil.remove(this._pillCv);
+      this._heatCv = null; this._pillCv = null; this._gray = null; this._map = null;
+    },
+    /* How far (layer px) the viewport's top-left corner has
+       travelled from where the field was painted. */
+    _drift: function(){
+      if(!this._origin || !this._map) return 0;
+      var tl = this._map.containerPointToLayerPoint([0, 0]);
+      return Math.max(Math.abs(tl.x - (this._origin.x + HM_PAD)), Math.abs(tl.y - (this._origin.y + HM_PAD)));
+    },
+    _settle: function(){ if(this._drift() > HM_PAD * 0.45) this._reset(); },
+    _onMove: function(){
+      var now = Date.now();
+      if(now - this._moveAt < 90) return;
+      this._moveAt = now;
+      if(this._drift() > HM_PAD * 0.8) this._reset();
+    },
+    _reset: function(){
+      var map = this._map; if(!map || !this._heatCv) return;
+      var size = map.getSize();
+      var w = size.x + HM_PAD * 2, h = size.y + HM_PAD * 2;
+      this._origin = map.containerPointToLayerPoint([-HM_PAD, -HM_PAD]);
+      this._w = w; this._h = h;
+      var hc = this._heatCv;
+      hc.width = w; hc.height = h;
+      hc.style.width = w + 'px'; hc.style.height = h + 'px';
+      L.DomUtil.setPosition(hc, this._origin);
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      this._dpr = dpr;
+      var pc = this._pillCv;
+      pc.width = Math.round(w * dpr); pc.height = Math.round(h * dpr);
+      pc.style.width = w + 'px'; pc.style.height = h + 'px';
+      L.DomUtil.setPosition(pc, this._origin);
+      this._gray.width = w; this._gray.height = h;
+      this._drawHeat();
+      this._drawPills();
+    },
+    _xy: function(p){
+      var lp = this._map.latLngToLayerPoint([p.lat, p.lng]);
+      return [lp.x - this._origin.x, lp.y - this._origin.y];
+    },
+    /* Density field: each place stamps a soft kernel whose
+       strength is its finding count on a LOG scale (the counts
+       run 1..516 — linear scaling made everything but the top
+       two places invisible). Kernels accumulate where places
+       cluster, then the accumulated alpha is colorized through
+       the palette. Drawn into an offscreen alpha canvas first,
+       colorized in one pass, swapped in atomically. */
+    _drawHeat: function(){
+      if(!this._heatCv || !this._origin) return;
+      var w = this._w, h = this._h, R = 46;
+      var gtx = this._gray.getContext('2d');
+      gtx.clearRect(0, 0, w, h);
+      var logMax = Math.log(1 + this._max);
+      for(var i = 0; i < this._places.length; i++){
+        var p = this._places[i], xy = this._xy(p);
+        var x = xy[0], y = xy[1];
+        if(x < -R || y < -R || x > w + R || y > h + R) continue;
+        var a = 0.25 + 0.75 * (Math.log(1 + p.n) / logMax);
+        var gr = gtx.createRadialGradient(x, y, 0, x, y, R);
+        gr.addColorStop(0, 'rgba(0,0,0,' + a.toFixed(3) + ')');
+        gr.addColorStop(1, 'rgba(0,0,0,0)');
+        gtx.fillStyle = gr;
+        gtx.beginPath(); gtx.arc(x, y, R, 0, 6.28319); gtx.fill();
+      }
+      var img = gtx.getImageData(0, 0, w, h), d = img.data, lut = hmLut();
+      for(var j = 3; j < d.length; j += 4){
+        var v = d[j]; if(!v) continue;
+        var c = lut[v];
+        d[j - 3] = c[0]; d[j - 2] = c[1]; d[j - 1] = c[2];
+        d[j] = Math.min(255, Math.round(Math.pow(v / 255, 0.75) * 268));
+      }
+      this._heatCv.getContext('2d').putImageData(img, 0, 0);
+    },
+    _theme: function(){
+      var mode = document.documentElement.getAttribute('data-mode');
+      var cs = getComputedStyle(document.documentElement);
+      function v(name, fb){ var x = cs.getPropertyValue(name); x = x ? x.trim() : ''; return x || fb; }
+      return {
+        panel: v('--pv-panel', mode === 'light' ? '#ffffff' : '#12161e'),
+        text: v('--pv-text', mode === 'light' ? '#141a24' : '#e8ecf1'),
+        line: v('--pv-line2', mode === 'light' ? 'rgba(13,20,32,.20)' : 'rgba(255,255,255,.14)'),
+        gold: mode === 'light' ? '#9a6d1d' : v('--pv-gold', '#d9a441')
+      };
+    },
+    _drawPills: function(){
+      if(!this._pillCv || !this._origin) return;
+      var ctx = this._pillCv.getContext('2d');
+      var dpr = this._dpr || 1;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, this._w, this._h);
+      var band = this._band, sel = this._selPk, th = this._theme();
+      var i, p, xy, x, y;
+      if(band === 'heat'){
+        /* Pure heat: no dots, no pills. Only the selected place
+           is marked, so the one card's place stays visible. */
+        for(i = 0; i < this._places.length; i++){
+          p = this._places[i];
+          if(p.pk !== sel) continue;
+          xy = this._xy(p); x = xy[0]; y = xy[1];
+          ctx.beginPath(); ctx.arc(x, y, 13, 0, 6.28319);
+          ctx.strokeStyle = th.gold; ctx.lineWidth = 2.5; ctx.stroke();
+          ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.28319);
+          ctx.fillStyle = th.gold; ctx.fill();
+        }
+        return;
+      }
+      var self = this;
+      function drawOne(p){
+        var xy = self._xy(p), x = xy[0], y = xy[1];
+        if(x < -80 || y < -34 || x > self._w + 80 || y > self._h + 34) return;
+        var isSel = p.pk === sel;
+        if(band === 'mid'){
+          ctx.beginPath(); ctx.arc(x, y, isSel ? 13 : 11, 0, 6.28319);
+          ctx.fillStyle = th.panel; ctx.fill();
+          ctx.lineWidth = isSel ? 2.5 : 1.5;
+          ctx.strokeStyle = isSel ? th.gold : th.line; ctx.stroke();
+          ctx.font = '800 10.5px ' + HM_FONT;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = th.gold;
+          ctx.fillText(String(p.n), x, y + 0.5);
+        } else {
+          var name = p.label.replace(/, [A-Z]{2}$/, '');
+          ctx.font = '600 12.5px ' + HM_FONT;
+          var wName = ctx.measureText(name).width;
+          ctx.font = '800 12.5px ' + HM_FONT;
+          var wN = ctx.measureText(String(p.n)).width;
+          var pw = 22 + wName + 4 + wN, ph = 27, px = x - pw / 2, py = y - ph / 2;
+          ctx.beginPath();
+          if(ctx.roundRect) ctx.roundRect(px, py, pw, ph, 13.5); else ctx.rect(px, py, pw, ph);
+          ctx.fillStyle = th.panel;
+          ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 2;
+          ctx.fill();
+          ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+          ctx.lineWidth = isSel ? 2.5 : 1;
+          ctx.strokeStyle = isSel ? th.gold : th.line; ctx.stroke();
+          ctx.textBaseline = 'middle';
+          ctx.font = '600 12.5px ' + HM_FONT;
+          ctx.textAlign = 'left';
+          ctx.fillStyle = th.text;
+          ctx.fillText(name, px + 11, y + 0.5);
+          ctx.font = '800 12.5px ' + HM_FONT;
+          ctx.fillStyle = th.gold;
+          ctx.fillText(String(p.n), px + 11 + wName + 4, y + 0.5);
+        }
+      }
+      for(i = 0; i < this._places.length; i++) if(this._places[i].pk !== sel) drawOne(this._places[i]);
+      for(i = 0; i < this._places.length; i++) if(this._places[i].pk === sel) drawOne(this._places[i]);
+    }
   });
-  HM._pillSel = selPk; HM._pillBand = band;
+  return HmFieldLayer;
 }
-/* Crossfade + pill form follow the zoom band. Called on
-   zoomend/moveend and after the layers sync; a no-op unless the
-   band actually changed (or the selection did). */
+var HM_MX = null;
+function hmMeasureCtx(){
+  if(!HM_MX) HM_MX = document.createElement('canvas').getContext('2d');
+  return HM_MX;
+}
+/* The map's ONE click path (V4.26.0): a click hit-tests to the
+   nearest place and opens that place's hero card — the only
+   card a map click can open. Band-aware: at pill zoom the
+   pill's own box is the target; at wider zooms the nearest
+   place within a small radius wins. */
+function hmHitPlace(latlng){
+  if(!HM.map || !window.L) return null;
+  var band = HM._zband || 'heat';
+  var pt = HM.map.latLngToContainerPoint(latlng);
+  var F = hmFieldPlaces(), best = null, bestD = Infinity;
+  var mx = hmMeasureCtx();
+  F.places.forEach(function(p){
+    var cp = HM.map.latLngToContainerPoint([p.lat, p.lng]);
+    var dx = pt.x - cp.x, dy = pt.y - cp.y;
+    var d = Math.sqrt(dx * dx + dy * dy), ok = false;
+    if(band === 'pill'){
+      var name = p.label.replace(/, [A-Z]{2}$/, '');
+      mx.font = '600 12.5px ' + HM_FONT;
+      var hw = (22 + mx.measureText(name).width + 4) / 2;
+      mx.font = '800 12.5px ' + HM_FONT;
+      hw += mx.measureText(String(p.n)).width / 2;
+      ok = Math.abs(dx) <= hw + 2 && Math.abs(dy) <= 16;
+    } else if(band === 'mid') ok = d <= 16;
+    else ok = d <= 28;
+    if(ok && d < bestD){ bestD = d; best = p; }
+  });
+  return best;
+}
+/* Band + selection sync. Called on zoomend/moveend and after
+   the layers sync; hands the current band and selection to the
+   field layer, which repaints only what actually changed (the
+   layer dedupes — an ordinary pan that crosses no band and
+   changes no selection touches nothing). */
 function hmZoomSync(force){
   if(!HM.map || !window.L) return;
-  var band = hmZoomBand();
-  var changed = band !== HM._zband;
-  HM._zband = band;
-  var cv = document.querySelector('#hmMap .leaflet-heatmap-layer');
-  if(cv) cv.style.opacity = band === 'heat' ? '0.9' : (band === 'mid' ? '0.45' : '0.12');
+  HM._zband = hmZoomBand();
   var selPk = (HM.sel && HM.sel.type === 'place') ? HM.sel.key : null;
-  if(force || changed || HM._pillBand !== band || HM._pillSel !== selPk) hmDrawPills();
+  if(HM.field) HM.field.setBand(HM._zband, selPk);
 }
-/* Build the heat + pill layers once per corpus; afterwards
-   only the band/selection sync touches them. */
+/* Build the field layer once per corpus; afterwards only the
+   band/selection sync touches it. */
 function hmSyncMapLayers(){
   if(!HM.map || !window.L || !AP) return;
   var A = hmAppsModel();
   var key = (AP.counts ? AP.counts.total : 0) + ':' + Object.keys(A.byPlace).length;
   if(HM._mapKey !== key){
     HM._mapKey = key;
-    if(HM.heatLayer){ try { HM.map.removeLayer(HM.heatLayer); } catch(x){} HM.heatLayer = null; }
-    if(window.L.heatLayer){
-      var hd = hmHeatPoints();
-      HM.heatLayer = L.heatLayer(hd.pts, { radius:26, blur:20, maxZoom:13, max:hd.max, minOpacity:0.3,
-        gradient:{ 0.3:'#2a4d9b', 0.55:'#1b7f79', 0.8:'#d9a441', 1.0:'#f0c96a' } }).addTo(HM.map);
+    var F = hmFieldPlaces();
+    if(!HM.field){
+      var Cls = hmFieldClass();
+      if(Cls) HM.field = new Cls();
+    }
+    if(HM.field){
+      HM.field.setData(F.places, F.max);
+      if(!HM.field._map) HM.field.addTo(HM.map);
     }
     HM._zband = null;
     hmZoomSync(true);
@@ -9009,7 +9268,7 @@ function hmMount(){
   hmPaint();
   hmLoadLeaflet(function(ok){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
-    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; HM.pillLayer = null; HM.heatLayer = null; HM._mapKey = null; HM._zband = null; HM._pillSel = undefined; HM._pillBand = null; HM._sized = false; }
+    if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; HM.field = null; HM._mapKey = null; HM._zband = null; HM._sized = false; }
     var mode = document.documentElement.getAttribute('data-mode');
     /* V4.20.0 (JD 2026-11-26): the Overview map is STATIC — every
        Leaflet animation is off (no tile fade, no animated zoom,
@@ -9031,17 +9290,34 @@ function hmMount(){
     var esriAttr = '&copy; Esri \u2014 Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community';
     if(mode === 'light'){
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, attribution:esriAttr }).addTo(HM.map));
+        { maxZoom:18, attribution:esriAttr, keepBuffer:4 }).addTo(HM.map));
     } else {
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, maxNativeZoom:16, attribution:esriAttr }).addTo(HM.map));
+        { maxZoom:18, maxNativeZoom:16, attribution:esriAttr, keepBuffer:4 }).addTo(HM.map));
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, maxNativeZoom:16 }).addTo(HM.map));
+        { maxZoom:18, maxNativeZoom:16, keepBuffer:4 }).addTo(HM.map));
     }
-    /* V4.22.0: moves never repaint. zoomend/moveend only run
-       the band sync — the heat crossfade and the pill form
-       change when the zoom CROSSES a band, nothing else. */
+    /* V4.26.0: moves never repaint the field. zoomend/moveend
+       only run the band sync — the heat opacity and the pill
+       form change when the zoom CROSSES a band, nothing else.
+       keepBuffer 4 (above) keeps a wider apron of basemap
+       tiles alive around the viewport, so pans reach already
+       loaded tiles instead of blank ones. */
     HM.map.on('moveend zoomend', function(){ hmZoomSync(false); });
+    /* V4.26.0: ONE click path — a map click hit-tests to the
+       nearest place and opens its hero card; nothing else on
+       the map opens anything. Hover only moves the cursor. */
+    HM.map.on('click', function(e){
+      var hit = hmHitPlace(e.latlng);
+      if(hit) hmSelectPlace(hit.pk);
+    });
+    var hmHoverAt = 0;
+    HM.map.on('mousemove', function(e){
+      var now = Date.now();
+      if(now - hmHoverAt < 70) return;
+      hmHoverAt = now;
+      HM.map.getContainer().style.cursor = hmHitPlace(e.latlng) ? 'pointer' : '';
+    });
     hmFitDefault();
     hmPaint();
     /* One settle pass: Leaflet measured the container before
@@ -9058,30 +9334,20 @@ function hmNoMap(){
   if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map service is unavailable. The readout and the statistics below the map still work; reload to try the map again.</div>';
 }
 function hmLoadLeaflet(cb){
-  if(window.L && window.L.heatLayer){ cb(true); return; }
+  if(window.L){ cb(true); return; }
   if(HM.loading){ (HM.cbs = HM.cbs || []).push(cb); return; }
   HM.loading = true; HM.cbs = [cb];
   function done(ok){ var c = HM.cbs || []; HM.cbs = null; HM.loading = false; c.forEach(function(f){ f(ok); }); }
-  /* V4.22.0: the heat layer is the Leaflet.heat plugin, loaded
-     from the same unpkg CDN right after Leaflet itself. It is
-     an enhancement — if the plugin fails, the map still opens
-     and the place pills carry it; only a Leaflet failure is a
+  /* V4.26.0: Leaflet alone — the heat/pill field is the app's
+     own canvas layer (hmFieldClass), so the Leaflet.heat
+     plugin is no longer fetched. Only a Leaflet failure is a
      no-map. */
-  function loadHeat(){
-    if(window.L.heatLayer){ done(true); return; }
-    var h = document.createElement('script');
-    h.src = 'https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js';
-    h.onload = function(){ done(true); };
-    h.onerror = function(){ done(true); };
-    document.head.appendChild(h);
-  }
-  if(window.L){ loadHeat(); return; }
   var link = document.createElement('link');
   link.rel = 'stylesheet'; link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
   document.head.appendChild(link);
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  s.onload = function(){ loadHeat(); };
+  s.onload = function(){ done(true); };
   s.onerror = function(){ done(false); };
   document.head.appendChild(s);
 }
