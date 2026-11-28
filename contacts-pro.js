@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.29.0';
+var APP_VERSION = '4.30.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -4841,19 +4841,57 @@ var SCORE_CFG = {
 var SCORE_LABELS = { closeness:'Closeness', tier:'Level', relationship:'Relationship', years:'Years', fabric:'Fabric' };
 var SCORE_RADII = [160, 315, 485, 700, 920], SCORE_SPREAD = [14, 26, 40, 55, 70];
 var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
-/* V4.29.0 (JD 2026-11-28): the Network map carries ONE color code —
-   a dot's color is its closeness ring, on a single gold ramp:
-   bright gold on the closest ring, dulling step by step to bronze
-   on the farthest. These five colors mean nothing else on the map.
-   Organization hubs are a plain grey diamond; red is only the ring
-   around the person JD has selected (and JD's own center disc,
-   which is labeled with his initials). */
-var LAYER_C = ['#f5b942', '#dda133', '#c08327', '#a06d24', '#84622c'];
-/* The same ramp, deepened for the light theme: bright gold would
-   wash out on a pale background, so every step shifts deeper —
-   the order and the dulling direction are identical. */
-var LAYER_C_LT = ['#ad7715', '#9e6d1a', '#8f611c', '#7d551f', '#6b4c22'];
-function layerC(i){ return document.documentElement.getAttribute('data-mode') === 'light' ? LAYER_C_LT[i] : LAYER_C[i]; }
+/* V4.30.0 (JD 2026-11-28): the Network map is the COMPASS WHEEL
+   JD approved from the previews — people grouped into six sector
+   petals by the main world each person belongs to, distance from
+   the center still the closeness ring, and ONE color code: a
+   dot's color is the KNOWN-SINCE era, on Palette A "Slate &
+   Harbour" — the deepest tone is the longest known, warming
+   step by step to the newest. These colors mean nothing else
+   on the map. Organization hubs are a plain grey diamond; red
+   is only the ring around the person JD has selected (and JD's
+   own center disc, which is labeled with his initials). */
+var ERA_C = ['#476B94', '#2F6F6C', '#59896B', '#93A05E', '#D9A441'];
+var ERA_GREY = '#8A8F98';
+/* The same palette, deepened step-for-step for the light theme:
+   sage and amber would wash out on a pale background, so every
+   step shifts deeper — same hues, same order, same direction.
+   Every step holds at least 3.6:1 on the light map ground. */
+var ERA_C_LT = ['#3D5F87', '#27625E', '#3F7050', '#66743A', '#9C7218'];
+var ERA_GREY_LT = '#646A73';
+var ERA_LABELS = ['2014 & earlier', '2015\u201319', '2020\u201322', '2023\u201324', '2025\u201326'];
+function eraIdxOf(e){
+  var y = knownSinceYear(e);
+  if(!y) return -1;
+  return y <= 2014 ? 0 : y <= 2019 ? 1 : y <= 2022 ? 2 : y <= 2024 ? 3 : 4;
+}
+function eraC(i){
+  var lt = document.documentElement.getAttribute('data-mode') === 'light';
+  return i < 0 ? (lt ? ERA_GREY_LT : ERA_GREY) : (lt ? ERA_C_LT[i] : ERA_C[i]);
+}
+/* The six sectors, in wheel order clockwise from the top. One
+   sector per person, by the first match in this order (the rule
+   the approved preview was built with, verified person-for-person
+   against it): family first (relationship or the FAMILY group),
+   then military (the U.S. Army group), church (one of the three
+   named local churches on the record), work (a coworker or
+   client relationship), school (one of the four local schools
+   on the record); everyone else is Friends & community. */
+var NET_SECTORS = ['Family', 'Military', 'Church', 'Work', 'School', 'Friends & community'];
+var NET_RING_NAMES = ['Closest ring', 'Ring 2', 'Ring 3', 'Ring 4', 'Farthest ring'];
+var NET_SEC_CHURCH = { 'christian fellowship center':1, 'new testament church':1, 'calvary baptist church':1, 'calvary baptist':1 };
+var NET_SEC_SCHOOL = { 'suny potsdam':1, 'suny canton':1, 'clarkson university':1, 'st. lawrence university':1 };
+function netSectorOf(e){
+  var orgs = netOrgsOf(e), rel = (gv(e, 'relationship') || '').toLowerCase(), i, k;
+  for(i = 0; i < orgs.length; i++) if(regKey(orgs[i]) === 'family') return 0;
+  if(rel === 'family') return 0;
+  for(i = 0; i < orgs.length; i++) if(orgs[i] === 'U.S. Army') return 1;
+  for(i = 0; i < orgs.length; i++){ k = regKey(orgs[i]); if(NET_SEC_CHURCH[k]) return 2; }
+  if(rel === 'coworker' || rel === 'client') return 3;
+  for(i = 0; i < orgs.length; i++){ k = regKey(orgs[i]); if(NET_SEC_SCHOOL[k]) return 4; }
+  return 5;
+}
+function netSectorName(nd){ return NET_SECTORS[nd.sector == null ? 5 : nd.sector]; }
 var HUB_C = '#7c8593';
 /* Organization hubs on the map: hidden until JD turns them on
    (persisted per device, like the panel preference). */
@@ -4957,8 +4995,9 @@ function scoreBadgeHTML(di){
    Display coordinates (dx/dy) hold the same values; there is no
    morph engine anymore because there is only one layout. nd.ring is
    the TIER ring (kept for other readers); nd.sring is the score
-   layer, and netColor reads the layer — on the Network map color
-   is the closeness ring (V4.29.0). */
+   layer (the radius), nd.sector the compass petal (the angle),
+   and netColor reads nd.era — on the Network map color is the
+   known-since era (V4.30.0). */
 function netP2(nd){ return [nd.dx, nd.dy]; }
 function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]; return !!(s && s.lowConf); }
 
@@ -4977,7 +5016,7 @@ function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]
    diamond (or its row in the panel) to focus an organization.
    Display-only: nothing here ever writes data.
    ============================================================ */
-var NET = { nodes:[], hubs:[], layerCounts:null, cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, pitch:0.45, lastT:0, pulse:null };
+var NET = { nodes:[], hubs:[], layerCounts:null, sectorCounts:null, sectorSpans:null, cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, pitch:0.45, lastT:0, pulse:null };
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Camera glide: the one motion the page still has. A glide moves
    camera values (pan / zoom / panel compensation) with the house
@@ -5066,7 +5105,8 @@ function netBuild(){
     var r = dir[di];
     var ratio = r.has_graph === false ? 0.3 : (r.strength || 0) / maxS;
     var nd = { di:di, ring:ringOf[di], r:2 + 3.6 * ratio, nw:NEWGAIN[di] ? 1 : 0,
-               orgs:netOrgsOf(r), primary:null, hub:null, sring:4, sx:0, sy:0, dx:0, dy:0 };
+               orgs:netOrgsOf(r), primary:null, hub:null, sring:4, sx:0, sy:0, dx:0, dy:0,
+               sector:netSectorOf(r), era:eraIdxOf(r) };
     NET.nodes.push(nd); NET.byDi[di] = nd;
   });
   /* Membership counts over the whole map decide which orgs earn
@@ -5082,56 +5122,71 @@ function netBuild(){
     });
     nd.primary = best;
   });
-  /* Score positions: Dunbar rank layers, radius = closeness.
-     Within a layer, members are ordered by main organization
-     (largest first), then by score, so org-mates land in
-     contiguous soft sectors around the ring. Angle jitter is a
-     fraction of the person's own slot, so sectors survive it. */
+  /* Compass positions (V4.30.0): Dunbar rank layers, radius =
+     closeness — and the angle is the person's SECTOR. Each
+     sector owns a wedge of the wheel sized by its headcount,
+     Family centered on the top and the rest running clockwise
+     in NET_SECTORS order, the same wedge at every radius so
+     the petals line up from the center to the rim. Within a
+     layer-and-sector cell, members are ordered by main
+     organization (largest first), then by score, so org-mates
+     stay neighbours inside their petal; the slot each member
+     takes is golden-ratio interleaved, so close-ranked
+     neighbours do not sit shoulder to shoulder. Angle jitter
+     is a fraction of the person's own slot. */
   var scAll = scoreAll(), byLayer = [[], [], [], [], []];
   NET.nodes.forEach(function(nd){ var s = scAll[nd.di]; byLayer[(s && s.layer ? s.layer : 5) - 1].push(nd); });
+  var TAU = Math.PI * 2, secCounts = [0, 0, 0, 0, 0, 0];
+  NET.nodes.forEach(function(nd){ secCounts[nd.sector]++; });
+  NET.sectorCounts = secCounts;
+  /* Wedges run clockwise from the top (canvas angles grow
+     clockwise): Family straddles straight up, then Military,
+     Church, Work, School, Friends & community. */
+  var spans = [], acc = -Math.PI / 2 - (NET.nodes.length ? secCounts[0] / NET.nodes.length * TAU / 2 : 0);
+  NET_SECTORS.forEach(function(nm, si){
+    var w = NET.nodes.length ? secCounts[si] / NET.nodes.length * TAU : 0;
+    spans.push({ name:nm, a0:acc, a1:acc + w, n:secCounts[si] });
+    acc += w;
+  });
+  NET.sectorSpans = spans;
   byLayer.forEach(function(arr, layer){
-    arr.sort(function(a, b){
-      var ca = a.primary ? counts[a.primary] : 0, cb = b.primary ? counts[b.primary] : 0;
-      if(cb !== ca) return cb - ca;
-      var na = a.primary || '\uffff', nb = b.primary || '\uffff';
-      if(na !== nb) return na < nb ? -1 : 1;
-      return (scAll[b.di].score - scAll[a.di].score) || (a.di - b.di);
-    });
-    var n = arr.length, TAU = Math.PI * 2;
-    /* Even spacing inside each org sector (JD 2026-10-22): a
-       sector is the contiguous run of org-mates in the sorted
-       ring; its span is its share of the circle, and each member
-       sits at the center of an equal slot within that span.
-       Jitter is capped at a quarter of a slot, so neighbours
-       keep real air between them instead of clumping. */
-    var k = 0;
-    while(k < n){
-      var j = k + 1;
-      while(j < n && (arr[j].primary || '') === (arr[k].primary || '')) j++;
-      var span = (j - k) / n * TAU, slot = span / (j - k), start = k / n * TAU;
-      for(var m = k; m < j; m++){
-        var nd2 = arr[m], rng = mulberry32((nd2.di + 7919) * 2654435761 % 2147483647);
-        var ang = start + (m - k + 0.5) * slot + (rng() - 0.5) * slot * 0.25 + layer * 0.7;
+    var cells = [[], [], [], [], [], []];
+    arr.forEach(function(nd){ cells[nd.sector].push(nd); });
+    cells.forEach(function(cell, si){
+      cell.sort(function(a, b){
+        var ca = a.primary ? counts[a.primary] : 0, cb = b.primary ? counts[b.primary] : 0;
+        if(cb !== ca) return cb - ca;
+        var na = a.primary || '\uffff', nb = b.primary || '\uffff';
+        if(na !== nb) return na < nb ? -1 : 1;
+        return (scAll[b.di].score - scAll[a.di].score) || (a.di - b.di);
+      });
+      var sp = spans[si], n = cell.length;
+      if(!n) return;
+      /* A hair of breathing room at the wedge edges, capped so
+         the narrowest petal (Family) keeps most of its width. */
+      var inset = Math.min(sp.a1 - sp.a0, 0.05) * 0.25;
+      var w0 = sp.a0 + inset, w1 = sp.a1 - inset, slot = (w1 - w0) / n;
+      cell.forEach(function(nd2, m){
+        var rng = mulberry32((nd2.di + 7919) * 2654435761 % 2147483647);
+        var frac = ((m * 0.61803398875) % 1) * (1 - 1 / n) + 0.5 / n;
+        var ang = w0 + frac * (w1 - w0) + (rng() - 0.5) * slot * 0.25;
         var rad = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
         nd2.sring = layer; nd2.sx = nd2.dx = Math.cos(ang) * rad; nd2.sy = nd2.dy = Math.sin(ang) * rad;
         /* Universe (3D) position, derived from this same slot:
-           longitude = the 2D sector angle (org wedges survive
+           longitude = the 2D sector angle (the petals survive
            as longitude wedges), latitude = the member's place
-           within its org run, spread over ±60°. The place is
-           interleaved by the golden ratio rather than swept in
-           order — a straight sweep draws each org as a diagonal
-           ribbon across the sphere, while the interleave fills
-           the wedge evenly, the way the flat ring fills its arc.
-           The shell radius is exactly the layer's ring radius —
-           no spread jitter — so each closeness layer is a clean
-           sphere. Deterministic: a pure function of the run
-           index, so these coordinates never change between loads. */
-        var lat = (((m - k) * 0.61803398875) % 1 - 0.5) * 2.1, clat = Math.cos(lat), R3 = SCORE_RADII[layer];
+           within its cell, spread over ±60° and interleaved by
+           the golden ratio so the wedge fills evenly instead of
+           drawing a diagonal ribbon. The shell radius is exactly
+           the layer's ring radius — no spread jitter — so each
+           closeness layer is a clean sphere. Deterministic: a
+           pure function of the cell index, so these coordinates
+           never change between loads. */
+        var lat = ((m * 0.61803398875) % 1 - 0.5) * 2.1, clat = Math.cos(lat), R3 = SCORE_RADII[layer];
         nd2.lat = lat; nd2.lon = ang;
         nd2.px = R3 * clat * Math.cos(ang); nd2.py = R3 * Math.sin(lat); nd2.pz = R3 * clat * Math.sin(ang);
-      }
-      k = j;
-    }
+      });
+    });
   });
   /* Ring labels (V4.29.0) show the people actually on each ring:
      the same membership this loop just positioned. */
@@ -5163,11 +5218,11 @@ function netBuild(){
   NET.dirty = true;
 }
 function netColor(nd){
-  /* V4.29.0 (JD 2026-11-28): on this map, color is the closeness
-     ring — the gold ramp, brightest at the center. (Tier still
-     owns color everywhere else in the app; JD asked for the one
-     code a first look understands here.) */
-  return layerC(nd.sring == null ? 4 : nd.sring);
+  /* V4.30.0 (JD 2026-11-28): on this map, color is the
+     known-since era — Palette A, deepest for the longest known,
+     warmest for the newest, grey when no year is on file.
+     (Tier still owns color everywhere else in the app.) */
+  return eraC(nd.era == null ? -1 : nd.era);
 }
 function viewNetwork(v){
   S.net.view = '2d'; NET.view = '2d';
@@ -5184,7 +5239,7 @@ function viewNetwork(v){
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
     '<div class="netfocus" id="netfocus" hidden></div>' +
     '<div class="nethov" id="nethov" hidden></div>' +
-    '<div class="netlegend" id="netlegend"><span class="lg-ramp">' + [0, 1, 2, 3, 4].map(function(li){ return '<i style="background:' + layerC(li) + '"></i>'; }).join('') + '<em>Closest \u2192 farthest</em></span><span><i class="lg-dia"></i>Organization</span><span><i class="lg-ring"></i>Selected</span></div>' +
+    '<div class="netlegend" id="netlegend"><span class="lg-era-lab">Known since</span>' + ERA_LABELS.map(function(lab, li){ return '<span><i style="background:' + eraC(li) + '"></i>' + lab + '</span>'; }).join('') + '<span><i style="background:' + eraC(-1) + '"></i>No year on file</span><span><i class="lg-dia"></i>Organization</span><span><i class="lg-ring"></i>Selected</span></div>' +
     '<button type="button" class="netlegchip" data-act="netlegend" aria-expanded="false" aria-controls="netlegend">Legend</button>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
@@ -5309,6 +5364,7 @@ function netHovPaint(ev, nd){
     var ka = knownAssociates(e).length, rel = cap(gv(e, 'relationship') || '');
     el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' + milBadge(e) +
       '<span class="nh-l2">' + esc(tierName(e) || 'No level yet') + (s ? ' · Completeness ' + s.score : '') + (ka ? ' · ' + ka + ' associate' + (ka === 1 ? '' : 's') : '') + '</span>' +
+      '<span>' + esc(NET_RING_NAMES[nd.sring == null ? 4 : nd.sring]) + ' · ' + esc(netSectorName(nd)) + (sy ? ' · Known since ' + sy : ' · No year on file') + '</span>' +
       ((rel || yrs != null) ? '<span>' + esc([rel, yrs != null ? 'Known ' + yrs + ' yr' + (yrs === 1 ? '' : 's') : ''].filter(Boolean).join(' · ')) + '</span>' : '') +
       (nd.orgs.length ? '<span class="nh-orgs">' + esc(nd.orgs.join(', ')) + '</span>' : '') +
       (f ? '<span class="nh-l3">' + esc(f) + '</span>' : '');
@@ -5488,13 +5544,30 @@ function netDraw(){
     nodeOrder = NET.nodes.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
     hubOrder = NET.hubs.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
   }
-  /* guide rings: the Dunbar layers, each stroked in its own ring
-     color and labeled with its people count (V4.29.0) */
+  /* Sector petals (V4.30.0, 2D): six wedges sized by headcount,
+     alternating a whisper of ink so neighbouring petals read as
+     different ground, with a divider ray on every boundary.
+     Drawn in world space, so they turn with the wheel's spin
+     exactly as the dots do. */
+  if(!is3 && NET.sectorSpans){
+    var RIM = 1005;
+    NET.sectorSpans.forEach(function(sp, si){
+      if(!sp.n) return;
+      var a = P(RIM * Math.cos(sp.a0), RIM * Math.sin(sp.a0)), b = P(RIM * Math.cos(sp.a1), RIM * Math.sin(sp.a1));
+      ctx.fillStyle = 'rgba(' + netInk() + ',' + (si % 2 ? 0.012 : 0.034) + ')';
+      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(a[0], a[1]);
+      ctx.arc(c[0], c[1], RIM * z, sp.a0 + (NET.spin || 0), sp.a1 + (NET.spin || 0));
+      ctx.lineTo(c[0], c[1]); ctx.fill();
+      ctx.strokeStyle = 'rgba(' + netInk() + ',0.25)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(a[0], a[1]); ctx.stroke();
+    });
+  }
+  /* guide rings: the Dunbar layers, stroked in neutral ink now
+     that color belongs to the known-since era (V4.30.0), each
+     labeled with its people count (V4.29.0) */
   ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   SCORE_RADII.forEach(function(r, i){
-    /* the guide ring wears its own ring color, faintly — the same
-       color its dots wear at full strength (V4.29.0) */
-    ctx.strokeStyle = hexA(layerC(i), 0.32); ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',0.16)'; ctx.lineWidth = 1;
     ctx.beginPath();
     if(is3){
       /* the shell's outline: the great circle of this closeness
@@ -5644,6 +5717,26 @@ function netDraw(){
       }
     }
   }
+  /* Sector labels (V4.30.0, 2D): the petal's name and its people
+     count, just outside the rim at the wedge's middle — the same
+     two lines the approved preview carries. Drawn last so they
+     sit over the spokes; the text itself never rotates, only
+     its position rides the wheel. */
+  if(!is3 && NET.sectorSpans){
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    NET.sectorSpans.forEach(function(sp){
+      if(!sp.n) return;
+      var mid = (sp.a0 + sp.a1) / 2;
+      var lp = P(1062 * Math.cos(mid), 1062 * Math.sin(mid));
+      if(lp[0] < -70 || lp[1] < -24 || lp[0] > NET.W + 70 || lp[1] > NET.H + 24) return;
+      ctx.font = '600 13px Archivo, sans-serif';
+      ctx.fillStyle = 'rgba(' + netInk() + ',0.88)';
+      ctx.fillText(sp.name, lp[0], lp[1] - 8);
+      ctx.font = '500 11px Archivo, sans-serif';
+      ctx.fillStyle = 'rgba(' + netInk() + ',0.55)';
+      ctx.fillText(sp.n + (sp.n === 1 ? ' person' : ' people'), lp[0], lp[1] + 9);
+    });
+  }
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
@@ -5652,13 +5745,21 @@ function netStatsHTML(){
   var rows = [['On the map', String(NET.nodes.length)]];
   var lc = [0, 0, 0, 0, 0];
   NET.nodes.forEach(function(n){ lc[n.sring || 0]++; });
-  /* V4.29.0: the panel's ring rows wear the same gold-ramp colors
-     as the dots on the map — one code, stated the same way. */
-  ['Closest ring', 'Ring 2', 'Ring 3', 'Ring 4', 'Farthest ring'].forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i]), layerC(i)]); });
+  /* Ring rows keep their people counts (V4.29.0) but no color
+     swatch: since V4.30.0 color on this map is the known-since
+     era, not the ring. */
+  NET_RING_NAMES.forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i])]); });
   rows.push(['Organization hubs', String(NET.hubs.length)]);
   if(nw) rows.push(['New connections', String(nw)]);
-  return '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
-    rows.map(function(r){ return '<div class="srow2"><span>' + (r[2] ? '<i class="sdot" style="background:' + r[2] + '"></i>' : '') + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
+  var html = '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
+    rows.map(function(r){ return '<div class="srow2"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
+  /* Sector headcounts (V4.30.0): the same numbers the wheel's
+     petal labels carry, counted from the same node membership. */
+  if(NET.sectorCounts){
+    html += '<div class="side-h"><h3>Sectors</h3></div><div class="statrows">' +
+      NET_SECTORS.map(function(nm, si){ return '<div class="srow2"><span>' + nm + '</span><b>' + NET.sectorCounts[si] + '</b></div>'; }).join('') + '</div>';
+  }
+  return html;
 }
 /* The panel's organization index (Design C's list, as Design A's
    selector): every hub, ranked by member count. Selecting a row
@@ -5688,6 +5789,8 @@ function netCard(){
     var nd = NET.byDi[di], sc = scoreFor(di), sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
     var drows = [['Level', tierName(e) || 'No level yet']];
     if(gv(e, 'relationship')) drows.push(['Relationship', cap(gv(e, 'relationship'))]);
+    if(nd) drows.push(['Sector', netSectorName(nd)]);
+    if(nd) drows.push(['Ring', NET_RING_NAMES[nd.sring == null ? 4 : nd.sring]]);
     if(yrs != null) drows.push(['Years known', yrs + ' (since ' + sy + ')']);
     if(sc) drows.push(['Closeness score', String(sc.score)]);
     drows.push(['Known associates', String(ka)]);
