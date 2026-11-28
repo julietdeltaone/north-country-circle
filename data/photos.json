@@ -3646,13 +3646,20 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
-   "evidence": "Instagram profile @jazmynkyara (display name \"jazmyn\").",
+   "evidence": "North Country Now photo (Mar 17, 2024), provided by Potsdam Figure Skating Club; the caption embedded in the photo reads: \"Potsdam Figure Skating Club's graduating seniors will be among the 120 performers in the club's upcoming ice show Saturday, March 23, at 3 p.m. in Cheel Arena, Clarkson University. From left are Jazmyn Villnave, Teagan Saiff and Raegan Barrett.\" Crop of the left skater filed. Seed found by JD Nov 28, 2026.",
    "name": "Jazmyn Villnave",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/782093157_18488319844103810_6204998515979007476_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Bnj2TZpkl3kQ7kNvwF4Kn5K&_nc_oc=AdrqBQX-CylPd_MwsQnFhgtUtciNIYH38Ta2L7CqxpZvDC1_ERXp0IR9cEGOccVPRJWCX3vP2k-xAKcGU8rN4WX0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=5SLIH9ULUDHWxFpWaz_NVA&oh=00_AQPdDm0RAGnYumIAycGm0LReIcufxa6u7Sa-V7Nl23HmpQ&oe=6AE01310",
-   "source_page": "https://www.instagram.com/jazmynkyara/",
-   "status": "confirmed",
-   "type": "Instagram profile picture"
+   "photo_url": "photos/jazmyn-villnave.jpg",
+   "source_page": "https://zeta.creativecirclecdn.com/ncn/original/20240317-141918-Potsdam%20figure%20skating%20skaters%20seniors.jpg",
+   "status": "likely",
+   "type": "News photo (captioned)",
+   "also": [
+    {
+     "note": "Prior primary: Instagram profile picture (@jazmynkyara) — a solid black square, no person; CDN URL expired.",
+     "source_page": "https://www.instagram.com/jazmynkyara/",
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/782093157_18488319844103810_6204998515979007476_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Bnj2TZpkl3kQ7kNvwF4Kn5K&_nc_oc=AdrqBQX-CylPd_MwsQnFhgtUtciNIYH38Ta2L7CqxpZvDC1_ERXp0IR9cEGOccVPRJWCX3vP2k-xAKcGU8rN4WX0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=5SLIH9ULUDHWxFpWaz_NVA&oh=00_AQPdDm0RAGnYumIAycGm0LReIcufxa6u7Sa-V7Nl23HmpQ&oe=6AE01310"
+    }
+   ],
+   "added": "2026-11-28"
   },
   {
    "added": "2026-11-02",
