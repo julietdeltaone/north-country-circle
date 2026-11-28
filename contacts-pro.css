@@ -605,6 +605,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0
 /* V4.29.0 legend glyphs: the gold ramp reads as a dotted gradient,
    organizations are a grey diamond, selection a hollow red ring. */
 .netlegend .lg-ramp i{margin-right:3px}
+.netlegend .lg-era-lab{font-weight:600}
 .netlegend .lg-ramp em{font-style:normal;margin-left:5px}
 .netlegend .lg-dia{background:#7c8593;border-radius:0;transform:rotate(45deg);box-shadow:none}
 .netlegend .lg-ring{background:transparent;border:2px solid #e30613;border-radius:50%;width:8px;height:8px;box-shadow:none;box-sizing:border-box}
@@ -2686,7 +2687,7 @@ html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transpar
 .hma-nchip,.aud-gchip,.aud-catbtn,.pha-rchip,.phbadge,.src,.conf,.fnode,.skhead em,.nv em,.btn em,.asfiled-cnt,.phed-thumbs button{border-radius:999px}
 .aud-x,.pha-item em,.crumb{border-radius:8px}
 .gsearch kbd,.keys kbd{border-radius:6px}
-.netlegend{border-radius:12px}
+.netlegend{border-radius:12px;max-width:46%}   /* V4.30.0: the era legend is wide — capped so it wraps at the top-left and never covers the Family petal's label at the top-center of the wheel */
 .hm-segbar{border-radius:10px}
 .hm-tr,.hm-ptr,.asbar{border-radius:999px}
 .hm-ycol .bar{border-radius:4px 4px 0 0}
