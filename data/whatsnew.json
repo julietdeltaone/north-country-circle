@@ -3,6 +3,14 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-28",
+   "kind": "photo",
+   "display": "Jazmyn Villnave",
+   "text": "Primary photo filed (grade: likely)",
+   "source": "Photos on File",
+   "url": "https://zeta.creativecirclecdn.com/ncn/original/20240317-141918-Potsdam%20figure%20skating%20skaters%20seniors.jpg"
+  },
+  {
    "date": "2026-11-27",
    "kind": "filed",
    "display": "Ria Amo",
@@ -2393,14 +2401,6 @@
    "text": "Performed as pianist for the Crane Men's Ensemble and on piano and accordion with the Potsdam Community Chorus at SUNY Potsdam, Apr 21, 2013",
    "source": "SUNY Potsdam",
    "url": "https://webspace.potsdam.edu/groups/craneperformance/CHO%20138.pdf"
-  },
-  {
-   "date": "2026-11-16",
-   "kind": "filed",
-   "display": "Colleen Cheney",
-   "text": "Named to the President's List at SUNY Canton for the Spring 2024 semester as a Graphic and Multimedia Design student",
-   "source": "SUNY Canton",
-   "url": "https://www.canton.edu/news/2024/honors-spring24.php"
   }
  ]
 }
