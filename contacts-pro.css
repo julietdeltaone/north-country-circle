@@ -602,6 +602,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0
   border-color:rgba(255,255,255,.10);box-shadow:inset 0 0 90px rgba(0,0,0,.5), var(--sh-card)}
 .netlegend{background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.07);border-radius:2px;padding:7px 12px}
 .netlegend i{box-shadow:0 0 7px currentColor}
+/* V4.29.0 legend glyphs: the gold ramp reads as a dotted gradient,
+   organizations are a grey diamond, selection a hollow red ring. */
+.netlegend .lg-ramp i{margin-right:3px}
+.netlegend .lg-ramp em{font-style:normal;margin-left:5px}
+.netlegend .lg-dia{background:#7c8593;border-radius:0;transform:rotate(45deg);box-shadow:none}
+.netlegend .lg-ring{background:transparent;border:2px solid #e30613;border-radius:50%;width:8px;height:8px;box-shadow:none;box-sizing:border-box}
+.netorgsbtn.on{border-color:var(--acc);color:var(--acc)}
 .netzoom .ib{background:var(--glass2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1);box-shadow:0 8px 20px -8px rgba(0,0,0,.6)}
 .netcard{background:var(--glass2);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);border-color:rgba(255,255,255,.11);box-shadow:0 24px 54px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.06)}
 .fn.foc .fc{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--acc2),0 0 22px -2px rgba(255,255,255,.55)}
