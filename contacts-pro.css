@@ -7935,13 +7935,15 @@ html[data-mode="light"] .gm-map .leaflet-container{background:#e8edf3}
 .pv-hg-legend i.f{background:var(--ink-about-bright)}
 .pv-hg-legend i.p{background:var(--ink-conn-bright)}
 
-/* --- V4.22.0 (JD 2026-11-27): heat map + Airbnb place pills --
-   The heat canvas crossfades by zoom band (set from JS on
-   zoomend); the pills are centred on each place's exact point
-   (0x0 divIcon + centred inner pill, so label length can never
-   shift one). Pill = Airbnb price-pill model: solid surface,
-   rounded, subtle shadow, name + count readable at a glance. */
-#hmMap .leaflet-heatmap-layer{transition:opacity .3s ease}
+/* --- V4.26.0 (JD 2026-11-27): the field is two canvases the
+   app paints itself (heat below, pills above), positioned in
+   Leaflet's overlay pane — no plugin canvas, no DOM markers,
+   no opacity transitions. The .gm-pill / .gm-dot rules below
+   survive only for dots inside the hero card; the map itself
+   no longer renders them. */
+#hmMap .hm-cv{position:absolute;left:0;top:0;pointer-events:none}
+#hmMap .hm-cv-heat{z-index:1}
+#hmMap .hm-cv-pill{z-index:2}
 .gm-pilldi{background:transparent;border:0}
 .gm-pillwrap,.gm-dotwrap{display:block;position:relative;width:0;height:0}
 .gm-pill{position:absolute;left:0;top:0;transform:translate(-50%,-50%);white-space:nowrap;background:var(--pv-panel);color:var(--pv-text);border:1px solid var(--pv-line2);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.45);cursor:pointer}
