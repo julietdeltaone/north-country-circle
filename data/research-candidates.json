@@ -19683,6 +19683,219 @@
    "novelty": "new",
    "id": "lr-20261127-jlevens18-led-a-two-day-wrestling-clinic-for-l",
    "run_date": "2026-11-27"
+  },
+  {
+   "name": "elisedeuel",
+   "display": "Elise Deuel",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "An Elise Deuel is a Net Zero Vermont intern who helped with walk audits in South Burlington, Vermont, in November 2026, measuring stormwater pooling and potholes.",
+   "file_text": "Worked as a Net Zero Vermont intern on pedestrian walk audits in South Burlington, Vermont, Nov 2026",
+   "source": "Walk to Shop",
+   "url": "https://walktoshop.org/7683-2/",
+   "quote": "Net Zero Vermont intern Elise Deuel with volunteer Matt Van Wagner measuring stormwater pooling at Dorset and Market St.",
+   "anchors": [
+    "Elise Deuel is her full name on file",
+    "Champlain College in Burlington is on file, next to South Burlington"
+   ],
+   "missing_gate": "The page names an Elise Deuel in Vermont, but nothing on it ties her to Champlain College or Potsdam.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-11-23",
+   "novelty": "new",
+   "id": "lr-20261127-elisedeuel-worked-as-a-net-zero-vermont-intern",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "oliviasandra04",
+   "display": "Olivia Smith",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Northern Roots Salon and Spa promoted a curly-hair Curl Menu in April 2025, led by a stylist named Olivia.",
+   "file_text": "Promoted by Northern Roots Salon and Spa as its curly-hair stylist, leading a new Curl Menu, Apr 2025",
+   "source": "Northern Roots Salon and Spa",
+   "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid026XXKPc7XomZEpAp6VQ6qP8XEYT1oNb2wtiLn4wwavjUuFWVXLXsLMQAaFtJyyv75l&id=100095478604873",
+   "quote": "Meet Your CURLY HAIR STYLIST",
+   "anchors": [
+    "Northern Roots Salon and Spa is her employer on file",
+    "Hair stylist is her role on file"
+   ],
+   "missing_gate": "The salon post names the stylist only as Olivia, never Smith, so I am not sure it is her.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 20,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2025-04-12",
+   "novelty": "new",
+   "id": "lr-20261127-oliviasandra04-promoted-by-northern-roots-salon-and",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "jalesturkishdelights",
+   "display": "Jale -",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A charity auction listing offered a Turkish Cooking Party with a Jale Boga Robertson.",
+   "file_text": "Offered a Turkish Cooking Party as a charity auction item, Apr 2015",
+   "source": "BiddingForGood",
+   "url": "https://www.biddingforgood.com/auction/item/browse.action?auctionId=228309079&view=LIST&sort=HIGHBID_DESC&page=2&grouping=ALL",
+   "quote": "Turkish Cooking Party with Jale Boga Robertson | 407 | | 125USD | SOLD | CLOSED",
+   "anchors": [
+    "Turkish cooking matches her catering on file"
+   ],
+   "missing_gate": "The listing names a Jale Boga Robertson, and the life details found for that name do not match the ones on file here.",
+   "confidence": 20,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 10,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-jalesturkishdelights-offered-a-turkish-cooking-party-as-a",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "johnnny_martinnn_",
+   "display": "Johnny Martin",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The New York Royal Rangers Gold Medal of Achievement list includes a Johnny Martin, award G2015-197, in October 2015.",
+   "file_text": "Received the Royal Rangers Gold Medal of Achievement, Oct 2015",
+   "source": "New York Royal Rangers",
+   "url": "https://nyroyalrangers.org/awards/gma/",
+   "quote": "| G2015-197 | October 2015 | Johnny Martin |",
+   "anchors": [
+    "Johnny Martin is his full name on file"
+   ],
+   "missing_gate": "The list gives only his name and the award, with nothing tying him to the facts already on file.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-johnnny-martinnn-received-the-royal-rangers-gold-meda",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "levi_white90",
+   "display": "Levi White",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A Hammill Funeral Home obituary for Phillip Wayne White of Winthrop, who died October 4, 2025, lists a Levi White as the husband of Phillip's daughter Marci.",
+   "file_text": "Named as the husband of Marci White in the obituary of her father, Phillip Wayne White of Winthrop, Oct 2025",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/phillip-white",
+   "quote": "Phil is survived by his children: Matthew (Lori) White, Nancy (Greg) Blais, Peter White, Marci (Levi) White, and Connie Ulrich",
+   "anchors": [
+    "Winthrop, New York is his town on file",
+    "Hammill Funeral Home carried the family obituaries already on file"
+   ],
+   "missing_gate": "This is about Levi's family, so I always check with you first.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-levi-white90-named-as-the-husband-of-marci-white",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "vivian_de_voe",
+   "display": "Vivian De Voe",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "The film Spiral, in which she is cast as Marina on file, was an official selection at the Bowery Film Festival in October 2026.",
+   "file_text": "Starred as Marina in Spiral, an official selection at the Bowery Film Festival, Oct 2026",
+   "source": "Bowery Film Festival",
+   "url": "",
+   "quote": "",
+   "anchors": [
+    "Spiral and the Marina role are on file from Seed&Spark"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands",
+   "id": "lr-20261127-vivian-de-voe-starred-as-marina-in-spiral-an-offic",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "sf:jordyn-hill",
+   "display": "Jordyn Hill",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Family social posts say Jordyn Hill was promoted to Sergeant (E5) in the New York Army National Guard, effective August 6, 2026, at Headquarters, 27th Infantry Brigade.",
+   "file_text": "Promoted to Sergeant (E5) in the New York Army National Guard, effective Aug 6, 2026",
+   "source": "New York Army National Guard",
+   "url": "",
+   "quote": "",
+   "anchors": [
+    "New York Army National Guard service is on file",
+    "An official 2023 release already on file names her with the 27th Infantry Brigade"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 5,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-sf-jordyn-hill-promoted-to-sergeant-e5-in-the-new-y",
+   "run_date": "2026-11-27"
+  },
+  {
+   "name": "mr_writers_block",
+   "display": "Merrick Sinclair",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "A payroll listing for Edwards-Knox Central Schools in 2025 names a Merrick Sinclair W, with no job title shown.",
+   "file_text": "Appears in Edwards-Knox Central Schools payroll listings for 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/edwards-knox-central-schools?page=6",
+   "quote": "2025 N/A Edwards-Knox Central Schools | Merrick Sinclair W | 2025 | N/A | Edwards-Knox Central Schools",
+   "anchors": [
+    "The middle initial W matches his full name, Merrick William Sinclair, on file",
+    "Edwards-Knox is a St. Lawrence County school district"
+   ],
+   "missing_gate": "This one is your call: the listing is one payroll website with no job title, so it is not confirmed on its own yet.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new",
+   "id": "lr-20261127-mr-writers-block-appears-in-edwards-knox-central-scho",
+   "run_date": "2026-11-27"
   }
  ]
 }
