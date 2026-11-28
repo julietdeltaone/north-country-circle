@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.26.0';
+var APP_VERSION = '4.27.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6775,7 +6775,9 @@ function hotItems(){
   if(!DT) return out;
   (DT.hot || []).forEach(function(h){ if(hotDateOk(h.published)) push(h.name, h.display, h); });
   (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && hotDateOk(x.published)) push(f.name, f.display, x); }); });
-  return out;
+  /* V4.27.0: the same grouping the Today cards use — one entry
+     per announcement/claim, siblings attached (h.also). */
+  return freshGroups(out).map(function(g){ var p = g.primary; p.also = g.also; return p; });
 }
 function hotForDi(di){
   var hot = hotItems();
@@ -6789,7 +6791,7 @@ function hotAlertHTML(){
     var di = hmDiOf(h.name);
     var inner = '<span class="hot-nm">' + esc(h.display || h.name) + '</span>' +
       '<span class="hot-tx">' + esc(h.text) + '</span>' +
-      '<span class="hot-meta">Published ' + esc(hmFmtD(h.published)) + (h.url ? ' &middot; <a data-act="extlink" href="' + esc(h.url) + '" target="_blank" rel="noopener">' + esc(h.source || 'source') + ' ' + ic('ext', 10) + '</a>' : (h.source ? ' &middot; ' + esc(h.source) : '')) + '</span>';
+      '<span class="hot-meta">Published ' + esc(hmFmtD(h.published)) + (h.url ? ' &middot; <a data-act="extlink" href="' + esc(h.url) + '" target="_blank" rel="noopener">' + esc(h.source || 'source') + ' ' + ic('ext', 10) + '</a>' : (h.source ? ' &middot; ' + esc(h.source) : '')) + ((h.also && h.also.length) ? ' &middot; +' + h.also.length + ' more attached' : '') + '</span>';
     if(di == null) return '<div class="hot-row" data-kind="about">' + inner + '</div>';
     return '<button type="button" class="hot-row" data-kind="about" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
   }).join('');
@@ -8401,6 +8403,7 @@ function hmHeroStatsHTML(){
   }
   var d7 = isoDaysAgo(6), d30 = isoDaysAgo(29);
   var wkIp = {}, wkOn = {}, moIp = {}, moOn = {};
+  var ipFolks = {};
   var lastIp = null, lastOn = null, confirmed7 = 0;
   /* people() returns directory INDEXES, not entries. */
   people().forEach(function(di){
@@ -8418,6 +8421,16 @@ function hmHeroStatsHTML(){
         if(dt >= d7) wkIp[nm] = 1;
         if(dt >= d30) moIp[nm] = 1;
         if(!lastIp || dt > lastIp.date) lastIp = { name: nm, date: dt, di: di };
+        /* V4.27.0: the bubble cluster's people — the same
+           in-person set the 30-day tile counts, keyed by name
+           exactly as the tiles are, each with their most recent
+           in-person date and whether they fall in the 7-day set
+           the other tile counts. */
+        if(dt >= d30){
+          var cur = ipFolks[nm];
+          if(!cur) ipFolks[nm] = { di: di, name: nm, last: dt, in7: dt >= d7 };
+          else { if(dt > cur.last) cur.last = dt; if(dt >= d7) cur.in7 = true; }
+        }
       }
     });
     var rm = rcReviewMap(e);
@@ -8451,6 +8464,27 @@ function hmHeroStatsHTML(){
       '<a class="gm-hs-name" href="#/p/' + L.di + '">' + esc(L.name) + '</a>' +
       '<span class="gm-hs-meta ' + rc + '"><i></i>' + fmtD(L.date) + (ago ? ' · ' + ago : '') + '</span></div>';
   }
+  /* V4.27.0 (JD 2026-11-28): the in-person people as an Apple
+     Watch-style bubble cluster — a face per person in the
+     30-day set, the 7-day people ringed in gold and a touch
+     larger. A bubble is a profile link like every other people
+     link in the app; hover or keyboard focus names the person
+     and their last in-person date. Photo when one is on file
+     (the same phIndex/phFrameFor read the feed avatars use),
+     initials when there is none — never a faked image. */
+  var ipList = Object.keys(ipFolks).map(function(k){ return ipFolks[k]; })
+    .sort(function(a, b){ return a.last < b.last ? 1 : a.last > b.last ? -1 : a.name.localeCompare(b.name); });
+  function bubFace(p){
+    var idx = (typeof phIndex === 'function') ? phIndex() : null;
+    var ph = idx ? idx[p.name] : null;
+    if(ph && ph.photo_url) return '<img src="' + esc(phFrameFor(p.name, ph).url || ph.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(ph) + '" onerror="phImgErr(this)">';
+    var ini = p.name.replace(/^@/, '').trim().split(/\s+/).map(function(w){ return w.charAt(0); }).slice(0, 2).join('').toUpperCase() || '\u00b7';
+    return '<span class="gm-bub-ini" style="--tc:' + tierCol(D.directory[p.di]) + '">' + esc(ini) + '</span>';
+  }
+  function bubHTML(p){
+    return '<a class="gm-bub' + (p.in7 ? ' w7' : '') + '" href="#/p/' + p.di + '" aria-label="' + esc(p.name) + ' — in person ' + fmtD(p.last) + '">' + bubFace(p) +
+      '<span class="gm-bub-tip"><b>' + esc(p.name) + '</b><span>In person &middot; ' + fmtD(p.last) + '</span></span></a>';
+  }
   var dtOk = (typeof DT !== 'undefined' && DT && DT.freshness);
   var searched7 = dtOk ? String(DT.freshness.d7 != null ? DT.freshness.d7 : '—') : '…';
   var sweepTile = dtOk ? tile('rec', 'Latest sweep', String((DT.checked || []).length), 'people · ' + fmtD(DT.date)) : tile('rec', 'Latest sweep', '…', 'loading');
@@ -8461,6 +8495,7 @@ function hmHeroStatsHTML(){
     tile('ip', 'In person · last 30 days', String(Object.keys(moIp).length)) +
     tile('on', 'Online · last 30 days', String(Object.keys(moOn).length)) +
     '</div>' +
+    (ipList.length ? '<div class="gm-bubs-h"><span>The in-person people</span><span class="gm-bubs-leg"><i></i>Gold ring = last 7 days</span></div><div class="gm-bubs">' + ipList.map(bubHTML).join('') + '</div>' : '') +
     '<div class="gm-hs-lasts">' +
     lastHero('ip', 'Last in-person contact', lastIp) +
     lastHero('on', 'Last online contact', lastOn) +
@@ -8854,7 +8889,21 @@ function hmPaint(){
    overlapping kernels merge into continuous density.
    Clicks land on the map itself and hit-test to the nearest
    place: one click path, one card (the hero). No markers,
-   no popups, nothing else opens. */
+   no popups, nothing else opens.
+   V4.27.0 (JD 2026-11-28) — the white flash on drag was NOT
+   this layer: it was the basemap. Leaflet's own stylesheet
+   paints .leaflet-container #ddd, and the app's override
+   (.gm-map .leaflet-container) never matched — Leaflet puts
+   both classes on the SAME element, so the descendant
+   selector missed and #ddd won the cascade tie over .gm-map
+   (leaflet.css loads later). With updateWhenIdle at its
+   default true, a drag exposed broad #ddd strips and loaded
+   nothing until the drag ended. Fixes: same-element
+   background rules + pane backgrounds in the CSS (theme
+   colour in both themes), tile layers at updateWhenIdle:false
+   with keepBuffer 6, and this layer now finishes its field
+   offscreen and swaps it in with one drawImage, repainting
+   mid-drag only near the pad's edge and at most every 300ms. */
 /* Field data: one entry per placed place, plus the largest
    finding count — the heat's yardstick. Sorted small to
    large so the biggest places paint last (on top). */
@@ -8926,6 +8975,12 @@ function hmFieldClass(){
       this._heatCv = L.DomUtil.create('canvas', 'hm-cv hm-cv-heat', pane);
       this._pillCv = L.DomUtil.create('canvas', 'hm-cv hm-cv-pill', pane);
       this._gray = document.createElement('canvas');
+      /* V4.27.0: the colorized field is finished in this
+         offscreen canvas first; the visible canvas only ever
+         receives a completed bitmap via drawImage (see
+         _drawHeat), so a repaint can never present a cleared
+         or half-drawn frame. */
+      this._col = document.createElement('canvas');
       map.on('moveend', this._settle, this);
       map.on('move', this._onMove, this);
       map.on('zoomend', this._reset, this);
@@ -8939,7 +8994,7 @@ function hmFieldClass(){
       map.off('resize', this._reset, this);
       if(this._heatCv) L.DomUtil.remove(this._heatCv);
       if(this._pillCv) L.DomUtil.remove(this._pillCv);
-      this._heatCv = null; this._pillCv = null; this._gray = null; this._map = null;
+      this._heatCv = null; this._pillCv = null; this._gray = null; this._col = null; this._map = null;
     },
     /* How far (layer px) the viewport's top-left corner has
        travelled from where the field was painted. */
@@ -8950,10 +9005,15 @@ function hmFieldClass(){
     },
     _settle: function(){ if(this._drift() > HM_PAD * 0.45) this._reset(); },
     _onMove: function(){
+      /* V4.27.0: mid-drag repaints are rarer and later — only
+         when a drag has nearly outrun the padded field (0.95
+         of the pad, was 0.8) and at most one per 300ms. A long
+         drag is settled by moveend instead of repainting
+         repeatedly under the cursor. */
       var now = Date.now();
       if(now - this._moveAt < 90) return;
       this._moveAt = now;
-      if(this._drift() > HM_PAD * 0.8) this._reset();
+      if(this._drift() > HM_PAD * 0.95 && now - (this._resetAt || 0) > 300) this._reset();
     },
     _reset: function(){
       var map = this._map; if(!map || !this._heatCv) return;
@@ -8972,6 +9032,8 @@ function hmFieldClass(){
       pc.style.width = w + 'px'; pc.style.height = h + 'px';
       L.DomUtil.setPosition(pc, this._origin);
       this._gray.width = w; this._gray.height = h;
+      if(this._col){ this._col.width = w; this._col.height = h; }
+      this._resetAt = Date.now();
       this._drawHeat();
       this._drawPills();
     },
@@ -9010,7 +9072,16 @@ function hmFieldClass(){
         d[j - 3] = c[0]; d[j - 2] = c[1]; d[j - 1] = c[2];
         d[j] = Math.min(255, Math.round(Math.pow(v / 255, 0.75) * 268));
       }
-      this._heatCv.getContext('2d').putImageData(img, 0, 0);
+      /* V4.27.0: the colorized bitmap is completed OFFSCREEN
+         (this._col), then swapped onto the visible canvas with
+         one drawImage in the same task — the visible canvas is
+         never left holding a cleared or partial frame. */
+      if(this._col){
+        this._col.getContext('2d').putImageData(img, 0, 0);
+        this._heatCv.getContext('2d').drawImage(this._col, 0, 0);
+      } else {
+        this._heatCv.getContext('2d').putImageData(img, 0, 0);
+      }
     },
     _theme: function(){
       var mode = document.documentElement.getAttribute('data-mode');
@@ -9288,21 +9359,27 @@ function hmMount(){
        endpoints below were verified serving real 256x256 tiles on
        2026-11-13. (Esri tile order is {z}/{y}/{x}.) */
     var esriAttr = '&copy; Esri \u2014 Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community';
+    /* V4.27.0 (JD 2026-11-28): updateWhenIdle FALSE — tiles now
+       stream in DURING a drag instead of only after it ends.
+       Leaflet's default (true) left every newly exposed strip
+       empty for the whole drag; over the container background
+       that read as flashing. keepBuffer 6 widens the apron of
+       retained tiles further, so pans reach already-loaded
+       tiles instead of blanks. The background those strips show
+       while a tile is in flight is the theme colour now — see
+       the .gm-map.leaflet-container rules in the CSS. */
     if(mode === 'light'){
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, attribution:esriAttr, keepBuffer:4 }).addTo(HM.map));
+        { maxZoom:18, attribution:esriAttr, keepBuffer:6, updateWhenIdle:false }).addTo(HM.map));
     } else {
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, maxNativeZoom:16, attribution:esriAttr, keepBuffer:4 }).addTo(HM.map));
+        { maxZoom:18, maxNativeZoom:16, attribution:esriAttr, keepBuffer:6, updateWhenIdle:false }).addTo(HM.map));
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
-        { maxZoom:18, maxNativeZoom:16, keepBuffer:4 }).addTo(HM.map));
+        { maxZoom:18, maxNativeZoom:16, keepBuffer:6, updateWhenIdle:false }).addTo(HM.map));
     }
     /* V4.26.0: moves never repaint the field. zoomend/moveend
        only run the band sync — the heat opacity and the pill
-       form change when the zoom CROSSES a band, nothing else.
-       keepBuffer 4 (above) keeps a wider apron of basemap
-       tiles alive around the viewport, so pans reach already
-       loaded tiles instead of blank ones. */
+       form change when the zoom CROSSES a band, nothing else. */
     HM.map.on('moveend zoomend', function(){ hmZoomSync(false); });
     /* V4.26.0: ONE click path — a map click hit-tests to the
        nearest place and opens its hero card; nothing else on
@@ -11795,6 +11872,7 @@ function lrChromeHTML(on, title, subHTML, subId){
   return '<div class="pv-vhead lr-headrow"><div class="lr-titleblock"><h1>Live Records</h1><p class="pv-hsub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
     '<nav class="pv-lrtabs lr-inline" aria-label="Live Records">' +
     '<a href="#/daily"' + (on === 'records' ? ' class="on"' : '') + '>Today</a>' +
+    '<a href="#/daily/contacts"' + (on === 'contacts' ? ' class="on"' : '') + '>Contact stream</a>' +
     '<a href="#/daily/facts"' + (on === 'facts' ? ' class="on"' : '') + '>New facts <span class="n' + (fiN ? '' : ' zero') + '">(' + fiN + ')</span></a>' +
     '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (decN ? '' : ' zero') + '">(' + decN + ')</span></a>' +
     '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>' +
@@ -11833,6 +11911,50 @@ function lrPubInWindow(iso){
   var days = Math.round((now - pub) / 86400000);
   return days >= 0 && days <= 21;
 }
+/* V4.27.0 (JD 2026-11-28): fresh facts GROUP before they render.
+   One announcement must not surface as three cards (JD's Ria Amo
+   triple: three facts, one article, one published date). Two
+   facts for the same person group when they share a source URL
+   AND a published date — siblings from one announcement, shown
+   on one card with the rest attached — or when they are the
+   same claim told twice (stopword-stripped word sets identical,
+   or >= 0.92 Jaccard with the same years; the feed builder's
+   same-claim test, build_effective_feed.py). The strongest
+   telling leads the card: a 'new' fact over an 'expands', then
+   the longer text. Nothing is dropped — siblings render inside
+   the card as attached lines. */
+var FC_STOP = { 'for':1, 'the':1, 'a':1, 'an':1, 'at':1, 'in':1, 'on':1, 'of':1, 'to':1, 'and':1, 'or':1, 'as':1, 'by':1, 'with':1, 'from':1, 'his':1, 'her':1, 'he':1, 'she':1, 'is':1, 'was':1, 'are':1, 'were':1, 'it':1, 'its':1 };
+function fcWords(t){ return String(t || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean); }
+function fcClaimKey(t){ var s = {}; fcWords(t).forEach(function(w){ if(!FC_STOP[w]) s[w] = 1; }); return Object.keys(s).sort().join(' '); }
+function fcYears(t){ var m = String(t || '').match(/(?:19|20)\d{2}/g); return m ? m.slice().sort().join(',') : ''; }
+function fcSameClaim(a, b){
+  var ka = fcClaimKey(a), kb = fcClaimKey(b);
+  if(ka && ka === kb) return true;
+  var wa = {}, wb = {}, uni = {}, inter = 0;
+  fcWords(a).forEach(function(w){ wa[w] = 1; uni[w] = 1; });
+  fcWords(b).forEach(function(w){ wb[w] = 1; uni[w] = 1; });
+  Object.keys(wa).forEach(function(w){ if(wb[w]) inter++; });
+  var n = Object.keys(uni).length;
+  if(!n) return false;
+  return (inter / n) >= 0.92 && fcYears(a) === fcYears(b);
+}
+function freshGroups(list){
+  var groups = [];
+  function rank(y){ return (y.novelty === 'new' ? 2 : y.novelty ? 1 : 0) * 100000 + String(y.text || '').length; }
+  list.forEach(function(x){
+    var pk = String(x.name || '').toLowerCase(), hit = null;
+    for(var i = 0; i < groups.length; i++){
+      var g = groups[i];
+      if(g.pk !== pk) continue;
+      var p = g.primary;
+      if((x.url && p.url && x.url === p.url && x.published && p.published && x.published === p.published) || fcSameClaim(p.text, x.text)){ hit = g; break; }
+    }
+    if(!hit){ groups.push({ pk: pk, primary: x, also: [] }); return; }
+    if(rank(x) > rank(hit.primary)){ hit.also.unshift(hit.primary); hit.primary = x; }
+    else hit.also.push(x);
+  });
+  return groups;
+}
 function lrTodayHTML(){
   var hotKeys = {};
   (DT.hot || []).forEach(function(h){ hotKeys[(h.name || '') + '|' + (h.text || '')] = 1; });
@@ -11842,18 +11964,25 @@ function lrTodayHTML(){
     for(var i = 0; i < D.directory.length; i++){ if(dispName(D.directory[i]) === (display || name)) return i; }
     return null;
   }
-  function cardFor(display, name, fc, di, st){
+  function cardFor(display, name, fc, di, st, also){
     var dates = '';
     if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
     /* V4.19.0: the person's profile photo rides on the fresh card
        when they have one (afAvatarHTML falls back to initials when
        no photo is on file — no placeholder image is ever faked). */
+    /* V4.27.0: grouped siblings (freshGroups) render INSIDE the
+       card as attached lines — one card per announcement/claim,
+       nothing hidden, nothing repeated as its own card. */
+    var alsoHTML = (also && also.length) ? '<div class="lr-fc-also"><span class="lr-fc-also-k">Attached to this card</span>' + also.map(function(a){
+      return '<p class="lr-fc-also-line">' + esc(a.text || '') + (a.url ? ' <a class="lnk" href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.source || 'source') + '</a>' : (a.source ? ' <span>(' + esc(a.source) + ')</span>' : '')) + '</p>';
+    }).join('') + '</div>' : '';
     return '<div class="pv-card lr-fc">' + lrDateBadge(fc.published, 'Published') + '<div class="lr-fc-main"><div class="chead">' + (di != null ? afAvatarHTML({ name: display || name }, di, 'md') : '') + '<span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(display || name) + '</a>' : esc(display || name)) + '</span>' + v4ChipAbout() +
       (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
-      '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
+      '<p class="pv-fact">' + esc(fc.text || '') + '</p>' + alsoHTML +
       (dates ? '<div class="pv-dates">' + dates + '</div>' : '') +
       '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div></div>';
   }
+  var freshList = [];
   (DT.filed || []).forEach(function(f){
     var di = diOf(f.display, f.name);
     var st = di != null ? v4PersonStats(D.directory[di]) : null;
@@ -11863,7 +11992,7 @@ function lrTodayHTML(){
       if(!lrPubInWindow(fc.published)) return;
       nFreshFiled++;
       rendered[(f.name || '') + '|' + (fc.text || '')] = 1;
-      cards += cardFor(f.display, f.name, fc, di, st);
+      freshList.push({ name: f.name, display: f.display, text: fc.text, source: fc.source, url: fc.url, published: fc.published, novelty: fc.novelty, date: fc.date, event_date: fc.event_date, di: di, st: st });
     });
   });
   (DT.hot || []).forEach(function(h){
@@ -11872,9 +12001,13 @@ function lrTodayHTML(){
     nHotExtra++;
     var di = diOf(h.display, h.name);
     var st = di != null ? v4PersonStats(D.directory[di]) : null;
-    cards += cardFor(h.display, h.name, h, di, st);
+    freshList.push({ name: h.name, display: h.display, text: h.text, source: h.source, url: h.url, published: h.published, novelty: h.novelty, date: h.date, event_date: h.event_date, di: di, st: st });
   });
-  var shown = nFreshFiled + nHotExtra;
+  var freshGrps = freshGroups(freshList);
+  freshGrps.forEach(function(g){
+    cards += cardFor(g.primary.display, g.primary.name, g.primary, g.primary.di, g.primary.st, g.also);
+  });
+  var shown = freshGrps.length;
   var otherN = nFiled - nFreshFiled;
   var checkedN = (DT.checked || []).length;
   var hero = '<div class="lr-hero"><div class="lr-hero-l"><span class="lr-hero-k">Fresh facts</span><b>' + shown + '</b></div>' +
@@ -11913,7 +12046,7 @@ function lrBriefSubHTML(){
   return 'Brief &middot; ' + esc(d) + ' &middot; ' + (DT.checked || []).length + ' checked &middot; ' + (DT.filed || []).length + ' updated';
 }
 function lrBodyPaint(){
-  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'decide' || S.route.seg[0] === 'filings' || S.route.seg[0] === 'facts'))) return false;
+  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'decide' || S.route.seg[0] === 'filings' || S.route.seg[0] === 'facts' || S.route.seg[0] === 'contacts'))) return false;
   var b = document.getElementById('lr-body');
   if(!b || !DT || DT.empty || !DT.date) return false;
   var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
@@ -12610,8 +12743,20 @@ function afDetailHTML(e, di){
      confirmed it two ways, then "More from their file". */
   var ev = String(e.evidence || '').trim();
   var facts = afFileFacts(e, di);
-  if(!ev && !facts.length) return '';
+  var also = (e.also_sources || []).filter(function(a){ return a && (a.text || a.url); });
+  if(!ev && !facts.length && !also.length) return '';
   var h = '<details class="af-more-det"><summary>More detail</summary><div class="af-det-body">';
+  if(also.length){
+    /* V4.27.0: the same fact filed more than once ships as ONE
+       item (build_effective_feed.py same-claim dedupe); the
+       other tellings ride here, attached, with their sources. */
+    h += '<div class="af-det-file"><p class="af-det-h">The same fact, also filed from</p>' + also.map(function(a){
+      var tx = a.url
+        ? '<a class="af-file-src" data-act="extlink" href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.text || a.source || 'source') + '</a>'
+        : esc(a.text || '');
+      return '<p class="af-det-fact">' + (a.label ? '<span class="af-dchip">' + esc(a.label) + '</span> ' : '') + tx + (a.source ? ' <span class="af-det-src">(' + esc(a.source) + ')</span>' : '') + '</p>';
+    }).join('') + '</div>';
+  }
   if(ev){
     var p = afLabelParts(e);
     var precWord = p.prec === 'day' ? 'exact day' : (p.prec === 'month' ? 'month only' : 'year only');
@@ -12755,6 +12900,64 @@ function lrActColHTML(){
      dates were weeks behind the filing dates. */
   return '<aside class="fi-actcol"><div class="fi-acthead"><h2>Activity</h2><span>Confirmed facts, by date of happening</span></div>' +
     '<div class="af-tl fi-actfeed" id="lr-actfeed">' + (typeof AF !== 'undefined' && AF ? afStreamHTML() : '<p class="dim">Loading the feed&hellip;</p>') + '</div></aside>';
+}
+/* ================================================================
+   Contact stream (V4.27.0, JD 2026-11-28): the contact entries
+   the feed builder splits out of the live-records feed —
+   online contacts (iMessage / Instagram), in-person contacts,
+   proximity entries and the calendar-contact seeding notices.
+   JD likes the stream; it just does not belong in the Activity
+   feed. It renders here, on its own Live Records tab, with the
+   same row design and month breaks as the feed it left.
+   Data: data/contact-stream.json (build_effective_feed.py). */
+var CS = null, CS_LOADING = false, CS_SHOWN = 60;
+var CS_PAGE = 60;
+function csLoad(){
+  if(CS || CS_LOADING) return;
+  CS_LOADING = true;
+  fetch('data/contact-stream.json', { cache:'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ CS_LOADING = false; CS = d || { items:[], count:0 }; csPaintStream(); })
+    .catch(function(){ CS_LOADING = false; CS = { items:[], count:0 }; csPaintStream(); });
+}
+function csStreamHTML(){
+  if(!CS) return '';
+  var items = CS.items || [];
+  var shown = items.slice(0, CS_SHOWN);
+  var h = '';
+  shown.forEach(function(e, idx){
+    var k = afMonthKeyOf(e);
+    if(idx > 0 && k % 100 !== 0){
+      for(var j = idx - 1; j >= 0; j--){
+        var pk = afMonthKeyOf(items[j]);
+        if(pk % 100 === 0) continue;
+        if(pk !== k){
+          var lp = afLabelParts(e);
+          h += '<div class="af-mtic" data-mk="' + k + '"><span>' + AFFULL[lp.mo - 1] + ' ' + lp.y + '</span></div>';
+        }
+        break;
+      }
+    }
+    h += afRowEff(e);
+  });
+  if(shown.length < items.length)
+    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + items.length + '</span>' +
+      '<button type="button" class="pv-btn sm" data-act="csmore">Show more</button></div>';
+  return h;
+}
+function csPaintStream(){
+  var w = document.getElementById('cs-stream');
+  if(w) w.innerHTML = csStreamHTML();
+  var sub = document.getElementById('cs-sub');
+  if(sub && CS) sub.textContent = (CS.count || (CS.items || []).length) + ' contact entries on file';
+}
+function csPageHTML(){
+  var sub = CS ? (CS.count || (CS.items || []).length) + ' contact entries on file' : 'Loading&hellip;';
+  var body = !CS ? '<p class="dim">Loading the contact stream&hellip;</p>'
+    : (!(CS.items || []).length ? '<p class="dim">No contact entries on file yet.</p>' : csStreamHTML());
+  return lrChromeHTML('contacts', 'Contact stream', sub, 'cs-sub') +
+    '<p class="cs-intro">Every contact on file — messages, in-person time, crossed paths — newest first. This stream is kept out of the Activity feed: that feed is live records only.</p>' +
+    '<div class="af-tl" id="cs-stream">' + body + '</div>';
 }
 function afCalModel(items){
   /* Calendar model (V4.10.0): REAL month grids, mirroring the
@@ -12956,6 +13159,17 @@ function viewDaily(v){
        section is deleted — the feed now rides the right column
        of New facts. Old links land there instead. */
     go('daily/facts');
+    return;
+  }
+  if(S.route.seg && S.route.seg[0] === 'contacts'){
+    /* V4.27.0 (JD 2026-11-28): the contact stream's own home.
+       Online contacts, in-person contacts and proximity entries
+       live here — browsable, newest first — and never in the
+       Activity feed, which is live records only. The split is
+       made in the feed builder (build_effective_feed.py), so
+       this view reads its own file, data/contact-stream.json. */
+    csLoad();
+    v.innerHTML = '<div class="page lr cs-page v4p" data-kind="about">' + csPageHTML() + '</div>';
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'filings'){
@@ -17286,6 +17500,7 @@ function onClick(ev){
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
     case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); afPaintCols(); break;
+    case 'csmore': CS_SHOWN += CS_PAGE; csPaintStream(); break;
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
