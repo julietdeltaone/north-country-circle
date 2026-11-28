@@ -1,11 +1,11 @@
 {
  "generated_from": "footprint corpus + Live Records briefs",
  "counts": {
-  "total": 1566,
+  "total": 1567,
   "dated": 85,
-  "undated": 1481,
+  "undated": 1482,
   "placed": 1411,
-  "unplaced": 155,
+  "unplaced": 156,
   "msg_excluded": 41,
   "dupes_collapsed": 0,
   "brief_attached": 35,
@@ -10434,6 +10434,18 @@
    "display": "Jordyn Hill",
    "text": "Joined Onondaga Community College's wrestling team as a freshman for the 2025-26 season. (Onondaga Community College Athletics (Onondaga Lazers))",
    "source": "",
+   "url": "",
+   "published": "",
+   "fresh": false,
+   "pid": "",
+   "place": "",
+   "place_src": ""
+  },
+  {
+   "di": 671,
+   "display": "Jordyn Hill",
+   "text": "Promoted to Sergeant (E5) in the New York Army National Guard, effective Aug 6, 2026 (New York Army National Guard)",
+   "source": "New York Army National Guard",
    "url": "",
    "published": "",
    "fresh": false,
