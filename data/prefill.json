@@ -14,10 +14,10 @@
   {
    "key": "sf:jordyn-hill",
    "display": "Jordyn Hill",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-b701b89e1a"
+   "conf": 100,
+   "id": "pf-8eba1829af"
   }
  ],
  "shelved": [
@@ -44,7 +44,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 15,
+   "tentative_floor": 14,
    "shelved": 2,
    "corroboration": 1
   },
@@ -55,16 +55,6 @@
     "display": "Anne Katherin Wolf",
     "field": "location_on_file",
     "value": "Norwood, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
     "rules": [
      "tentative_floor"
     ]
