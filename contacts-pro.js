@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.28.0';
+var APP_VERSION = '4.29.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -4841,6 +4841,28 @@ var SCORE_CFG = {
 var SCORE_LABELS = { closeness:'Closeness', tier:'Level', relationship:'Relationship', years:'Years', fabric:'Fabric' };
 var SCORE_RADII = [160, 315, 485, 700, 920], SCORE_SPREAD = [14, 26, 40, 55, 70];
 var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
+/* V4.29.0 (JD 2026-11-28): the Network map carries ONE color code —
+   a dot's color is its closeness ring, on a single gold ramp:
+   bright gold on the closest ring, dulling step by step to bronze
+   on the farthest. These five colors mean nothing else on the map.
+   Organization hubs are a plain grey diamond; red is only the ring
+   around the person JD has selected (and JD's own center disc,
+   which is labeled with his initials). */
+var LAYER_C = ['#f5b942', '#dda133', '#c08327', '#a06d24', '#84622c'];
+/* The same ramp, deepened for the light theme: bright gold would
+   wash out on a pale background, so every step shifts deeper —
+   the order and the dulling direction are identical. */
+var LAYER_C_LT = ['#ad7715', '#9e6d1a', '#8f611c', '#7d551f', '#6b4c22'];
+function layerC(i){ return document.documentElement.getAttribute('data-mode') === 'light' ? LAYER_C_LT[i] : LAYER_C[i]; }
+var HUB_C = '#7c8593';
+/* Organization hubs on the map: hidden until JD turns them on
+   (persisted per device, like the panel preference). */
+function netOrgsOn(){ return store('ncc_netorgs') === '1'; }
+/* The ring's label is the count of people actually drawn on it. */
+function netRingLabel(i){
+  var n = (NET.layerCounts && NET.layerCounts[i]) || 0;
+  return n + (n === 1 ? ' person' : ' people');
+}
 var SCORE = { ver:-1, byDi:null };
 function scoreCompute(){
   var W = SCORE_CFG.weights, pop = people(), N = pop.length, byDi = {};
@@ -4934,7 +4956,9 @@ function scoreBadgeHTML(di){
 /* Node coordinates: one set per node — the Score layout (sx/sy).
    Display coordinates (dx/dy) hold the same values; there is no
    morph engine anymore because there is only one layout. nd.ring is
-   always the TIER ring — netColor reads it, and tier owns color. */
+   the TIER ring (kept for other readers); nd.sring is the score
+   layer, and netColor reads the layer — on the Network map color
+   is the closeness ring (V4.29.0). */
 function netP2(nd){ return [nd.dx, nd.dy]; }
 function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]; return !!(s && s.lowConf); }
 
@@ -4953,7 +4977,7 @@ function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]
    diamond (or its row in the panel) to focus an organization.
    Display-only: nothing here ever writes data.
    ============================================================ */
-var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, pitch:0.45, lastT:0, pulse:null };
+var NET = { nodes:[], hubs:[], layerCounts:null, cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, pitch:0.45, lastT:0, pulse:null };
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Camera glide: the one motion the page still has. A glide moves
    camera values (pan / zoom / panel compensation) with the house
@@ -5109,6 +5133,9 @@ function netBuild(){
       k = j;
     }
   });
+  /* Ring labels (V4.29.0) show the people actually on each ring:
+     the same membership this loop just positioned. */
+  NET.layerCounts = byLayer.map(function(a){ return a.length; });
   /* Hubs: one per qualifying org, at the centroid of its members.
      A hub is furniture on the spokes — nobody moves for it. */
   var hubMap = {}, hubOrder = [];
@@ -5136,11 +5163,13 @@ function netBuild(){
   NET.dirty = true;
 }
 function netColor(nd){
-  /* Tier owns color, always (JD's standing rule). */
-  return RING_C[nd.ring];
+  /* V4.29.0 (JD 2026-11-28): on this map, color is the closeness
+     ring — the gold ramp, brightest at the center. (Tier still
+     owns color everywhere else in the app; JD asked for the one
+     code a first look understands here.) */
+  return layerC(nd.sring == null ? 4 : nd.sring);
 }
 function viewNetwork(v){
-  var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No level yet']]);
   S.net.view = '2d'; NET.view = '2d';
   /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
      view, reset, full screen. The old grouped/kicker stack was a
@@ -5149,12 +5178,13 @@ function viewNetwork(v){
     '<div class="netctl">' +
     '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
+    '<button type="button" class="btn ghost sm netorgsbtn' + (netOrgsOn() ? ' on' : '') + '" data-act="netorgs" aria-pressed="' + (netOrgsOn() ? 'true' : 'false') + '">Organizations</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
     '</div></div>' +
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
     '<div class="netfocus" id="netfocus" hidden></div>' +
     '<div class="nethov" id="nethov" hidden></div>' +
-    '<div class="netlegend" id="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
+    '<div class="netlegend" id="netlegend"><span class="lg-ramp">' + [0, 1, 2, 3, 4].map(function(li){ return '<i style="background:' + layerC(li) + '"></i>'; }).join('') + '<em>Closest \u2192 farthest</em></span><span><i class="lg-dia"></i>Organization</span><span><i class="lg-ring"></i>Selected</span></div>' +
     '<button type="button" class="netlegchip" data-act="netlegend" aria-expanded="false" aria-controls="netlegend">Legend</button>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
@@ -5423,6 +5453,7 @@ function netHit(sx, sy){
   return best;
 }
 function netHubHit(sx, sy){
+  if(!netOrgsOn()) return null; /* hidden hubs take no taps */
   var best = null, bd = 1e9;
   NET.hubs.forEach(function(h){
     var s = netHS(h), d = Math.hypot(s[0] - sx, s[1] - sy);
@@ -5457,10 +5488,13 @@ function netDraw(){
     nodeOrder = NET.nodes.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
     hubOrder = NET.hubs.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
   }
-  /* guide rings: the Dunbar layers, neutral strokes (tier keeps color), labeled */
+  /* guide rings: the Dunbar layers, each stroked in its own ring
+     color and labeled with its people count (V4.29.0) */
   ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   SCORE_RADII.forEach(function(r, i){
-    ctx.strokeStyle = 'rgba(' + netInk() + ',0.10)'; ctx.lineWidth = 1;
+    /* the guide ring wears its own ring color, faintly — the same
+       color its dots wear at full strength (V4.29.0) */
+    ctx.strokeStyle = hexA(layerC(i), 0.32); ctx.lineWidth = 1;
     ctx.beginPath();
     if(is3){
       /* the shell's outline: the great circle of this closeness
@@ -5474,14 +5508,15 @@ function netDraw(){
     } else ctx.arc(c[0], c[1], r * z, 0, 6.2832);
     ctx.stroke();
     ctx.fillStyle = 'rgba(' + netInk() + ',0.42)';
-    if(is3){ var lp = netP3U(r * bs.u[0], r * bs.u[1], r * bs.u[2]); ctx.fillText(SCORE_GUIDES[i], lp[0], lp[1] - 5); }
-    else ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
+    if(is3){ var lp = netP3U(r * bs.u[0], r * bs.u[1], r * bs.u[2]); ctx.fillText(netRingLabel(i), lp[0], lp[1] - 5); }
+    else ctx.fillText(netRingLabel(i), c[0], c[1] - r * z - 5);
   });
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
   var hov = NET.hoverDi != null ? NET.byDi[NET.hoverDi] : null;
   var focus = hov || sel;
+  var orgsOn = netOrgsOn();
   var orgF = null;
-  if(S.net.org) for(var hi = 0; hi < NET.hubs.length; hi++) if(NET.hubs[hi].name === S.net.org){ orgF = NET.hubs[hi]; break; }
+  if(S.net.org && orgsOn) for(var hi = 0; hi < NET.hubs.length; hi++) if(NET.hubs[hi].name === S.net.org){ orgF = NET.hubs[hi]; break; }
   function memberOf(nd, h){ return nd.orgs.indexOf(h.name) >= 0; }
   /* --- Spokes, tier one: ambient texture. Everyone's tie to JD
      is drawn, hairline-faint — JD -> hub -> member for org
@@ -5494,7 +5529,7 @@ function netDraw(){
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(' + netInk() + ',' + (0.10 * amb * (orgF ? 0.35 : 1)).toFixed(3) + ')';
     ctx.beginPath();
-    NET.hubs.forEach(function(h){ var p = HP(h); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
+    if(orgsOn) NET.hubs.forEach(function(h){ var p = HP(h); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
     ctx.stroke();
     /* Member spokes: one batch in 2D; in 3D two batches, the
        far side at a fraction of the alpha, so depth reads in
@@ -5506,7 +5541,7 @@ function netDraw(){
         var p = NP(n);
         if(is3 && (p[3] >= 0) !== farSide) return;
         if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
-        if(n.hub){ var hp = HP(n.hub); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
+        if(orgsOn && n.hub){ var hp = HP(n.hub); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
         else { ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); }
       });
       ctx.stroke();
@@ -5549,19 +5584,21 @@ function netDraw(){
     var fp = NP(focus);
     ctx.strokeStyle = 'rgba(' + netInk() + ',' + (is3 ? (0.9 * (0.45 + 0.55 * netNearF(fp[3]))).toFixed(3) : '0.9') + ')'; ctx.lineWidth = 1.4;
     ctx.beginPath();
-    if(focus.hub){ var fhp = HP(focus.hub); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
+    if(orgsOn && focus.hub){ var fhp = HP(focus.hub); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
     else { ctx.moveTo(c[0], c[1]); ctx.lineTo(fp[0], fp[1]); }
     ctx.stroke();
   }
-  /* --- hub diamonds --- */
-  hubOrder.forEach(function(h){
+  /* --- hub diamonds: one neutral grey for every organization;
+     a focused one takes the red outline, the same mark as a
+     selected person. Hidden entirely while Organizations is off. --- */
+  if(orgsOn) hubOrder.forEach(function(h){
     var p = HP(h);
     if(p[0] < -20 || p[1] < -20 || p[0] > NET.W + 20 || p[1] > NET.H + 20) return;
     var s = 4.5 * (is3 ? p[2] : 1), foc = orgF === h;
     ctx.save(); ctx.translate(p[0], p[1]); ctx.rotate(Math.PI / 4);
     if(is3) ctx.globalAlpha = 0.30 + 0.70 * netNearF(p[3]);
-    ctx.fillStyle = foc ? '#e30613' : '#0a0a0a';
-    ctx.strokeStyle = foc ? '#e30613' : 'rgba(' + netInk() + ',0.6)'; ctx.lineWidth = 1.2;
+    ctx.fillStyle = HUB_C;
+    ctx.strokeStyle = foc ? '#e30613' : 'rgba(' + netInk() + ',0.6)'; ctx.lineWidth = foc ? 2 : 1.2;
     ctx.beginPath(); ctx.rect(-s, -s, s * 2, s * 2); ctx.fill(); ctx.stroke();
     ctx.restore();
   });
@@ -5610,14 +5647,14 @@ function netDraw(){
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
-  var tc = {}, nw = 0;
-  NET.nodes.forEach(function(n){ var t = tierOf(D.directory[n.di]) || 'none'; tc[t] = (tc[t] || 0) + 1; if(n.nw) nw++; });
+  var nw = 0;
+  NET.nodes.forEach(function(n){ if(n.nw) nw++; });
   var rows = [['On the map', String(NET.nodes.length)]];
-  TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t]), TIERS[t].c]); });
-  if(tc.none) rows.push(['No level yet', String(tc.none), RING_C[3]]);
   var lc = [0, 0, 0, 0, 0];
   NET.nodes.forEach(function(n){ lc[n.sring || 0]++; });
-  ['Layer 1 · top 5', 'Layer 2 · 6\u201315', 'Layer 3 · 16\u201350', 'Layer 4 · 51\u2013150', 'Layer 5 · 150+'].forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i])]); });
+  /* V4.29.0: the panel's ring rows wear the same gold-ramp colors
+     as the dots on the map — one code, stated the same way. */
+  ['Closest ring', 'Ring 2', 'Ring 3', 'Ring 4', 'Farthest ring'].forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i]), layerC(i)]); });
   rows.push(['Organization hubs', String(NET.hubs.length)]);
   if(nw) rows.push(['New connections', String(nw)]);
   return '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
@@ -5628,6 +5665,7 @@ function netStatsHTML(){
    raises that organization on the map; "All" restores everyone. */
 function netOrgsHTML(){
   if(!NET.hubs.length) return '';
+  if(!netOrgsOn()) return '<div class="side-h"><h3>Organizations</h3></div><p class="dim netorgmore">Organization hubs are hidden on the map. Turn on <b>Organizations</b> above the map to show them.</p>';
   var rows = NET.hubs.slice(0, 30).map(function(h){
     return '<button type="button" class="netorg' + (S.net.org === h.name ? ' on' : '') + '" data-act="netorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b>' + h.nds.length + '</b></button>';
   }).join('');
@@ -17909,6 +17947,7 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); famRepaint(); break;
     case 'famtree': S.fam.focus = di; FAM_SCROLL = true; famRepaint(); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
+    case 'netorgs': { var orgsOn2 = !netOrgsOn(); store('ncc_netorgs', orgsOn2 ? '1' : '0'); el.setAttribute('aria-pressed', orgsOn2 ? 'true' : 'false'); el.classList.toggle('on', orgsOn2); if(!orgsOn2) S.net.org = null; netCard(); NET.dirty = true; break; }
     case 'netpanel': { var pn = $('#netpanel'); if(pn) netSetPanel(pn.classList.contains('closed'), true); NET.dirty = true; break; }
     case 'netfindpick': netPickFind(di); break;
     case 'netreset': netResetView(); break;
