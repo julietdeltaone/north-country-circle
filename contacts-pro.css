@@ -7329,7 +7329,7 @@ a.af-src-chip:hover{text-decoration:underline}
 .gm-mtools .btn.on{border-color:var(--pv-gold);color:var(--pv-gold)}
 .gm-map{height:560px;border-radius:10px;border:1px solid var(--pv-line);overflow:hidden;background:#0d1117;isolation:isolate;z-index:0}
 html[data-mode="light"] .gm-map{background:#e8edf3}
-.gm-map .leaflet-container{font:inherit;background:transparent}
+.gm-map.leaflet-container{font:inherit}
 .gm-nomap{padding:22px;font-size:13px;line-height:1.55;color:var(--pv-mut)}
 .gm-scrub{margin-top:12px}
 .gm-srow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -7705,7 +7705,10 @@ html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
    rail is levelled out to a fair fixed 460px and the map takes
    the rest; both tracks keep minmax(0,...) guards so neither
    column can crush the other at any width. */
-.gm-band.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:16px;align-items:start}
+/* V4.27.0 (JD 2026-11-28): the overview band is a true 50/50
+   split — map on one side, the contact area (counts + people
+   bubbles) on the other. */
+.gm-band.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 .gm-left{min-width:0}
 .gm-right>*{min-width:0}
 .gm-right{min-width:0;display:flex;flex-direction:column;gap:12px}
@@ -7915,9 +7918,22 @@ html[data-mode="light"] body::before{
    The Leaflet container itself carries the map's background
    colour (never white, never transparent): while tiles stream
    in, gaps show the same slate the dark tiles use, or the
-   light map's paper tone — no white flash at any step. */
-.gm-map .leaflet-container{background:#0d1117}
-html[data-mode="light"] .gm-map .leaflet-container{background:#e8edf3}
+   light map's paper tone — no white flash at any step.
+   --- V4.27.0 (JD 2026-11-28): those two rules never matched.
+   They used .gm-map .leaflet-container, a DESCENDANT selector,
+   but Leaflet puts the leaflet-container class on the SAME
+   element as .gm-map — so the override missed, and Leaflet's
+   own .leaflet-container{background:#ddd} won its cascade tie
+   against .gm-map (leaflet.css is injected after the app
+   stylesheet). Every uncovered strip of a drag showed light
+   grey: the white flash JD kept seeing. The rules below use
+   same-element selectors, and the map pane + tile pane carry
+   the theme colour too, so no layer of the map can ever show
+   white or light grey in either theme. */
+.gm-map.leaflet-container{background:#0d1117}
+html[data-mode="light"] .gm-map.leaflet-container{background:#e8edf3}
+#hmMap .leaflet-map-pane,#hmMap .leaflet-tile-pane{background:#0d1117}
+html[data-mode="light"] #hmMap .leaflet-map-pane,html[data-mode="light"] #hmMap .leaflet-tile-pane{background:#e8edf3}
 /* The readout now stands alone under the map (the .gm-step row
    is gone with the slider): it keeps the old row's divider. */
 /* Step buttons in the top tool bar align with the ghost buttons. */
@@ -7953,3 +7969,37 @@ html[data-mode="light"] .gm-pill b{color:#9a6d1d}
 .gm-pill.mini b{margin-left:0}
 .gm-pill.sel{border-color:var(--pv-gold);box-shadow:0 0 0 2px var(--pv-gold),0 2px 8px rgba(0,0,0,.45)}
 .gm-dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--pv-panel);border:2px solid var(--pv-line2);box-shadow:0 1px 4px rgba(0,0,0,.4);cursor:pointer;box-sizing:border-box}
+
+/* --- V4.27.0 (JD 2026-11-28): the in-person people bubbles ---
+   One circular bubble per person in the 30-day in-person set,
+   in the Contact section of the overview's right column. The
+   7-day people are larger and ringed in gold. Hover or
+   keyboard focus raises the name card; the bubble itself is a
+   profile link. The tip opens BELOW the bubble — the cluster
+   sits near the top of its card, where an upward tip would
+   collide with the section header. */
+.gm-bubs-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:14px 2px 8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-dim)}
+.gm-bubs-leg{display:inline-flex;align-items:center;gap:6px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--pv-mut)}
+.gm-bubs-leg i{width:9px;height:9px;border-radius:50%;border:2px solid var(--pv-gold);display:inline-block;box-sizing:border-box}
+.gm-bubs{display:flex;flex-wrap:wrap;gap:9px;padding:2px}
+.gm-bub{position:relative;display:block;width:46px;height:46px;border-radius:50%;flex:0 0 auto}
+.gm-bub img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:1px solid var(--pv-line)}
+.gm-bub-ini{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;font-size:14px;font-weight:750;color:var(--tc,var(--pv-text));background:color-mix(in srgb,var(--tc,var(--pv-dim)) 22%,transparent);border:1px solid color-mix(in srgb,var(--tc,var(--pv-dim)) 55%,transparent);box-sizing:border-box}
+.gm-bub.w7{width:56px;height:56px;box-shadow:0 0 0 2px var(--pv-panel),0 0 0 4px var(--pv-gold)}
+.gm-bub:focus-visible{outline:2px solid var(--pv-gold);outline-offset:2px}
+.gm-bub:hover{z-index:31}
+.gm-bub-tip{position:absolute;left:50%;top:calc(100% + 9px);transform:translateX(-50%) translateY(-2px);background:var(--pv-panel2);border:1px solid var(--pv-line);border-radius:8px;padding:6px 9px;white-space:nowrap;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s,visibility .15s;pointer-events:none;z-index:30;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.gm-bub-tip b{display:block;font-size:12px;color:var(--pv-text)}
+.gm-bub-tip span{font-size:11px;color:var(--pv-mut)}
+.gm-bub:hover .gm-bub-tip,.gm-bub:focus-visible .gm-bub-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+/* --- V4.27.0: facts attached inside a fresh-facts card ---
+   Grouped siblings (same announcement / same claim) render as
+   quiet lines under the lead fact — attached, never dropped,
+   never their own card. */
+.lr-fc-also{margin-top:8px;border-top:1px dashed var(--pv-line);padding-top:7px}
+.lr-fc-also-k{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-dim);margin-bottom:4px}
+.lr-fc-also-line{margin:3px 0;font-size:12.5px;line-height:1.45;color:var(--pv-mut)}
+
+/* --- V4.27.0: the Contact stream tab's intro line --- */
+.cs-intro{font-size:12.5px;color:var(--pv-mut);line-height:1.5;margin:2px 0 14px;max-width:68ch}
