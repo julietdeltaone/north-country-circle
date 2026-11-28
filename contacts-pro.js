@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.27.0';
+var APP_VERSION = '4.28.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6862,6 +6862,21 @@ function wnLoad(){
     .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'daily' || S.route.name === 'home')) render(); });
 }
 var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Fresh' };
+/* V4.28.0 (JD 2026-11-28): the History change log carries the
+   same separation the feed builder made in V4.27.0 — contact
+   stream entries (online contacts, in-person contacts,
+   proximity entries, calendar-contact seeding notices) no
+   longer render here; they live on the Contact stream tab.
+   View-layer only: whatsnew.json itself is untouched, and the
+   test is the builder's own classifier (build_effective_feed.py
+   _CONTACT_RX) mirrored — the prefixes are anchored, so a
+   genuine fact that merely mentions a contact ("serves as the
+   RSVP contact for...") stays in the log. */
+var WN_CONTACT_RX = /^(online contact \(|in-person contact \(|proximity\b|seeded \d+ \S+ contact entr)/i;
+function wnIsContact(it){
+  var t = String((it && it.text) || '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+  return WN_CONTACT_RX.test(t);
+}
 /* V3.75.0 (bug hunt 32): the change feed's `what` strings are cut at
    ~160 chars by the filing pipeline, mid-phrase. The full text lives
    on the profile as a footprint bullet — when the stored text is a
@@ -6890,7 +6905,10 @@ function wnRow(it){
 }
 function wnFeedHTML(){
   if(!WN) return '<section class="card"><div class="cbody"><p class="dim">Loading the feed&hellip;</p></div></section>';
-  var items = WN.items || [];
+  /* V4.28.0: contact-stream entries are filtered out of the
+     History log (see wnIsContact) — day chapters and their
+     counts are computed from what actually renders. */
+  var items = (WN.items || []).filter(function(it){ return !wnIsContact(it); });
   if(!items.length) return '<section class="card"><div class="cbody"><p class="dim">Nothing new yet. Filings, photos and hot items land here as the routines run.</p></div></section>';
   /* Editorial Grid (V3.73.0): day chapters with a cap — the two newest
      days render in full; each earlier day is one ruled line ("Nov 1 —
@@ -8642,6 +8660,14 @@ function hmBandHTML(o){
        Airbnb-style place pills as you zoom in (hmSyncMapLayers).
        The card keeps only the map, Reset view, Full screen. */
     '<div class="gm-mtools slim">' +
+    /* V4.28.0 (JD 2026-11-28): the dots-hint threshold control.
+       The dots are hidden by default and the pointer reveals
+       them; this sets the zoom from which they also hint
+       faintly without a hover. Persisted (ncc_hm_hintz). */
+    '<label class="gm-hintz">Dots hint from zoom <select data-sbi="hmhintz" aria-label="Zoom level where place dots start hinting">' +
+    [10, 11, 12, 13].map(function(v){ return '<option value="' + v + '"' + (hmHintZ() === v ? ' selected' : '') + '>' + v + '</option>'; }).join('') +
+    '<option value="99"' + (hmHintZ() === 99 ? ' selected' : '') + '>Hover only</option>' +
+    '</select></label>' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div>' +
     '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Heat map of web search appearances"></div>' +
@@ -8905,18 +8931,49 @@ function hmPaint(){
    offscreen and swaps it in with one drawImage, repainting
    mid-drag only near the pad's edge and at most every 300ms. */
 /* Field data: one entry per placed place, plus the largest
-   finding count — the heat's yardstick. Sorted small to
-   large so the biggest places paint last (on top). */
+   heat WEIGHT — the heat's yardstick. Sorted small to large
+   so the biggest places paint last (on top).
+   V4.28.0 (JD 2026-11-28): the heat answers "which of my
+   contacts are doing what, where" — so intensity reads w,
+   the count of DISTINCT activity, not the raw finding count.
+   The same person + the same activity at the same place
+   counts once, however many filings repeat it: an activity
+   is one announcement (same source URL, or — with no URL —
+   same source + published date), merged further when two
+   tellings are the same claim (fcSameClaim, the feed
+   builder's test). Distinct contacts and distinct activities
+   are what add heat. n stays the raw finding count — that is
+   what the pills, the hero card and the readouts quote; only
+   the heat's intensity reads w. Cached per corpus: the map's
+   hit test consults this on every click and hover. */
 function hmFieldPlaces(){
-  var A = hmAppsModel(), M = hmModel(), out = [], max = 1;
+  var A = hmAppsModel();
+  if(HM._fieldFor === A && HM._field) return HM._field;
+  var M = hmModel(), out = [], max = 1;
   Object.keys(A.byPlace).forEach(function(pk){
     var pl = M.places[pk]; if(!pl) return;
-    var n = A.byPlace[pk].length;
-    if(n > max) max = n;
-    out.push({ pk:pk, lat:pl.lat, lng:pl.lng, n:n, label:pl.label });
+    var recs = A.byPlace[pk];
+    var seen = {}, reps = [];
+    recs.forEach(function(r){
+      var k = r.url ? 'u|' + r.di + '|' + String(r.url).toLowerCase()
+                    : 's|' + r.di + '|' + String(r.source || '').toLowerCase() + '|' + (r.published || '');
+      if(!seen[k]){ seen[k] = 1; reps.push(r); }
+    });
+    var w = 0, used = {};
+    reps.forEach(function(r, i){
+      if(used[i]) return;
+      w++; used[i] = 1;
+      reps.forEach(function(r2, j){
+        if(j <= i || used[j] || r2.di !== r.di) return;
+        if(fcSameClaim(r.text, r2.text)) used[j] = 1;
+      });
+    });
+    if(w > max) max = w;
+    out.push({ pk:pk, lat:pl.lat, lng:pl.lng, n:recs.length, w:w, label:pl.label });
   });
-  out.sort(function(a, b){ return a.n - b.n; });
-  return { places:out, max:max };
+  out.sort(function(a, b){ return a.w - b.w; });
+  HM._fieldFor = A; HM._field = { places:out, max:max };
+  return HM._field;
 }
 /* The heat palette as a 256-step lookup: deep blue through
    teal to amber and pale gold — the app's own heat colors. */
@@ -8936,6 +8993,27 @@ function hmLut(){
   HM_LUT = lut;
   return lut;
 }
+/* V4.28.0 (JD 2026-11-28): the zoom from which the place dots
+   start HINTING on the heat map. Below it the dots stay hidden
+   until the pointer hovers near them; at and above it they sit
+   faintly on the map, and hovering still brings the ones near
+   the pointer to full strength. 99 = hover only, dots never
+   hint. Persisted like the app's other view settings
+   (localStorage via store()). Default 11 — the old mid-band
+   edge, so dots begin exactly where they used to appear, now
+   as a hint JD can move. */
+function hmHintZ(){
+  var v = parseInt(store('ncc_hm_hintz') || '', 10);
+  return (v === 10 || v === 11 || v === 12 || v === 13 || v === 99) ? v : 11;
+}
+function hmSetHintZ(v){
+  v = parseInt(v, 10);
+  if(!(v === 10 || v === 11 || v === 12 || v === 13 || v === 99)) v = 11;
+  store('ncc_hm_hintz', String(v));
+  var sel = document.querySelector('select[data-sbi="hmhintz"]');
+  if(sel && sel.value !== String(v)) sel.value = String(v);
+  if(HM.field) HM.field.setHintZ(v);
+}
 /* The zoom bands: heat (default view — pure density shading,
    no dots, no pills) / mid (heat thins, count dots) / pill
    (heat a whisper, full name+count pills). */
@@ -8954,6 +9032,9 @@ function hmFieldClass(){
       this._places = []; this._max = 1;
       this._band = 'heat'; this._selPk = null;
       this._origin = null; this._w = 0; this._h = 0; this._moveAt = 0;
+      /* V4.28.0: dot hinting + hover reveal state. */
+      this._hintZ = 11; this._zoom = 0;
+      this._hoverLL = null; this._dragging = false; this._raf = 0;
     },
     setData: function(places, max){
       this._places = places; this._max = max;
@@ -8961,14 +9042,44 @@ function hmFieldClass(){
     },
     /* Band + selection: the heat canvas only changes opacity
        (instant, no transition, no repaint); the pill canvas
-       repaints only when the band or the selection actually
-       changed. */
+       repaints only when the band, the selection, or the zoom
+       actually changed (V4.28.0: a zoom step can cross the
+       dot-hint threshold inside one band, and the dots must
+       answer it). */
     setBand: function(band, selPk){
-      var redraw = band !== this._band || selPk !== this._selPk;
-      this._band = band; this._selPk = selPk;
+      var z = this._map ? this._map.getZoom() : 0;
+      var redraw = band !== this._band || selPk !== this._selPk || z !== this._zoom;
+      this._band = band; this._selPk = selPk; this._zoom = z;
       if(this._heatCv) this._heatCv.style.opacity = band === 'heat' ? '0.92' : (band === 'mid' ? '0.5' : '0.16');
       if(redraw && this._map) this._drawPills();
     },
+    /* V4.28.0: the dots-hint threshold (hmHintZ) and the
+       pointer's latlng, fed by the map's own mousemove wiring
+       in hmMount. Hover redraws are rAF-coalesced and touch
+       ONLY the pill canvas — the heat canvas, the tiles and
+       the click hit test are never involved. While the map is
+       being dragged the reveal is suppressed outright, so a
+       drag can never repaint anything (the V4.27.0 white-flash
+       fixes stand). */
+    setHintZ: function(z){
+      if(z === this._hintZ) return;
+      this._hintZ = z;
+      if(this._map) this._drawPills();
+    },
+    setHover: function(ll){
+      this._hoverLL = this._dragging ? null : ll;
+      this._queuePills();
+    },
+    _queuePills: function(){
+      if(this._raf || !this._map) return;
+      var self = this;
+      this._raf = requestAnimationFrame(function(){ self._raf = 0; self._drawPills(); });
+    },
+    _dragOn: function(){
+      this._dragging = true;
+      if(this._hoverLL){ this._hoverLL = null; this._drawPills(); }
+    },
+    _dragOff: function(){ this._dragging = false; },
     onAdd: function(map){
       this._map = map;
       var pane = map.getPane('overlayPane');
@@ -8985,6 +9096,8 @@ function hmFieldClass(){
       map.on('move', this._onMove, this);
       map.on('zoomend', this._reset, this);
       map.on('resize', this._reset, this);
+      map.on('dragstart', this._dragOn, this);
+      map.on('dragend', this._dragOff, this);
       this._reset();
     },
     onRemove: function(map){
@@ -8992,6 +9105,9 @@ function hmFieldClass(){
       map.off('move', this._onMove, this);
       map.off('zoomend', this._reset, this);
       map.off('resize', this._reset, this);
+      map.off('dragstart', this._dragOn, this);
+      map.off('dragend', this._dragOff, this);
+      if(this._raf){ cancelAnimationFrame(this._raf); this._raf = 0; }
       if(this._heatCv) L.DomUtil.remove(this._heatCv);
       if(this._pillCv) L.DomUtil.remove(this._pillCv);
       this._heatCv = null; this._pillCv = null; this._gray = null; this._col = null; this._map = null;
@@ -9042,12 +9158,15 @@ function hmFieldClass(){
       return [lp.x - this._origin.x, lp.y - this._origin.y];
     },
     /* Density field: each place stamps a soft kernel whose
-       strength is its finding count on a LOG scale (the counts
-       run 1..516 — linear scaling made everything but the top
-       two places invisible). Kernels accumulate where places
-       cluster, then the accumulated alpha is colorized through
-       the palette. Drawn into an offscreen alpha canvas first,
-       colorized in one pass, swapped in atomically. */
+       strength is its DISTINCT-ACTIVITY WEIGHT on a LOG scale
+       (V4.28.0: p.w, not the raw finding count — one contact's
+       repeated entries of the same thing no longer stack; the
+       log scale stays from V4.26.0, when linear scaling made
+       everything but the top two places invisible). Kernels
+       accumulate where places cluster, then the accumulated
+       alpha is colorized through the palette. Drawn into an
+       offscreen alpha canvas first, colorized in one pass,
+       swapped in atomically. */
     _drawHeat: function(){
       if(!this._heatCv || !this._origin) return;
       var w = this._w, h = this._h, R = 46;
@@ -9058,7 +9177,7 @@ function hmFieldClass(){
         var p = this._places[i], xy = this._xy(p);
         var x = xy[0], y = xy[1];
         if(x < -R || y < -R || x > w + R || y > h + R) continue;
-        var a = 0.25 + 0.75 * (Math.log(1 + p.n) / logMax);
+        var a = 0.25 + 0.75 * (Math.log(1 + p.w) / logMax);
         var gr = gtx.createRadialGradient(x, y, 0, x, y, R);
         gr.addColorStop(0, 'rgba(0,0,0,' + a.toFixed(3) + ')');
         gr.addColorStop(1, 'rgba(0,0,0,0)');
@@ -9102,35 +9221,61 @@ function hmFieldClass(){
       ctx.clearRect(0, 0, this._w, this._h);
       var band = this._band, sel = this._selPk, th = this._theme();
       var i, p, xy, x, y;
-      if(band === 'heat'){
-        /* Pure heat: no dots, no pills. Only the selected place
-           is marked, so the one card's place stays visible. */
+      var z = this._map ? this._map.getZoom() : 0;
+      if(z < 13){
+        /* V4.28.0 dot mode (any zoom under the pill band): the
+           dots are HIDDEN by default. They hint — faint,
+           everywhere — once the zoom reaches the threshold JD
+           picked (this._hintZ; 99 = never), and the pointer
+           reveals the dots near it at full strength wherever
+           they are only hinting or hidden. The selected place
+           always carries its gold ring, hinting or not, so the
+           one open card's place stays marked. */
+        var hintA = z >= this._hintZ ? 0.55 : 0;
+        var hov = null;
+        if(this._hoverLL && !this._dragging && this._map){
+          var hp = this._map.latLngToLayerPoint(this._hoverLL);
+          hov = { x: hp.x - this._origin.x, y: hp.y - this._origin.y };
+        }
+        var HR = 120;
         for(i = 0; i < this._places.length; i++){
           p = this._places[i];
-          if(p.pk !== sel) continue;
           xy = this._xy(p); x = xy[0]; y = xy[1];
-          ctx.beginPath(); ctx.arc(x, y, 13, 0, 6.28319);
-          ctx.strokeStyle = th.gold; ctx.lineWidth = 2.5; ctx.stroke();
-          ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.28319);
-          ctx.fillStyle = th.gold; ctx.fill();
+          if(x < -40 || y < -40 || x > this._w + 40 || y > this._h + 40) continue;
+          var isSel = p.pk === sel;
+          var a = hintA;
+          if(hov){
+            var dx = x - hov.x, dy = y - hov.y, dd = Math.sqrt(dx * dx + dy * dy);
+            if(dd < HR) a = Math.max(a, 1 - dd / HR);
+          }
+          if(a > 0.03){
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.beginPath(); ctx.arc(x, y, isSel ? 13 : 11, 0, 6.28319);
+            ctx.fillStyle = th.panel; ctx.fill();
+            ctx.lineWidth = isSel ? 2.5 : 1.5;
+            ctx.strokeStyle = isSel ? th.gold : th.line; ctx.stroke();
+            ctx.font = '800 10.5px ' + HM_FONT;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = th.gold;
+            ctx.fillText(String(p.n), x, y + 0.5);
+            ctx.restore();
+          }
+          if(isSel){
+            ctx.beginPath(); ctx.arc(x, y, 16, 0, 6.28319);
+            ctx.strokeStyle = th.gold; ctx.lineWidth = 2; ctx.stroke();
+          }
         }
         return;
       }
       var self = this;
       function drawOne(p){
+        /* Pill band only (z >= 13): the full name+count pill.
+           Sub-pill zooms render in the dot mode above. */
         var xy = self._xy(p), x = xy[0], y = xy[1];
         if(x < -80 || y < -34 || x > self._w + 80 || y > self._h + 34) return;
         var isSel = p.pk === sel;
-        if(band === 'mid'){
-          ctx.beginPath(); ctx.arc(x, y, isSel ? 13 : 11, 0, 6.28319);
-          ctx.fillStyle = th.panel; ctx.fill();
-          ctx.lineWidth = isSel ? 2.5 : 1.5;
-          ctx.strokeStyle = isSel ? th.gold : th.line; ctx.stroke();
-          ctx.font = '800 10.5px ' + HM_FONT;
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillStyle = th.gold;
-          ctx.fillText(String(p.n), x, y + 0.5);
-        } else {
+        {
           var name = p.label.replace(/, [A-Z]{2}$/, '');
           ctx.font = '600 12.5px ' + HM_FONT;
           var wName = ctx.measureText(name).width;
@@ -9220,6 +9365,7 @@ function hmSyncMapLayers(){
     }
     if(HM.field){
       HM.field.setData(F.places, F.max);
+      HM.field.setHintZ(hmHintZ());
       if(!HM.field._map) HM.field.addTo(HM.map);
     }
     HM._zband = null;
@@ -9390,10 +9536,19 @@ function hmMount(){
     });
     var hmHoverAt = 0;
     HM.map.on('mousemove', function(e){
+      /* V4.28.0: the pointer feeds the field layer's hover
+         reveal (dots near the pointer fade in). The layer
+         rAF-coalesces the redraw and suppresses it entirely
+         while dragging; the cursor hit test below keeps its
+         own 70ms throttle and is unchanged. */
+      if(HM.field) HM.field.setHover(e.latlng);
       var now = Date.now();
       if(now - hmHoverAt < 70) return;
       hmHoverAt = now;
       HM.map.getContainer().style.cursor = hmHitPlace(e.latlng) ? 'pointer' : '';
+    });
+    HM.map.getContainer().addEventListener('mouseleave', function(){
+      if(HM.field) HM.field.setHover(null);
     });
     hmFitDefault();
     hmPaint();
@@ -23826,6 +23981,7 @@ document.addEventListener('change', function(ev){
   else if(k === 'sppredperson'){ SB.pool.prPerson = t.value; }
   else if(k === 'sppreddate'){ SB.pool.prDate = t.value; }
   else if(k === 'fisort'){ FI_SORT = t.value; fiPaint(); }
+  else if(k === 'hmhintz'){ hmSetHintZ(t.value); }
   else if(k === 'ficol'){ fiColsInit(); FI_COLS[parseInt(t.getAttribute('data-col'), 10) || 0] = t.value; fiSaveCols(); fiPaint(); }
 });
 var SB_DEB = null;
